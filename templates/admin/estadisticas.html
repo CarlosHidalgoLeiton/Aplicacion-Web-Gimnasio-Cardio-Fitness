@@ -1,0 +1,57 @@
+{% extends "./layout/admin/Layout_Admin.html" %}
+
+
+{% block content %}
+<!--**********************************
+            Content body start
+        ***********************************-->
+<div class="page-titles">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a href="clientes.html">Clientes</a></li>
+		<li class="breadcrumb-item active"><a href="">Estadísticas</a></li>
+	</ol>
+</div>
+<!-- row -->
+
+
+<!--**********************************
+                        DATATABLES 
+                    ***********************************-->
+<div class="card">
+	<div class="card-header">
+		<h4 class="card-title">Lista de Estadisticas</h4>
+	</div>
+	<div class="card-body">
+		<div class="table-responsive">
+			<table id="example2" class="display min-w850">
+				<thead>
+					<tr>
+						<th>Fecha</th>
+						<th>Entrenador</th>
+						<th>Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>09/08/2024</td>
+						<td>Carlos Hidalgo</td>
+						<td>
+							<div class="d-flex">
+								<a href="verEstadistica.html" class="btn btn-primary shadow btn-xs sharp me-1"><i
+										class="fa fa-eye"></i></a>
+							</div>
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+
+		<!--**********************************
+            Content body end
+        ***********************************-->
+		{% endblock %}
+
+		{% block scripts %}
+
+		{% endblock %}

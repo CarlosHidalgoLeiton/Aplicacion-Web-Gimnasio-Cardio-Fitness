@@ -10,5 +10,6 @@ app.register_blueprint(admin_app, url_prefix='/admin')
 app.register_blueprint(client_app, url_prefix='/client')
 app.register_blueprint(trainer_app, url_prefix='/trainer')
 
+
 if __name__ == '__main__':
     app.run(debug=True)

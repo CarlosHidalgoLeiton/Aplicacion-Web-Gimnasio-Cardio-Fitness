@@ -1,767 +1,470 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <!-- Title -->
-    <title>Cardio - Fitness</title>
-
-    <!-- Meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="author" content="DexignZone">
-    <meta name="robots" content="">
-
-    <meta property="og:image" content="">
-    <meta name="format-detection" content="telephone=no">
-
-    <!-- Mobile Specific -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Favicon icon -->
-    <link rel="shortcut icon" type="image/x-icon" href="../images/favicon.png">
-
-    <!-- Toastr -->
-    <link rel="stylesheet" href="../vendor/toastr/css/toastr.min.css">
-
-    <!-- Datatable -->
-    <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
-
-    <!-- Form step -->
-    <link href="../vendor/jquery-smartwizard/dist/css/smart_wizard.min.css" rel="stylesheet">
-
-    <!-- Select 2 -->
-    <link rel="stylesheet" href="../vendor/chartist/css/chartist.min.css">
-    <link href="../vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../vendor/select2/css/select2.min.css">
+{% extends "./layout/admin/Layout_Admin.html" %}
 
 
-
-    <!-- Custom Stylesheet -->
-    <link href="../vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
-    <link href="../css/style.css" rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&display=swap"
-        rel="stylesheet">
-</head>
-
-<body>
-
-
-
-    <!--*******************
-        Preloader start
-    ********************-->
-    <div id="preloader">
-        <div class="sk-three-bounce">
-            <div class="sk-child sk-bounce1"></div>
-            <div class="sk-child sk-bounce2"></div>
-            <div class="sk-child sk-bounce3"></div>
-        </div>
-    </div>
-    <!--*******************
-        Preloader end
-    ********************-->
-
-    <!--**********************************
-        Main wrapper start
-    ***********************************-->
-    <div id="main-wrapper">
-
-        <!--**********************************
-            Nav header start
-        ***********************************-->
-       		<div class="nav-header">
-				<a href="index.html" class="brand-logo" aria-label="Cardio-Fitness">
-					<img class="logo-abbr" src="../images/Icono.jpg" alt="" >
-					<img class="logo-compact" src="../images/Icono.jpg" alt="">
-				</a>
-			
-			<div class="nav-control">
-				<div class="hamburger">
-					<span class="line"></span><span class="line"></span><span class="line"></span>
-				</div>
-			</div>
-		</div>
-        <!--**********************************
-            Nav header end
-        ***********************************-->
-
-		
-		<!--**********************************
-            Header start
-        ***********************************-->
-        <header class="header">
-			<div class="header-content">
-				<nav class="navbar navbar-expand">
-					<div class="collapse navbar-collapse justify-content-between">
-						<div class="header-left">
-							<div class="dashboard_bar">
-								Facturas
-							</div>
-						</div>
-						<ul class="navbar-nav header-right">
-
-							<li class="nav-item dropdown notification_dropdown">
-                                <a class="nav-link bell dz-theme-mode" href="javascript:void(0);" aria-label="theme-mode">
-									<i id="icon-light" class="fas fa-sun"></i>
-                                    <i id="icon-dark" class="fas fa-moon"></i>
-                                </a>
-							</li>
-
-							
-							<li class="nav-item dropdown ">
-								<a class="nav-link d-flex" href="javascript:void(0)" role="button" data-bs-toggle="dropdown">
-										<div class="header-info ">
-										<span class="text-black"><strong>Hersal Alfaro</strong></span>
-										<span class="dropdown-toggle me-2"></span>
-
-										<p class="fs-12 mb-0">Administrador</p>
-									</div>
-								</a>
-								<div class="dropdown-menu dropdown-menu-end">
-									<a href="perfil.html" class="dropdown-item ai-icon">
-										<svg id="icon-user1" xmlns="http://www.w3.org/2000/svg" class="text-primary"
-											width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-											stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-											<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-											<circle cx="12" cy="7" r="4"></circle>
-										</svg>
-										<span class="ms-2">Perfil</span>
-									</a>
-
-									<a href="../logueo/page-login.html" class="dropdown-item ai-icon">
-										<svg id="icon-logout" xmlns="http://www.w3.org/2000/svg" class="text-danger"
-											width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-											stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-											<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-											<polyline points="16 17 21 12 16 7"></polyline>
-											<line x1="21" y1="12" x2="9" y2="12"></line>
-										</svg>
-										<span class="ms-2">Cerrar Sesion </span>
-									</a>
-								</div>
-							</li>
-						</ul>
-					</div>
-				</nav>
-			</div>
-		</header>
-		<!--**********************************
-            Header end ti-comment-alt
-        ***********************************-->
-
-        <!--**********************************
-            Sidebar start
-        ***********************************-->
-        <div class="deznav">
-            <div class="deznav-scroll">
-                <ul class="metismenu" id="menu">
-
-                    <li><a href="index.html" class="ai-icon" aria-expanded="false">
-                            <i class="flaticon-381-home"></i>
-                            <span class="nav-text">Inicio</span>
-                        </a>
-                    </li>
-
-                    <li><a href="clientes.html" class="ai-icon" aria-expanded="false">
-                            <i class="flaticon-381-user-8"></i>
-                            <span class="nav-text">Clientes</span>
-                        </a>
-                    </li>
-
-                    <li><a href="entrenadores.html" class="ai-icon" aria-expanded="false">
-                            <i class="flaticon-381-user-3"></i>
-                            <span class="nav-text">Entrenadores</span>
-                        </a>
-                    </li>
-
-                    <li><a href="Usuarios.html" class="ai-icon" aria-expanded="false">
-                            <i class="flaticon-381-user-7"></i>
-                            <span class="nav-text">Usuarios</span>
-                        </a>
-                    </li>
-
-                    <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-                            <i class="flaticon-381-id-card"></i>
-                            <span class="nav-text">Facturacion</span>
-                        </a>
-                        <ul aria-expanded="false">
-                            <li><a href="factura.html">Facturas</a></li>
-                            <li><a href="reporte.html">Reporte</a></li>
-                        </ul>
-                    </li>
-
-                    <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-                            <i class="flaticon-381-archive"></i>
-                            <span class="nav-text">Inventario</span>
-                        </a>
-                        <ul aria-expanded="false">
-                            <li><a href="inventario.html">Productos</a></li>
-                            <li><a href="membresias.html">Membresías</a></li>
-                            <li><a href="reporteInventario.html">Reporte</a></li>
-                        </ul>
-                    </li>
-
-                    <li><a href="notificaciones.html" class="ai-icon" aria-expanded="false">
-                            <i class="fa fa-bell"></i>
-                            <span class="nav-text">Notificaciones</span>
-                        </a>
-                    </li>
-
-                </ul>
-
-                <div class="copyright">
-                    <p><strong>Cardio Fitness </strong> © 2024 All Rights Reserved</p>
-                    <p>Made with <span class="heart"></span> by grupo3</p>
-                </div>
-
-            </div>
-
-        </div>
-        <!--**********************************
-            Sidebar end
-        ***********************************-->
-
-
-        <!--**********************************
+{% block content %}
+<!--**********************************
             Content body start
         ***********************************-->
-        <div class="content-body default-height">
-            <div class="container-fluid">
 
-                <div class="row page-titles">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Facturas</a></li>
-                    </ol>
-                </div>
+<div class="row page-titles">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active"><a href="javascript:void(0)">Facturas</a></li>
+    </ol>
+</div>
 
-                <div class="row">
-                    <div class="col-xl-12">
-                        <div class="card-header d-sm-flex flex-wrap d-block pb-0 border-0">
-                            <div class="me-auto pe-3 mb-3"></div>
-                            <button class="btn rounded btn-primary mb-3" id="btnAgregarCliente">
-                                Agregar Factura
-                            </button>
-                        </div>
-                    </div>
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card-header d-sm-flex flex-wrap d-block pb-0 border-0">
+            <div class="me-auto pe-3 mb-3"></div>
+            <button class="btn rounded btn-primary mb-3" id="btnAgregarCliente">
+                Agregar Factura
+            </button>
+        </div>
+    </div>
 
-                    <div class="card form-container" id="formCliente" style="display: none;">
+    <div class="card form-container" id="formCliente" style="display: none;">
 
 
-                        <div class="form-group">
-                            <label for="invoiceType">Seleccione el tipo de factura:</label>
-                            <select class="form-control" id="invoiceType">
-                                <option value="" selected>Seleccione el Tipo de Pago</option>
-                                <option value="entrenador">Pago Entrenador</option>
-                                <option value="gasto">Pago General</option>
-                                <option value="productos">Pago Productos</option>
-                                <option value="membresia">Pago Membresía</option>
+        <div class="form-group">
+            <label for="invoiceType">Seleccione el tipo de factura:</label>
+            <select class="form-control" id="invoiceType">
+                <option value="" selected>Seleccione el Tipo de Pago</option>
+                <option value="entrenador">Pago Entrenador</option>
+                <option value="gasto">Pago General</option>
+                <option value="productos">Pago Productos</option>
+                <option value="membresia">Pago Membresía</option>
 
-                            </select>
-                        </div>
+            </select>
+        </div>
 
 
-                        <div class="col-xl-12">
-                            <form action="" id="entrenadorForm" class="form-container">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-lg-4 order-lg-2 mb-4">
-                                                <h4 class="d-flex justify-content-between align-items-center mb-3">
-                                                    <span class="text-black">Entrenadores</span>
-                                                </h4>
-                                                <ul class="list-group mb-3">
-                                                    <li
-                                                        class="list-group-item d-flex justify-content-between lh-condensed">
-                                                        <div>
-                                                            <h6 class="my-0">Pago Entrenador</h6>
-                                                            <small class="text-muted">1 día</small>
-                                                        </div>
-                                                        <span class="text-muted">₡19 000</span>
-                                                    </li>
-                                                    <li class="list-group-item d-flex justify-content-between">
-                                                        <span>Total (CRC)</span>
-                                                        <strong>₡19 000</strong>
-                                                    </li>
-                                                </ul>
+        <div class="col-xl-12">
+            <form action="" id="entrenadorForm" class="form-container">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-4 order-lg-2 mb-4">
+                                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-black">Entrenadores</span>
+                                </h4>
+                                <ul class="list-group mb-3">
+                                    <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                        <div>
+                                            <h6 class="my-0">Pago Entrenador</h6>
+                                            <small class="text-muted">1 día</small>
+                                        </div>
+                                        <span class="text-muted">₡19 000</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>Total (CRC)</span>
+                                        <strong>₡19 000</strong>
+                                    </li>
+                                </ul>
 
+                            </div>
+                            <div class="col-lg-8 order-lg-1">
+                                <h4 class="mb-3">Información Entrenador</h4>
+                                <form class="needs-validation" novalidate="">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Entrenador</label>
+                                            <select class="default-select form-control wide w-100">
+                                                <option selected>Hersal Alfaro - 201230321</option>
+                                                <option value="1">Carlos Hidalgo - 201230321</option>
+                                                <option value="1">Kenneth Perez - 201230321</option>
+                                                <option value="1">Jimena Jimenez - 201230321</option>
+                                            </select>
+                                            <div class="invalid-feedback">
+                                                Por favor ingresar un valor valido
                                             </div>
-                                            <div class="col-lg-8 order-lg-1">
-                                                <h4 class="mb-3">Información Entrenador</h4>
-                                                <form class="needs-validation" novalidate="">
-                                                    <div class="row">
-                                                        <div class="col-md-6 mb-3">
-                                                            <label class="form-label">Entrenador</label>
-                                                            <select class="default-select form-control wide w-100">
-                                                                <option selected>Hersal Alfaro - 201230321</option>
-                                                                <option value="1">Carlos Hidalgo - 201230321</option>
-                                                                <option value="1">Kenneth Perez - 201230321</option>
-                                                                <option value="1">Jimena Jimenez - 201230321</option>
-                                                            </select>
-                                                            <div class="invalid-feedback">
-                                                                Por favor ingresar un valor valido
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="firstName" class="form-label">Nombre</label>
-                                                            <input type="text" class="form-control" id="firstName"
-                                                                placeholder="Nombre" value="" required="">
-                                                            <div class="invalid-feedback">
-                                                                Por favor ingresar un valor valido
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="lastName" class="form-label">Apellido</label>
-                                                            <input type="text" class="form-control" id="lastName"
-                                                                placeholder="Apellido" value="" required="">
-                                                            <div class="invalid-feedback">
-                                                                Por favor ingresar un valor valido
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="lastName" class="form-label"> Segundo
-                                                                Apellido</label>
-                                                            <input type="text" class="form-control" id="lastName"
-                                                                placeholder="2Apellido" value="" required="">
-                                                            <div class="invalid-feedback">
-                                                                Por favor ingresar un valor valido
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label for="monto" class="form-label">Monto</label>
-                                                        <input type="text" class="form-control" id="monto"
-                                                            placeholder="₡" required="">
-                                                        <div class="invalid-feedback">
-                                                            Por favor ingresar un valor valido
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label for="Descripcion" class="form-label">Descripcion</label>
-                                                        <input type="text" class="form-control" id="Descripcion"
-                                                            placeholder="" required="">
-                                                        <div class="invalid-feedback">
-                                                            Por favor ingresar un valor valido
-                                                        </div>
-                                                    </div>
-
-                                                    <hr class="mb-4">
-
-                                                    <button class="btn btn-primary btn-lg btn-block"
-                                                        type="submit">Guardar</button>
-                                                </form>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="firstName" class="form-label">Nombre</label>
+                                            <input type="text" class="form-control" id="firstName" placeholder="Nombre"
+                                                value="" required="">
+                                            <div class="invalid-feedback">
+                                                Por favor ingresar un valor valido
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="lastName" class="form-label">Apellido</label>
+                                            <input type="text" class="form-control" id="lastName" placeholder="Apellido"
+                                                value="" required="">
+                                            <div class="invalid-feedback">
+                                                Por favor ingresar un valor valido
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="lastName" class="form-label"> Segundo
+                                                Apellido</label>
+                                            <input type="text" class="form-control" id="lastName"
+                                                placeholder="2Apellido" value="" required="">
+                                            <div class="invalid-feedback">
+                                                Por favor ingresar un valor valido
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </form>
-                        </div>
 
-                        <div class="col-xl-12">
-                            <form action="" id="gastoForm" class="form-container">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-lg-4 order-lg-2 mb-4">
-                                                <h4 class="d-flex justify-content-between align-items-center mb-3">
-                                                    <span class="text-black">Gatos Generales</span>
-                                                </h4>
-                                                <ul class="list-group mb-3">
-                                                    <li
-                                                        class="list-group-item d-flex justify-content-between lh-condensed">
-                                                        <div>
-                                                            <h6 class="my-0">Gatos</h6>
-                                                            <small class="text-muted">Productos nuevos</small>
-                                                        </div>
-                                                        <span class="text-muted">₡19 000</span>
-                                                    </li>
-                                                    <li class="list-group-item d-flex justify-content-between">
-                                                        <span>Total (CRC)</span>
-                                                        <strong>₡19 000</strong>
-                                                    </li>
-                                                </ul>
-
-                                            </div>
-                                            <div class="col-lg-8 order-lg-1">
-                                                <h4 class="mb-3">Gastos Generales</h4>
-                                                <form class="needs-validation" novalidate="">
-                                                    <div class="row">
-                                                        <div class="mb-3">
-                                                            <label for="monto" class="form-label">Monto</label>
-                                                            <input type="text" class="form-control" id="monto"
-                                                                placeholder="₡" required="">
-                                                            <div class="invalid-feedback">
-                                                                Por favor ingresar un valor valido
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="mb-3">
-                                                            <label for="Descripcion"
-                                                                class="form-label">Descripcion</label>
-                                                            <input type="text" class="form-control" id="Descripcion"
-                                                                placeholder="" required="">
-                                                            <div class="invalid-feedback">
-                                                                Por favor ingresar un valor valido
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <hr class="mb-4">
-
-                                                    <button class="btn btn-primary btn-lg btn-block"
-                                                        type="submit">Guardar</button>
-                                                </form>
-                                            </div>
+                                    <div class="mb-3">
+                                        <label for="monto" class="form-label">Monto</label>
+                                        <input type="text" class="form-control" id="monto" placeholder="₡" required="">
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar un valor valido
                                         </div>
                                     </div>
-                                </div>
-                            </form>
-                        </div>
 
-                        <div class="col-xl-12">
-                            <form action="" id="productosForm" class="form-container">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-lg-4 order-lg-2 mb-4">
-                                                <h4 class="d-flex justify-content-between align-items-center mb-3">
-                                                    <span class="text-black">Pagos De Productos</span>
-                                                </h4>
-                                                <ul class="list-group mb-3">
-                                                    <li
-                                                        class="list-group-item d-flex justify-content-between lh-condensed">
-                                                        <div>
-                                                            <h6 class="my-0">Creatina</h6>
-                                                            <small class="text-muted">1 scoop</small>
-                                                        </div>
-                                                        <span class="text-muted">₡1 000</span>
-                                                    </li>
-                                                    <li class="list-group-item d-flex justify-content-between">
-                                                        <span>Total (CRC)</span>
-                                                        <strong>₡1 000</strong>
-                                                    </li>
-                                                </ul>
-
-                                            </div>
-                                            <div class="col-lg-8 order-lg-1">
-                                                <h4 class="mb-3">Información Producto</h4>
-                                                <form class="needs-validation" novalidate="">
-                                                    <div class="row">
-                                                        <div class=" mb-3">
-                                                            <label class="form-label">Productos</label>
-                                                            <select class="default-select form-control wide w-100">
-                                                                <option selected>Creatina - 1 scoop</option>
-                                                                <option value="1">Creatina - 1 scoop</option>
-                                                                <option value="1">Creatina - 1 scoop</option>
-                                                                <option value="1">Creatina - 1 scoop</option>
-                                                            </select>
-                                                            <div class="invalid-feedback">
-                                                                Por favor ingresar un valor valido
-                                                            </div>
-                                                        </div>
-
-
-                                                        <div class="mb-3">
-                                                            <label for="monto" class="form-label">Monto</label>
-                                                            <input type="number" class="form-control" id="monto"
-                                                                placeholder="₡" required="">
-                                                            <div class="invalid-feedback">
-                                                                Por favor ingresar un valor valido
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="mb-3">
-                                                            <label for="Descripcion"
-                                                                class="form-label">Descripcion</label>
-                                                            <input type="text" class="form-control" id="Descripcion"
-                                                                placeholder="" required="">
-                                                            <div class="invalid-feedback">
-                                                                Por favor ingresar un valor valido
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-
-                                                    <hr class="mb-4">
-
-                                                    <button class="btn btn-primary btn-lg btn-block"
-                                                        type="submit">Guardar</button>
-                                                </form>
-                                            </div>
+                                    <div class="mb-3">
+                                        <label for="Descripcion" class="form-label">Descripcion</label>
+                                        <input type="text" class="form-control" id="Descripcion" placeholder=""
+                                            required="">
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar un valor valido
                                         </div>
                                     </div>
-                                </div>
-                            </form>
-                        </div>
 
-                        <div class="col-xl-12">
-                            <form action="" id="membresiaForm" class="form-container">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-lg-4 order-lg-2 mb-4">
-                                                <h4 class="d-flex justify-content-between align-items-center mb-3">
-                                                    <span class="text-black">Compra</span>
-                                                </h4>
-                                                <ul class="list-group mb-3">
-                                                    <li
-                                                        class="list-group-item d-flex justify-content-between lh-condensed">
-                                                        <div>
-                                                            <h6 class="my-0">Membresia</h6>
-                                                            <small class="text-muted">1 mes</small>
-                                                        </div>
-                                                        <span class="text-muted">₡19 000</span>
-                                                    </li>
-                                                    <li class="list-group-item d-flex justify-content-between">
-                                                        <span>Total (CRC)</span>
-                                                        <strong>₡19 000</strong>
-                                                    </li>
-                                                </ul>
+                                    <hr class="mb-4">
 
-                                            </div>
-                                            <div class="col-lg-8 order-lg-1">
-                                                <h4 class="mb-3">Informacion Cliente</h4>
-                                                <form class="needs-validation" novalidate="">
-                                                    <div class="row">
-                                                        <div class="col-md-6 mb-3">
-                                                            <label class="form-label">Cliente</label>
-                                                            <select class="default-select form-control wide w-100">
-                                                                <option selected>Hersal Alfaro - 208570335</option>
-                                                                <option value="1">Carlos Hidalgo - 208310231</option>
-                                                            </select>
-                                                            <div class="invalid-feedback">
-                                                                Por favor ingresar un valor valido
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="firstName" class="form-label">Nombre</label>
-                                                            <input type="text" class="form-control" id="firstName"
-                                                                placeholder="Hersal" value="" required="">
-                                                            <div class="invalid-feedback">
-                                                                Por favor ingresar un valor valido
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="lastName" class="form-label">Apellido</label>
-                                                            <input type="text" class="form-control" id="lastName"
-                                                                placeholder="Alfaro" value="" required="">
-                                                            <div class="invalid-feedback">
-                                                                Por favor ingresar un valor valido
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="lastName" class="form-label"> Segundo
-                                                                Apellido</label>
-                                                            <input type="text" class="form-control" id="lastName"
-                                                                placeholder="Cisneros" value="" required="">
-                                                            <div class="invalid-feedback">
-                                                                Por favor ingresar un valor valido
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label for="monto" class="form-label">Monto</label>
-                                                        <input type="text" class="form-control" id="monto"
-                                                            placeholder="₡" required="">
-                                                        <div class="invalid-feedback">
-                                                            Por favor ingresar un valor valido
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label for="Descripcion" class="form-label">Descripcion</label>
-                                                        <input type="text" class="form-control" id="Descripcion"
-                                                            placeholder="" required="">
-                                                        <div class="invalid-feedback">
-                                                            Por favor ingresar un valor valido
-                                                        </div>
-                                                    </div>
-
-                                                    <hr class="mb-4">
-
-                                                    <button class="btn btn-primary btn-lg btn-block"
-                                                        type="submit">Guardar</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <button class="btn btn-danger ms-2 mb-4" id="btnCancelar">Cancelar</button>
-                    </div>
-                    
-
-                </div>
-                <!--**********************************
-                        DATATABLES 
-                    ***********************************-->
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">Lista de Facturas</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="example2" class="display min-w850">
-                                    <thead>
-                                        <tr>
-                                            <th>Fecha</th>
-                                            <th>Monto</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>00/00/0000</td>
-                                            <td>18000</td>
-                                            <td>
-                                                <div class="d-flex">
-
-                                                    <a href="verFactura.html"
-                                                        class="btn btn-primary shadow btn-xs sharp me-1"><i
-                                                            class="fa fa-eye"></i></a>
-                                                    <a href="anular.html" class="btn btn-danger shadow btn-xs sharp"><i
-                                                            class="fa fa-trash"></i></a>
-
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                    </tbody>
-                                </table>
+                                    <button class="btn btn-primary btn-lg btn-block" type="submit">Guardar</button>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
 
+        <div class="col-xl-12">
+            <form action="" id="gastoForm" class="form-container">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-4 order-lg-2 mb-4">
+                                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-black">Gatos Generales</span>
+                                </h4>
+                                <ul class="list-group mb-3">
+                                    <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                        <div>
+                                            <h6 class="my-0">Gatos</h6>
+                                            <small class="text-muted">Productos nuevos</small>
+                                        </div>
+                                        <span class="text-muted">₡19 000</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>Total (CRC)</span>
+                                        <strong>₡19 000</strong>
+                                    </li>
+                                </ul>
 
-        <!--**********************************
+                            </div>
+                            <div class="col-lg-8 order-lg-1">
+                                <h4 class="mb-3">Gastos Generales</h4>
+                                <form class="needs-validation" novalidate="">
+                                    <div class="row">
+                                        <div class="mb-3">
+                                            <label for="monto" class="form-label">Monto</label>
+                                            <input type="text" class="form-control" id="monto" placeholder="₡"
+                                                required="">
+                                            <div class="invalid-feedback">
+                                                Por favor ingresar un valor valido
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="Descripcion" class="form-label">Descripcion</label>
+                                            <input type="text" class="form-control" id="Descripcion" placeholder=""
+                                                required="">
+                                            <div class="invalid-feedback">
+                                                Por favor ingresar un valor valido
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr class="mb-4">
+
+                                    <button class="btn btn-primary btn-lg btn-block" type="submit">Guardar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-xl-12">
+            <form action="" id="productosForm" class="form-container">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-4 order-lg-2 mb-4">
+                                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-black">Pagos De Productos</span>
+                                </h4>
+                                <ul class="list-group mb-3">
+                                    <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                        <div>
+                                            <h6 class="my-0">Creatina</h6>
+                                            <small class="text-muted">1 scoop</small>
+                                        </div>
+                                        <span class="text-muted">₡1 000</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>Total (CRC)</span>
+                                        <strong>₡1 000</strong>
+                                    </li>
+                                </ul>
+
+                            </div>
+                            <div class="col-lg-8 order-lg-1">
+                                <h4 class="mb-3">Información Producto</h4>
+                                <form class="needs-validation" novalidate="">
+                                    <div class="row">
+                                        <div class=" mb-3">
+                                            <label class="form-label">Productos</label>
+                                            <select class="default-select form-control wide w-100">
+                                                <option selected>Creatina - 1 scoop</option>
+                                                <option value="1">Creatina - 1 scoop</option>
+                                                <option value="1">Creatina - 1 scoop</option>
+                                                <option value="1">Creatina - 1 scoop</option>
+                                            </select>
+                                            <div class="invalid-feedback">
+                                                Por favor ingresar un valor valido
+                                            </div>
+                                        </div>
+
+
+                                        <div class="mb-3">
+                                            <label for="monto" class="form-label">Monto</label>
+                                            <input type="number" class="form-control" id="monto" placeholder="₡"
+                                                required="">
+                                            <div class="invalid-feedback">
+                                                Por favor ingresar un valor valido
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="Descripcion" class="form-label">Descripcion</label>
+                                            <input type="text" class="form-control" id="Descripcion" placeholder=""
+                                                required="">
+                                            <div class="invalid-feedback">
+                                                Por favor ingresar un valor valido
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <hr class="mb-4">
+
+                                    <button class="btn btn-primary btn-lg btn-block" type="submit">Guardar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-xl-12">
+            <form action="" id="membresiaForm" class="form-container">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-4 order-lg-2 mb-4">
+                                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-black">Compra</span>
+                                </h4>
+                                <ul class="list-group mb-3">
+                                    <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                        <div>
+                                            <h6 class="my-0">Membresia</h6>
+                                            <small class="text-muted">1 mes</small>
+                                        </div>
+                                        <span class="text-muted">₡19 000</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>Total (CRC)</span>
+                                        <strong>₡19 000</strong>
+                                    </li>
+                                </ul>
+
+                            </div>
+                            <div class="col-lg-8 order-lg-1">
+                                <h4 class="mb-3">Informacion Cliente</h4>
+                                <form class="needs-validation" novalidate="">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Cliente</label>
+                                            <select class="default-select form-control wide w-100">
+                                                <option selected>Hersal Alfaro - 208570335</option>
+                                                <option value="1">Carlos Hidalgo - 208310231</option>
+                                            </select>
+                                            <div class="invalid-feedback">
+                                                Por favor ingresar un valor valido
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="firstName" class="form-label">Nombre</label>
+                                            <input type="text" class="form-control" id="firstName" placeholder="Hersal"
+                                                value="" required="">
+                                            <div class="invalid-feedback">
+                                                Por favor ingresar un valor valido
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="lastName" class="form-label">Apellido</label>
+                                            <input type="text" class="form-control" id="lastName" placeholder="Alfaro"
+                                                value="" required="">
+                                            <div class="invalid-feedback">
+                                                Por favor ingresar un valor valido
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="lastName" class="form-label"> Segundo
+                                                Apellido</label>
+                                            <input type="text" class="form-control" id="lastName" placeholder="Cisneros"
+                                                value="" required="">
+                                            <div class="invalid-feedback">
+                                                Por favor ingresar un valor valido
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="monto" class="form-label">Monto</label>
+                                        <input type="text" class="form-control" id="monto" placeholder="₡" required="">
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar un valor valido
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="Descripcion" class="form-label">Descripcion</label>
+                                        <input type="text" class="form-control" id="Descripcion" placeholder=""
+                                            required="">
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar un valor valido
+                                        </div>
+                                    </div>
+
+                                    <hr class="mb-4">
+
+                                    <button class="btn btn-primary btn-lg btn-block" type="submit">Guardar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <button class="btn btn-danger ms-2 mb-4" id="btnCancelar">Cancelar</button>
+    </div>
+
+
+</div>
+<!--**********************************
+                        DATATABLES 
+                    ***********************************-->
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">Lista de Facturas</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="example2" class="display min-w850">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Monto</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>00/00/0000</td>
+                            <td>18000</td>
+                            <td>
+                                <div class="d-flex">
+
+                                    <a href="verFactura.html" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                            class="fa fa-eye"></i></a>
+                                    <a href="anular.html" class="btn btn-danger shadow btn-xs sharp"><i
+                                            class="fa fa-trash"></i></a>
+
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!--**********************************
             Content body end
         ***********************************-->
+{% endblock %}
 
+{% block scripts %}
 
+<!-- Oculta los tipos de pago -->
+<style>
+    .form-container {
+        display: none;
+    }
+</style>
 
-        <!--**********************************
-            Footer start
-        ***********************************-->
-        <footer class="footer">
-            <div class="copyright">
-                <p>Copyright © Designed &amp; Developed by <a href="" target="_blank">grupo3</a> 2024</p>
-            </div>
-        </footer>
-        <!--**********************************
-            Footer end
-        ***********************************-->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('btnAgregarCliente').addEventListener('click', function () {
+            document.getElementById('formCliente').style.display = 'block';
+        });
 
+        document.getElementById('btnCancelar').addEventListener('click', function () {
+            document.getElementById('formCliente').style.display = 'none';
+        });
 
-    </div>
-    <!--**********************************
-        Main wrapper end
-    ***********************************-->
+    });
+</script>
 
-
-    <!--**********************************
-        Scripts
-    ***********************************-->
-
-    <!-- Required vendors -->
-    <script src="../vendor/global/global.min.js"></script>
-    <script src="../vendor/bootstrap-select/js/bootstrap-select.min.js"></script>
-    <!--select plugins-file-->
-    <script src="../vendor/select2/js/select2.full.min.js"></script>
-    <!-- Toastr -->
-    <script src="../vendor/toastr/js/toastr.min.js"></script>
-    <!-- Pasos -->
-    <script src="../vendor/jquery-steps/js/jquery.steps.min.js"></script>
-    <script src="../vendor/jquery-smartwizard/dist/js/jquery.smartWizard.js"></script>
-    <!-- Datatable -->
-    <script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
-    <!-- ck-editor -->
-    <script src="../vendor/ckeditor/ckeditor.js"></script>
-    <!-- Apex Chart -->
-    <script src="../vendor/apexchart/apexchart.js"></script>
-    <!-- Chart piety plugin files -->
-    <script src="../vendor/peity/jquery.peity.min.js"></script>
-
-    <!-- All init script -->
-    <script src="../js/plugins-init/select2-init.js"></script>
-    <script src="../js/plugins-init/toastr-init.js"></script>
-    <script src="../js/plugins-init/datatables.init.js"></script>
-
-    <!-- CUSTOM SCRIPT -->
-    <script src="../js/dashboard/cms.js"></script>
-    <script src="../js/custom.min.js"></script>
-    <script src="../js/deznav-init.js"></script>
-
-    <style>
-        .form-container {
-            display: none;
-        }
-    </style>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('btnAgregarCliente').addEventListener('click', function () {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('invoiceType').addEventListener('change', function () {
+            var value = this.value;
+            document.querySelectorAll('.form-container').forEach(function (el) {
+                el.style.display = 'none';
                 document.getElementById('formCliente').style.display = 'block';
             });
-
-            document.getElementById('btnCancelar').addEventListener('click', function () {
-                document.getElementById('formCliente').style.display = 'none';
-            });
-
+            if (value) {
+                document.getElementById(value + 'Form').style.display = 'block';
+            }
         });
-    </script>
+    });
+</script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('invoiceType').addEventListener('change', function () {
-                var value = this.value;
-                document.querySelectorAll('.form-container').forEach(function (el) {
-                    el.style.display = 'none';
-                    document.getElementById('formCliente').style.display = 'block';
-                });
-                if (value) {
-                    document.getElementById(value + 'Form').style.display = 'block';
-                }
-            });
-        });
-    </script>
+<script>
+    (function () {
+        'use strict'
 
-    <script>
-        $(document).ready(function () {
-            // SmartWizard initialize
-            $('#smartwizard').smartWizard();
-        });
-    </script>
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
 
-    <script>
-        (function () {
-            'use strict'
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
 
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            var forms = document.querySelectorAll('.needs-validation')
-
-            // Loop over them and prevent submission
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-        })()
-    </script>
-
-</body>
-
-</html>
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script>
+{% endblock %}
