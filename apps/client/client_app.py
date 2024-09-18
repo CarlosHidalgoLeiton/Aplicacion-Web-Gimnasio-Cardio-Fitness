@@ -1,6 +1,6 @@
-from flask import Blueprint, request, url_for, redirect, render_template, flash, jsonify
+from flask import Blueprint, render_template, jsonify
 
-client_app = Blueprint('admin_app', __name__, template_folder='')
+client_app = Blueprint('client_app', __name__)
 
 @client_app.route("/")
 def inicio():

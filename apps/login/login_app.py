@@ -1,6 +1,6 @@
-from flask import Blueprint, request, url_for, redirect, render_template, flash, jsonify
+from flask import Blueprint, render_template, jsonify
 
-login_app = Blueprint('admin_app', __name__, template_folder='')
+login_app = Blueprint('login_app', __name__)
 
 @login_app.route("/")
 def inicio():

@@ -1,0 +1,31 @@
+# Byte-compiled files
+__pycache__/
+*.py[cod]
+
+# Entorno virtual
+venv/
+env/
+.env
+.venv/
+
+# Archivos de configuración de IDE
+.idea/
+.vscode/
+.DS_Store
+
+# Archivos de logs
+*.log
+
+# Archivos de base de datos
+*.sqlite3
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Otros archivos innecesarios
+*.pyo
+.coverage
+coverage.xml
+.pytest_cache/
+.mypy_cache/
