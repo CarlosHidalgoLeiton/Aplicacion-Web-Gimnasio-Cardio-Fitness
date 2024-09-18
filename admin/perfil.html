@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Title -->
+    <title>Cardio - Fitness</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="DexignZone">
+    <meta name="robots" content="">
+
+    <meta property="og:image" content="">
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- Mobile Specific -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Favicon icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="../images/favicon.png">
+
+    <!-- Toastr -->
+    <link rel="stylesheet" href="../vendor/toastr/css/toastr.min.css">
+
+    <!-- Datatable -->
+    <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+
+    <!-- Form step -->
+    <link href="../vendor/jquery-smartwizard/dist/css/smart_wizard.min.css" rel="stylesheet">
+
+    <!-- Select 2 -->
+    <link rel="stylesheet" href="../vendor/chartist/css/chartist.min.css">
+    <link href="../vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../vendor/select2/css/select2.min.css">
+
+
+
+    <!-- Custom Stylesheet -->
+    <link href="../vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&display=swap"
+        rel="stylesheet">
+</head>
+<body>
+
+
+
+    <!--*******************
+                Preloader start
+            ********************-->
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+    <!--*******************
+                Preloader end
+            ********************-->
+
+    <!--**********************************
+                Main wrapper start
+            ***********************************-->
+    <div id="main-wrapper">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+       		<div class="nav-header">
+				<a href="index.html" class="brand-logo" aria-label="Cardio-Fitness">
+					<img class="logo-abbr" src="../images/Icono.jpg" alt="" >
+					<img class="logo-compact" src="../images/Icono.jpg" alt="">
+				</a>
+			
+			<div class="nav-control">
+				<div class="hamburger">
+					<span class="line"></span><span class="line"></span><span class="line"></span>
+				</div>
+			</div>
+		</div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+
+		
+		<!--**********************************
+            Header start
+        ***********************************-->
+			<header class="header">
+			<div class="header-content">
+				<nav class="navbar navbar-expand">
+					<div class="collapse navbar-collapse justify-content-between">
+						<div class="header-left">
+							<div class="dashboard_bar">
+								Perfil
+							</div>
+						</div>
+						<ul class="navbar-nav header-right">
+
+							<li class="nav-item dropdown notification_dropdown">
+                                <a class="nav-link bell dz-theme-mode" href="javascript:void(0);" aria-label="theme-mode">
+									<i id="icon-light" class="fas fa-sun"></i>
+                                    <i id="icon-dark" class="fas fa-moon"></i>
+                                </a>
+							</li>
+
+							
+							<li class="nav-item dropdown ">
+								<a class="nav-link d-flex" href="javascript:void(0)" role="button" data-bs-toggle="dropdown">
+										<div class="header-info ">
+										<span class="text-black"><strong>Hersal Alfaro</strong></span>
+										<span class="dropdown-toggle me-2"></span>
+
+										<p class="fs-12 mb-0">Administrador</p>
+									</div>
+								</a>
+								<div class="dropdown-menu dropdown-menu-end">
+									<a href="perfil.html" class="dropdown-item ai-icon">
+										<svg id="icon-user1" xmlns="http://www.w3.org/2000/svg" class="text-primary"
+											width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+											stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+											<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+											<circle cx="12" cy="7" r="4"></circle>
+										</svg>
+										<span class="ms-2">Perfil</span>
+									</a>
+
+									<a href="../logueo/page-login.html" class="dropdown-item ai-icon">
+										<svg id="icon-logout" xmlns="http://www.w3.org/2000/svg" class="text-danger"
+											width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+											stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+											<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+											<polyline points="16 17 21 12 16 7"></polyline>
+											<line x1="21" y1="12" x2="9" y2="12"></line>
+										</svg>
+										<span class="ms-2">Cerrar Sesion </span>
+									</a>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</nav>
+			</div>
+		</header>
+		<!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
+
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+		<div class="deznav">
+			<div class="deznav-scroll">
+				<ul class="metismenu" id="menu">
+
+					<li><a href="index.html" class="ai-icon" aria-expanded="false">
+							<i class="flaticon-381-home"></i>
+							<span class="nav-text">Inicio</span>
+						</a>
+					</li>
+
+					<li><a href="clientes.html" class="ai-icon" aria-expanded="false">
+							<i class="flaticon-381-user-8"></i>
+							<span class="nav-text">Clientes</span>
+						</a>
+					</li>
+
+					<li><a href="entrenadores.html" class="ai-icon" aria-expanded="false">
+							<i class="flaticon-381-user-3"></i>
+							<span class="nav-text">Entrenadores</span>
+						</a>
+					</li>
+                    
+                    <li><a href="Usuarios.html" class="ai-icon" aria-expanded="false">
+                        <i class="flaticon-381-user-7"></i>
+                        <span class="nav-text">Usuarios</span>
+                        </a>
+                    </li>
+
+					<li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+							<i class="flaticon-381-id-card"></i>
+							<span class="nav-text">Facturacion</span>
+						</a>
+						<ul aria-expanded="false">
+							<li><a href="factura.html">Facturas</a></li>
+							<li><a href="reporte.html">Reporte</a></li>
+						</ul>
+					</li>
+
+					<li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+                        <i class="flaticon-381-archive"></i>
+                        <span class="nav-text">Inventario</span>
+                        </a>
+                        <ul aria-expanded="false">
+                            <li><a href="inventario.html">Productos</a></li>
+                            <li><a href="membresias.html">Membresías</a></li>
+                            <li><a href="reporteInventario.html">Reporte</a></li>
+                        </ul>
+                    </li>
+
+					<li><a href="notificaciones.html" class="ai-icon" aria-expanded="false">
+							<i class="fa fa-bell"></i>
+							<span class="nav-text">Notificaciones</span>
+						</a>
+					</li>
+
+				</ul>
+
+				<div class="copyright">
+					<p><strong>Cardio Fitness </strong> © 2024 All Rights Reserved</p>
+					<p>Made with <span class="heart"></span> by grupo3</p>
+				</div>
+
+			</div>
+
+		</div>
+		<!--**********************************
+            Sidebar end
+        ***********************************-->
+
+
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body default-height">
+            <div class="container-fluid">
+                <div class="page-titles">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Inicio</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Perfil</a></li>
+                    </ol>
+                </div>
+                <!-- row -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="profile card card-body px-3 pt-3 pb-0">
+                            <div class="profile-head">
+                                <div class="photo-content">
+                                    <div class="cover-photo"></div>
+                                </div>
+                                <div class="profile-info">
+                                    <div class="profile-photo">
+                                        <img src="images/profile/profile.png" class="img-fluid rounded-circle" alt="">
+                                    </div>
+                                    <div class="profile-details">
+                                        <div class="profile-name px-3 pt-2">
+                                            <h4 class="text-primary mb-0">Hersal Alfaro</h4>
+                                            <p>UX / UI Designer</p>
+                                        </div>
+                                        <div class="profile-email px-2 pt-2">
+                                            <h4 class="text-muted mb-0">info@example.com</h4>
+                                            <p>Correo</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-4">
+
+                        <div class="card h-auto">
+                            <div class="card-body">
+                                <div class="profile-statistics mb-5">
+                                    <div class="text-center">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h3 class="m-b-0">Rol</h3><span>Admin</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-xl-8">
+
+                        <div class="card h-auto">
+                            <div class="card-body">
+                                <div class="profile-tab">
+                                    <div class="custom-tab-1">
+
+                                        <ul class="nav nav-tabs">
+                                            <li class="nav-item"><a href="#informacion" data-bs-toggle="tab"
+                                                    class="nav-link">Información</a>
+                                            </li>
+                                        </ul>
+
+                                        <div class="tab-content">
+                                            <div id="informacion" class="tab-pane fade active show">
+                                                <div class="profile-about-me">
+                                                    <div class="pt-4 border-bottom-1 pb-3">
+                                                        <h4 class="text-primary">Información</h4>
+                                                        <p class="mb-2">A wonderful serenity has taken possession of my
+                                                            entire soul, like these sweet mornings of spring which I
+                                                            enjoy with my whole heart. I am alone, and feel the charm of
+                                                            existence was created for the bliss of souls like mine.I am
+                                                            so happy, my dear friend, so absorbed in the exquisite sense
+                                                            of mere tranquil existence, that I neglect my talents.</p>
+                                                        <p>A collection of textile samples lay spread out on the table -
+                                                            Samsa was a travelling salesman - and above it there hung a
+                                                            picture that he had recently cut out of an illustrated
+                                                            magazine and housed in a nice, gilded frame.</p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="profile-lang  mb-5">
+                                                    <h4 class="text-primary mb-2">Padecimientos</h4>
+                                                    <a href="javascript:void()" class="text-muted pe-3 f-s-16"><i
+                                                            class="flag-icon flag-icon-us"></i> Sin padecimientos</a>
+                                                </div>
+
+                                                <div class="profile-personal-info">
+                                                    <h4 class="text-primary mb-4">informacion Personal</h4>
+                                                    <div class="row mb-2">
+                                                        <div class="col-sm-3 col-5">
+                                                            <h5 class="f-w-500">Nombre <span class="pull-right">:</span>
+                                                            </h5>
+                                                        </div>
+                                                        <div class="col-sm-9 col-7"><span>Hersal Alfaro</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-sm-3 col-5">
+                                                            <h5 class="f-w-500">Correo <span class="pull-right">:</span>
+                                                            </h5>
+                                                        </div>
+                                                        <div class="col-sm-9 col-7"><span>example@examplel.com</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-sm-3 col-5">
+                                                            <h5 class="f-w-500">Estatura <span
+                                                                    class="pull-right">:</span></h5>
+                                                        </div>
+                                                        <div class="col-sm-9 col-7"><span>170cm</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-sm-3 col-5">
+                                                            <h5 class="f-w-500">Edad <span class="pull-right">:</span>
+                                                            </h5>
+                                                        </div>
+                                                        <div class="col-sm-9 col-7"><span>19</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-sm-3 col-5">
+                                                            <h5 class="f-w-500">Ubicacion <span
+                                                                    class="pull-right">:</span></h5>
+                                                        </div>
+                                                        <div class="col-sm-9 col-7"><span>Alajuela, Costa Rica</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-sm-3 col-5">
+                                                            <h5 class="f-w-500">Experiencia <span
+                                                                    class="pull-right">:</span></h5>
+                                                        </div>
+                                                        <div class="col-sm-9 col-7"><span>1 año</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+
+
+
+        <!--**********************************
+        Footer start
+    ***********************************-->
+        <footer class="footer">
+            <div class="copyright">
+                <p>Copyright © Designed &amp; Developed by <a href="" target="_blank">grupo3</a> 2024</p>
+            </div>
+        </footer>
+
+
+        <!--**********************************
+        Footer end
+    ***********************************-->
+
+
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+
+	<!-- Required vendors -->
+	<script src="../vendor/global/global.min.js"></script>
+	<script src="../vendor/bootstrap-select/js/bootstrap-select.min.js"></script>
+	<!--select plugins-file-->
+	<script src="../vendor/select2/js/select2.full.min.js"></script>
+	<!-- Toastr -->
+	<script src="../vendor/toastr/js/toastr.min.js"></script>
+	<!-- Pasos -->
+	<script src="../vendor/jquery-steps/js/jquery.steps.min.js"></script>
+	<script src="../vendor/jquery-smartwizard/dist/js/jquery.smartWizard.js"></script>
+	<!-- Datatable -->
+	<script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
+	<!-- ck-editor -->
+	<script src="../vendor/ckeditor/ckeditor.js"></script>
+	<!-- Apex Chart -->
+	<script src="../vendor/apexchart/apexchart.js"></script>
+	<!-- Chart piety plugin files -->
+	<script src="../vendor/peity/jquery.peity.min.js"></script>
+
+	<!-- All init script -->
+	<script src="../js/plugins-init/select2-init.js"></script>
+	<script src="../js/plugins-init/toastr-init.js"></script>
+	<script src="../js/plugins-init/datatables.init.js"></script>
+
+	<!-- CUSTOM SCRIPT -->
+	<script src="../js/dashboard/cms.js"></script>
+	<script src="../js/custom.min.js"></script>
+	<script src="../js/deznav-init.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // SmartWizard initialize
+            $('#smartwizard').smartWizard();
+        });
+    </script>
+
+    <script>
+        (function () {
+            'use strict'
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.querySelectorAll('.needs-validation')
+
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+
+</body>
+
+</html>

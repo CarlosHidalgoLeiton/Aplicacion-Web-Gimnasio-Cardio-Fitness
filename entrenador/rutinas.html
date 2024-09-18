@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Title -->
+    <title>Cardio - Fitness</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="DexignZone">
+    <meta name="robots" content="">
+
+    <meta property="og:image" content="">
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- Mobile Specific -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Favicon icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="../images/favicon.png">
+
+    <!-- Toastr -->
+    <link rel="stylesheet" href="../vendor/toastr/css/toastr.min.css">
+
+    <!-- Datatable -->
+    <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+
+    <!-- Form step -->
+    <link href="../vendor/jquery-smartwizard/dist/css/smart_wizard.min.css" rel="stylesheet">
+
+    <!-- Select 2 -->
+    <link rel="stylesheet" href="../vendor/chartist/css/chartist.min.css">
+    <link href="../vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../vendor/select2/css/select2.min.css">
+
+
+
+    <!-- Custom Stylesheet -->
+    <link href="../vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&display=swap"
+        rel="stylesheet">
+</head>
+
+
+<body>
+
+
+
+	<!--*******************
+        Preloader start
+    ********************-->
+	<div id="preloader">
+		<div class="sk-three-bounce">
+			<div class="sk-child sk-bounce1"></div>
+			<div class="sk-child sk-bounce2"></div>
+			<div class="sk-child sk-bounce3"></div>
+		</div>
+	</div>
+	<!--*******************
+        Preloader end
+    ********************-->
+
+	<!--**********************************
+        Main wrapper start
+    ***********************************-->
+	<div id="main-wrapper">
+
+		<!--**********************************
+            Nav header start
+        ***********************************-->
+		<div class="nav-header">
+			<a href="index.html" class="brand-logo" aria-label="Gymove">
+				<img class="logo-abbr" src="../images/Icono.jpg" alt="">
+				<img class="logo-compact" src="../images/logo-text.png" alt="">
+				<img class="brand-title" src="../images/logo-text.png" alt="">
+			</a>
+
+			<div class="nav-control">
+				<div class="hamburger">
+					<span class="line"></span><span class="line"></span><span class="line"></span>
+				</div>
+			</div>
+		</div>
+		<!--**********************************
+            Nav header end
+        ***********************************-->
+
+		<!--**********************************
+            Header start
+        ***********************************-->
+		<header class="header">
+			<div class="header-content">
+				<nav class="navbar navbar-expand">
+					<div class="collapse navbar-collapse justify-content-between">
+						<div class="header-left">
+							<div class="dashboard_bar">
+								Rutinas
+							</div>
+						</div>
+						<ul class="navbar-nav header-right">
+
+							<li class="nav-item dropdown notification_dropdown">
+                                <a class="nav-link bell dz-theme-mode" href="javascript:void(0);" aria-label="theme-mode">
+									<i id="icon-light" class="fas fa-sun"></i>
+                                    <i id="icon-dark" class="fas fa-moon"></i>
+                                </a>
+							</li>
+
+							
+							<li class="nav-item dropdown ">
+								<a class="nav-link d-flex" href="javascript:void(0)" role="button" data-bs-toggle="dropdown">
+										<div class="header-info ">
+										<span class="text-black"><strong>Hersal Alfaro</strong></span>
+										<span class="dropdown-toggle me-2"></span>
+
+										<p class="fs-12 mb-0">Entrenador</p>
+									</div>
+								</a>
+								<div class="dropdown-menu dropdown-menu-end">
+									<a href="perfil.html" class="dropdown-item ai-icon">
+										<svg id="icon-user1" xmlns="http://www.w3.org/2000/svg" class="text-primary"
+											width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+											stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+											<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+											<circle cx="12" cy="7" r="4"></circle>
+										</svg>
+										<span class="ms-2">Perfil</span>
+									</a>
+
+									<a href="../logueo/page-login.html" class="dropdown-item ai-icon">
+										<svg id="icon-logout" xmlns="http://www.w3.org/2000/svg" class="text-danger"
+											width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+											stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+											<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+											<polyline points="16 17 21 12 16 7"></polyline>
+											<line x1="21" y1="12" x2="9" y2="12"></line>
+										</svg>
+										<span class="ms-2">Cerrar Sesion </span>
+									</a>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</nav>
+			</div>
+		</header>
+		<!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
+
+
+		<!--**********************************
+            Sidebar start
+        ***********************************-->
+		<div class="deznav">
+			<div class="deznav-scroll">
+				<ul class="metismenu" id="menu">
+
+					<li><a href="index.html" class="ai-icon" aria-expanded="false">
+							<i class="flaticon-381-home"></i>
+							<span class="nav-text">Inicio</span>
+						</a>
+					</li>
+
+					<li><a href="clientes.html" class="ai-icon" aria-expanded="false">
+							<i class="flaticon-381-user-8"></i>
+							<span class="nav-text">Clientes</span>
+						</a>
+					</li>
+				</ul>
+
+				<div class="copyright">
+					<p><strong>Cardio Fitness </strong> © 2024 All Rights Reserved</p>
+					<p>Made with <span class="heart"></span> by grupo3</p>
+				</div>
+
+			</div>
+
+		</div>
+		<!--**********************************
+            Sidebar end
+        ***********************************-->
+
+
+		<!--**********************************
+            Content body start
+        ***********************************-->
+		<div class="content-body default-height">
+			<!-- row -->
+			<div class="container-fluid">
+				<div class="page-titles">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Clientes</a></li>
+						<li class="breadcrumb-item active"><a href="javascript:void(0)">Rutinas</a></li>
+                    </ol>
+                </div>
+				<div class="row">
+					<div class="col-xl-12 col-xxl-12">
+						<div class="row">
+							<div class="col-xl-12">
+								<div class="card-header d-sm-flex flex-wrap d-block pb-0 border-0">
+
+									<div class="me-auto pe-3 mb-3"></div>
+
+									<a href="javascript:void(0);" class="btn rounded btn-primary mb-3"
+										data-bs-toggle="modal" data-bs-target="#exampleModal">
+										<svg class="me-2" width="25" height="24" viewBox="0 0 25 24" fill="none"
+											xmlns="http://www.w3.org/2000/svg">
+											<path
+												d="M3.31615 6H14.4744C14.4744 6.53043 14.6882 7.03914 15.0686 7.41421C15.4491 7.78929 15.9651 8 16.5032 8H18.532C19.07 8 19.5861 7.78929 19.9665 7.41421C20.347 7.03914 20.5607 6.53043 20.5607 6H21.5751C21.8442 6 22.1022 5.89464 22.2924 5.70711C22.4827 5.51957 22.5895 5.26522 22.5895 5C22.5895 4.73478 22.4827 4.48043 22.2924 4.29289C22.1022 4.10536 21.8442 4 21.5751 4H20.5607C20.5607 3.46957 20.347 2.96086 19.9665 2.58579C19.5861 2.21071 19.07 2 18.532 2H16.5032C15.9651 2 15.4491 2.21071 15.0686 2.58579C14.6882 2.96086 14.4744 3.46957 14.4744 4H3.31615C3.04711 4 2.7891 4.10536 2.59887 4.29289C2.40863 4.48043 2.30176 4.73478 2.30176 5C2.30176 5.26522 2.40863 5.51957 2.59887 5.70711C2.7891 5.89464 3.04711 6 3.31615 6ZM16.5032 4H18.532V5V6H16.5032V4ZM21.5751 11H12.4456C12.4456 10.4696 12.2319 9.96086 11.8514 9.58579C11.471 9.21071 10.9549 9 10.4169 9H8.38809C7.85002 9 7.334 9.21071 6.95353 9.58579C6.57306 9.96086 6.35931 10.4696 6.35931 11H3.31615C3.04711 11 2.7891 11.1054 2.59887 11.2929C2.40863 11.4804 2.30176 11.7348 2.30176 12C2.30176 12.2652 2.40863 12.5196 2.59887 12.7071C2.7891 12.8946 3.04711 13 3.31615 13H6.35931C6.35931 13.5304 6.57306 14.0391 6.95353 14.4142C7.334 14.7893 7.85002 15 8.38809 15H10.4169C10.9549 15 11.471 14.7893 11.8514 14.4142C12.2319 14.0391 12.4456 13.5304 12.4456 13H21.5751C21.8442 13 22.1022 12.8946 22.2924 12.7071C22.4827 12.5196 22.5895 12.2652 22.5895 12C22.5895 11.7348 22.4827 11.4804 22.2924 11.2929C22.1022 11.1054 21.8442 11 21.5751 11ZM8.38809 13V11H10.4169V12V13H8.38809ZM21.5751 18H18.532C18.532 17.4696 18.3182 16.9609 17.9378 16.5858C17.5573 16.2107 17.0413 16 16.5032 16H14.4744C13.9364 16 13.4203 16.2107 13.0399 16.5858C12.6594 16.9609 12.4456 17.4696 12.4456 18H3.31615C3.04711 18 2.7891 18.1054 2.59887 18.2929C2.40863 18.4804 2.30176 18.7348 2.30176 19C2.30176 19.2652 2.40863 19.5196 2.59887 19.7071C2.7891 19.8946 3.04711 20 3.31615 20H12.4456C12.4456 20.5304 12.6594 21.0391 13.0399 21.4142C13.4203 21.7893 13.9364 22 14.4744 22H16.5032C17.0413 22 17.5573 21.7893 17.9378 21.4142C18.3182 21.0391 18.532 20.5304 18.532 20H21.5751C21.8442 20 22.1022 19.8946 22.2924 19.7071C22.4827 19.5196 22.5895 19.2652 22.5895 19C22.5895 18.7348 22.4827 18.4804 22.2924 18.2929C22.1022 18.1054 21.8442 18 21.5751 18ZM14.4744 20V18H16.5032V19V20H14.4744Z"
+												fill="#fff">
+											</path>
+										</svg>
+										Agregar Rutina
+									</a>
+								</div>
+
+								<div class="card plan-list">
+									<div class="card-header d-sm-flex flex-wrap d-block pb-0 border-0">
+										<div class="me-auto pe-3 mb-3">
+											<h4 class="text-black fs-20">Rutina</h4>
+											<p class="fs-13 mb-0">Secciones: <span>3</span></p>
+										</div>
+									</div>
+
+									<div class="card-body tab-content pt-2">
+
+										<div
+											class="d-flex border-bottom flex-wrap pt-3 list-row align-items-center mb-2 px-3">
+											<div class="col-xl-5 col-xxl-8 col-lg-6 col-sm-8 d-flex align-items-center">
+												<div class="list-icon bgl-primary me-3 mb-3">
+													<p class="fs-24 text-primary mb-0 mt-2">1</p>
+													<span class="fs-14 text-primary">Sec</span>
+												</div>
+												<div class="info mb-3">
+													<h4 class="fs-20 "><a href="workout-statistic.html"
+															class="text-black"> Pecho y Biceps </a></h4>
+												</div>
+											</div>
+
+											<div
+												class="col-xl-2 col-xxl-4 col-lg-2 col-sm-4 activities mb-3 me-auto ps-3 pe-3 text-sm-center text-xl-end">
+											</div>
+
+											<div
+												class="col-xl-5 col-xxl-12 col-lg-4 col-sm-12 d-flex align-items-center">
+												<a href="javascript:void(0);" class="btn mb-3 play-button rounded me-3">
+													<i class="las la-caret-right scale-2 me-3"></i>Visualizar
+												</a>
+												<div class="dropdown mb-3">
+													<a href="javascript:void(0)" class="more-button"
+														data-bs-toggle="dropdown" aria-expanded="false">
+														<svg width="6" height="26" viewBox="0 0 6 26" fill="none"
+															xmlns="http://www.w3.org/2000/svg">
+															<path
+																d="M6 3C6 4.65685 4.65685 6 3 6C1.34315 6 0 4.65685 0 3C0 1.34315 1.34315 0 3 0C4.65685 0 6 1.34315 6 3Z"
+																fill="#585858"></path>
+															<path
+																d="M6 13C6 14.6569 4.65685 16 3 16C1.34315 16 0 14.6569 0 13C0 11.3431 1.34315 10 3 10C4.65685 10 6 11.3431 6 13Z"
+																fill="#585858"></path>
+															<path
+																d="M6 23C6 24.6569 4.65685 26 3 26C1.34315 26 0 24.6569 0 23C0 21.3431 1.34315 20 3 20C4.65685 20 6 21.3431 6 23Z"
+																fill="#585858"></path>
+														</svg>
+													</a>
+													<div class="dropdown-menu dropdown-menu-end">
+														<a class="dropdown-item" href="javascript:void(0);">Editar</a>
+														<a class="dropdown-item" href="javascript:void(0);">Borrar</a>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div
+											class="d-flex border-bottom flex-wrap pt-3 list-row align-items-center mb-2 px-3">
+											<div class="col-xl-5 col-xxl-8 col-lg-6 col-sm-8 d-flex align-items-center">
+												<div class="list-icon bgl-primary me-3 mb-3">
+													<p class="fs-24 text-primary mb-0 mt-2">2</p>
+													<span class="fs-14 text-primary">Sec</span>
+												</div>
+												<div class="info mb-3">
+													<h4 class="fs-20 "><a href="workout-statistic.html"
+															class="text-black"> Triceps y Espalda </a></h4>
+												</div>
+											</div>
+
+											<div
+												class="col-xl-2 col-xxl-4 col-lg-2 col-sm-4 activities mb-3 me-auto ps-3 pe-3 text-sm-center text-xl-end">
+											</div>
+
+											<div
+												class="col-xl-5 col-xxl-12 col-lg-4 col-sm-12 d-flex align-items-center">
+												<a href="javascript:void(0);" class="btn mb-3 play-button rounded me-3">
+													<i class="las la-caret-right scale-2 me-3"></i>Visualizar
+												</a>
+											</div>
+										</div>
+
+									</div>
+
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!--**********************************
+            Content body end
+        ***********************************-->
+		<!-- Modal Box Start -->
+		<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1 class="modal-title fs-5" id="exampleModalLabel">Agregar Rutina</h1>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form>
+							<div class="row">
+								<div class="col-xl-12">
+									<div class="mb-3">
+										<label for="campos" class="form-label">campos</label>
+										<input type="text" class="form-control" id="campos" placeholder="campos">
+									</div>
+									<div class="mb-3">
+										<label for="campos" class="form-label">campos</label>
+										<input type="text" class="form-control" id="campos" placeholder="campos">
+									</div>
+									<div class="mb-3">
+										<label for="campos" class="form-label">campos</label>
+										<input type="number" class="form-control" id="campos" placeholder="campos">
+									</div>
+									<div class="mb-3">
+										<label class="form-label">Campos</label>
+										<select class="form-control default-select">
+											<option selected="">Campo1</option>
+											<option>Campo2</option>
+											<option>Campo3</option>
+											<option>Campo4</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Cerrar</button>
+						<button type="button" class="btn btn-primary">Agregar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Modal-Box-End -->
+
+		<!--**********************************
+            Footer start
+        ***********************************-->
+		<footer class="footer">
+			<div class="copyright">
+				<p>Copyright © Designed &amp; Developed by <a href="" target="_blank">grupo3</a> 2024</p>
+			</div>
+		</footer>
+		<!--**********************************
+            Footer end
+        ***********************************-->
+
+		<!--**********************************
+           Support ticket button start
+        ***********************************-->
+
+		<!--**********************************
+           Support ticket button end
+        ***********************************-->
+
+
+	</div>
+	<!--**********************************
+        Main wrapper end
+    ***********************************-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+
+	<!-- Required vendors -->
+	<script src="../vendor/global/global.min.js"></script>
+	<script src="../vendor/bootstrap-select/js/bootstrap-select.min.js"></script>
+	<!--select plugins-file-->
+	<script src="../vendor/select2/js/select2.full.min.js"></script>
+	<!-- Toastr -->
+	<script src="../vendor/toastr/js/toastr.min.js"></script>
+	<!-- Pasos -->
+	<script src="../vendor/jquery-steps/js/jquery.steps.min.js"></script>
+	<script src="../vendor/jquery-smartwizard/dist/js/jquery.smartWizard.js"></script>
+	<!-- Datatable -->
+	<script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
+	<!-- ck-editor -->
+	<script src="../vendor/ckeditor/ckeditor.js"></script>
+	<!-- Apex Chart -->
+	<script src="../vendor/apexchart/apexchart.js"></script>
+	<!-- Chart piety plugin files -->
+	<script src="../vendor/peity/jquery.peity.min.js"></script>
+
+	<!-- All init script -->
+	<script src="../js/plugins-init/select2-init.js"></script>
+	<script src="../js/plugins-init/toastr-init.js"></script>
+	<script src="../js/plugins-init/datatables.init.js"></script>
+
+	<!-- CUSTOM SCRIPT -->
+	<script src="../js/dashboard/cms.js"></script>
+	<script src="../js/custom.min.js"></script>
+	<script src="../js/deznav-init.js"></script>
+	
+    <script>
+        $(document).ready(function () {
+            // SmartWizard initialize
+            $('#smartwizard').smartWizard();
+        });
+    </script>
+
+
+    <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
+                    $('#imagePreview').hide();
+                    $('#imagePreview').fadeIn(650);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        $("#imageUpload").on('change', function () {
+
+            readURL(this);
+        });
+        $('.remove-img').on('click', function () {
+            var imageUrl = "images/no-img-avatar.png";
+            $('.avatar-preview, #imagePreview').removeAttr('style');
+            $('#imagePreview').css('background-image', 'url(' + imageUrl + ')');
+        });
+    </script>
+
+    <script>
+        (function () {
+            'use strict'
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.querySelectorAll('.needs-validation')
+
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+
+</body>
+
+</html>

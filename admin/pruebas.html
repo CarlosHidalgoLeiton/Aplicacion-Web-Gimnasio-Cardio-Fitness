@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Title -->
+    <title>Cardio - Fitness</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="DexignZone">
+    <meta name="robots" content="">
+
+    <meta property="og:image" content="">
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- Mobile Specific -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Favicon icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="../images/favicon.png">
+
+    <!-- Toastr -->
+    <link rel="stylesheet" href="../vendor/toastr/css/toastr.min.css">
+
+    <!-- Datatable -->
+    <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+
+    <!-- Form step -->
+    <link href="../vendor/jquery-smartwizard/dist/css/smart_wizard.min.css" rel="stylesheet">
+
+    <!-- Select 2 -->
+    <link rel="stylesheet" href="../vendor/chartist/css/chartist.min.css">
+    <link href="../vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../vendor/select2/css/select2.min.css">
+
+
+
+    <!-- Custom Stylesheet -->
+    <link href="../vendor/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&display=swap"
+        rel="stylesheet">
+</head>
+
+
+<body>
+
+
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+    <!--*******************
+        Preloader end
+    ********************-->
+
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+       		<div class="nav-header">
+				<a href="index.html" class="brand-logo" aria-label="Cardio-Fitness">
+					<img class="logo-abbr" src="../images/Icono.jpg" alt="" >
+					<img class="logo-compact" src="../images/Icono.jpg" alt="">
+				</a>
+			
+			<div class="nav-control">
+				<div class="hamburger">
+					<span class="line"></span><span class="line"></span><span class="line"></span>
+				</div>
+			</div>
+		    </div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+
+        <!--**********************************
+            Header start
+        ***********************************-->
+        <header class="header">
+            <div class="header-content">
+                <nav class="navbar navbar-expand">
+                    <div class="collapse navbar-collapse justify-content-between">
+                        <div class="header-left">
+                            <div class="dashboard_bar">
+                                Rutinas
+                            </div>
+                        </div>
+                        <ul class="navbar-nav header-right">
+
+                            <li class="nav-item dropdown header-profile">
+                                <a class="nav-link" href="javascript:void(0)" role="button" data-bs-toggle="dropdown">
+                                    <img src="images/profile/17.jpg" width="20" alt="">
+                                    <div class="header-info">
+                                        <span class="text-black"><strong>Hersal Alfaro</strong></span>
+                                        <p class="fs-12 mb-0">Administrador</p>
+                                    </div>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a href="perfil.html" class="dropdown-item ai-icon">
+                                        <svg id="icon-user1" xmlns="http://www.w3.org/2000/svg" class="text-primary"
+                                            width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                        <span class="ms-2">Perfil</span>
+                                    </a>
+
+                                    <a href="page-login.html" class="dropdown-item ai-icon">
+                                        <svg id="icon-logout" xmlns="http://www.w3.org/2000/svg" class="text-danger"
+                                            width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                            <polyline points="16 17 21 12 16 7"></polyline>
+                                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                                        </svg>
+                                        <span class="ms-2">Cerrar Sesion </span>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
+
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+		<div class="deznav">
+			<div class="deznav-scroll">
+				<ul class="metismenu" id="menu">
+
+					<li><a href="index.html" class="ai-icon" aria-expanded="false">
+							<i class="flaticon-381-home"></i>
+							<span class="nav-text">Inicio</span>
+						</a>
+					</li>
+
+					<li><a href="clientes.html" class="ai-icon" aria-expanded="false">
+							<i class="flaticon-381-user-8"></i>
+							<span class="nav-text">Clientes</span>
+						</a>
+					</li>
+
+					<li><a href="entrenadores.html" class="ai-icon" aria-expanded="false">
+							<i class="flaticon-381-user-3"></i>
+							<span class="nav-text">Entrenadores</span>
+						</a>
+					</li>
+                    
+                    <li><a href="Usuarios.html" class="ai-icon" aria-expanded="false">
+                        <i class="flaticon-381-user-7"></i>
+                        <span class="nav-text">Usuarios</span>
+                        </a>
+                    </li>
+
+					<li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+							<i class="flaticon-381-id-card"></i>
+							<span class="nav-text">Facturacion</span>
+						</a>
+						<ul aria-expanded="false">
+							<li><a href="factura.html">Facturas</a></li>
+							<li><a href="reporte.html">Reporte</a></li>
+						</ul>
+					</li>
+
+					<li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+                        <i class="flaticon-381-archive"></i>
+                        <span class="nav-text">Inventario</span>
+                        </a>
+                        <ul aria-expanded="false">
+                            <li><a href="inventario.html">Productos</a></li>
+                            <li><a href="membresias.html">Membresías</a></li>
+                            <li><a href="reporteInventario.html">Reporte</a></li>
+                        </ul>
+                    </li>
+
+					<li><a href="notificaciones.html" class="ai-icon" aria-expanded="false">
+							<i class="fa fa-bell"></i>
+							<span class="nav-text">Notificaciones</span>
+						</a>
+					</li>
+
+				</ul>
+
+				<div class="copyright">
+					<p><strong>Cardio Fitness </strong> © 2024 All Rights Reserved</p>
+					<p>Made with <span class="heart"></span> by grupo3</p>
+				</div>
+
+			</div>
+
+		</div>
+		<!--**********************************
+            Sidebar end
+        ***********************************-->
+
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body default-height">
+            <div class="container-fluid">
+                <div class="page-titles">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Form</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Wizard</a></li>
+                    </ol>
+                </div>
+                <!-- row -->
+                <div class="row">
+
+
+        <!--**********************************
+           ALERTAS
+        ***********************************-->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Toastr</h4>
+                                </div>
+                                <div class="card-body">
+                                    <button type="button" class="btn btn-dark mb-2 me-2"
+                                        id="toastr-success-top-right">Top
+                                        Right</button>
+                                    <button type="button" class="btn btn-dark mb-2  me-2"
+                                        id="toastr-success-bottom-right">Bottom Right</button>
+                                    <button type="button" class="btn btn-dark mb-2  me-2"
+                                        id="toastr-success-bottom-left">Bottom Left</button>
+                                    <button type="button" class="btn btn-dark mb-2  me-2"
+                                        id="toastr-success-top-left">Top
+                                        Left</button>
+                                    <button type="button" class="btn btn-dark mb-2  me-2"
+                                        id="toastr-success-top-full-width">Top Full Width</button>
+                                    <button type="button" class="btn btn-dark mb-2  me-2"
+                                        id="toastr-success-bottom-full-width">Bottom Full Width</button>
+                                    <button type="button" class="btn btn-dark mb-2  me-2"
+                                        id="toastr-success-top-center">Top
+                                        Center</button>
+                                    <button type="button" class="btn btn-dark mb-2  me-2"
+                                        id="toastr-success-bottom-center">Bottom Center</button>
+                                    <button type="button" class="btn btn-info mb-2  me-2"
+                                        id="toastr-info-top-right">Info</button>
+                                    <button type="button" class="btn btn-warning mb-2  me-2"
+                                        id="toastr-warning-top-right">Warning</button>
+                                    <button type="button" class="btn btn-danger mb-2  me-2"
+                                        id="toastr-danger-top-right">Error</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+        <!--**********************************
+            FORMULARIO POR PASOS
+        ***********************************-->
+                    <div class="col-xl-12 col-xxl-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Form step</h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="smartwizard" class="form-wizard order-create">
+                                    <ul class="nav nav-wizard">
+                                        <li><a class="nav-link" href="#wizard_Service">
+                                                <span>1</span>
+                                            </a></li>
+                                        <li><a class="nav-link" href="#wizard_Time">
+                                                <span>2</span>
+                                            </a></li>
+                                        <li><a class="nav-link" href="#wizard_Details">
+                                                <span>3</span>
+                                            </a></li>
+                                        <li><a class="nav-link" href="#wizard_Payment">
+                                                <span>4</span>
+                                            </a></li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div id="wizard_Service" class="tab-pane" role="tabpanel">
+                                            <div class="row">
+                                                <div class="col-lg-6 mb-2">
+                                                    <div class="form-group">
+                                                        <label class="text-label">First Name<span
+                                                                class="required">*</span></label>
+                                                        <input type="text" name="firstName" class="form-control"
+                                                            placeholder="Parsley" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 mb-2">
+                                                    <div class="form-group">
+                                                        <label class="text-label">Last Name<span
+                                                                class="required">*</span></label>
+                                                        <input type="text" name="lastName" class="form-control"
+                                                            placeholder="Montana" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 mb-2">
+                                                    <div class="form-group">
+                                                        <label class="text-label">Email Address<span
+                                                                class="required">*</span></label>
+                                                        <input type="email" class="form-control" id="inputGroupPrepend2"
+                                                            aria-describedby="inputGroupPrepend2"
+                                                            placeholder="example@example.com.com" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 mb-2">
+                                                    <div class="form-group">
+                                                        <label class="text-label">Phone Number<span
+                                                                class="required">*</span></label>
+                                                        <input type="number" name="phoneNumber" class="form-control"
+                                                            placeholder="(+1)408-657-9007" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12 mb-3">
+                                                    <div class="form-group">
+                                                        <label class="text-label">Where are you from<span
+                                                                class="required">*</span></label>
+                                                        <input type="text" name="place" class="form-control" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="wizard_Time" class="tab-pane" role="tabpanel">
+                                            <div class="row">
+                                                <div class="col-lg-6 mb-2">
+                                                    <div class="form-group">
+                                                        <label class="text-label">Company Name<span
+                                                                class="required">*</span></label>
+                                                        <input type="text" name="firstName" class="form-control"
+                                                            placeholder="Cellophane Square" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 mb-2">
+                                                    <div class="form-group">
+                                                        <label class="text-label">Company Email Address<span
+                                                                class="required">*</span></label>
+                                                        <input type="email" class="form-control" id="emial1"
+                                                            placeholder="example@example.com.com" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 mb-2">
+                                                    <div class="form-group">
+                                                        <label class="text-label">Company Phone Number<span
+                                                                class="required">*</span></label>
+                                                        <input type="number" name="phoneNumber" class="form-control"
+                                                            placeholder="(+1)408-657-9007" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 mb-2">
+                                                    <div class="form-group">
+                                                        <label class="text-label">Your position in Company<span
+                                                                class="required">*</span></label>
+                                                        <input type="text" name="place" class="form-control" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="wizard_Details" class="tab-pane" role="tabpanel">
+                                            <div class="row align-items-center">
+                                                <div class="col-sm-4 mb-2">
+                                                    <span>Monday<span class="required">*</span></span>
+                                                </div>
+                                                <div class="col-6 col-sm-4 mb-2">
+                                                    <div class="form-group">
+                                                        <input class="form-control" value="9.00" type="number"
+                                                            name="input1" id="input1">
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-sm-4 mb-2">
+                                                    <div class="form-group">
+                                                        <input class="form-control" value="6.00" type="number"
+                                                            name="input2" id="input2">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row align-items-center">
+                                                <div class="col-sm-4 mb-2">
+                                                    <span>Tuesday<span class="required">*</span></span>
+                                                </div>
+                                                <div class="col-6 col-sm-4 mb-2">
+                                                    <div class="form-group">
+                                                        <input class="form-control" value="9.00" type="number"
+                                                            name="input3" id="input3">
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-sm-4 mb-2">
+                                                    <div class="form-group">
+                                                        <input class="form-control" value="6.00" type="number"
+                                                            name="input4" id="input4">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row align-items-center">
+                                                <div class="col-sm-4 mb-2">
+                                                    <span>Wednesday<span class="required">*</span></span>
+                                                </div>
+                                                <div class="col-6 col-sm-4 mb-2">
+                                                    <div class="form-group">
+                                                        <input class="form-control" value="9.00" type="number"
+                                                            name="input5" id="input5">
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-sm-4 mb-2">
+                                                    <div class="form-group">
+                                                        <input class="form-control" value="6.00" type="number"
+                                                            name="input6" id="input6">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row align-items-center">
+                                                <div class="col-sm-4 mb-2">
+                                                    <span>Thrusday<span class="required">*</span></span>
+                                                </div>
+                                                <div class="col-6 col-sm-4 mb-2">
+                                                    <div class="form-group">
+                                                        <input class="form-control" value="9.00" type="number"
+                                                            name="input7" id="input7">
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-sm-4 mb-2">
+                                                    <div class="form-group">
+                                                        <input class="form-control" value="6.00" type="number"
+                                                            name="input8" id="input8">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row align-items-center">
+                                                <div class="col-sm-4 mb-2">
+                                                    <span>Friday<span class="required">*</span></span>
+                                                </div>
+                                                <div class="col-6 col-sm-4 mb-2">
+                                                    <div class="form-group">
+                                                        <input class="form-control" value="9.00" type="number"
+                                                            name="input9" id="input9">
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-sm-4 mb-2">
+                                                    <div class="form-group">
+                                                        <input class="form-control" value="6.00" type="number"
+                                                            name="input10" id="input10">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="wizard_Payment" class="tab-pane" role="tabpanel">
+                                            <div class="row emial-setup">
+                                                <div class="col-lg-3 col-sm-6 col-6">
+                                                    <div class="form-group">
+                                                        <label for="mailclient11" class="mailclinet mailclinet-gmail">
+                                                            <input type="radio" name="emailclient" id="mailclient11">
+                                                            <span class="mail-icon">
+                                                                <i class="mdi mdi-google-plus" aria-hidden="true"></i>
+                                                            </span>
+                                                            <span class="mail-text">I'm using Gmail</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-6 col-6">
+                                                    <div class="form-group">
+                                                        <label for="mailclient12" class="mailclinet mailclinet-office">
+                                                            <input type="radio" name="emailclient" id="mailclient12">
+                                                            <span class="mail-icon">
+                                                                <i class="mdi mdi-office" aria-hidden="true"></i>
+                                                            </span>
+                                                            <span class="mail-text">I'm using Office</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-6 col-6">
+                                                    <div class="form-group">
+                                                        <label for="mailclient13" class="mailclinet mailclinet-drive">
+                                                            <input type="radio" name="emailclient" id="mailclient13">
+                                                            <span class="mail-icon">
+                                                                <i class="mdi mdi-google-drive" aria-hidden="true"></i>
+                                                            </span>
+                                                            <span class="mail-text">I'm using Drive</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-6 col-6">
+                                                    <div class="form-group">
+                                                        <label for="mailclient14" class="mailclinet mailclinet-another">
+                                                            <input type="radio" name="emailclient" id="mailclient14">
+                                                            <span class="mail-icon">
+                                                                <i class="far fa-question-circle"
+                                                                    aria-hidden="true"></i>
+                                                            </span>
+                                                            <span class="mail-text">Another Service</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div class="skip-email text-center">
+                                                        <p>Or if want skip this step entirely and setup it later</p>
+                                                        <a href="javascript:void(0)">Skip step</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+        <!--**********************************
+            VALIDACION CON JQUERY
+        ***********************************-->
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-validation">
+                                    <form class="needs-validation" novalidate>
+                                        <div class="row">
+                                            <div class="col-xl-6">
+                                                <div class="mb-3 row">
+                                                    <label class="col-lg-4 col-form-label"
+                                                        for="validationCustom01">Username
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                    <div class="col-lg-6">
+                                                        <input type="text" class="form-control" id="validationCustom01"
+                                                            placeholder="Enter a username.." required>
+                                                        <div class="invalid-feedback">
+                                                            Please enter a username.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 row">
+                                                    <label class="col-lg-4 col-form-label"
+                                                        for="validationCustom02">Email <span
+                                                            class="text-danger">*</span>
+                                                    </label>
+                                                    <div class="col-lg-6">
+                                                        <input type="text" class="form-control" id="validationCustom02"
+                                                            placeholder="Your valid email.." required>
+                                                        <div class="invalid-feedback">
+                                                            Please enter a Email.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 row">
+                                                    <label class="col-lg-4 col-form-label"
+                                                        for="validationCustom03">Password
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                    <div class="col-lg-6">
+                                                        <input type="password" class="form-control"
+                                                            id="validationCustom03" placeholder="Choose a safe one.."
+                                                            required>
+                                                        <div class="invalid-feedback">
+                                                            Please enter a password.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 row">
+                                                    <label class="col-lg-4 col-form-label"
+                                                        for="validationCustom04">Suggestions <span
+                                                            class="text-danger">*</span>
+                                                    </label>
+                                                    <div class="col-lg-6">
+                                                        <textarea class="form-control" id="validationCustom04" rows="5"
+                                                            placeholder="What would you like to see?"
+                                                            required></textarea>
+                                                        <div class="invalid-feedback">
+                                                            Please enter a Suggestions.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-6">
+                                                <div class="mb-3 row">
+                                                    <label class="col-lg-4 col-form-label" for="validationCustom05">Best
+                                                        Skill
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                    <div class="col-lg-6">
+                                                        <select class="default-select wide form-control"
+                                                            id="validationCustom05">
+                                                            <option data-display="Select">Please select</option>
+                                                            <option value="html">HTML</option>
+                                                            <option value="css">CSS</option>
+                                                            <option value="javascript">JavaScript</option>
+                                                            <option value="angular">Angular</option>
+                                                            <option value="angular">React</option>
+                                                            <option value="vuejs">Vue.js</option>
+                                                            <option value="ruby">Ruby</option>
+                                                            <option value="php">PHP</option>
+                                                            <option value="asp">ASP.NET</option>
+                                                            <option value="python">Python</option>
+                                                            <option value="mysql">MySQL</option>
+                                                        </select>
+                                                        <div class="invalid-feedback">
+                                                            Please select a one.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 row">
+                                                    <label class="col-lg-4 col-form-label"
+                                                        for="validationCustom06">Currency
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                    <div class="col-lg-6">
+                                                        <input type="text" class="form-control" id="validationCustom06"
+                                                            placeholder="$21.60" required>
+                                                        <div class="invalid-feedback">
+                                                            Please enter a Currency.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 row">
+                                                    <label class="col-lg-4 col-form-label"
+                                                        for="validationCustom07">Website
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                    <div class="col-lg-6">
+                                                        <input type="text" class="form-control" id="validationCustom07"
+                                                            placeholder="http://example.com" required>
+                                                        <div class="invalid-feedback">
+                                                            Please enter a url.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 row">
+                                                    <label class="col-lg-4 col-form-label"
+                                                        for="validationCustom08">Phone (US)
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                    <div class="col-lg-6">
+                                                        <input type="text" class="form-control" id="validationCustom08"
+                                                            placeholder="212-999-0000" required>
+                                                        <div class="invalid-feedback">
+                                                            Please enter a phone no.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 row">
+                                                    <label class="col-lg-4 col-form-label"
+                                                        for="validationCustom09">Digits <span
+                                                            class="text-danger">*</span>
+                                                    </label>
+                                                    <div class="col-lg-6">
+                                                        <input type="text" class="form-control" id="validationCustom09"
+                                                            placeholder="5" required>
+                                                        <div class="invalid-feedback">
+                                                            Please enter a digits.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 row">
+                                                    <label class="col-lg-4 col-form-label"
+                                                        for="validationCustom10">Number <span
+                                                            class="text-danger">*</span>
+                                                    </label>
+                                                    <div class="col-lg-6">
+                                                        <input type="text" class="form-control" id="validationCustom10"
+                                                            placeholder="5.0" required>
+                                                        <div class="invalid-feedback">
+                                                            Please enter a num.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 row">
+                                                    <label class="col-lg-4 col-form-label"
+                                                        for="validationCustom11">Range [1, 5]
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                    <div class="col-lg-6">
+                                                        <input type="text" class="form-control" id="validationCustom11"
+                                                            placeholder="4" required>
+                                                        <div class="invalid-feedback">
+                                                            Please select a range.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 row">
+                                                    <label class="col-lg-4 col-form-label"><a
+                                                            href="javascript:void(0);">Terms &amp; Conditions</a> <span
+                                                            class="text-danger">*</span>
+                                                    </label>
+                                                    <div class="col-lg-8">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value=""
+                                                                id="validationCustom12" required>
+                                                            <label class="form-check-label" for="validationCustom12">
+                                                                Agree to terms and conditions
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 row">
+                                                    <div class="col-lg-8 ms-auto">
+                                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+        <!--**********************************
+            DATATABLES 
+        ***********************************-->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Profile Datatable</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="example3" class="display min-w850">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Name</th>
+                                                <th>Department</th>
+                                                <th>Gender</th>
+                                                <th>Education</th>
+                                                <th>Mobile</th>
+                                                <th>Email</th>
+                                                <th>Joining Date</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic1.jpg" alt=""></td>
+                                                <td>Tiger Nixon</td>
+                                                <td>Architect</td>
+                                                <td>Male</td>
+                                                <td>M.COM., P.H.D.</td>
+                                                <td><a href="javascript:void(0);"><strong>123 456 7890</strong></a></td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2011/04/25</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic2.jpg" alt=""></td>
+                                                <td>Garrett Winters</td>
+                                                <td>Accountant</td>
+                                                <td>Female</td>
+                                                <td>M.COM., P.H.D.</td>
+                                                <td><a href="javascript:void(0);"><strong>987 654 3210</strong></a></td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2011/07/25</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic3.jpg" alt=""></td>
+                                                <td>Ashton Cox</td>
+                                                <td>Junior Technical</td>
+                                                <td>Male</td>
+                                                <td>B.COM., M.COM.</td>
+                                                <td><a href="javascript:void(0);"><strong>(123) 4567 890</strong></a>
+                                                </td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2009/01/12</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic4.jpg" alt=""></td>
+                                                <td>Cedric Kelly</td>
+                                                <td>Developer</td>
+                                                <td>Male</td>
+                                                <td>B.COM., M.COM.</td>
+                                                <td><a href="javascript:void(0);"><strong>123 456 7890</strong></a></td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2012/03/29</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic5.jpg" alt=""></td>
+                                                <td>Airi Satou</td>
+                                                <td>Accountant</td>
+                                                <td>Female</td>
+                                                <td>B.A, B.C.A</td>
+                                                <td><a href="javascript:void(0);"><strong>987 654 3210</strong></a></td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2008/11/28</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic6.jpg" alt=""></td>
+                                                <td>Brielle Williamson</td>
+                                                <td>Specialist</td>
+                                                <td>Male</td>
+                                                <td>B.COM., M.COM.</td>
+                                                <td><a href="javascript:void(0);"><strong>123 456 7890</strong></a></td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2012/12/02</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic7.jpg" alt=""></td>
+                                                <td>Herrod Chandler</td>
+                                                <td>Sales Assistant</td>
+                                                <td>Female</td>
+                                                <td>B.A, B.C.A</td>
+                                                <td><a href="javascript:void(0);"><strong>987 654 3210</strong></a></td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2012/08/06</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic8.jpg" alt=""></td>
+                                                <td>Rhona Davidson</td>
+                                                <td>Integration</td>
+                                                <td>Male</td>
+                                                <td>B.TACH, M.TACH</td>
+                                                <td><a href="javascript:void(0);"><strong>(123) 4567 890</strong></a>
+                                                </td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2010/10/14</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic9.jpg" alt=""></td>
+                                                <td>Colleen Hurst</td>
+                                                <td>Javascript Developer</td>
+                                                <td>Female</td>
+                                                <td>B.A, B.C.A</td>
+                                                <td><a href="javascript:void(0);"><strong>(123) 4567 890</strong></a>
+                                                </td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2009/09/15</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic10.jpg" alt=""></td>
+                                                <td>Sonya Frost</td>
+                                                <td>Software Engineer</td>
+                                                <td>Male</td>
+                                                <td>B.COM., M.COM.</td>
+                                                <td><a href="javascript:void(0);"><strong>123 456 7890</strong></a></td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2008/12/13</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic1.jpg" alt=""></td>
+                                                <td>Jena Gaines</td>
+                                                <td>Office Manager</td>
+                                                <td>Female</td>
+                                                <td>B.TACH, M.TACH</td>
+                                                <td><a href="javascript:void(0);"><strong>987 654 3210</strong></a></td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2008/12/19</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic2.jpg" alt=""></td>
+                                                <td>Quinn Flynn</td>
+                                                <td>Support Lead</td>
+                                                <td>Male</td>
+                                                <td>B.TACH, M.TACH</td>
+                                                <td><a href="javascript:void(0);"><strong>(123) 4567 890</strong></a>
+                                                </td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2013/03/03</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic3.jpg" alt=""></td>
+                                                <td>Charde Marshall</td>
+                                                <td>Regional Director</td>
+                                                <td>Female</td>
+                                                <td>B.A, B.C.A</td>
+                                                <td><a href="javascript:void(0);"><strong>123 456 7890</strong></a></td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2008/10/16</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic4.jpg" alt=""></td>
+                                                <td>Haley Kennedy</td>
+                                                <td>Senior Marketing</td>
+                                                <td>Male</td>
+                                                <td>B.COM., M.COM.</td>
+                                                <td><a href="javascript:void(0);"><strong>987 654 3210</strong></a></td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2012/12/18</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic5.jpg" alt=""></td>
+                                                <td>Tatyana Fitzpatrick</td>
+                                                <td>Regional Director</td>
+                                                <td>Male</td>
+                                                <td>B.TACH, M.TACH</td>
+                                                <td><a href="javascript:void(0);"><strong>(123) 4567 890</strong></a>
+                                                </td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2010/03/17</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic6.jpg" alt=""></td>
+                                                <td>Michael Silva</td>
+                                                <td>Marketing Designer</td>
+                                                <td>Female</td>
+                                                <td>B.A, B.C.A</td>
+                                                <td><a href="javascript:void(0);"><strong>123 456 7890</strong></a></td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2012/11/27</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic7.jpg" alt=""></td>
+                                                <td>Paul Byrd</td>
+                                                <td>Financial Officer</td>
+                                                <td>Male</td>
+                                                <td>B.TACH, M.TACH</td>
+                                                <td><a href="javascript:void(0);"><strong>987 654 3210</strong></a></td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2010/06/09</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic8.jpg" alt=""></td>
+                                                <td>Gloria Little</td>
+                                                <td>Systems Administrator</td>
+                                                <td>Female</td>
+                                                <td>B.A, B.C.A</td>
+                                                <td><a href="javascript:void(0);"><strong>(123) 4567 890</strong></a>
+                                                </td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2009/04/10</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic9.jpg" alt=""></td>
+                                                <td>Bradley Greer</td>
+                                                <td>Software Engineer</td>
+                                                <td>Male</td>
+                                                <td>B.COM., M.COM.</td>
+                                                <td><a href="javascript:void(0);"><strong>(123) 4567 890</strong></a>
+                                                </td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2012/10/13</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic10.jpg" alt=""></td>
+                                                <td>Dai Rios</td>
+                                                <td>Personnel Lead</td>
+                                                <td>Male</td>
+                                                <td>B.TACH, M.TACH</td>
+                                                <td><a href="javascript:void(0);"><strong>123 456 7890</strong></a></td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2012/09/26</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic1.jpg" alt=""></td>
+                                                <td>Jenette Caldwell</td>
+                                                <td>Development Lead</td>
+                                                <td>Female</td>
+                                                <td>B.A, B.C.A</td>
+                                                <td><a href="javascript:void(0);"><strong>987 654 3210</strong></a></td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2011/09/03</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic2.jpg" alt=""></td>
+                                                <td>Yuri Berry</td>
+                                                <td>Marketing Officer</td>
+                                                <td>Male</td>
+                                                <td>B.TACH, M.TACH</td>
+                                                <td><a href="javascript:void(0);"><strong>(123) 4567 890</strong></a>
+                                                </td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2009/06/25</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic3.jpg" alt=""></td>
+                                                <td>Caesar Vance</td>
+                                                <td>Pre-Sales Support</td>
+                                                <td>Male</td>
+                                                <td>B.TACH, M.TACH</td>
+                                                <td><a href="javascript:void(0);"><strong>(123) 4567 890</strong></a>
+                                                </td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2011/12/12</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic4.jpg" alt=""></td>
+                                                <td>Doris Wilder</td>
+                                                <td>Sales Assistant</td>
+                                                <td>Female</td>
+                                                <td>B.A, B.C.A</td>
+                                                <td><a href="javascript:void(0);"><strong>123 456 7890</strong></a></td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2010/09/20</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic5.jpg" alt=""></td>
+                                                <td>Angelica Ramos</td>
+                                                <td>Executive Officer</td>
+                                                <td>Male</td>
+                                                <td>B.COM., M.COM.</td>
+                                                <td><a href="javascript:void(0);"><strong>987 654 3210</strong></a></td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2009/10/09</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic6.jpg" alt=""></td>
+                                                <td>Gavin Joyce</td>
+                                                <td>Developer</td>
+                                                <td>Female</td>
+                                                <td>B.TACH, M.TACH</td>
+                                                <td><a href="javascript:void(0);"><strong>(123) 4567 890</strong></a>
+                                                </td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2010/12/22</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic7.jpg" alt=""></td>
+                                                <td>Jennifer Chang</td>
+                                                <td>Regional Director</td>
+                                                <td>Male</td>
+                                                <td>B.A, B.C.A</td>
+                                                <td><a href="javascript:void(0);"><strong>(123) 4567 890</strong></a>
+                                                </td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2010/11/14</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic8.jpg" alt=""></td>
+                                                <td>Brenden Wagner</td>
+                                                <td>Software Engineer</td>
+                                                <td>Female</td>
+                                                <td>B.TACH, M.TACH</td>
+                                                <td><a href="javascript:void(0);"><strong>123 456 7890</strong></a></td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2011/06/07</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic9.jpg" alt=""></td>
+                                                <td>Fiona Green</td>
+                                                <td>Operating Officer</td>
+                                                <td>Male</td>
+                                                <td>B.A, B.C.A</td>
+                                                <td><a href="javascript:void(0);"><strong>987 654 3210</strong></a></td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2010/03/11</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><img class="rounded-circle" width="35"
+                                                        src="images/profile/small/pic10.jpg" alt=""></td>
+                                                <td>Shou Itou</td>
+                                                <td>Regional Marketing</td>
+                                                <td>Female</td>
+                                                <td>B.COM., M.COM.</td>
+                                                <td><a href="javascript:void(0);"><strong>(123) 4567 890</strong></a>
+                                                </td>
+                                                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a>
+                                                </td>
+                                                <td>2011/08/14</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!--**********************************
+            Content body end
+        ***********************************-->
+
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <footer class="footer">
+            <div class="copyright">
+                <p>Copyright © Designed &amp; Developed by <a href="" target="_blank">grupo3</a> 2024</p>
+            </div>
+        </footer>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+
+
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+
+	<!-- Required vendors -->
+	<script src="../vendor/global/global.min.js"></script>
+	<script src="../vendor/bootstrap-select/js/bootstrap-select.min.js"></script>
+	<!--select plugins-file-->
+	<script src="../vendor/select2/js/select2.full.min.js"></script>
+	<!-- Toastr -->
+	<script src="../vendor/toastr/js/toastr.min.js"></script>
+	<!-- Pasos -->
+	<script src="../vendor/jquery-steps/js/jquery.steps.min.js"></script>
+	<script src="../vendor/jquery-smartwizard/dist/js/jquery.smartWizard.js"></script>
+	<!-- Datatable -->
+	<script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
+	<!-- ck-editor -->
+	<script src="../vendor/ckeditor/ckeditor.js"></script>
+	<!-- Apex Chart -->
+	<script src="../vendor/apexchart/apexchart.js"></script>
+	<!-- Chart piety plugin files -->
+	<script src="../vendor/peity/jquery.peity.min.js"></script>
+
+	<!-- All init script -->
+	<script src="../js/plugins-init/select2-init.js"></script>
+	<script src="../js/plugins-init/toastr-init.js"></script>
+	<script src="../js/plugins-init/datatables.init.js"></script>
+
+	<!-- CUSTOM SCRIPT -->
+	<script src="../js/dashboard/cms.js"></script>
+	<script src="../js/custom.min.js"></script>
+	<script src="../js/deznav-init.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // SmartWizard initialize
+            $('#smartwizard').smartWizard();
+        });
+    </script>
+
+    <script>
+        (function () {
+            'use strict'
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.querySelectorAll('.needs-validation')
+
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+
+</body>
+
+</html>
