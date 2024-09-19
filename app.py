@@ -1,7 +1,7 @@
 from flask import Flask
-from apps.admin.admin_app import admin_app
-from apps.client.client_app import client_app
-from apps.trainer.trainer_app import trainer_app
+from apps.admin_app import admin_app
+from apps.client_app import client_app
+from apps.trainer_app import trainer_app
 
 app = Flask(__name__)
 
