@@ -7,9 +7,11 @@ def inicio():
     return render_template("trainer/index.html")
 
 #-------------Rutas de Clientes-------------#
-@trainer_app.route("/clientes")
+@trainer_app.route("/clientes" )
 def clientes():
     return render_template("trainer/clientes.html")
+
+
 
 
 #-------------Rutas de Rutinas-------------#
