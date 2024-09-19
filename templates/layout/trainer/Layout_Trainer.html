@@ -156,13 +156,13 @@
 			<div class="deznav-scroll">
 				<ul class="metismenu" id="menu">
 
-					<li><a href="index.html" class="ai-icon" aria-expanded="false">
+					<li><a href="{{ url_for('trainer.app.inicio') }}" class="ai-icon" aria-expanded="false">
 							<i class="flaticon-381-home"></i>
 							<span class="nav-text">Inicio</span>
 						</a>
 					</li>
 
-					<li><a href="clientes.html" class="ai-icon" aria-expanded="false">
+					<li><a href="{{ url_for('trainer.app.clientes')}}" class="ai-icon" aria-expanded="false">
 							<i class="flaticon-381-user-8"></i>
 							<span class="nav-text">Clientes</span>
 						</a>
@@ -181,25 +181,22 @@
             Sidebar end
         ***********************************-->
 
-		<!--**********************************
+        <!--**********************************
             Content body start
         ***********************************-->
-		<div class="content-body default-height">
-			<!-- row -->
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-12">
-						<div class="card form-container">
-							<div class="card-body text-center">
-								<h4 class="card-title mb-4">Alguna Información</h4>
-							</div>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</div>
-		<!--**********************************
+        <div class="content-body default-height">
+            <!-- row -->
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        {% block content%}
+                            <!-- Here go the content -->
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--**********************************
             Content body end
         ***********************************-->
 
@@ -299,7 +296,8 @@
 			$('#smartwizard').smartWizard();
 		});
 	</script>
-
+    {% block scripts %}
+    {% endblock %}
 
 </body>
 
