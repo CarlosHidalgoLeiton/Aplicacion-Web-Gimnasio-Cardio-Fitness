@@ -1,4 +1,4 @@
-{% extends "./layout/admin/Layout_Admin.html" %}
+{% extends "./layout/Layout_Admin.html" %}
 
 
 {% block content %}
@@ -106,7 +106,7 @@
 								<td>00:00</td>
 								<td>
 									<div class="d-flex">
-										<a href="verNotificacion.html"
+										<a href="{{ url_for('admin_app.verNotificacion') }}"
 											class="btn btn-primary shadow btn-xs sharp me-1"><i
 												class="fa fa-eye"></i></a>
 										<a href="#" class="btn btn-danger shadow btn-xs sharp"><i

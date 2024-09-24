@@ -20,9 +20,34 @@ def clientes():
 def verCliente():
     return render_template("admin/verCliente.html")
 
-@admin_app.route("/clientes/ver/estadísticas")
+@admin_app.route("/clientes/estadísticas")
 def estadisticas():
     return render_template("admin/estadisticas.html")
+
+@admin_app.route("/cliente/estadistica/ver")
+def verEstadistica():
+    return render_template("admin/verEstadistica.html")
+
+@admin_app.route("/clientes/actualizar")
+def actualizarCliente():
+    return render_template("admin/actualizarCliente.html")
+
+@admin_app.route("/clientes/rutinas")
+def rutinasCliente():
+    return render_template("admin/rutinaCliente.html")
+
+@admin_app.route("/clientes/rutinas/sesiones")
+def sesionesCliente():
+    return render_template("admin/verSesionesRutinaCliente.html")
+
+@admin_app.route("/cliente/sesiones/ver")
+def verSesionCliente():
+    return render_template("admin/verSesion.html")
+
+
+
+
+
 
 
 #-------------Rutas de Entrenadores-------------#
@@ -31,10 +56,27 @@ def entrenadores():
     return render_template("admin/entrenadores.html")
 
 
+
+
+
+
+
+
+
+
 #-------------Rutas de Usuarios-------------#
 @admin_app.route("/usuarios")
 def usuarios():
     return render_template("admin/usuarios.html")
+
+@admin_app.route("/usuarios/ver")
+def verUsuario():
+    return render_template("/admin/verUsuario.html")
+
+@admin_app.route("/usuarios/actualizar")
+def actualizarUsuario():
+    return render_template("/admin/actualizarUsuario.html")
+
 
 
 
@@ -53,6 +95,10 @@ def inventario():
 @admin_app.route("/notificaciones")
 def notificaciones():
     return render_template("admin/notificaciones.html")
+
+@admin_app.route("/notificaciones/ver")
+def verNotificacion():
+    return render_template("admin/verNotificacion.html")
 
 
 

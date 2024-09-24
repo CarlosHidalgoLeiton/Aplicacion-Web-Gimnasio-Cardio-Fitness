@@ -233,7 +233,7 @@
                                                 <td>
                                                     <div class="d-flex">
 
-                                                        <a href=""
+                                                        <a href="{{ url_for('admin_app.rutinasCliente') }}"
                                                             class="btn btn-primary shadow btn-xs sharp me-1"><i
                                                                 class="flaticon-381-notepad"></i></a>
                                                         <a href="{{ url_for('admin_app.estadisticas') }}"
@@ -242,7 +242,7 @@
                                                         <a href="{{ url_for('admin_app.verCliente') }}"
                                                             class="btn btn-primary shadow btn-xs sharp me-1"><i
                                                                 class="fa fa-eye"></i></a>
-                                                        <a href="actualizarCliente.html"
+                                                        <a href="{{ url_for('admin_app.actualizarCliente') }}"
                                                             class="btn btn-primary shadow btn-xs sharp me-1"><i
                                                                 class="fa fa-pencil"></i></a>
                                                         <button onclick="eliminarPrueba()" id="deshabilitar" class="btn btn-danger shadow btn-xs sharp"><i

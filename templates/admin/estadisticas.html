@@ -1,4 +1,4 @@
-{% extends "./layout/admin/Layout_Admin.html" %}
+{% extends "./layout/Layout_Admin.html" %}
 
 
 {% block content %}
@@ -7,7 +7,7 @@
         ***********************************-->
 <div class="page-titles">
 	<ol class="breadcrumb">
-		<li class="breadcrumb-item"><a href="clientes.html">Clientes</a></li>
+		<li class="breadcrumb-item"><a href="{{ url_for('admin_app.clientes') }}">Clientes</a></li>
 		<li class="breadcrumb-item active"><a href="">Estadísticas</a></li>
 	</ol>
 </div>
@@ -37,7 +37,7 @@
 						<td>Carlos Hidalgo</td>
 						<td>
 							<div class="d-flex">
-								<a href="verEstadistica.html" class="btn btn-primary shadow btn-xs sharp me-1"><i
+								<a href="{{ url_for('admin_app.verEstadistica') }}" class="btn btn-primary shadow btn-xs sharp me-1"><i
 										class="fa fa-eye"></i></a>
 							</div>
 						</td>
