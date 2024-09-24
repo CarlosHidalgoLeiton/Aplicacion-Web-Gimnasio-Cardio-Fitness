@@ -3,11 +3,11 @@
 
 
 {% block content %}
-     <!-- row -->
+<div class="content-body default-height">
 	 <div class="container-fluid">
 		<div class="page-titles">
 			<ol class="breadcrumb">
-				<li class="breadcrumb-item"><a href="inventario.html">Perfil</a></li>
+				<li class="breadcrumb-item"><a href="{{ url_for('client_app.inventario') }}">Perfil</a></li>
 				<li class="breadcrumb-item active"><a href="javascript:void(0)">Información</a></li>
 			</ol>
 		</div>
@@ -90,7 +90,7 @@
 								</div>
 								<div class="my-5">
 									<a type="button" class="btn btn-danger me-2"
-										href="index.html">Volver</a>
+									href="{{ url_for('client_app.inicio') }}">Volver</a>
 								</div>
 							</form>
 						</div>

@@ -15,7 +15,9 @@ def inicio():
 def inventario():
     return render_template("client/inventario.html")
 
-
+@client_app.route("/verProducto")
+def verProducto():
+    return render_template("client/verProducto.html")
 #-------------Rutas de rutinas-------------#
 @client_app.route("/rutinaCliente")
 def rutina():
@@ -24,22 +26,22 @@ def rutina():
 
 @client_app.route("/verRutina")
 def verRutina():
-    return render_template("/client/verRutinaCliente.html")
+    return render_template("client/verRutinaCliente.html")
 
 @client_app.route("/verSesion")
 def verSesion():
-    return render_template("/client/verSesionClient.html")
+    return render_template("client/verSesionClient.html")
 
 #-------------Rutas de estadisticas-------------#
 @client_app.route("/estadisticas")
 def estadisticas():
-    return render_template("/client/Estadisticas.html")
+    return render_template("client/Estadisticas.html")
 
 @client_app.route("/verEstadisticas")
 def verEstadisticas():
-    return render_template("/client/verEstadistica.html")
+    return render_template("client/verEstadistica.html")
 
 #-------------Rutas de perfil-------------#
 @client_app.route("/perfil")
 def perfil():
-    return render_template("/client/perfil.html")
+    return render_template("client/perfil.html")

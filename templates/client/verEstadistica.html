@@ -8,7 +8,7 @@
     <div class="container-fluid">
         <div class="page-titles">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="estadisticas">Mis Estadísticas</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('client_app.estadisticas') }}">Mis Estadísticas</a></li>
                 <li class="breadcrumb-item active"><a href="javascript:void(0)">Ver Estadísticas</a></li>
             </ol>
         </div>
@@ -252,7 +252,7 @@
 
                                
                                 <div class="my-5">
-                                    <a type="button" class="btn btn-danger me-2" href="estadisticas">Volver</a>
+                                    <a type="button" class="btn btn-danger me-2" href="{{ url_for('client_app.estadisticas') }}">Volver</a>
                                 </div>
                             </form>
                         </div>
