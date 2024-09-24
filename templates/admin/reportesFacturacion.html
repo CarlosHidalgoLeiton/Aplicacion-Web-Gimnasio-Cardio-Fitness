@@ -1,0 +1,258 @@
+{% extends "./layout/Layout_Admin.html" %}
+
+
+{% block content %}
+
+<!--**********************************
+            Content body start
+        ***********************************-->
+
+
+<div class="row page-titles">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Facturacion</a></li>
+        <li class="breadcrumb-item active"><a href="javascript:void(0)">Reporte</a></li>
+    </ol>
+</div>
+
+<div class="row">
+
+    <div class="form-group">
+        <label for="invoiceType">Generar nuevo reporte:</label>
+        <select class="form-control" id="invoiceType">
+            <option value="" selected>Seleccione el Tipo de Reporte a Generar</option>
+            <option value="mensual">Mensual</option>
+            <option value="semanal">Semanal</option>
+            <option value="diaria">Diaria</option>
+        </select>
+    </div>
+
+
+    <div class="col-xl-12">
+        <div id="mensualRep" class="rep-container">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Lista Mensual</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="example2" class="display min-w850">
+                            <thead>
+                                <tr>
+                                    <th>Fecha Inicio</th>
+                                    <th>Fecha Final</th>
+                                    <th>Gastos</th>
+                                    <th>Ingresos</th>
+                                    <th>Total</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr>
+                                    <td>01/01/2024</td>
+                                    <td>31/01/2024</td>
+                                    <td> 20.000</td>
+                                    <td> 0.00</td>
+                                    <td> 0.00</td>
+
+                                    <td>
+                                        <div class="d-flex">
+                                            <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                    class="fa fa-download"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>01/02/2024</td>
+                                    <td>28/02/2024</td>
+                                    <td> 20.000</td>
+                                    <td> 0.00</td>
+                                    <td> 0.00</td>
+
+                                    <td>
+                                        <div class="d-flex">
+                                            <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                    class="fa fa-download"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-12">
+        <div id="semanalRep" class="rep-container">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Lista Semanal</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="example3" class="display min-w850">
+                            <thead>
+                                <tr>
+                                    <th>Fecha Inicio</th>
+                                    <th>Fecha Final</th>
+                                    <th>Gastos</th>
+                                    <th>Ingresos</th>
+                                    <th>Total</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr>
+                                    <td>01/01/2024</td>
+                                    <td>07/01/2024</td>
+                                    <td> 20.000</td>
+                                    <td> 0.00</td>
+                                    <td> 0.00</td>
+
+                                    <td>
+                                        <div class="d-flex">
+                                            <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                    class="fa fa-download"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>08/01/2024</td>
+                                    <td>15/01/2024</td>
+                                    <td> 20.000</td>
+                                    <td> 0.00</td>
+                                    <td> 0.00</td>
+
+                                    <td>
+                                        <div class="d-flex">
+                                            <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                    class="fa fa-download"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-12">
+        <div id="diariaRep" class="rep-container">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Lista Diaria</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="example3" class="display min-w850">
+                            <thead>
+                                <tr>
+                                    <th>Fecha Inicio</th>
+                                    <th>Fecha Final</th>
+                                    <th>Gastos</th>
+                                    <th>Ingresos</th>
+                                    <th>Total</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr>
+                                    <td>01/01/2024</td>
+                                    <td>01/01/2024</td>
+                                    <td> 20.000</td>
+                                    <td> 0.00</td>
+                                    <td> 0.00</td>
+
+                                    <td>
+                                        <div class="d-flex">
+                                            <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                    class="fa fa-download"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>02/01/2024</td>
+                                    <td>02/01/2024</td>
+                                    <td> 20.000</td>
+                                    <td> 0.00</td>
+                                    <td> 0.00</td>
+
+                                    <td>
+                                        <div class="d-flex">
+                                            <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+                                                    class="fa fa-download"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+</div>
+<!--**********************************
+            Content body end
+        ***********************************-->
+{% endblock %}
+{% block scripts %}
+
+<style>
+    .rep-container {
+        display: none;
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('invoiceType').addEventListener('change', function () {
+            var value = this.value;
+            document.querySelectorAll('.rep-container').forEach(function (el) {
+                el.style.display = 'none';
+            });
+            if (value) {
+                document.getElementById(value + 'Rep').style.display = 'block';
+            }
+        });
+    });
+</script>
+
+<script>
+    (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script>
+
+{% endblock %}

@@ -1,4 +1,4 @@
-{% extends "./layout/admin/Layout_Admin.html" %}
+{% extends "./layout/Layout_Admin.html" %}
 
 
 {% block content %}
@@ -132,9 +132,8 @@
         </div>
     </div>
 
-    <!--**********************************
-            DATATABLES 
-        ***********************************-->
+    <!--********************************** DATATABLES ***********************************-->
+
     <div class="col-12">
         <div class="card">
             <div class="card-header">
@@ -161,9 +160,10 @@
                                 <td>
                                     <div class="d-flex">
 
-                                        <a href="verEntrenador.html" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                        <a href="{{ url_for('admin_app.verEntrenador') }}"
+                                            class="btn btn-primary shadow btn-xs sharp me-1"><i
                                                 class="fa fa-eye"></i></a>
-                                        <a href="actualizarEntrenador.html"
+                                        <a href="{{ url_for('admin_app.actualizarEntrenador') }}"
                                             class="btn btn-primary shadow btn-xs sharp me-1"><i
                                                 class="fa fa-pencil"></i></a>
                                         <a href="#" class="btn btn-danger shadow btn-xs sharp"><i

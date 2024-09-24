@@ -1,4 +1,4 @@
-{% extends "./layout/admin/Layout_Admin.html" %}
+{% extends "./layout/Layout_Admin.html" %}
 
 
 {% block content %}
@@ -386,9 +386,9 @@
                             <td>
                                 <div class="d-flex">
 
-                                    <a href="verFactura.html" class="btn btn-primary shadow btn-xs sharp me-1"><i
+                                    <a href="{{ url_for('admin_app.verFactura') }}" class="btn btn-primary shadow btn-xs sharp me-1"><i
                                             class="fa fa-eye"></i></a>
-                                    <a href="anular.html" class="btn btn-danger shadow btn-xs sharp"><i
+                                    <a href="{{ url_for('admin_app.anular') }}"class="btn btn-danger shadow btn-xs sharp"><i
                                             class="fa fa-trash"></i></a>
 
                                 </div>
