@@ -183,7 +183,7 @@
                         </a>
                         <ul aria-expanded="false">
                             <li><a href="{{ url_for('admin_app.facturas') }}">Facturas</a></li>
-                            <li><a href="reporte.html">Reporte</a></li>
+                            <li><a href="{{ url_for('admin_app.reportesFacturacion') }}">Reporte</a></li>
                         </ul>
                     </li>
 
@@ -193,8 +193,8 @@
                         </a>
                         <ul aria-expanded="false">
                             <li><a href="{{ url_for('admin_app.inventario') }}">Productos</a></li>
-                            <li><a href="membresias.html">Membresías</a></li>
-                            <li><a href="reporteInventario.html">Reporte</a></li>
+                            <li><a href="{{ url_for('admin_app.membresias') }}">Membresías</a></li>
+                            <li><a href="{{ url_for('admin_app.reportesInventario') }}">Reporte</a></li>
                         </ul>
                     </li>
 
