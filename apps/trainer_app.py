@@ -11,16 +11,50 @@ def inicio():
 def clientes():
     return render_template("trainer/clientes.html")
 
+@trainer_app.route("/editarEstadistica" )
+def editarEstadistica():
+    return render_template("trainer/editarEstadistica.html")
 
+@trainer_app.route("/editarSesion" )
+def editarSesion():
+    return render_template("trainer/editarSesion.html")
 
+@trainer_app.route("/editarSesionesRutinaCliente" )
+def editarSesionesRutinaCliente():
+    return render_template("trainer/editarSesionesRutinaCliente.html")
 
-#-------------Rutas de Rutinas-------------#
-@trainer_app.route("/rutinas")
+@trainer_app.route("/estadisticasCliente" )
+def estadisticasCliente():
+    return render_template("trainer/estadisticasCliente.html")
+
+@trainer_app.route("/nuevaRutina" )
+def nuevaRutina():
+    return render_template("trainer/nuevaRutina.html")
+
+@trainer_app.route("/rutinaCliente" )
+def rutinaCliente():
+    return render_template("trainer/rutinaCliente.html")
+
+@trainer_app.route("/rutinas" )
 def rutinas():
     return render_template("trainer/rutinas.html")
 
+@trainer_app.route("/sesionesRutinaCliente" )
+def sesionesRutinaCliente():
+    return render_template("trainer/sesionesRutinaCliente.html")
 
-#-------------Rutas de Rutinas-------------#
-@trainer_app.route("/sesiones")
-def sesiones():
-    return render_template("trainer/rutinas.html")
+@trainer_app.route("/verCliente" )
+def verCliente():
+    return render_template("trainer/verCliente.html")
+
+@trainer_app.route("/verEstadistica" )
+def verEstadistica():
+    return render_template("trainer/verEstadistica.html")
+
+@trainer_app.route("/verSesion" )
+def verSesion():
+    return render_template("trainer/verSesion.html")
+
+@trainer_app.route("/verSesionesRutinaCliente" )
+def verSesionesRutinaCliente():
+    return render_template("trainer/verSesionesRutinaCliente.html")
