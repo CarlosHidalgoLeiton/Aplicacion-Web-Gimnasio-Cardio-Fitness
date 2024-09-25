@@ -46,6 +46,19 @@ def verSesionCliente():
 
 
 
+    #-------------Rutas de Productos-------------#
+@admin_app.route("/productos")
+def productos():
+    return render_template("admin/inventario.html")
+
+@admin_app.route("/productos/ver")
+def verProducto():
+    return render_template("admin/verProducto.html")
+
+@admin_app.route("/productos/actualizar")
+def actualizarProducto():
+    return render_template("admin/actualizarProducto.html")
+
 
 
 
@@ -55,7 +68,13 @@ def verSesionCliente():
 def entrenadores():
     return render_template("admin/entrenadores.html")
 
+@admin_app.route("/entrenadores/ver")
+def verEntrenador():
+    return render_template("admin/verEntrenador.html")
 
+@admin_app.route("/entrenadores/actualizar")
+def actualizarEntrenador():
+    return render_template("admin/actualizarEntrenador")
 
 
 
@@ -85,6 +104,14 @@ def actualizarUsuario():
 def facturas():
     return render_template("admin/factura.html")
 
+@admin_app.route("/facturas/ver")
+def verFactura():
+    return render_template("admin/verFactura.html")
+
+@admin_app.route("/facturas/anular")
+def anular():
+    return render_template("admin/anular.html")  
+
 
 #-------------Rutas de Inventario-------------#
 @admin_app.route("/inventario")
@@ -110,3 +137,9 @@ def reportesFacturacion():
 @admin_app.route("/reportesInventario")
 def reportesInventario():
     return render_template("admin/reporteInventario.html")
+
+
+    #-------------Perfil------------#
+@admin_app.route("/perfil")
+def perfil():
+    return render_template("admin/perfil.html")
