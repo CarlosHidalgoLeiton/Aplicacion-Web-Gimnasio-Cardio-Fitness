@@ -1,5 +1,10 @@
-import pymysql
+class Conection():
+    DEBUG = True
+    MYSQL_HOST = 'localhost'
+    MYSQL_USER = 'root'
+    MYSQL_PASSWORD = ''
+    MYSQL_DB = 'gimnasio'
 
-connection = pymysql.connect(host='localhost', user='root', passwd='', db='gimnasio')
-
-cur = connection.cursor()
+config = {
+    'development': Conection
+}
