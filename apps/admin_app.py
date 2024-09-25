@@ -143,3 +143,17 @@ def reportesInventario():
 @admin_app.route("/perfil")
 def perfil():
     return render_template("admin/perfil.html")
+
+#-------------Rutas de Membresias-------------#
+@admin_app.route("/menbresias")
+def membresias():
+    return render_template("admin/membresias.html")
+
+@admin_app.route("/menbresias/ver")
+def verMembresia():
+    return render_template("admin/verMembresia.html")
+
+@admin_app.route("/menbresias/actualizar")
+def actualizarMembresia():
+    return render_template("admin/actualizarMembresia.html")
+
