@@ -1,11 +1,11 @@
-from flask import Blueprint, render_template, request, redirect, url_for
-from flask_login import LoginManager, login_user, logout_user, login_required
+from flask import Blueprint, render_template, request, redirect, url_for, current_app
+from flask_login import login_user, logout_user, login_required
 from flask import current_app
-from ..db.models.ModelUser import ModelUser
-from ..db.models.entities.User import Usuario
+from db.models.ModelUser import ModelUser
+from db.models.entities.User import Usuario
+
 
 login_app = Blueprint('login_app', __name__)
-
 
 
 @login_app.route("/")
@@ -23,11 +23,12 @@ def cambiarContrasena():
     return render_template("login/cambiarContrasena.html")
 
 
-@login_app.route("/login", methods = ["POST"])
+@login_app.route("/login", methods = ["GET","POST"])
 def inicioSesion():
     if request.method == "POST":
+        print(request.form)
         user = Usuario(0, request.form['cedula'], request.form['contrasena'])
-        logged_user = ModelUser.login(current_app.extensions['db'], user)
+        logged_user = ModelUser.login(current_app.db, user)
         if logged_user != None:
             if logged_user.Contrasena:
                 login_user(logged_user)
