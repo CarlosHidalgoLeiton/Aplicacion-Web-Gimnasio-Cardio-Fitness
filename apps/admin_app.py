@@ -102,3 +102,11 @@ def verNotificacion():
 
 
 
+    #-------------Reportes------------#
+@admin_app.route("/reportesFacturacion")
+def reportesFacturacion():
+    return render_template("admin/reportesFacturacion.html")
+
+@admin_app.route("/reportesInventario")
+def reportesInventario():
+    return render_template("admin/reporteInventario.html")
