@@ -1,8 +1,9 @@
-# apps/login_app.py
-from flask import Blueprint, render_template, request, redirect, url_for, current_app
-from flask_login import login_user, logout_user, login_required
+from flask import Blueprint, render_template, request, redirect, url_for
+from flask_login import login_user
+from db.conection import Conection
 from db.models.ModelUser import ModelUser
 from db.models.entities.User import Usuario
+
 
 login_app = Blueprint('login_app', __name__)
 
@@ -22,11 +23,18 @@ def cambiarContrasena():
 def inicioSesion():
     if request.method == "POST":
         print(request.form)
-        user = Usuario(0, request.form['cedula'], request.form['contrasena'])
-        logged_user = ModelUser.login(current_app.db.conexion, user)  # Use db.conexion
-        if logged_user is not None and logged_user.Contrasena:
-            login_user(logged_user)
-            return redirect(url_for('admin_app.inicio'))  #
-        else:
-            return render_template("login/login.html", error="Invalid credentials")
+        user = Usuario( request.form['cedula'], request.form['contrasena'])
+        
+        # Establecer una conexión a la base de datos
+        conexion = Conection.conectar()  # Cambiado para crear una instancia
+        try:
+            logged_user = ModelUser.login(user, conexion)
+            if logged_user is not None and logged_user.Contrasena:
+                login_user(logged_user)
+                return redirect(url_for('admin_app.inicio'))
+            else:
+                return render_template("login/login.html", error="Invalid credentials")
+        finally:
+            Conection().desconectar()  # Cambiado para crear una nueva instancia
+
     return render_template("login/login.html")

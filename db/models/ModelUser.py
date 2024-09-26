@@ -1,33 +1,18 @@
 from .entities.User import Usuario
 
-class ModelUser():
+class ModelUser:
 
     @classmethod
-    def login(self, db, user):
+    def login(cls, user, conexion):
         try:
-            cursor = db.connection.cursor()
-            sql = """SELECT ID_Usuario, Cedula, Contrasena, Estado, Rol, FechaCreacion, Correo FROM Usuario WHERE Cedula = '{}'""".format(user.Cedula)
-            cursor.execute(sql)
+            cursor = conexion.cursor()
+            sql = "SELECT ID_Usuario, Cedula, Contrasena, Estado, Rol, FechaCreacion, Correo FROM Usuario WHERE Cedula = %s"
+            cursor.execute(sql, (user.Cedula,))
             row = cursor.fetchone()
-            if row != None:
-                user = Usuario(row[0], row[1], Usuario.hashPassword(row[2], user.contrasena), row[3], row[4], row[5], row[6])
-                return user
-            else:
-                return None
+            if row is not None:
+                if Usuario.verifyPassword(row[2], user.Contrasena):
+                    return Usuario(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+            return None
         except Exception as ex:
-            raise Exception(ex)
-    
-    @classmethod
-    def get_by_id(self, db, id):
-        try:
-            cursor = db.connection.cursor()
-            sql = "SELECT ID_Usuario, Cedula, FROM Usuario WHERE ID_Usuario = {}".format(id)
-            cursor.execute(sql)
-            row = cursor.fetchone()
-            if row != None:
-                return Usuario(row[0], row[1], None, row[2])
-            else:
-                return None
-        except Exception as ex:
-            raise Exception(ex)
-
+            print(f"Error en login: {ex}")
+            return None

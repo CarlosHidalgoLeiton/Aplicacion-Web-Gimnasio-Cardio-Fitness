@@ -1,27 +1,26 @@
-# db/conection.py
 import pymysql
 
 class Conection:
-    def __init__(self):
-        self.conexion = None
+    _conexion = None  # Variable de clase para almacenar la conexión
 
-    def conectar(self):
-        try:
-            self.conexion = pymysql.connect(
-                host='localhost',
-                user='root',
-                passwd='',
-                db='gimnasio'
-            )
-            print("Conexión exitosa a la base de datos")
-            return self.conexion
-        except pymysql.MySQLError as e:
-            print(f"Error al conectar a la base de datos: {e}")
-            return None
+    @classmethod
+    def conectar(cls):
+        if cls._conexion is None:  # Solo conecta si no hay una conexión existente
+            try:
+                cls._conexion = pymysql.connect(
+                    host='localhost',
+                    user='root',
+                    passwd='',
+                    db='gimnasio'
+                )
+                print("Conexión exitosa a la base de datos")
+            except pymysql.MySQLError as e:
+                print(f"Error al conectar a la base de datos: {e}")
+        return cls._conexion
 
-    def desconectar(self):
-        if self.conexion:
-            self.conexion.close()
+    @classmethod
+    def desconectar(cls):
+        if cls._conexion:
+            cls._conexion.close()
+            cls._conexion = None  # Resetear la conexión
             print("Desconexión exitosa de la base de datos")
-        else:
-            print("No hay conexión para cerrar")
