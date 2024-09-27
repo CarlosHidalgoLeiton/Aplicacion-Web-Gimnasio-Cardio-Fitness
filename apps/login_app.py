@@ -22,18 +22,24 @@ def cambiarContrasena():
 @login_app.route("/login", methods=["GET", "POST"])
 def inicioSesion():
     if request.method == "POST":
-        print(request.form)
-        user = Usuario( request.form['cedula'], request.form['contrasena'])
+        user = Usuario( 0 ,request.form['cedula'], request.form['contrasena'])
         
         # Establecer una conexión a la base de datos
-        conexion = Conection.conectar()  # Cambiado para crear una instancia
+
         try:
+            conexion = Conection.conectar()  # Cambiado para crear una instancia
             logged_user = ModelUser.login(user, conexion)
-            if logged_user is not None and logged_user.Contrasena:
-                login_user(logged_user)
-                return redirect(url_for('admin_app.inicio'))
+            if logged_user is not None:
+                if logged_user != 'Inactivo':
+                    login_user(logged_user)
+                    return redirect(url_for('admin_app.inicio'))
+                else:
+                    print('Usuario inactivo')
+                    return render_template("login/login.html", error="Invalid credentials") 
             else:
                 return render_template("login/login.html", error="Invalid credentials")
+        except Exception as e:
+            print(e)
         finally:
             Conection().desconectar()  # Cambiado para crear una nueva instancia
 
