@@ -28,11 +28,6 @@ def clientes():
     return render_template("admin/clientes.html", clientes=clientes)
 
 
-@admin_app.route("/clientes/ver")
-@login_required
-def verCliente():
-    return render_template("admin/verCliente.html")
-
 @admin_app.route("/clientes/ver/<cedula>")
 def verCliente(cedula):
     conexion = Conection.conectar()
