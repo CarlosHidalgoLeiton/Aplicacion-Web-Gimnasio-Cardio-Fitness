@@ -3,8 +3,10 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import login_user, logout_user, login_required
 from db.conection import Conection
 from db.models.ModelUser import ModelUser
+from db.models.ModelClient import ModelCliente
 from db.models.entities.User import User
 from datetime import datetime
+
 
 #Creación de los blueprint para usar en app.py
 admin_app = Blueprint('admin_app', __name__)
@@ -20,12 +22,29 @@ def inicio():
 @admin_app.route("/clientes")
 @login_required
 def clientes():
-    return render_template("admin/clientes.html")
+    conexion = Conection.conectar()
+    clientes = ModelCliente.get_all(conexion)
+    Conection.desconectar()
+    return render_template("admin/clientes.html", clientes=clientes)
+
 
 @admin_app.route("/clientes/ver")
 @login_required
 def verCliente():
     return render_template("admin/verCliente.html")
+
+@admin_app.route("/clientes/ver/<cedula>")
+def verCliente(cedula):
+    conexion = Conection.conectar()
+    cliente = ModelCliente.get_cliente_by_cedula(conexion, cedula)
+    Conection.desconectar()
+
+    if cliente:
+        return render_template("admin/verCliente.html", cliente=cliente)
+    else:
+        # Manejar el caso en que no se encuentre el cliente
+        return "Cliente no encontrado"
+
 
 @admin_app.route("/clientes/estadísticas")
 @login_required

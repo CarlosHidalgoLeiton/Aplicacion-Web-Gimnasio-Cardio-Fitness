@@ -219,38 +219,39 @@
                                             <tr>
                                                 <th>Cedula</th>
                                                 <th>Nombre</th>
-                                                <th>Apellido</th>
+                                                <th>Apellidos</th> <!-- Columna unificada de apellidos -->
                                                 <th>Ocupación</th>
                                                 <th>Acciones</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            {% for cliente in clientes %}
                                             <tr>
-                                                <td>0-0000-000</td>
-                                                <td>Hersal</td>
-                                                <td>Alfaro Cisneros</td>
-                                                <td>Programador</td>
+                                                <td>{{ cliente['Cedula'] }}</td>
+                                                <td>{{ cliente['Nombre'] }}</td>
+                                                <td>{{ cliente['Primer_Apellido'] }} {{ cliente['Segundo_Apellido'] }}</td> <!-- Apellidos combinados -->
+                                                <td>{{ cliente['Ocupacion'] }}</td>
                                                 <td>
                                                     <div class="d-flex">
-
-                                                        <a href="{{ url_for('admin_app.rutinasCliente') }}"
-                                                            class="btn btn-primary shadow btn-xs sharp me-1"><i
-                                                                class="flaticon-381-notepad"></i></a>
-                                                        <a href="{{ url_for('admin_app.estadisticas') }}"
-                                                            class="btn btn-primary shadow btn-xs sharp me-1"><i
-                                                                class="fas fa-chart-bar"></i></a>
-                                                        <a href="{{ url_for('admin_app.verCliente') }}"
-                                                            class="btn btn-primary shadow btn-xs sharp me-1"><i
-                                                                class="fa fa-eye"></i></a>
-                                                        <a href="{{ url_for('admin_app.actualizarCliente') }}"
-                                                            class="btn btn-primary shadow btn-xs sharp me-1"><i
-                                                                class="fa fa-pencil"></i></a>
-                                                        <button onclick="eliminarPrueba()" id="deshabilitar" class="btn btn-danger shadow btn-xs sharp"><i
-                                                                class="fa fa-trash"></i></button>
+                                                        <a href="{{ url_for('admin_app.rutinasCliente') }}" class="btn btn-primary shadow btn-xs sharp me-1">
+                                                            <i class="flaticon-381-notepad"></i>
+                                                        </a>
+                                                        <a href="{{ url_for('admin_app.estadisticas') }}" class="btn btn-primary shadow btn-xs sharp me-1">
+                                                            <i class="fas fa-chart-bar"></i>
+                                                        </a>
+                                                        <a href="{{ url_for('admin_app.verCliente', cedula=cliente['Cedula']) }}" class="btn btn-primary shadow btn-xs sharp me-1">
+                                                            <i class="fa fa-eye"></i>
+                                                        </a>
+                                                        <a href="{{ url_for('admin_app.actualizarCliente') }}" class="btn btn-primary shadow btn-xs sharp me-1">
+                                                            <i class="fa fa-pencil"></i>
+                                                        </a>
+                                                        <button onclick="eliminarPrueba()" id="deshabilitar" class="btn btn-danger shadow btn-xs sharp">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>
-
+                                            {% endfor %}
                                         </tbody>
                                     </table>
                                 </div>
