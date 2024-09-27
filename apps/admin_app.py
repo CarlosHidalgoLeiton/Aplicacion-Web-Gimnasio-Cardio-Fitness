@@ -1,6 +1,8 @@
 #Importaciones
 from flask import Blueprint, render_template
 from flask_login import login_required
+from db.conection import Conection
+
 
 #Creación de los blueprint para usar en app.py
 admin_app = Blueprint('admin_app', __name__)
@@ -15,12 +17,23 @@ def inicio():
 #-------------Rutas de Clientes-------------#
 @admin_app.route("/clientes")
 def clientes():
-    return render_template("admin/clientes.html")
+    conexion = Conection.conectar()
+    clientes = ModelCliente.get_all(conexion)
+    Conection.desconectar()
+    return render_template("admin/clientes.html", clientes=clientes)
 
 
-@admin_app.route("/clientes/ver")
-def verCliente():
-    return render_template("admin/verCliente.html")
+@admin_app.route("/clientes/ver/<cedula>")
+def verCliente(cedula):
+    conexion = Conection.conectar()
+    cliente = ModelCliente.get_cliente_by_cedula(conexion, cedula)
+    Conection.desconectar()
+
+    if cliente:
+        return render_template("admin/verCliente.html", cliente=cliente)
+    else:
+        # Manejar el caso en que no se encuentre el cliente
+        return "Cliente no encontrado", 404
 
 @admin_app.route("/clientes/estadísticas")
 def estadisticas():
