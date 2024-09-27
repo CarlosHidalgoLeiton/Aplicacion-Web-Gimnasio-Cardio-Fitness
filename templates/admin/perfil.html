@@ -3,188 +3,56 @@
 
 
 {% block content %}
-        <!--**********************************
-            Content body start
-        ***********************************-->
 
-                <div class="page-titles">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript:void(0)">Inicio</a></li>
-                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Perfil</a></li>
-                    </ol>
-                </div>
-                <!-- row -->
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="profile card card-body px-3 pt-3 pb-0">
-                            <div class="profile-head">
-                                <div class="photo-content">
-                                    <div class="cover-photo"></div>
-                                </div>
-                                <div class="profile-info">
-                                    <div class="profile-photo">
-                                        <img src="../../static/images/profile/profile.png" class="img-fluid rounded-circle" alt="">
-                                    </div>
-                                    <div class="profile-details">
-                                        <div class="profile-name px-3 pt-2">
-                                            <h4 class="text-primary mb-0">Hersal Alfaro</h4>
-                                            <p>UX / UI Designer</p>
-                                        </div>
-                                        <div class="profile-email px-2 pt-2">
-                                            <h4 class="text-muted mb-0">info@example.com</h4>
-                                            <p>Correo</p>
+		<div class="page-titles">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href="{{ url_for('client_app.inventario') }}">Perfil</a></li>
+				<li class="breadcrumb-item active"><a href="javascript:void(0)">Información</a></li>
+			</ol>
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card form-container">
+					<div class="card-body">
+						<h4 class="card-title mb-4">Perfil</h4>
+						<div class="form-validation">
+                            <form class="needs-validation" novalidate>
+                                <div class="row">
+                                    <div class="col-xl-4">
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom01">Cédula</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control" id="validationCustom01" value="{{ current_user.DocumentId }}">
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xl-4">
-
-                        <div class="card h-auto">
-                            <div class="card-body">
-                                <div class="profile-statistics mb-5">
-                                    <div class="text-center">
-                                        <div class="row">
-                                            <div class="col">
-                                                <h3 class="m-b-0">Rol</h3><span>Admin</span>
+                                    <div class="col-xl-4">
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom02">Rol</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control" id="validationCustom02" value="{{ current_user.Role }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4">
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom11">Correo</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control" id="validationCustom11" value="{{ current_user.Email }}">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="col-xl-8">
-
-                        <div class="card h-auto">
-                            <div class="card-body">
-                                <div class="profile-tab">
-                                    <div class="custom-tab-1">
-
-                                        <ul class="nav nav-tabs">
-                                            <li class="nav-item"><a href="#informacion" data-bs-toggle="tab"
-                                                    class="nav-link">Información</a>
-                                            </li>
-                                        </ul>
-
-                                        <div class="tab-content">
-                                            <div id="informacion" class="tab-pane fade active show">
-                                                <div class="profile-about-me">
-                                                    <div class="pt-4 border-bottom-1 pb-3">
-                                                        <h4 class="text-primary">Información</h4>
-                                                        <p class="mb-2">A wonderful serenity has taken possession of my
-                                                            entire soul, like these sweet mornings of spring which I
-                                                            enjoy with my whole heart. I am alone, and feel the charm of
-                                                            existence was created for the bliss of souls like mine.I am
-                                                            so happy, my dear friend, so absorbed in the exquisite sense
-                                                            of mere tranquil existence, that I neglect my talents.</p>
-                                                        <p>A collection of textile samples lay spread out on the table -
-                                                            Samsa was a travelling salesman - and above it there hung a
-                                                            picture that he had recently cut out of an illustrated
-                                                            magazine and housed in a nice, gilded frame.</p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="profile-lang  mb-5">
-                                                    <h4 class="text-primary mb-2">Padecimientos</h4>
-                                                    <a href="javascript:void()" class="text-muted pe-3 f-s-16"><i
-                                                            class="flag-icon flag-icon-us"></i> Sin padecimientos</a>
-                                                </div>
-
-                                                <div class="profile-personal-info">
-                                                    <h4 class="text-primary mb-4">informacion Personal</h4>
-                                                    <div class="row mb-2">
-                                                        <div class="col-sm-3 col-5">
-                                                            <h5 class="f-w-500">Nombre <span class="pull-right">:</span>
-                                                            </h5>
-                                                        </div>
-                                                        <div class="col-sm-9 col-7"><span>Hersal Alfaro</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-2">
-                                                        <div class="col-sm-3 col-5">
-                                                            <h5 class="f-w-500">Correo <span class="pull-right">:</span>
-                                                            </h5>
-                                                        </div>
-                                                        <div class="col-sm-9 col-7"><span>example@examplel.com</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-2">
-                                                        <div class="col-sm-3 col-5">
-                                                            <h5 class="f-w-500">Estatura <span
-                                                                    class="pull-right">:</span></h5>
-                                                        </div>
-                                                        <div class="col-sm-9 col-7"><span>170cm</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-2">
-                                                        <div class="col-sm-3 col-5">
-                                                            <h5 class="f-w-500">Edad <span class="pull-right">:</span>
-                                                            </h5>
-                                                        </div>
-                                                        <div class="col-sm-9 col-7"><span>19</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-2">
-                                                        <div class="col-sm-3 col-5">
-                                                            <h5 class="f-w-500">Ubicacion <span
-                                                                    class="pull-right">:</span></h5>
-                                                        </div>
-                                                        <div class="col-sm-9 col-7"><span>Alajuela, Costa Rica</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-2">
-                                                        <div class="col-sm-3 col-5">
-                                                            <h5 class="f-w-500">Experiencia <span
-                                                                    class="pull-right">:</span></h5>
-                                                        </div>
-                                                        <div class="col-sm-9 col-7"><span>1 año</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
+                                <div class="my-5">
+                                    <a type="button" class="btn btn-danger me-2" href="{{ url_for('client_app.inicio') }}">Volver</a>
                                 </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--**********************************
-            Content body end
-        ***********************************-->
+                            </form>
+                            
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
 {% endblock %}
-{% block scripts %}
 
-    <script>
-        (function () {
-            'use strict'
-
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            var forms = document.querySelectorAll('.needs-validation')
-
-            // Loop over them and prevent submission
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-        })()
-    </script>
-
-{% endblock %}

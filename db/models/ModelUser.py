@@ -25,12 +25,12 @@ class ModelUser:
     def get_by_id(cls, conexion, id):
         try:
             cursor = conexion.cursor()
-            sql = "SELECT ID_Usuario, Cedula, Rol FROM Usuario WHERE ID_Usuario = %s"
+            sql = "SELECT ID_Usuario, Cedula, Rol, Correo FROM Usuario WHERE ID_Usuario = %s"
             cursor.execute(sql, (id))
             row = cursor.fetchone()
             print(row)
             if row is not None:
-                return User(row[0], row[1], None, None, row[2])
+                return User(row[0], row[1], None, None, row[2],None,row[3])
             return None
         except Exception as ex:
             print(f"Error en login: {ex}")
