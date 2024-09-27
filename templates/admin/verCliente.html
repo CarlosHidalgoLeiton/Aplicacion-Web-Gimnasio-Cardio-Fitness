@@ -16,7 +16,7 @@
     <div class="col-lg-12">
         <div class="card form-container">
             <div class="card-body">
-                <h4 class="card-title mb-4">Cliente Nombre Apellido</h4>
+                <h4 class="card-title mb-4">{{ cliente.Nombre }} {{ cliente.Primer_Apellido }}</h4>
                 <div class="form-validation">
                     <form class="needs-validation" novalidate>
                         <div class="row">
@@ -27,7 +27,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustom01"
-                                            value="Información" readonly>
+                                            value="{{ cliente.Cedula }}" readonly>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -35,7 +35,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustom02"
-                                            value="Información" readonly>
+                                            value="{{ cliente.Nombre }}" readonly>
 
                                     </div>
                                 </div>
@@ -44,7 +44,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustom03"
-                                            value="Información" readonly>
+                                            value="{{ cliente.Primer_Apellido }}" readonly>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -52,7 +52,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustom03"
-                                            value="Información" readonly>
+                                            value="{{ cliente.Segundo_Apellido }}" readonly>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -60,7 +60,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustom07"
-                                            value="Información" readonly>
+                                            value="{{ cliente.Edad }}" readonly>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -69,7 +69,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustom07"
-                                            value="Información" readonly>
+                                            value="{{ cliente.Fecha_Nacimiento }}" readonly>
                                     </div>
                                 </div>
 
@@ -80,7 +80,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustom06"
-                                            value="Información" readonly>
+                                            value="{{ cliente.Correo }}" readonly>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -88,7 +88,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustom07"
-                                            value="Información" readonly>
+                                            value="{{ cliente.Telefono }}" readonly>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -96,7 +96,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <textarea class="form-control" id="validationCustom04" rows="5"
-                                            value="Información" readonly></textarea>
+                                            value="{{ cliente.Dirección}}" readonly></textarea>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -104,7 +104,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustom08"
-                                            value="Información" readonly>
+                                            value="{{ cliente.Ocupacion }}" readonly>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -113,7 +113,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustom09"
-                                            value="Información" readonly>
+                                            value="{{ cliente.TelefonoEmergencia }}" readonly>
 
                                     </div>
                                 </div>
@@ -122,7 +122,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustom11"
-                                            value="Información" readonly>
+                                            value="{{ cliente.Padecimientos }}" readonly>
 
                                     </div>
                                 </div>
@@ -131,7 +131,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustom11"
-                                            value="Información" readonly>
+                                            value="{{ cliente.Limitacion }}" readonly>
                                     </div>
                                 </div>
 

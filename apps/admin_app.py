@@ -2,7 +2,8 @@
 from flask import Blueprint, render_template
 from flask_login import login_required
 from db.conection import Conection
-
+from db.models.ModelClient import ModelCliente
+from db.conection import Conection
 
 #Creación de los blueprint para usar en app.py
 admin_app = Blueprint('admin_app', __name__)
@@ -33,7 +34,7 @@ def verCliente(cedula):
         return render_template("admin/verCliente.html", cliente=cliente)
     else:
         # Manejar el caso en que no se encuentre el cliente
-        return "Cliente no encontrado", 404
+        return "Cliente no encontrado"
 
 @admin_app.route("/clientes/estadísticas")
 def estadisticas():
