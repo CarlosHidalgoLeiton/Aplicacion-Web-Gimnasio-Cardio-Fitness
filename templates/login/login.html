@@ -59,14 +59,14 @@
                     <form action="/login" method="POST">
                         <div class="mb-3">
                             <label for="cedula" class="form-label">Cédula </label>
-                            <input class="form-control" name="cedula" type="text" id="cedula" required=""
+                            <input class="form-control" name="DocumentId" type="text" id="DocumentId" required=""
                                 placeholder="Ingrese su cedula">
                         </div>
                         <div class="mb-3">
                             <a href="{{ url_for('login_app.recuperarContrasena') }}" class="text-muted float-end"><small>Recuperar Contraseña</small></a>
                             <label for="contrasena" class="form-label">Contraseña</label>
                             <div class="input-group input-group-merge">
-                                <input type="password" name="contrasena" id="contrasena" class="form-control"
+                                <input type="password" name="Password" id="Password" class="form-control"
                                     placeholder="Ingrese su contraseña">
                             </div>
                         </div>

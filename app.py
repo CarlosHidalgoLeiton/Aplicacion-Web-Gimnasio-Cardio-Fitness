@@ -13,8 +13,6 @@ app.secret_key = 'your_secret_key'  # Establece una clave secreta para la gesti√
 # Inicializa el gestor de inicio de sesi√≥n
 login_manager_app = LoginManager(app)
 login_manager_app.init_app(app)
-login_manager_app.login_view = 'login_app.inicio'
-
 
 
 

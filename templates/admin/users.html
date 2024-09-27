@@ -23,20 +23,20 @@
         </div>
     </div>
     <!--**********************************
-                        VALIDACION CON JQUERY
-                    ***********************************-->
+        VALIDACION CON JQUERY
+    ***********************************-->
     <div class="col-lg-12">
-        <div class="card form-container" id="formCliente" style="display: none;">
+        <div class="card form-container" id="formCliente" style="display: none;"  >
             <div class="card-body">
                 <div class="form-validation">
-                    <form class="needs-validation" novalidate>
+                    <form class="needs-validation" action="/admin/users" method="POST" novalidate onsubmit="return validatePassword();">
                         <div class="row">
                             <div class="col-xl-6">
                                 <div class="mb-3 row">
                                     <label class="col-lg-4 col-form-label" for="validationCustomRole">Rol <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-6">
-                                        <select class="form-control" id="validationCustomRole" required>
+                                        <select class="form-control" id="validationCustomRole" name="Role" required>
                                             <option value="">Seleccione un rol</option>
                                             <option value="Admin">Admin</option>
                                             <option value="Cliente">Cliente</option>
@@ -50,7 +50,7 @@
                                     <label class="col-lg-4 col-form-label" for="validationCustomClient">Cliente
                                         <span class="text-danger">*</span></label>
                                     <div class="col-lg-6">
-                                        <select class="form-control" id="validationCustomClient">
+                                        <select class="form-control" id="validationCustomClient" name="Client">
                                             <option value="">Seleccione un cliente</option>
                                             <option value="Carlos Hidalgo">Carlos Hidalgo</option>
                                             <option value="Kennethe Navarro">Kennethe Navarro</option>
@@ -64,7 +64,7 @@
                                     <label class="col-lg-4 col-form-label" for="validationCustomTrainer">Entrenador
                                         <span class="text-danger">*</span></label>
                                     <div class="col-lg-6">
-                                        <select class="form-control" id="validationCustomTrainer">
+                                        <select class="form-control" id="validationCustomTrainer" name="Trainer">
                                             <option value="">Seleccione un entrenador</option>
                                             <option value="Maria Gonzalez">Maria Gonzalez</option>
                                             <option value="Juan Perez">Juan Perez</option>
@@ -78,7 +78,7 @@
                                     <label class="col-lg-4 col-form-label" for="validationCustomCedula">Cédula
                                         <span class="text-danger">*</span></label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustomCedula"
+                                        <input type="text" class="form-control" id="validationCustomCedula" name="DocumentId"
                                             placeholder="" required>
                                         <div class="invalid-feedback">Por favor ingrese cédula.</div>
                                     </div>
@@ -88,7 +88,7 @@
                                     <label class="col-lg-4 col-form-label" for="validationCustomPassword">Contraseña
                                         <span class="text-danger">*</span></label>
                                     <div class="col-lg-6">
-                                        <input type="password" class="form-control" id="validationCustomPassword"
+                                        <input type="password" class="form-control" id="validationCustomPassword" name="Password"
                                             placeholder="" required>
                                         <div class="invalid-feedback">Por favor ingrese una contraseña.</div>
                                     </div>
@@ -99,21 +99,22 @@
                                         for="validationCustomPasswordConfirm">Confirmar Contraseña <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-6">
-                                        <input type="password" class="form-control" id="validationCustomPasswordConfirm"
+                                        <input type="password" class="form-control" id="validationCustomPasswordConfirm" name="ConfirmpPassword"
                                             placeholder="" required>
                                         <div class="invalid-feedback">Por favor confirme la contraseña.</div>
                                     </div>
                                 </div>
+
                             </div>
                             <div class="col-xl-6">
                                 <div class="mb-3 row">
                                     <label class="col-lg-4 col-form-label" for="validationCustomState">Estado
                                         <span class="text-danger">*</span></label>
                                     <div class="col-lg-6">
-                                        <select class="form-control" id="validationCustomState" required>
+                                        <select class="form-control" id="validationCustomState" name="State" required>
                                             <option value="">Seleccione un estado</option>
-                                            <option value="Activo">Activo</option>
-                                            <option value="Inactivo">Inactivo</option>
+                                            <option value="1">Activo</option>
+                                            <option value="0">Inactivo</option>
                                         </select>
                                         <div class="invalid-feedback">Por favor seleccione un estado.</div>
                                     </div>
@@ -123,7 +124,7 @@
                                     <label class="col-lg-4 col-form-label" for="validationCustomEmail">Correo
                                         <span class="text-danger">*</span></label>
                                     <div class="col-lg-6">
-                                        <input type="email" class="form-control" id="validationCustomEmail"
+                                        <input type="email" class="form-control" id="validationCustomEmail" name="Email"
                                             placeholder="" required>
                                         <div class="invalid-feedback">Por favor ingrese un correo.</div>
                                     </div>
@@ -139,6 +140,18 @@
                     </form>
 
                     <script>
+
+                        function validatePassword() {
+                            const password = document.getElementById('validationCustomPassword').value;
+                            const confirmPassword = document.getElementById('validationCustomPasswordConfirm').value;
+
+                                if (password !== confirmPassword) {
+                                    alert('Las contraseñas no coinciden. Por favor, verifícalas.');
+                                    return false; // Evita que el formulario se envíe
+                                }
+                            return true; // Permite que el formulario se envíe
+                        }
+
                         document.getElementById('validationCustomRole').addEventListener('change', function () {
                             var role = this.value;
                             var clientSelection = document.getElementById('clientSelection');
@@ -251,7 +264,7 @@
     });
 </script>
 
-<script>
+<script>    
     (function () {
         'use strict'
 

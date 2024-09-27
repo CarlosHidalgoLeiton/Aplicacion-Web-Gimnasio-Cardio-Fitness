@@ -125,7 +125,7 @@
                                         <span class="ms-2">Perfil</span>
                                     </a>
 
-                                    <a href="../logueo/page-login.html" class="dropdown-item ai-icon">
+                                    <a href="{{ url_for ('login_app.logout') }}" class="dropdown-item ai-icon">
                                         <svg id="icon-logout" xmlns="http://www.w3.org/2000/svg" class="text-danger"
                                             width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -171,7 +171,7 @@
                         </a>
                     </li>
 
-                    <li><a href="{{ url_for('admin_app.usuarios') }}" class="ai-icon" aria-expanded="false">
+                    <li><a href="{{ url_for('admin_app.users') }}" class="ai-icon" aria-expanded="false">
                             <i class="flaticon-381-user-7"></i>
                             <span class="nav-text">Usuarios</span>
                         </a>
