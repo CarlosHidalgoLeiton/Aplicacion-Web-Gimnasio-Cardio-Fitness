@@ -1,5 +1,6 @@
 #Importaciones
-from flask import Blueprint, render_template, jsonify
+from flask import Blueprint, render_template
+from flask_login import login_required
 
 #Creación de los blueprint para usar en app.py
 admin_app = Blueprint('admin_app', __name__)
@@ -7,6 +8,7 @@ admin_app = Blueprint('admin_app', __name__)
 
 #Configuración de rutas y solicitudes
 @admin_app.route("/")
+@login_required
 def inicio():
     return render_template("admin/index.html")
 

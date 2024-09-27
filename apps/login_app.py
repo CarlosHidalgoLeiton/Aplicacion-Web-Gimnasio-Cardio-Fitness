@@ -23,16 +23,21 @@ def cambiarContrasena():
 def inicioSesion():
     if request.method == "POST":
         user = Usuario( 0 ,request.form['cedula'], request.form['contrasena'])
-        
         # Establecer una conexión a la base de datos
-
         try:
             conexion = Conection.conectar()  # Cambiado para crear una instancia
             logged_user = ModelUser.login(user, conexion)
             if logged_user is not None:
                 if logged_user != 'Inactivo':
                     login_user(logged_user)
-                    return redirect(url_for('admin_app.inicio'))
+                    if logged_user.Rol == "Admin":
+                        return redirect(url_for('admin_app.inicio'))
+                    elif logged_user.Rol == "Cliente":
+                        return redirect(url_for('client_app.inicio'))
+                    elif logged_user.Rol == 'Entrenador':
+                        return redirect(url_for('trainer_app.inicio'))
+                    else:
+                        return render_template("login/login.html")
                 else:
                     print('Usuario inactivo')
                     return render_template("login/login.html", error="Invalid credentials") 

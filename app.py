@@ -12,15 +12,21 @@ app.secret_key = 'your_secret_key'  # Establece una clave secreta para la gesti�
 
 # Inicializa el gestor de inicio de sesión
 login_manager_app = LoginManager(app)
+login_manager_app.init_app(app)
+login_manager_app.login_view = 'login_app.inicio'
+
+
+
+
+# Revisar si esto es necesario
+# Crea una conexión a la base de datos dentro del contexto de la aplicación
+# with app.app_context():
+#     db = Conection()
+#     app.conexion = db.conectar()  # Establecer la conexión aquí
 
 @login_manager_app.user_loader
 def load_user(user_id):
-    return ModelUser.get_by_id(app.conexion, user_id)
-
-# Crea una conexión a la base de datos dentro del contexto de la aplicación
-with app.app_context():
-    db = Conection()
-    app.conexion = db.conectar()  # Establecer la conexión aquí
+    return ModelUser.get_by_id(Conection.conectar(), user_id)
 
 # Registra los blueprints
 app.register_blueprint(admin_app, url_prefix='/admin')

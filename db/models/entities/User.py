@@ -4,7 +4,7 @@ from flask_login import UserMixin
 
 class Usuario(UserMixin):
 
-
+    #Aunque en la base de datos salga con otro nombre el id, acá hay que colocarlo como id para que el flask_login lo reconozca
     def __init__(self, id = None, Cedula = None, Contrasena = None, Estado = None, Rol = None, FechaCreacion = None, Correo = None) -> None:
         self.id = id
         self.Cedula = Cedula

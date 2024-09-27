@@ -6,13 +6,13 @@ class ModelUser:
     def login(cls, user, conexion):
         try:
             cursor = conexion.cursor()
-            sql = "SELECT ID_Usuario, Cedula, Contrasena, Estado FROM Usuario WHERE Cedula = %s"
+            sql = "SELECT ID_Usuario, Cedula, Contrasena, Estado, Rol FROM Usuario WHERE Cedula = %s"
             cursor.execute(sql, (user.Cedula))
             row = cursor.fetchone()
             if row is not None:
                 if row[3] != 0:
                     if Usuario.verifyPassword(row[2], user.Contrasena):
-                        return Usuario(row[0], row[1], row[2])
+                        return Usuario(row[0], row[1], row[2], None, row[4])
                 else:
                     return 'Inactivo'
             return None
@@ -25,9 +25,10 @@ class ModelUser:
     def get_by_id(cls, conexion, id):
         try:
             cursor = conexion.cursor()
-            sql = "SELECT ID_Usuario, Cedula, Rol FROM Usuario WHERE Cedula = %s"
+            sql = "SELECT ID_Usuario, Cedula, Rol FROM Usuario WHERE ID_Usuario = %s"
             cursor.execute(sql, (id))
             row = cursor.fetchone()
+            print(row)
             if row is not None:
                 return Usuario(row[0], row[1], None, None, row[2])
             return None
