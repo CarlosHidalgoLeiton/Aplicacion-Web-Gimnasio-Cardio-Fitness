@@ -19,23 +19,23 @@ def inicio():
     return render_template("admin/index.html")
 
 #-------------Rutas de Clientes-------------#
-@admin_app.route("/clientes")
+@admin_app.route("/clients")
 @login_required
-def clientes():
+def clients():
     conexion = Conection.conectar()
-    clientes = ModelCliente.get_all(conexion)
+    clients = ModelCliente.get_all(conexion)
     Conection.desconectar()
-    return render_template("admin/clientes.html", clientes=clientes)
+    return render_template("admin/clients.html", clients=clients)
 
 
 @admin_app.route("/clientes/ver/<cedula>")
 def verCliente(cedula):
     conexion = Conection.conectar()
-    cliente = ModelCliente.get_cliente_by_cedula(conexion, cedula)
+    client = ModelCliente.get_cliente_by_cedula(conexion, cedula)
     Conection.desconectar()
 
-    if cliente:
-        return render_template("admin/verCliente.html", cliente=cliente)
+    if client:
+        return render_template("admin/viewClient.html", client=client)
     else:
         # Manejar el caso en que no se encuentre el cliente
         return "Cliente no encontrado"
