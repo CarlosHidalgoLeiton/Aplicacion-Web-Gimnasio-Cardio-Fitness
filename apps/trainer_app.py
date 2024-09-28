@@ -12,13 +12,13 @@ def inicio():
     return render_template("trainer/index.html")
 
 #-------------Rutas de Clientes-------------#
-@trainer_app.route("/clientes" )
+@trainer_app.route("/client" )
 @login_required
-def clientes():
+def client():
     conexion = Conection.conectar()
-    clientes = ModelCliente.get_all(conexion)
+    clients = ModelCliente.get_all(conexion)
     Conection.desconectar()
-    return render_template("trainer/clientes.html", clientes=clientes)
+    return render_template("trainer/client.html", clients=clients)
 
 @trainer_app.route("/editarEstadistica" )
 @login_required
@@ -64,10 +64,10 @@ def sesionesRutinaCliente():
 @login_required
 def verCliente(cedula):
     conexion = Conection.conectar()
-    cliente = ModelCliente.get_cliente_by_cedula(conexion, cedula)
+    client = ModelCliente.get_cliente_by_cedula(conexion, cedula)
     Conection.desconectar()
-    if cliente:
-        return render_template("trainer/verCliente.html", cliente=cliente)
+    if client:
+        return render_template("trainer/verCliente.html", client=client)
     else:
         # Manejar el caso en que no se encuentre el cliente
         return "Cliente no encontrado"
