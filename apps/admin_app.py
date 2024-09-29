@@ -126,7 +126,7 @@ def users():
         if password != confirmPassword:
             return render_template("admin/users.html", error="Las contraseñas no coinciden.")
 
-        # Validación adicional (puedes agregar más validaciones aquí)
+        # Crear nuevo usuario
         newUser = User(
             id=0,  
             DocumentId=documentId,
@@ -136,8 +136,6 @@ def users():
             CreationDate=datetime.now(),
             Email=email
         )
-
-        print(newUser)
 
         try:
             conexion = Conection.conectar()
@@ -153,13 +151,33 @@ def users():
         finally:
             Conection().desconectar()  
 
-    return render_template("admin/users.html")
+    # lista de usuarios
+    try:
+        conexion = Conection.conectar()
+        users = ModelUser.get_Users(conexion)  
+    except Exception as e:
+        print(f"Error al obtener usuarios: {e}")
+        users = []  
+    finally:
+        Conection().desconectar()
+
+    return render_template("admin/users.html", users=users)  
 
 
-@admin_app.route("/usuarios/ver")
-@login_required
-def verUsuario():
-    return render_template("/admin/verUsuario.html")
+@admin_app.route("/users/view/<DocumentId>")
+def viewUser(DocumentId):
+    try:
+        conection = Conection.conectar()
+        user = ModelUser.get_User(conection, DocumentId)  
+    except Exception as e:
+        print(f"Error al obtener el usuario: {e}")
+        user = None
+    finally:
+        Conection().desconectar()
+
+    return render_template("/admin/viewUser.html", user=user)
+
+    
 
 @admin_app.route("/usuarios/actualizar")
 @login_required

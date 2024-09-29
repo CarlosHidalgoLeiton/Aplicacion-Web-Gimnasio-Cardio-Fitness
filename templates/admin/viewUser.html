@@ -1,0 +1,59 @@
+{% extends "./layout/Layout_Admin.html" %}
+
+{% block content %}
+<div class="page-titles">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('admin_app.users') }}">Usuarios</a></li>
+        <li class="breadcrumb-item active"><a href="javascript:void(0)">Ver Usuario</a></li>
+    </ol>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card form-container">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Usuario</h4>
+                <div class="form-validation">
+                    <form class="needs-validation" novalidate>
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom01">Cédula</label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom01"
+                                            value="{{ user.DocumentId}}" readonly>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom02">Rol</label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom02"
+                                            value="{{ user.Role }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-6">
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom11">Estado</label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom11"
+                                            value="{% if user.State == 1 %}Activo{% else %}Inactivo{% endif %}" readonly>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom12">Correo</label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom12"
+                                            value="{{ user.Email }}" readonly>
+                                    </div>
+                                </div>
+                            </div>           
+                        <div class="my-5">
+                            <a type="button" class="btn btn-danger me-2" href="{{ url_for('admin_app.users') }}">Volver</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
