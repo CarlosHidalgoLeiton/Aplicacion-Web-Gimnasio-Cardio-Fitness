@@ -105,7 +105,7 @@ class ModelCliente:
 
             if row:
                 # Crear y devolver un objeto cliente
-                return client(
+                return Client(
                     DocumentId=row[0],
                     Name=row[1],
                     First_LastName=row[2],
