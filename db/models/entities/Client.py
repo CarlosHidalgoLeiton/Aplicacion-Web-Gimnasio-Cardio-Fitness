@@ -1,8 +1,7 @@
 from flask_login import UserMixin
 
 
-class client(UserMixin):
-
+class Client(UserMixin):
 
     def __init__(self, DocumentId = None, Name = None, First_LastName = None, Second_LastName = None, Date_Birth =  None, Age = None, Mail = None, Phone = None, Registration_Date = None, Occupation = None, TelephoneEmergency= None, Address = None, Entry_Date = None, Ailments = None, Limitation = None, ExpirationMembership = None, State = None, Membership_ID = None) -> None:
         self.DocumentId = DocumentId
