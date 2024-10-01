@@ -1,6 +1,34 @@
-from .entities.Client import cliente
+from .entities.Client import Client
+from datetime import datetime
+import re
 
 class ModelCliente:
+
+    @classmethod
+    def insertClient(cls, conection, client):
+        if client != None:
+            try:
+
+                cursor = conection.cursor()
+                sql = """INSERT INTO Cliente (Cedula, Nombre, Primer_Apellido, Segundo_Apellido, Fecha_Nacimiento, Edad, Correo, Telefono, Ocupacion, TelefonoEmergencia, Direccion, FechaIngreso, Padecimientos, Limitacion, Estado)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+                cursor.execute(sql, (client.Cedula, client.Nombre, client.Primer_Apellido, client.Segundo_Apellido, client.Fecha_Nacimiento, client.Edad, client.Correo, client.Telefono, client.Ocupacion, client.TelefonoEmergencia, client.Direccion, client.FechaIngreso, client.Padecimientos, client.Limitacion, client.Estado))
+                conection.commit()
+
+                if cursor.rowcount > 0:
+                    print(f"Cliente {client.Cedula} creado exitosamente.")
+                    return True
+                else:
+                    print("No se pudo crear el cliente.")
+                    return False
+
+            except Exception as ex:
+                print(f"Ocurrió un error en insertar un cliente {ex}")
+                # conection.rollback()
+                return False
+        else:
+            return False
+
 
     @classmethod
     def get_all_clients(cls, conexion):
@@ -13,7 +41,7 @@ class ModelCliente:
             clientes = []
             for row in rows:
                 # Crear un objeto `cliente` por cada fila
-                client = cliente(
+                client = Client(
                     Cedula=row[0],
                     Nombre=row[1],
                     Primer_Apellido=row[2],
@@ -76,7 +104,7 @@ class ModelCliente:
 
             if row:
                 # Crear y devolver un objeto cliente
-                return cliente(
+                return Client(
                     Cedula=row[0],
                     Nombre=row[1],
                     Primer_Apellido=row[2],
@@ -101,3 +129,116 @@ class ModelCliente:
         except Exception as ex:
             print(f"Error al obtener cliente por cédula: {ex}")
             return None
+    
+
+    @classmethod
+    def validateDataForm(cls,request):
+        documentId = request.form['documentId']
+        name = request.form['name']
+        firstLastName = request.form['firstLastName']
+        secondLastName = request.form['secondLastName']
+        bornDateStr = request.form['bornDate']
+        bornDate = datetime.strptime(bornDateStr, "%Y-%m-%d").date()
+        mail = request.form['mail']
+        phone = request.form['phone']
+        ocupation = request.form['ocupation']
+        emergencyPhone = request.form['emergencyPhone']
+        direction = request.form['direction']
+        incomeDate = datetime.now()
+        ailments = request.form['ailments']
+        limitation = request.form['limitation']
+        age = datetime.now().year - bornDate.year
+        state = 1
+
+        #Validation for documentID 
+        if documentId != None:
+            if "-" not in documentId and not any( d.isalpha() for d in documentId): #Valida que sea alfabetico y que no tenga un "-"
+                if len(documentId) < 9:
+                    return "El número de cédula ingresado no es válido. Debe ingresar 9 dígitos."
+            else:
+                return "El número de cédula no debe contener letras ni caracteres especiales."
+        else:
+            return "Debe ingresar el número de cédula."
+        
+        #Validation for name
+        if name != None:
+            if not name.isalpha():
+                return "El nombre no debe contener números o caracteres especiales."
+        else:
+            return "Debe ingresar el nombre."
+        
+        #Validation for firstLastName
+        if firstLastName != None:
+            if not firstLastName.isalpha():
+                return "El apellido 1 no debe contener números o caracteres especiales."
+        else:
+            return "Debe ingresar el apellido 1."
+        
+        #Validation for secondLastName
+        if secondLastName != None:
+            if not secondLastName.isalpha():
+                return "El apellido 2 no debe contener números o caracteres especiales."
+        else:
+            return "Debe ingresar el apellido 2."
+        
+        #Validation for bornDate
+        if bornDate != None:
+            if datetime.strptime(bornDateStr, "%Y-%m-%d") > datetime.now():
+                return "La fecha ingresada no es válida."
+        else:
+            return "Debe ingresar la fecha de nacimiento."
+        
+        #Validation for mail
+        if mail != None:
+            expression = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$' #To validate mail format
+            if not re.match(expression, mail):
+                return "El correo ingresado no es válido."
+        else:
+            return "Debe ingresar el correo."
+        
+        #Validation for phone
+        if phone != None:
+            if "-" not in phone and not any( p.isalpha() for p in phone): #Valida que sea alfabetico y que no tenga un "-"
+                if len(phone) != 8:
+                    return "El número de teléfono ingresado no es válido. Debe ingresar 8 dígitos."
+            else:
+                return "El número de teléfono no debe contener letras o caracteres especiales."
+        else:
+            return "Debe ingresar el número de teléfono."
+        
+        #Validation for ocupation
+        if ocupation != None:
+            if not ocupation.isalpha():
+                return "La ocupación no debe contener números ni caracteres especiales"
+        else:
+            return "Debe ingresar la ocupación."
+        
+        #Validation for emergencyPhone
+        if emergencyPhone != None:
+            if "-" not in emergencyPhone and not any( p.isalpha() for p in emergencyPhone): #Valida que sea alfabetico y que no tenga un "-"
+                if len(emergencyPhone) != 8:
+                    return "El número de teléfono de emergencia ingresado no es válido. Debe ingresar 8 dígitos."
+            else:
+                return "El número de teléfono de emergencia no debe contener letras o caracteres especiales."
+        else:
+            return "Debe ingresar el número de teléfono de emergencia."
+        
+        #Validation for direction
+        if direction == None:
+            return "Debe ingresar la dirección."
+        
+        return Client(documentId, name, firstLastName, secondLastName, bornDate, age, mail, phone, None, ocupation, emergencyPhone, direction, incomeDate, ailments, limitation, None, state)
+        
+        
+
+
+        
+
+        
+
+        
+        
+
+        
+
+

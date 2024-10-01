@@ -29,6 +29,14 @@
 </head>
 
 <body class="auth-fluid-pages pb-0">
+    <div style="display: flex; justify-content: center;">
+        {% if error %}
+        <div class="alert alert-danger mt-4" role="alert" style="position: absolute; z-index: 5;">
+            <p>{{ error }}</p>
+        </div>
+    {% endif %}
+    </div>
+    
 
     <div class="auth-fluid">
         <div class="auth-fluid-form-box">
@@ -66,7 +74,7 @@
                             <a href="{{ url_for('login_app.recuperarContrasena') }}" class="text-muted float-end"><small>Recuperar Contraseña</small></a>
                             <label for="contrasena" class="form-label">Contraseña</label>
                             <div class="input-group input-group-merge">
-                                <input type="password" name="Password" id="Password" class="form-control"
+                                <input type="password" name="Password" id="Password" class="form-control" required=""
                                     placeholder="Ingrese su contraseña">
                             </div>
                         </div>

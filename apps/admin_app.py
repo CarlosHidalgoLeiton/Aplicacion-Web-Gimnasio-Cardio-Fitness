@@ -1,31 +1,72 @@
 #Importaciones
 from flask import Blueprint, render_template, request, redirect, url_for
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_required, current_user
 from db.conection import Conection
 from db.models.ModelUser import ModelUser
 from db.models.ModelClient import ModelCliente
 from db.models.entities.User import User
-from datetime import datetime
-
+from db.models.entities.Client import Client
+from apps.permissions import admin_permission
 
 #Creación de los blueprint para usar en app.py
 admin_app = Blueprint('admin_app', __name__)
+
+#Routes redirectioned
+@admin_app.errorhandler(403)
+def forbidden(error):
+    return redirect(url_for('client_app.notAutorized'))
+
+@admin_app.errorhandler(401)
+def forbidden(error):
+    return redirect(url_for('client_app.notAutorized'))
+
+
+@admin_app.route('/notAutorized')
+def notAutorized():
+    return "No tienes permisos para ingresar"
 
 
 #Configuración de rutas y solicitudes
 @admin_app.route("/")
 @login_required
+@admin_permission.require()
 def inicio():
+    print(current_user.role)
     return render_template("admin/index.html")
 
 #-------------Rutas de Clientes-------------#
 @admin_app.route("/clientes")
 @login_required
+@admin_permission.require()
 def clientes():
     conexion = Conection.conectar()
     clientes = ModelCliente.get_all(conexion)
     Conection.desconectar()
     return render_template("admin/clientes.html", clientes=clientes)
+
+@admin_app.route("/insertClient", methods = ['POST'])
+@login_required
+def insertClient():
+
+    client = ModelCliente.validateDataForm(request)
+
+    if type(client) != Client:
+        return redirect(url_for('admin_app.clientes', error = client))
+    
+    conection = Conection.conectar()
+    
+    if conection == None:
+        return redirect(url_for('admin_app.clientes', error = "Error en la conexion"))
+
+    insert = ModelCliente.insertClient(conection, client)
+
+    if insert:
+        print('Insertado conrrectamente')
+        return redirect(url_for('admin_app.clientes', done = "Cliente creado correctamente."))
+    else:
+        print('Algo paso')
+        return redirect(url_for('admin_app.clientes', error = "No se pudo ingresar el cliente."))
+
 
 
 @admin_app.route("/clientes/ver/<cedula>")

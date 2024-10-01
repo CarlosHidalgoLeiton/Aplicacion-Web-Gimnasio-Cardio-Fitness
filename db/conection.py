@@ -16,6 +16,7 @@ class Conection:
                 print("Conexión exitosa a la base de datos")
             except pymysql.MySQLError as e:
                 print(f"Error al conectar a la base de datos: {e}")
+                cls._conexion = None
         return cls._conexion
 
     @classmethod

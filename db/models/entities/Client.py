@@ -1,9 +1,5 @@
-from flask_login import UserMixin
-
-
-class cliente(UserMixin):
-
-
+class Client():
+    
     def __init__(self, Cedula = None, Nombre = None, Primer_Apellido = None, Segundo_Apellido = None, Fecha_Nacimiento =  None, Edad = None, Correo = None, Telefono = None, FechaInscripcion = None, Ocupacion = None, TelefonoEmergencia = None, Direccion = None, FechaIngreso = None, Padecimientos = None, Limitacion = None, VencimientoMembresia = None, Estado = None, ID_Membresia = None) -> None:
         self.Cedula = Cedula
         self.Nombre = Nombre
@@ -25,4 +21,4 @@ class cliente(UserMixin):
         self.ID_Membresia = ID_Membresia
     
 
-   
+

@@ -1,14 +1,31 @@
 #Importaciones
-from flask import Blueprint, render_template, jsonify
+from flask import Blueprint, render_template, jsonify, redirect, url_for
+from flask_login import login_required, current_user
+from apps.permissions import client_permission
 
 #Creación de los blueprint para usar en app.py
 client_app = Blueprint('client_app', __name__)
 
 #Configuración de rutas y solicitudes
 @client_app.route("/")
+@login_required
+@client_permission.require(http_exception=403)
 def inicio():
     return render_template("client/index.html")
 
+
+@client_app.errorhandler(403)
+def forbidden(error):
+    return redirect(url_for('client_app.notAutorized'))
+
+@client_app.errorhandler(401)
+def forbidden(error):
+    return redirect(url_for('client_app.notAutorized'))
+
+
+@client_app.route('/notAutorized')
+def notAutorized():
+    return "No tienes permisos para ingresar"
 
 #-------------Rutas de inventario-------------#
 @client_app.route("/inventario")

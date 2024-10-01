@@ -13,9 +13,12 @@ class ModelUser:
                 if row[3] != 0:
                     if User.verifyPassword(row[2], user.Password):
                         return User(row[0], row[1], row[2], None, row[4])
+                    else:
+                        return "Password"
                 else:
-                    return 'Inactivo'
-            return None
+                    return 'Inactive'
+            else:
+                return "Invalid User"
         except Exception as ex:
             print(f"Error en login: {ex}")
             return None
@@ -33,7 +36,8 @@ class ModelUser:
                 return User(row[0], row[1], None, None, row[2])
             return None
         except Exception as ex:
-            print(f"Error en login: {ex}")
+            
+            print(f"Error en ModelUser en get_by_id: {ex}")
             return None
 
     @classmethod
@@ -47,7 +51,7 @@ class ModelUser:
                     (`Cedula`, `Contrasena`, `Estado`, `Rol`, `FechaCreacion`, `Correo`) 
                     VALUES (%s, %s, %s, %s, %s, %s)"""
             
-            cursor.execute(sql, (user.DocumentId, hashed_password, user.State, user.Role, user.CreationDate, user.Email))
+            cursor.execute(sql, (user.DocumentId, hashed_password, user.State, user.role, user.CreationDate, user.Email))
 
             conexion.commit()
             if cursor.rowcount > 0:
