@@ -2,21 +2,23 @@ from .entities.Client import Client
 from datetime import datetime
 import re
 
-class ModelCliente:
+class ModelClient:
 
     @classmethod
     def insertClient(cls, conection, client):
         if client != None:
             try:
-
+                Entry_Date = datetime.now()
+                client.Entry_Date = Entry_Date
+                client.State = 1
                 cursor = conection.cursor()
                 sql = """INSERT INTO Cliente (Cedula, Nombre, Primer_Apellido, Segundo_Apellido, Fecha_Nacimiento, Edad, Correo, Telefono, Ocupacion, TelefonoEmergencia, Direccion, FechaIngreso, Padecimientos, Limitacion, Estado)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-                cursor.execute(sql, (client.Cedula, client.Nombre, client.Primer_Apellido, client.Segundo_Apellido, client.Fecha_Nacimiento, client.Edad, client.Correo, client.Telefono, client.Ocupacion, client.TelefonoEmergencia, client.Direccion, client.FechaIngreso, client.Padecimientos, client.Limitacion, client.Estado))
+                cursor.execute(sql, (client.DocumentId, client.Name, client.First_LastName, client.Second_LastName, client.Date_Birth, client.Age, client.Mail, client.Phone, client.Occupation, client.TelephoneEmergency, client.Address, client.Entry_Date, client.Ailments, client.Limitation, client.State))
                 conection.commit()
 
                 if cursor.rowcount > 0:
-                    print(f"Cliente {client.Cedula} creado exitosamente.")
+                    print(f"Cliente {client.DocumentId} creado exitosamente.")
                     return True
                 else:
                     print("No se pudo crear el cliente.")
@@ -24,6 +26,29 @@ class ModelCliente:
 
             except Exception as ex:
                 print(f"Ocurrió un error en insertar un cliente {ex}")
+                # conection.rollback()
+                return False
+        else:
+            return False
+    
+    @classmethod
+    def updateClient(cls, conection, client, id):
+        if client != None:
+            try:
+                cursor = conection.cursor()
+                sql = """UPDATE Cliente SET Cedula = %s, Nombre = %s, Primer_Apellido = %s, Segundo_Apellido = %s, Fecha_Nacimiento = %s, Edad = %s, Correo = %s, Telefono = %s, Ocupacion = %s, TelefonoEmergencia = %s, Direccion = %s, Padecimientos = %s, Limitacion = %s WHERE Cedula = %s"""
+                cursor.execute(sql, (client.DocumentId, client.Name, client.First_LastName, client.Second_LastName, client.Date_Birth, client.Age, client.Mail, client.Phone, client.Occupation, client.TelephoneEmergency, client.Address, client.Ailments, client.Limitation, id))
+                conection.commit()
+
+                if cursor.rowcount > 0:
+                    print(f"Cliente {client.DocumentId} actualizado exitosamente.")
+                    return True
+                else:
+                    print("No se pudo actualizar el cliente.")
+                    return False
+
+            except Exception as ex:
+                print(f"Ocurrió un error en actualizar un cliente {ex}")
                 # conection.rollback()
                 return False
         else:
@@ -138,18 +163,16 @@ class ModelCliente:
         name = request.form['name']
         firstLastName = request.form['firstLastName']
         secondLastName = request.form['secondLastName']
-        bornDateStr = request.form['bornDate']
-        bornDate = datetime.strptime(bornDateStr, "%Y-%m-%d").date()
+        Date_BirthStr = request.form['Date_Birth']
+        Date_Birth = datetime.strptime(Date_BirthStr, "%Y-%m-%d").date()
         mail = request.form['mail']
         phone = request.form['phone']
         ocupation = request.form['ocupation']
         emergencyPhone = request.form['emergencyPhone']
-        direction = request.form['direction']
-        incomeDate = datetime.now()
+        adress = request.form['adress']
         ailments = request.form['ailments']
         limitation = request.form['limitation']
-        age = datetime.now().year - bornDate.year
-        state = 1
+        age = datetime.now().year - Date_Birth.year
 
         #Validation for documentID 
         if documentId != None:
@@ -182,9 +205,9 @@ class ModelCliente:
         else:
             return "Debe ingresar el apellido 2."
         
-        #Validation for bornDate
-        if bornDate != None:
-            if datetime.strptime(bornDateStr, "%Y-%m-%d") > datetime.now():
+        #Validation for Date_Birth
+        if Date_Birth != None:
+            if datetime.strptime(Date_BirthStr, "%Y-%m-%d") > datetime.now():
                 return "La fecha ingresada no es válida."
         else:
             return "Debe ingresar la fecha de nacimiento."
@@ -225,8 +248,16 @@ class ModelCliente:
             return "Debe ingresar el número de teléfono de emergencia."
         
         #Validation for direction
-        if direction == None:
+        if adress == None:
             return "Debe ingresar la dirección."
         
-        return Client(documentId, name, firstLastName, secondLastName, bornDate, age, mail, phone, None, ocupation, emergencyPhone, direction, incomeDate, ailments, limitation, None, state)
+        #Validation for ailments
+        if ailments == None:
+            return "Debe ingresar los padecimientos. En caso de que no tenga unicamente ingrese 'Ningúno'."
+        
+        #Validation for limitation
+        if limitation == None:
+            return "Debe ingresar las limitaciones. En caso de que no tenga unicamente ingrese 'Ningúno'."
+        
+        return Client(documentId, name, firstLastName, secondLastName, Date_Birth, age, mail, phone, None, ocupation, emergencyPhone, adress, None, ailments, limitation, None, None)
         

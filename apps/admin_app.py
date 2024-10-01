@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
 from db.conection import Conection
 from db.models.ModelUser import ModelUser
-from db.models.ModelClient import ModelCliente
+from db.models.ModelClient import ModelClient
 from db.models.entities.User import User
 from db.models.entities.Client import Client
 from apps.permissions import admin_permission
@@ -41,39 +41,70 @@ def inicio():
 @admin_permission.require()
 def clients():
     conexion = Conection.conectar()
-    clients = ModelCliente.get_all(conexion)
+    clients = ModelClient.get_all(conexion)
     Conection.desconectar()
     return render_template("admin/clients.html", clients=clients)
 
 @admin_app.route("/insertClient", methods = ['POST'])
 @login_required
 def insertClient():
-
-    client = ModelCliente.validateDataForm(request)
-
+    client = ModelClient.validateDataForm(request)
     if type(client) != Client:
-        return redirect(url_for('admin_app.clientes', error = client))
-    
+        return redirect(url_for('admin_app.clients', error = client))
     conection = Conection.conectar()
-    
     if conection == None:
-        return redirect(url_for('admin_app.clientes', error = "Error en la conexion"))
-
-    insert = ModelCliente.insertClient(conection, client)
-
+        return redirect(url_for('admin_app.clients', error = "Error en la conexion"))
+    insert = ModelClient.insertClient(conection, client)
     if insert:
         print('Insertado conrrectamente')
-        return redirect(url_for('admin_app.clientes', done = "Cliente creado correctamente."))
+        return redirect(url_for('admin_app.clients', done = "Cliente creado correctamente."))
     else:
         print('Algo paso')
-        return redirect(url_for('admin_app.clientes', error = "No se pudo ingresar el cliente."))
+        return redirect(url_for('admin_app.clients', error = "No se pudo ingresar el cliente."))
+
+@admin_app.route("/clientes/actualizar/<documentId>", methods=['GET'])
+@login_required
+@admin_permission.require()
+def viewUpdateClient(documentId):
+    conexion = Conection.conectar()
+    client = ModelClient.get_cliente_by_cedula(conexion, documentId)
+    Conection.desconectar()
+    if client:
+        return render_template("admin/updateClient.html", client=client)
+    else:
+        # Manejar el caso en que no se encuentre el cliente
+        return "Cliente no encontrado"
+    
+@admin_app.route("/client/update/", methods=['POST'])
+@login_required
+@admin_permission.require()
+def updateClient():
+    client = ModelClient.validateDataForm(request)
+    if type(client) != Client:
+        return redirect(url_for('admin_app.clients', error = client))
+    id = request.form['id']
+    conection = Conection.conectar()
+    if conection == None:
+        return redirect(url_for('admin_app.clients', error = "Error en la conexion"))
+    update = ModelClient.updateClient(conection, client, id)
+    if update:
+        print('Actualizado conrrectamente')
+        return redirect(url_for('admin_app.clients', done = "Cliente actualizado correctamente."))
+    else:
+        print('Algo paso')
+        return redirect(url_for('admin_app.clients', error = "No se pudo actualizar el cliente."))
+
+
+
+    
+    
 
 
 
 @admin_app.route("/clientes/ver/<cedula>")
 def verCliente(cedula):
     conexion = Conection.conectar()
-    client = ModelCliente.get_cliente_by_cedula(conexion, cedula)
+    client = ModelClient.get_cliente_by_cedula(conexion, cedula)
     Conection.desconectar()
 
     if client:
@@ -81,6 +112,10 @@ def verCliente(cedula):
     else:
         # Manejar el caso en que no se encuentre el cliente
         return "Cliente no encontrado"
+
+
+
+
 
 
 @admin_app.route("/clientes/estadísticas")
@@ -92,11 +127,6 @@ def estadisticas():
 @login_required
 def verEstadistica():
     return render_template("admin/verEstadistica.html")
-
-@admin_app.route("/clientes/actualizar")
-@login_required
-def actualizarCliente():
-    return render_template("admin/actualizarCliente.html")
 
 @admin_app.route("/clientes/rutinas")
 @login_required

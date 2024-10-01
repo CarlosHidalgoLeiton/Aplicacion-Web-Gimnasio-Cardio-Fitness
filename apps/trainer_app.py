@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from db.conection import Conection
-from db.models.ModelClient import ModelCliente
+from db.models.ModelClient import ModelClient
 from db.models.ModelTrainer import ModelTrainer
 
 
@@ -34,7 +34,7 @@ def perfil():
 @login_required
 def client():
     conexion = Conection.conectar()
-    clients = ModelCliente.get_all(conexion)
+    clients = ModelClient.get_all(conexion)
     Conection.desconectar()
     return render_template("trainer/client.html", clients=clients)
 
@@ -82,7 +82,7 @@ def sesionesRutinaCliente():
 @login_required
 def verCliente(cedula):
     conexion = Conection.conectar()
-    client = ModelCliente.get_cliente_by_cedula(conexion, cedula)
+    client = ModelClient.get_cliente_by_cedula(conexion, cedula)
     Conection.desconectar()
     if client:
         return render_template("trainer/verCliente.html", client=client)

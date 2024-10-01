@@ -29,7 +29,7 @@
                         <div class="card form-container" id="formCliente" style="display: none;">
                             <div class="card-body">
                                 <div class="form-validation">
-                                    <form class="needs-validation" novalidate>
+                                    <form class="needs-validation" action="/admin/insertClient" method="POST">
                                         <div class="row">
                                             <div class="col-xl-6">
                                                 <div class="mb-3 row">
@@ -39,7 +39,7 @@
                                                     </label>
                                                     <div class="col-lg-6">
                                                         <input type="text" class="form-control" id="validationCustom01"
-                                                            placeholder="" required>
+                                                            placeholder="" name="documentId" required>
                                                         <div class="invalid-feedback">
                                                             Por favor ingresar Cedula
                                                         </div>
@@ -52,7 +52,7 @@
                                                     </label>
                                                     <div class="col-lg-6">
                                                         <input type="text" class="form-control" id="validationCustom02"
-                                                            placeholder="" required>
+                                                            placeholder="" name="name" required>
                                                         <div class="invalid-feedback">
                                                             Por favor ingresar nombre
                                                         </div>
@@ -65,7 +65,7 @@
                                                     </label>
                                                     <div class="col-lg-6">
                                                         <input type="text" class="form-control" id="validationCustom03"
-                                                            placeholder="" required>
+                                                            placeholder="" name="firstLastName" required>
                                                         <div class="invalid-feedback">
                                                             Por favor ingresar Apellido 1
                                                         </div>
@@ -78,7 +78,7 @@
                                                     </label>
                                                     <div class="col-lg-6">
                                                         <input type="text" class="form-control" id="validationCustom04"
-                                                            placeholder="" required>
+                                                            placeholder="" name="secondLastName" required>
                                                         <div class="invalid-feedback">
                                                             Por favor ingresar Apellido 2
                                                         </div>
@@ -90,8 +90,8 @@
                                                             class="text-danger">*</span>
                                                     </label>
                                                     <div class="col-lg-6">
-                                                        <input type="text" id="mdate" class="form-control"
-                                                            placeholder="Fecha" required>
+                                                        <input type="date" id="mdate" name="Date_Birth" class="form-control"
+                                                            placeholder="" required>
                                                         <div class="invalid-feedback">
                                                             Por favor ingresar Fecha de Nacimiento
                                                         </div>
@@ -105,7 +105,7 @@
                                                         <span class="text-danger">*</span>
                                                     </label>
                                                     <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom06"
+                                                        <input type="mail" name="mail" class="form-control" id="validationCustom06"
                                                             placeholder="" required>
                                                         <div class="invalid-feedback">
                                                             Por favor ingresar Correo.
@@ -118,7 +118,7 @@
                                                         <span class="text-danger">*</span>
                                                     </label>
                                                     <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom07"
+                                                        <input type="number" name="phone" class="form-control" id="validationCustom07"
                                                             placeholder="" required>
                                                         <div class="invalid-feedback">
                                                             Por favor ingresar Telefono.
@@ -131,7 +131,7 @@
                                                         <span class="text-danger">*</span>
                                                     </label>
                                                     <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom08"
+                                                        <input type="text" name="ocupation" class="form-control" id="validationCustom08"
                                                             placeholder="" required>
                                                         <div class="invalid-feedback">
                                                             Por favor ingresar Ocupación.
@@ -144,8 +144,8 @@
                                                             class="text-danger">*</span>
                                                     </label>
                                                     <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom09"
-                                                            placeholder="" required>
+                                                        <input type="number" class="form-control" id="validationCustom09"
+                                                            placeholder="" required name="emergencyPhone">
                                                         <div class="invalid-feedback">
                                                             Por favor ingresar teléfono de emergencia.
                                                         </div>
@@ -158,7 +158,7 @@
                                                     </label>
                                                     <div class="col-lg-6">
                                                         <input type="text" class="form-control" id="validationCustom10"
-                                                            placeholder="" required>
+                                                            placeholder="" name="adress" required>
                                                         <div class="invalid-feedback">
                                                             Por favor ingresar Dirección.
                                                         </div>
@@ -170,7 +170,7 @@
                                                         <span class="text-danger">*</span>
                                                     </label>
                                                     <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom11"
+                                                        <input type="text" name="ailments" class="form-control" id="validationCustom11"
                                                             placeholder="" required>
                                                         <div class="invalid-feedback">
                                                             Por favor ingresar Padecimiento.
@@ -184,7 +184,7 @@
                                                     </label>
                                                     <div class="col-lg-6">
                                                         <input type="text" class="form-control" id="validationCustom11"
-                                                            placeholder="" required>
+                                                            placeholder="" name="limitation" required>
                                                         <div class="invalid-feedback">
                                                             Por favor ingresar Limitaciones.
                                                         </div>
@@ -242,7 +242,7 @@
                                                         <a href="{{ url_for('admin_app.verCliente',cedula=client['DocumentId']) }}" class="btn btn-primary shadow btn-xs sharp me-1">
                                                             <i class="fa fa-eye"></i>
                                                         </a>
-                                                        <a href="{{ url_for('admin_app.actualizarCliente') }}" class="btn btn-primary shadow btn-xs sharp me-1">
+                                                        <a href="{{ url_for('admin_app.viewUpdateClient', documentId=client['DocumentId']) }}" class="btn btn-primary shadow btn-xs sharp me-1">
                                                             <i class="fa fa-pencil"></i>
                                                         </a>
                                                         <button onclick="eliminarPrueba()" id="deshabilitar" class="btn btn-danger shadow btn-xs sharp">
