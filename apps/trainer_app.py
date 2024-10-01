@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from db.conection import Conection
 from db.models.ModelClient import ModelCliente
-from db.models.MoelTrainer import ModelTrainer
+from db.models.ModelTrainer import ModelTrainer
 
 
 trainer_app = Blueprint('trainer_app', __name__)
