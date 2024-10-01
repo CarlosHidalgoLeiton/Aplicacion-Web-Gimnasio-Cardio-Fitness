@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, jsonify
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 from db.conection import Conection
 from db.models.ModelClient import ModelCliente
+from db.models.MoelTrainer import ModelTrainer
 
 
 trainer_app = Blueprint('trainer_app', __name__)
@@ -10,6 +11,23 @@ trainer_app = Blueprint('trainer_app', __name__)
 @login_required
 def inicio():
     return render_template("trainer/index.html")
+
+#-------------Rutas de Perfil -------------#
+@trainer_app.route("/perfil")
+@login_required
+def perfil():
+    try:
+        conexion = Conection.conectar()
+        trainer = ModelTrainer.getTrainer(conexion, current_user.DocumentId)
+        print(trainer)
+    except Exception as ex:
+        print(f"Error al obtener el perfil del entrenador: {ex}")
+        trainer = None
+    finally:
+        Conection.desconectar()
+    
+    return render_template("trainer/perfil.html", trainer=trainer)
+
 
 #-------------Rutas de Clientes-------------#
 @trainer_app.route("/clientes" )

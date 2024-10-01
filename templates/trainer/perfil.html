@@ -1,0 +1,99 @@
+
+{% extends "./layout/Layout_Trainer.html" %}
+
+
+{% block content %}
+<div class="content-body default-height">
+	 <div class="container-fluid">
+		<div class="page-titles">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href="{{ url_for('trainer_app.inicio') }}">Perfil</a></li>
+				<li class="breadcrumb-item active"><a href="javascript:void(0)">Información</a></li>
+			</ol>
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card form-container">
+					<div class="card-body">
+						<h4 class="card-title mb-4">Perfil</h4>
+						<div class="form-validation">
+							<form class="needs-validation" novalidate>
+								<div class="row">
+									<div class="col-xl-6">
+										<div class="mb-3 row">
+											<label class="col-lg-4 col-form-label" for="validationCustomDocumentId">Cédula</label>
+											<div class="col-lg-6">
+												<input type="text" class="form-control" id="validationCustomDocumentId"
+													value="{{ trainer.DocumentId }}" name="DocumentId" readonly >
+											</div>
+										</div>
+										
+										<div class="mb-3 row">
+											<label class="col-lg-4 col-form-label" for="validationCustomName">Nombre </label>
+											<div class="col-lg-6">
+												<input type="text" class="form-control" id="validationCustomName"
+													value="{{ trainer.Name }}" name="Name" readonly>
+											</div>
+										</div>
+
+										<div class="mb-3 row">
+											<label class="col-lg-4 col-form-label" for="validationCustomEmail">Correo</label>
+											<div class="col-lg-6">
+												<input type="text" class="form-control" id="validationCustomEmail"
+													value="{{ trainer.Email }}" name="Email" readonly>
+											</div>
+										</div>
+
+										<div class="mb-3 row">
+											<label class="col-lg-4 col-form-label" for="validationCustomRole">Rol</label>
+											<div class="col-lg-6">
+												<input type="text" class="form-control" id="validationCustomRole"
+													value="{{ current_user.Role }}" name="Role" readonly>
+											</div>
+										</div>
+
+									</div>
+
+									<div class="col-xl-6">
+
+										<div class="mb-3 row">
+											<label class="col-lg-4 col-form-label" for="validationCustomLastName"> Primer Apellido</label>
+											<div class="col-lg-6">
+												<input type="text" class="form-control" id="validationCustomLastName"
+													value="{{ trainer.lastName }}" name="lastName" readonly>
+											</div>
+										</div>
+
+										<div class="mb-3 row">
+											<label class="col-lg-4 col-form-label" for="validationCustomLastName2">Segundo Apellido </label>
+											<div class="col-lg-6">
+												<input type="text" class="form-control" id="validationCustomLastName2"
+													value="{{ trainer.lastName2 }}" name="lastName2" readonly>
+											</div>
+										</div>
+								
+										<div class="mb-3 row">
+											<label class="col-lg-4 col-form-label" for="validationCustomAge">Edad</label>
+											<div class="col-lg-6">
+												<input type="text" class="form-control" id="validationCustomAge"
+													value="{{ trainer.Age }}" name="Age" readonly >
+											</div>
+										</div>
+									</div>
+
+								</div>
+								<div class="my-5">
+									<a type="button" class="btn btn-danger me-2"
+									href="{{ url_for('trainer_app.inicio') }}">Volver</a>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
