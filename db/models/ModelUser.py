@@ -76,7 +76,7 @@ class ModelUser:
             rows = cursor.fetchall()
             users = []
             for row in rows:
-                user = User(row[0], row[1], None, row[2], row[3])
+                user = User(row[0], row[1], None ,row[2], row[3])
                 users.append(user)
             return users
         except Exception as ex:
