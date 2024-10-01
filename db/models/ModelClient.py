@@ -1,7 +1,6 @@
 from .entities.Client import Client
 from datetime import datetime
 import re
-from .entities.Client import client
 
 class ModelCliente:
 
