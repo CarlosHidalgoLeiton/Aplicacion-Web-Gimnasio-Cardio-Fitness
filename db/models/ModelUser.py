@@ -28,12 +28,12 @@ class ModelUser:
     def get_by_id(cls, conexion, id):
         try:
             cursor = conexion.cursor()
-            sql = "SELECT ID_Usuario, Cedula, Rol FROM Usuario WHERE ID_Usuario = %s"
+            sql = "SELECT ID_Usuario, Cedula, Rol, Correo FROM Usuario WHERE ID_Usuario = %s"
             cursor.execute(sql, (id))
             row = cursor.fetchone()
             print(row)
             if row is not None:
-                return User(row[0], row[1], None, None, row[2])
+                return User(row[0], row[1], None, None, row[2],None,row[3])
             return None
         except Exception as ex:
             
@@ -65,3 +65,35 @@ class ModelUser:
             return None  
         finally:
             cursor.close()
+
+
+    @classmethod
+    def get_Users(cls, conexion):
+        try:
+            cursor = conexion.cursor()
+            sql = "SELECT ID_Usuario, Cedula, Estado, Rol FROM Usuario"
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+            users = []
+            for row in rows:
+                user = User(row[0], row[1], None, row[2], row[3])
+                users.append(user)
+            return users
+        except Exception as ex:
+            print(f"Error en get_Users: {ex}")
+            return []
+     
+
+    @classmethod
+    def get_User(cls, conexion, documentId):
+        try:
+            cursor = conexion.cursor()
+            sql = "SELECT ID_Usuario, Cedula, Estado, Rol, Correo FROM Usuario WHERE Cedula = %s"
+            cursor.execute(sql, (documentId,))
+            row = cursor.fetchone()
+            if row is not None:
+                return User(row[0], row[1], None, row[2], row[3], None, row[4])  
+            return None
+        except Exception as ex:
+            print(f"Error en get_User: {ex}")
+            return None

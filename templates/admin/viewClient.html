@@ -1,0 +1,155 @@
+{% extends "./layout/Layout_Admin.html" %}
+
+
+{% block content %}
+<!--**********************************
+            Content body start
+        ***********************************-->
+
+<div class="page-titles">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="clientes.html">Clientes</a></li>
+        <li class="breadcrumb-item active"><a href="javascript:void(0)">Ver cliente</a></li>
+    </ol>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card form-container">
+            <div class="card-body">
+                <h4 class="card-title mb-4">{{ client.Name }} {{ client.First_LastName }}</h4>
+                <div class="form-validation">
+                    <form class="needs-validation" novalidate>
+                        <div class="row">
+                            <div class="col-xl-6">
+
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom01">Cédula
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom01"
+                                            value="{{ client.DocumentId }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom02">Nombre
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom02"
+                                            value="{{ client.Name }}" readonly>
+
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom03">Apellido 1
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom03"
+                                            value="{{ client.First_LastName }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom03">Apellido 2
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom03"
+                                            value="{{ client.Second_LastName }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom07">Edad
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom07"
+                                            value="{{ client.Age }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom07">Fecha
+                                        Nacimiento
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom07"
+                                            value="{{ client.Date_Birth }}" readonly>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-xl-6">
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom06">Correo
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom06"
+                                            value="{{ client.Mail }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom07">Telefono
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom07"
+                                            value="{{ client.Phone }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom04">Dirección</label>
+                                    <div class="col-lg-6">
+                                        <textarea class="form-control" id="validationCustom04" rows="5" readonly>{{ client.Address }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom08">Ocupación
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom08"
+                                            value="{{ client.Occupation }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom09">Teléfono de
+                                        emergencia
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom09"
+                                            value="{{ client.TelephoneEmergency }}" readonly>
+
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom11">Padecimiento
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom11"
+                                            value="{{ client.Ailments }}" readonly>
+
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom12">Limitaciones
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom11"
+                                            value="{{ client.Limitation }}" readonly>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="my-5">
+                            <a type="button" class="btn btn-danger me-2" href="{{ url_for('admin_app.clients') }}">Volver</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--**********************************
+            Content body end
+        ***********************************-->
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

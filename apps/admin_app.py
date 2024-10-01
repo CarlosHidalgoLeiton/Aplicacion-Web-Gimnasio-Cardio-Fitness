@@ -35,14 +35,14 @@ def inicio():
     return render_template("admin/index.html")
 
 #-------------Rutas de Clientes-------------#
-@admin_app.route("/clientes")
+@admin_app.route("/clients")
 @login_required
 @admin_permission.require()
-def clientes():
+def clients():
     conexion = Conection.conectar()
-    clientes = ModelCliente.get_all(conexion)
+    clients = ModelCliente.get_all(conexion)
     Conection.desconectar()
-    return render_template("admin/clientes.html", clientes=clientes)
+    return render_template("admin/clients.html", clients=clients)
 
 @admin_app.route("/insertClient", methods = ['POST'])
 @login_required
@@ -72,11 +72,11 @@ def insertClient():
 @admin_app.route("/clientes/ver/<cedula>")
 def verCliente(cedula):
     conexion = Conection.conectar()
-    cliente = ModelCliente.get_cliente_by_cedula(conexion, cedula)
+    client = ModelCliente.get_cliente_by_cedula(conexion, cedula)
     Conection.desconectar()
 
-    if cliente:
-        return render_template("admin/verCliente.html", cliente=cliente)
+    if client:
+        return render_template("admin/viewClient.html", client=client)
     else:
         # Manejar el caso en que no se encuentre el cliente
         return "Cliente no encontrado"
@@ -167,7 +167,7 @@ def users():
         if password != confirmPassword:
             return render_template("admin/users.html", error="Las contraseñas no coinciden.")
 
-        # Validación adicional (puedes agregar más validaciones aquí)
+        # Crear nuevo usuario
         newUser = User(
             id=0,  
             DocumentId=documentId,
@@ -177,8 +177,6 @@ def users():
             CreationDate=datetime.now(),
             Email=email
         )
-
-        print(newUser)
 
         try:
             conexion = Conection.conectar()
@@ -194,13 +192,33 @@ def users():
         finally:
             Conection().desconectar()  
 
-    return render_template("admin/users.html")
+    # lista de usuarios
+    try:
+        conexion = Conection.conectar()
+        users = ModelUser.get_Users(conexion)  
+    except Exception as e:
+        print(f"Error al obtener usuarios: {e}")
+        users = []  
+    finally:
+        Conection().desconectar()
+
+    return render_template("admin/users.html", users=users)  
 
 
-@admin_app.route("/usuarios/ver")
-@login_required
-def verUsuario():
-    return render_template("/admin/verUsuario.html")
+@admin_app.route("/users/view/<DocumentId>")
+def viewUser(DocumentId):
+    try:
+        conection = Conection.conectar()
+        user = ModelUser.get_User(conection, DocumentId)  
+    except Exception as e:
+        print(f"Error al obtener el usuario: {e}")
+        user = None
+    finally:
+        Conection().desconectar()
+
+    return render_template("/admin/viewUser.html", user=user)
+
+    
 
 @admin_app.route("/usuarios/actualizar")
 @login_required
