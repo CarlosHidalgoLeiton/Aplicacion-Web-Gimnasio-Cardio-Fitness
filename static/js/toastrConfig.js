@@ -6,10 +6,10 @@ toastr.options = {
     "positionClass": "toast-top-center",
     "preventDuplicates": false,
     "onclick": null,
-    "showDuration": "300",
-    "hideDuration": "1000",
-    "timeOut": "5000",
-    "extendedTimeOut": "1000",
+    "showDuration": "3000",
+    "hideDuration": "10000",
+    "timeOut": "50000",
+    "extendedTimeOut": "10000",
     "showEasing": "swing",
     "hideEasing": "linear",
     "showMethod": "fadeIn",
@@ -17,6 +17,6 @@ toastr.options = {
 }
 
 
-const success = () => {
-    toastr["info"]("Hola");
+const success = (message) => {
+    toastr.info(message);
 }
