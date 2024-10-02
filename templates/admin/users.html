@@ -26,61 +26,66 @@
         VALIDACION CON JQUERY
     ***********************************-->
     <div class="col-lg-12">
-        <div class="card form-container" id="formCliente" style="display: none;"  >
+        <div class="card form-container" id="formCliente" style="display: none;">
             <div class="card-body">
                 <div class="form-validation">
-                    <form class="needs-validation" action="/admin/users" method="POST" novalidate onsubmit="return validatePassword();">
+                    <form class="needs-validation" action="/admin/users" method="POST" novalidate
+                        onsubmit="return validatePassword();">
                         <div class="row">
                             <div class="col-xl-6">
+
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label" for="validationCustomRole">Rol <span
-                                            class="text-danger">*</span></label>
-                                    <div class="col-lg-6">
-                                        <select class="form-control" id="validationCustomRole" name="Role" required>
-                                            <option value="">Seleccione un rol</option>
-                                            <option value="Admin">Admin</option>
-                                            <option value="Cliente">Cliente</option>
-                                            <option value="Entrenador">Entrenador</option>
+                                    <label class="col-lg-4 col-form-label" for="validationCustomRole">Tipo de Selección
+                                        <span class="text-danger">*</span></label>
+                                    <div class="col-lg-4">
+                                        <select class="form-control" id="validationCustomRole" name="Role">
+                                            <option value="" disabled selected>Seleccione un rol</option>
+                                            <option value="admin">Admin</option>
+                                            <option value="trainer">Entrenador</option>
+                                            <option value="client">Cliente</option>
                                         </select>
                                         <div class="invalid-feedback">Por favor seleccione un rol.</div>
                                     </div>
-                                </div>
-
-                                <div class="mb-3 row" id="clientSelection" style="display: none;">
-                                    <label class="col-lg-4 col-form-label" for="validationCustomClient">Cliente
-                                        <span class="text-danger">*</span></label>
-                                    <div class="col-lg-6">
-                                        <select class="form-control" id="validationCustomClient" name="Client">
-                                            <option value="">Seleccione un cliente</option>
-                                            <option value="Carlos Hidalgo">Carlos Hidalgo</option>
-                                            <option value="Kennethe Navarro">Kennethe Navarro</option>
-
-                                        </select>
-                                        <div class="invalid-feedback">Por favor seleccione un cliente.</div>
+                                    <div class="col-lg-2">
+                                        <button class="btn btn-primary ms-2" id="addRoleButton" style="display: none;">+</button>
                                     </div>
                                 </div>
-
-                                <div class="mb-3 row" id="trainerSelection" style="display:none;">
-                                    <label class="col-lg-4 col-form-label" for="validationCustomTrainer">Entrenador
-                                        <span class="text-danger">*</span></label>
+                                
+                                <div class="mb-3 row" id="additionalSelectContainer" style="display: none;">
+                                    <label class="col-lg-4 col-form-label" for="additionalSelect">Selecciona un nuevo rol</label>
                                     <div class="col-lg-6">
-                                        <select class="form-control" id="validationCustomTrainer" name="Trainer">
-                                            <option value="">Seleccione un entrenador</option>
-                                            <option value="Maria Gonzalez">Maria Gonzalez</option>
-                                            <option value="Juan Perez">Juan Perez</option>
-
+                                        <select class="form-control" id="additionalSelect">
+                                            <option value="" disabled selected>Seleccionar un nuevo rol</option>
+                                            <option value="admin">Admin</option>
+                                            <option value="trainer">Entrenador</option>
                                         </select>
-                                        <div class="invalid-feedback">Por favor seleccione un entrenador.</div>
                                     </div>
                                 </div>
+                                
 
+                                
                                 <div class="mb-3 row">
                                     <label class="col-lg-4 col-form-label" for="validationCustomCedula">Cédula
-                                        <span class="text-danger">*</span></label>
+                                        <span class="text-danger">*</span>
+                                    </label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustomCedula" name="DocumentId"
-                                            placeholder="" required>
-                                        <div class="invalid-feedback">Por favor ingrese cédula.</div>
+                                        <select class="form-control  single-select" id="validationCustomCedula" name="DocumentId">
+                                            <option value="" disabled selected>Seleccionar la cédula</option>
+                                            {% if trainers %}
+                                                {% for trainer in trainers %}
+                                                    <option class="trainer" value="{{ trainer.DocumentId }}">{{ trainer.DocumentId }} (Entrenador)</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                            {% if clients %}
+                                                {% for client in clients %}
+                                                    <option class="client" value="{{ client.DocumentId }}">{{ client.DocumentId }} (Cliente)</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                            {% if not trainers and not clients %}
+                                                <option value="" disabled>No hay entrenadores ni clientes disponibles</option>
+                                            {% endif %}
+                                        </select>
+                                        <div class="invalid-feedback">Por favor seleccione un tipo.</div>
                                     </div>
                                 </div>
 
@@ -88,8 +93,8 @@
                                     <label class="col-lg-4 col-form-label" for="validationCustomPassword">Contraseña
                                         <span class="text-danger">*</span></label>
                                     <div class="col-lg-6">
-                                        <input type="password" class="form-control" id="validationCustomPassword" name="Password"
-                                            placeholder="" required>
+                                        <input type="password" class="form-control" id="validationCustomPassword"
+                                            name="Password" placeholder="" required>
                                         <div class="invalid-feedback">Por favor ingrese una contraseña.</div>
                                     </div>
                                 </div>
@@ -99,8 +104,8 @@
                                         for="validationCustomPasswordConfirm">Confirmar Contraseña <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-6">
-                                        <input type="password" class="form-control" id="validationCustomPasswordConfirm" name="ConfirmpPassword"
-                                            placeholder="" required>
+                                        <input type="password" class="form-control" id="validationCustomPasswordConfirm"
+                                            name="ConfirmpPassword" placeholder="" required>
                                         <div class="invalid-feedback">Por favor confirme la contraseña.</div>
                                     </div>
                                 </div>
@@ -139,62 +144,15 @@
                         </div>
                     </form>
 
-                    <script>
-
-                        function validatePassword() {
-                            const password = document.getElementById('validationCustomPassword').value;
-                            const confirmPassword = document.getElementById('validationCustomPasswordConfirm').value;
-
-                                if (password !== confirmPassword) {
-                                    alert('Las contraseñas no coinciden. Por favor, verifícalas.');
-                                    return false; // Evita que el formulario se envíe
-                                }
-                            return true; // Permite que el formulario se envíe
-                        }
-
-                        document.getElementById('validationCustomRole').addEventListener('change', function () {
-                            var role = this.value;
-                            var clientSelection = document.getElementById('clientSelection');
-                            var trainerSelection = document.getElementById('trainerSelection');
-
-                            clientSelection.style.display = 'none';
-                            trainerSelection.style.display = 'none';
-                            document.getElementById('validationCustomCedula').value = '';
-                            document.getElementById('validationCustomEmail').value = '';
-
-                            if (role === 'Cliente') {
-                                clientSelection.style.display = 'flex';
-                            } else if (role === 'Entrenador') {
-                                trainerSelection.style.display = 'flex';
-                            }
-
-                            document.getElementById('validationCustomClient').addEventListener('change', function () {
-                                var selectedClient = this.value;
-                                if (selectedClient) {
-                                    document.getElementById('validationCustomCedula').value = 'Cédula del Cliente';
-                                    document.getElementById('validationCustomEmail').value = 'Correo del Cliente';
-                                }
-                            });
-
-                            document.getElementById('validationCustomTrainer').addEventListener('change', function () {
-                                var selectedTrainer = this.value;
-                                if (selectedTrainer) {
-
-                                    document.getElementById('validationCustomCedula').value = 'Cédula del Entrenador';
-                                    document.getElementById('validationCustomEmail').value = 'Correo del Entrenador';
-                                }
-                            });
-                        });
-                    </script>
                 </div>
             </div>
         </div>
     </div>
 
 
-        <!--**********************************
-                        DATATABLES 
-                    ***********************************-->
+    <!--**********************************
+        DATATABLES 
+    ***********************************-->
     <div class="col-12">
         <div class="card">
             <div class="card-header">
@@ -220,11 +178,13 @@
                                 <td>{{ user.State }}</td>
                                 <td>
                                     <div class="d-flex">
-                                        <a href="{{ url_for('admin_app.viewUser', DocumentId=user.DocumentId) }}" class="btn btn-primary shadow btn-xs sharp me-1">
+                                        <a href="{{ url_for('admin_app.viewUser', DocumentId=user.DocumentId) }}"
+                                            class="btn btn-primary shadow btn-xs sharp me-1">
                                             <i class="fa fa-eye"></i>
                                         </a>
-                                        
-                                        <a href="{{ url_for('admin_app.actualizarUsuario', DocumentId=user.DocumentId) }}" class="btn btn-primary shadow btn-xs sharp me-1">
+
+                                        <a href="{{ url_for('admin_app.actualizarUsuario', DocumentId=user.DocumentId) }}"
+                                            class="btn btn-primary shadow btn-xs sharp me-1">
                                             <i class="fa fa-pencil"></i>
                                         </a>
                                         <a href="" class="btn btn-danger shadow btn-xs sharp">
@@ -239,7 +199,7 @@
                             </tr>
                             {% endfor %}
                         </tbody>
-                        
+
                     </table>
                 </div>
             </div>
@@ -257,37 +217,77 @@
 
 {% block scripts %}
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById('btnAgregarCliente').addEventListener('click', function () {
-            document.getElementById('formCliente').style.display = 'block';
-        });
+    
+    document.addEventListener('DOMContentLoaded', function() {
+    const roleSelect = document.getElementById('validationCustomRole');
+    const addRoleButton = document.getElementById('addRoleButton');
+    const additionalSelectContainer = document.getElementById('additionalSelectContainer');
+    const additionalSelect = document.getElementById('additionalSelect');
 
-        document.getElementById('btnCancelar').addEventListener('click', function () {
-            document.getElementById('formCliente').style.display = 'none';
-        });
+    roleSelect.addEventListener('change', function() {
+        const selectedRole = roleSelect.value;
 
+        // Mostrar el botón solo si se selecciona Admin o Entrenador
+        if (selectedRole === 'admin' || selectedRole === 'trainer') {
+            addRoleButton.style.display = 'flex';
+            additionalSelectContainer.style.display = 'none';
+        } else {
+            addRoleButton.style.display = 'none';
+            additionalSelectContainer.style.display = 'none';
+        }
     });
+
+    addRoleButton.addEventListener('click', function() {
+        additionalSelectContainer.style.display = 'flex'; // Mostrar el contenedor
+
+        const selectedRole = roleSelect.value;
+
+        // Deshabilitar la opción seleccionada en el segundo select
+        if (selectedRole === 'admin') {
+            additionalSelect.querySelector('option[value="admin"]').style.display = 'none';
+            additionalSelect.querySelector('option[value="trainer"]').style.display = 'block'; // Asegúrate de que la opción de Entrenador esté visible
+        } else if (selectedRole === 'trainer') {
+            additionalSelect.querySelector('option[value="trainer"]').style.display = 'none';
+            additionalSelect.querySelector('option[value="admin"]').style.display = 'block'; // Asegúrate de que la opción de Admin esté visible
+        }
+
+        // Reiniciar la selección en el primer select
+        roleSelect.value = ''; // Reiniciar selección
+    });
+});
+
+(function () {
+    'use strict'
+
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.querySelectorAll('.needs-validation')
+
+    // Loop over them and prevent submission
+    Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+
+                form.classList.add('was-validated')
+            }, false)
+        })
+})()
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('btnAgregarCliente').addEventListener('click', function () {
+        document.getElementById('formCliente').style.display = 'block';
+    });
+
+    document.getElementById('btnCancelar').addEventListener('click', function () {
+        document.getElementById('formCliente').style.display = 'none';
+    });
+
+});
+
+
 </script>
 
-<script>    
-    (function () {
-        'use strict'
-
-        // Fetch all the forms we want to apply custom Bootstrap validation styles to
-        var forms = document.querySelectorAll('.needs-validation')
-
-        // Loop over them and prevent submission
-        Array.prototype.slice.call(forms)
-            .forEach(function (form) {
-                form.addEventListener('submit', function (event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                    }
-
-                    form.classList.add('was-validated')
-                }, false)
-            })
-    })()
-</script>
 {% endblock %}
