@@ -96,10 +96,6 @@ def updateClient():
 
 
 
-    
-    
-
-
 
 @admin_app.route("/clientes/ver/<cedula>")
 def verCliente(cedula):
