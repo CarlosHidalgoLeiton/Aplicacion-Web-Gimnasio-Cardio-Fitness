@@ -20,23 +20,32 @@
     <!-- App favicon -->
     <link rel="shortcut icon" href="../../static/images/Icono.jpg">
 
+    <!-- Toastr -->
+    <link href="../../../static/vendor/toastr/css/toastr.min.css" rel="stylesheet">
+
     <!-- Bootstrap css -->
     <link href="../../static/css/bootstrap.min.css" rel="stylesheet" type="text/css" id="app-style" />
 
     <!-- App css -->
     <link href="../../static/css/app.min.css" rel="stylesheet" type="text/css" />
 
+    <script src="../../../static/vendor/global/global.min.js"></script>
+    <!-- Toastr -->
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+    <script src="../../static/js/toastrConfig.js"></script>
 </head>
 
 <body class="auth-fluid-pages pb-0">
     <div style="display: flex; justify-content: center;">
         {% if error %}
-        <div class="alert alert-danger mt-4" role="alert" style="position: absolute; z-index: 5;">
-            <p>{{ error }}</p>
-        </div>
-    {% endif %}
+            <script>
+                errorMessage("{{ error|escape }}");
+            </script>
+        {% endif %}
     </div>
-    
+
 
     <div class="auth-fluid">
         <div class="auth-fluid-form-box">
@@ -71,7 +80,8 @@
                                 placeholder="Ingrese su cedula">
                         </div>
                         <div class="mb-3">
-                            <a href="{{ url_for('login_app.recuperarContrasena') }}" class="text-muted float-end"><small>Recuperar Contraseña</small></a>
+                            <a href="{{ url_for('login_app.recuperarContrasena') }}"
+                                class="text-muted float-end"><small>Recuperar Contraseña</small></a>
                             <label for="contrasena" class="form-label">Contraseña</label>
                             <div class="input-group input-group-merge">
                                 <input type="password" name="Password" id="Password" class="form-control" required=""
@@ -80,23 +90,17 @@
                         </div>
 
                         <div class="text-center d-grid">
-                            <button class="btn btn-primary" type="submit" >Iniciar Sesion </button>
+                            <button class="btn btn-primary" type="submit">Iniciar Sesion </button>
                         </div>
                     </form>
 
 
                 </div>
-            </div> 
-        </div>
-
-        <div class="auth-fluid-right text-center">
-            <div class="auth-user-testimonial">
-                </h5>
-            </div> 
+            </div>
         </div>
     
-    </div>
 
+    </div>
 </body>
 
 </html>

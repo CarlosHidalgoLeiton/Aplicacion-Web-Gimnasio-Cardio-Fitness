@@ -7,7 +7,7 @@
         ***********************************-->
 <div class="page-titles">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="clientes.html">Clientes</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('admin_app.clients') }}">Clientes</a></li>
         <li class="breadcrumb-item active"><a href="javascript:void(0)">Editar Cliente</a></li>
     </ol>
 </div>
@@ -15,17 +15,18 @@
     <div class="col-lg-12">
         <div class="card form-container">
             <div class="card-body">
-                <h4 class="card-title mb-4">Cliente Nombre Apellido</h4>
+                <h4 class="card-title mb-4">Cliente {{ client.Name + " " + client.First_LastName }}</h4>
                 <div class="form-validation">
-                    <form class="needs-validation" novalidate>
+                    <form class="needs-validation" action="/admin/client/update" novalidate method="POST">
+                        <input type="hidden" name="id" value="{{ client.DocumentId }}">
                         <div class="row">
                             <div class="col-xl-6">
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label" for="validationCustom01">Cedula
+                                    <label class="col-lg-4 col-form-label" for="validationCustom01">Cédula
                                         <span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom01" placeholder=""
+                                        <input type="text" class="form-control" id="validationCustom01" name="documentId" value="{{ client.DocumentId }}"
                                             required>
                                         <div class="invalid-feedback">
                                             Por favor ingresar Cedula
@@ -37,7 +38,7 @@
                                             class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom02" placeholder=""
+                                        <input type="text" name="name" class="form-control" id="validationCustom02" value="{{ client.Name }}"
                                             required>
                                         <div class="invalid-feedback">
                                             Por favor ingresar nombre
@@ -49,7 +50,7 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom03" placeholder=""
+                                        <input type="text" name="firstLastName" class="form-control" id="validationCustom03" value="{{ client.First_LastName }}"
                                             required>
                                         <div class="invalid-feedback">
                                             Por favor ingresar Apellido 1
@@ -61,7 +62,7 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom04" placeholder=""
+                                        <input type="text" name="secondLastName" class="form-control" id="validationCustom04" value="{{ client.Second_LastName }}"
                                             required>
                                         <div class="invalid-feedback">
                                             Por favor ingresar Apellido 2
@@ -73,7 +74,7 @@
                                         Nacimiento<span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <input type="text" id="mdate" class="form-control" placeholder="Fecha" required>
+                                        <input type="date" name="Date_Birth" id="mdate" class="form-control" value="{{ client.Date_Birth }}" required>
                                         <div class="invalid-feedback">
                                             Por favor ingresar Fecha Nacimiento
                                         </div>
@@ -86,7 +87,7 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom06" placeholder=""
+                                        <input type="mail" name="mail" class="form-control" id="validationCustom06" value="{{ client.Mail }}"
                                             required>
                                         <div class="invalid-feedback">
                                             Por favor ingresar Correo.
@@ -98,7 +99,7 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom07" placeholder=""
+                                        <input type="number" class="form-control" name="phone" id="validationCustom07" value="{{ client.Phone }}"
                                             required>
                                         <div class="invalid-feedback">
                                             Por favor ingresar Telefono.
@@ -110,7 +111,7 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom08" placeholder=""
+                                        <input type="text" class="form-control" name="ocupation" id="validationCustom08" value="{{ client.Occupation }}"
                                             required>
                                         <div class="invalid-feedback">
                                             Por favor ingresar Ocupación.
@@ -122,7 +123,7 @@
                                         emergencia<span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom09" placeholder=""
+                                        <input type="number" name="emergencyPhone" class="form-control" id="validationCustom09" value="{{ client.TelephoneEmergency }}"
                                             required>
                                         <div class="invalid-feedback">
                                             Por favor ingresar teléfono de emergencia.
@@ -134,7 +135,7 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom10" placeholder=""
+                                        <input type="text" name="adress" class="form-control" id="validationCustom10" value="{{ client.Address }}"
                                             required>
                                         <div class="invalid-feedback">
                                             Por favor ingresar Dirección.
@@ -146,11 +147,7 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom11" placeholder=""
-                                            required>
-                                        <div class="invalid-feedback">
-                                            Por favor ingresar Padecimiento.
-                                        </div>
+                                        <input type="text" name="ailments" class="form-control" id="validationCustom11" value="{{ client.Ailments }}">
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -158,11 +155,8 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom11" placeholder=""
-                                            required>
-                                        <div class="invalid-feedback">
-                                            Por favor ingresar Limitaciones.
-                                        </div>
+                                        <input type="text" name="limitation" class="form-control" id="validationCustom11" value="{{ client.Limitation }}"
+                                            >
                                     </div>
                                 </div>
 
@@ -170,7 +164,7 @@
                         </div>
                         <div class="my-5">
                             <button type="submit" class="btn btn-primary me-2">Actualizar</button>
-                            <a type="button" class="btn btn-danger me-2" href="{{ url_for('admin_app.clientes') }}">Cancelar</a>
+                            <a type="button" class="btn btn-danger me-2" href="{{ url_for('admin_app.clients') }}">Cancelar</a>
 
                         </div>
                     </form>
