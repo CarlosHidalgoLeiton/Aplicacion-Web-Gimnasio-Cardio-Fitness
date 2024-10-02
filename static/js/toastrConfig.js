@@ -17,6 +17,18 @@ toastr.options = {
 }
 
 
-const success = (message) => {
-    toastr.info(message);
+const errorMessage = (message) => {
+    toastr.error("Error: "+ message);
+}
+
+const successMessage = (message) => {
+    toastr.success("Hecho: "+ message);
+}
+
+const infoMessage = (message) => {
+    toastr.info("Información: "+ message);
+}
+
+const warningMessage = (message) => {
+    toastr.warning("Advertencia: "+ message);
 }

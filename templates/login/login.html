@@ -40,9 +40,9 @@
 <body class="auth-fluid-pages pb-0">
     <div style="display: flex; justify-content: center;">
         {% if error %}
-        <div class="alert alert-danger mt-4" role="alert" style="position: absolute; z-index: 5;">
-            <p>{{ error }}</p>
-        </div>
+            <script>
+                errorMessage("{{ error|escape }}");
+            </script>
         {% endif %}
     </div>
 
@@ -101,10 +101,6 @@
     
 
     </div>
-
-    <script>
-        success()
-    </script>
 </body>
 
 </html>
