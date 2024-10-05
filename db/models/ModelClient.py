@@ -23,10 +23,14 @@ class ModelClient:
                 else:
                     print("No se pudo crear el cliente.")
                     return False
-
+                
+            except BaseException as ex:
+                print(f"Error en ModelClient insertClient: {ex}")
+                conection.rollback()
+                return "DataBase"
             except Exception as ex:
-                print(f"Ocurrió un error en insertar un cliente {ex}")
-                # conection.rollback()
+                print(f"Error en ModelClient insertClient: {ex}")
+                conection.rollback()
                 return False
         else:
             return False
@@ -158,7 +162,30 @@ class ModelClient:
     
 
     @classmethod
-    def validateDataForm(cls,request):
+    def deleteClient(cls, conection, clientId):
+        if clientId != None:
+            try:
+                cursor = conection.cursor()
+                sql = """DELETE FROM Cliente WHERE Cedula = %s"""
+                cursor.execute(sql, (clientId))
+                if cursor.rowcount > 0:
+                    # print(f"Cliente {client.DocumentId} actualizado exitosamente.")
+                    conection.commit()
+                    return True
+                else:
+                    print("No se pudo actualizar el cliente.")
+                    conection.rollback()
+                    return False
+
+            except Exception as ex:
+                print(f"Ocurrió un error en actualizar un cliente {ex}")
+                conection.rollback()
+                return False
+        else:
+            return False
+    
+    @classmethod
+    def getDataClient(cls, request):
         documentId = request.form['documentId']
         name = request.form['name']
         firstLastName = request.form['firstLastName']
@@ -174,10 +201,16 @@ class ModelClient:
         limitation = request.form['limitation']
         age = datetime.now().year - Date_Birth.year
 
+        return Client(documentId, name, firstLastName, secondLastName, Date_Birth, age, mail, phone, None, ocupation, emergencyPhone, adress, None, ailments, limitation, None, None)
+
+
+    @classmethod
+    def validateDataForm(cls, client):
+
         #Validation for documentID 
-        if documentId != None:
-            if "-" not in documentId and not any( d.isalpha() for d in documentId): #Valida que sea alfabetico y que no tenga un "-"
-                if len(documentId) < 9:
+        if client.documentId != None:
+            if "-" not in client.documentId and not any( d.isalpha() for d in client.documentId): #Valida que sea alfabetico y que no tenga un "-"
+                if len(client.documentId) < 9:
                     return "El número de cédula ingresado no es válido. Debe ingresar 9 dígitos."
             else:
                 return "El número de cédula no debe contener letras ni caracteres especiales."
@@ -185,45 +218,45 @@ class ModelClient:
             return "Debe ingresar el número de cédula."
         
         #Validation for name
-        if name != None:
-            if not name.isalpha():
+        if client.name != None:
+            if not client.name.isalpha():
                 return "El nombre no debe contener números o caracteres especiales."
         else:
             return "Debe ingresar el nombre."
         
         #Validation for firstLastName
-        if firstLastName != None:
-            if not firstLastName.isalpha():
+        if client.firstLastName != None:
+            if not client.firstLastName.isalpha():
                 return "El apellido 1 no debe contener números o caracteres especiales."
         else:
             return "Debe ingresar el apellido 1."
         
         #Validation for secondLastName
-        if secondLastName != None:
-            if not secondLastName.isalpha():
+        if client.secondLastName != None:
+            if not client.secondLastName.isalpha():
                 return "El apellido 2 no debe contener números o caracteres especiales."
         else:
             return "Debe ingresar el apellido 2."
         
         #Validation for Date_Birth
-        if Date_Birth != None:
-            if datetime.strptime(Date_BirthStr, "%Y-%m-%d") > datetime.now():
+        if client.Date_Birth != None:
+            if datetime.strptime(client.Date_Birth, "%Y-%m-%d") > datetime.now():
                 return "La fecha ingresada no es válida."
         else:
             return "Debe ingresar la fecha de nacimiento."
         
         #Validation for mail
-        if mail != None:
+        if client.mail != None:
             expression = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$' #To validate mail format
-            if not re.match(expression, mail):
+            if not re.match(expression, client.mail):
                 return "El correo ingresado no es válido."
         else:
             return "Debe ingresar el correo."
         
         #Validation for phone
-        if phone != None:
-            if "-" not in phone and not any( p.isalpha() for p in phone): #Valida que sea alfabetico y que no tenga un "-"
-                if len(phone) != 8:
+        if client.phone != None:
+            if "-" not in client.phone and not any( p.isalpha() for p in client.phone): #Valida que sea alfabetico y que no tenga un "-"
+                if len(client.phone) != 8:
                     return "El número de teléfono ingresado no es válido. Debe ingresar 8 dígitos."
             else:
                 return "El número de teléfono no debe contener letras o caracteres especiales."
@@ -231,16 +264,16 @@ class ModelClient:
             return "Debe ingresar el número de teléfono."
         
         #Validation for ocupation
-        if ocupation != None:
-            if not ocupation.isalpha():
+        if client.ocupation != None:
+            if not client.ocupation.isalpha():
                 return "La ocupación no debe contener números ni caracteres especiales"
         else:
             return "Debe ingresar la ocupación."
         
         #Validation for emergencyPhone
-        if emergencyPhone != None:
-            if "-" not in emergencyPhone and not any( p.isalpha() for p in emergencyPhone): #Valida que sea alfabetico y que no tenga un "-"
-                if len(emergencyPhone) != 8:
+        if client.emergencyPhone != None:
+            if "-" not in client.emergencyPhone and not any( p.isalpha() for p in client.emergencyPhone): #Valida que sea alfabetico y que no tenga un "-"
+                if len(client.emergencyPhone) != 8:
                     return "El número de teléfono de emergencia ingresado no es válido. Debe ingresar 8 dígitos."
             else:
                 return "El número de teléfono de emergencia no debe contener letras o caracteres especiales."
@@ -248,16 +281,18 @@ class ModelClient:
             return "Debe ingresar el número de teléfono de emergencia."
         
         #Validation for direction
-        if adress == None:
+        if client.adress == None:
             return "Debe ingresar la dirección."
         
         #Validation for ailments
-        if ailments == None:
+        if client.ailments == None:
             return "Debe ingresar los padecimientos. En caso de que no tenga unicamente ingrese 'Ningúno'."
         
         #Validation for limitation
-        if limitation == None:
+        if client.limitation == None:
             return "Debe ingresar las limitaciones. En caso de que no tenga unicamente ingrese 'Ningúno'."
+    
+        return True
         
-        return Client(documentId, name, firstLastName, secondLastName, Date_Birth, age, mail, phone, None, ocupation, emergencyPhone, adress, None, ailments, limitation, None, None)
+        
         

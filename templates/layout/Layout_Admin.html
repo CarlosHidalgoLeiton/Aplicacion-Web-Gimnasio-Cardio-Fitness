@@ -21,7 +21,7 @@
     <link href="../images/favicon.png" rel="shortcut icon" type="image/x-icon">
 
     <!-- Toastr -->
-    <link href="../../../static/vendor/toastr/css/toastr.min.css" rel="stylesheet" >
+    <link href="../../../static/vendor/toastr/css/toastr.min.css" rel="stylesheet">
 
     <!-- Datatable -->
     <link rel="stylesheet" href="../../../static/vendor/datatables/css/jquery.dataTables.min.css">
@@ -35,13 +35,40 @@
     <link rel="stylesheet" href="../../../static/vendor/select2/css/select2.min.css">
 
     <!-- Custom Stylesheet -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&display=swap">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&display=swap">
     <link rel="stylesheet" href="../../../static/css/style.css">
 
 </head>
 
 
 <body>
+    <!-- Required vendors -->
+    <script src="../../../static/vendor/global/global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Toastr -->
+    <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+    <script src="../../static/js/toastrConfig.js"></script>
+
+    <!-- Actions -->
+    <script src="../../static/js/eliminar.js"></script>
+
+
+    <!-- Alerts toastr -->
+    {% if error %}
+    <script>
+        errorMessage("{{ error|escape }}");
+    </script>
+    {% endif %}
+    {% if done %}
+    <script>
+        successMessage("{{ done|escape }}");
+    </script>
+    {% endif %}
 
     <!--*******************
         Preloader start
@@ -227,7 +254,7 @@
                 <div class="row">
                     <div class="col-12">
                         {% block content%}
-                            <!-- Here go the content -->
+                        <!-- Here go the content -->
                         {% endblock %}
                     </div>
                 </div>
@@ -257,8 +284,8 @@
         Scripts
     ***********************************-->
 
-    <!-- Required vendors -->
-    <script src="../../../static/vendor/global/global.min.js"></script>
+
+
     <script src="../../../static/vendor/bootstrap-select/js/bootstrap-select.min.js"></script>
     <!--select plugins-file-->
     <script src="../../../static/vendor/select2/js/select2.full.min.js"></script>

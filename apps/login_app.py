@@ -47,22 +47,25 @@ def login():
             if logged_user != "Invalid User":
                 if logged_user != "Inactive":
                     if logged_user != "Password":
-                        if type(logged_user) == User:
-                            login_user(logged_user)
-                            if logged_user.role == "Admin":
-                                return redirect(url_for('admin_app.inicio'))
-                            elif logged_user.role == "Cliente":
-                                return redirect(url_for('client_app.inicio'))
-                            elif logged_user.role == 'Trainer':
-                                return redirect(url_for('trainer_app.inicio'))
+                        if logged_user != "DataBase":
+                            if type(logged_user) == User:
+                                login_user(logged_user)
+                                if logged_user.role == "Admin":
+                                    return redirect(url_for('admin_app.inicio'))
+                                elif logged_user.role == "Cliente":
+                                    return redirect(url_for('client_app.inicio'))
+                                elif logged_user.role == 'Trainer':
+                                    return redirect(url_for('trainer_app.inicio'))
+                                else:
+                                    return render_template("login/login.html")
                             else:
-                                return render_template("login/login.html")
+                                return render_template("login/login.html", error="Ha ocurrido un error. Intentelo más tarde.")
                         else:
-                            return render_template("login/login.html", error="Ha ocurrido un error. Intentelo más tarde.")
+                            return render_template("login/login.html", error="No se pudo obtener la información. Contáctese con el desarrollador.")
                     else:
                         return render_template("login/login.html", error="Contraseña no válida.")
                 else:
-                    return render_template("login/login.html", error="Su usuario esta inactivo. Comuniquese con el administrador")
+                    return render_template("login/login.html", error="Su usuario esta inactivo. Inténtalo de nuevo más tarde o comuniquese con el administrador")
             else:
                 return render_template("login/login.html", error="Usuario ingresado no es válido.")
         except Exception as e:

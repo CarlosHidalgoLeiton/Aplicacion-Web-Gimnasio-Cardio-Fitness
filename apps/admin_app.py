@@ -1,5 +1,5 @@
 #Importaciones
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 from db.conection import Conection
 from db.models.ModelUser import ModelUser
@@ -36,31 +36,31 @@ def inicio():
     return render_template("admin/index.html")
 
 #-------------Rutas de Clientes-------------#
-@admin_app.route("/clients")
+@admin_app.route("/clients", methods = ['GET', 'POST'])
 @login_required
 @admin_permission.require()
 def clients():
     conexion = Conection.conectar()
     clients = ModelClient.get_all(conexion)
     Conection.desconectar()
-    return render_template("admin/clients.html", clients=clients)
-
-@admin_app.route("/insertClient", methods = ['POST'])
-@login_required
-def insertClient():
-    client = ModelClient.validateDataForm(request)
-    if type(client) != Client:
-        return redirect(url_for('admin_app.clients', error = client))
-    conection = Conection.conectar()
-    if conection == None:
-        return redirect(url_for('admin_app.clients', error = "Error en la conexion"))
-    insert = ModelClient.insertClient(conection, client)
-    if insert:
-        print('Insertado conrrectamente')
-        return redirect(url_for('admin_app.clients', done = "Cliente creado correctamente."))
+    if request.method == 'POST':
+        client = ModelClient.getDataClient()
+        client = ModelClient.validateDataForm(request)
+        if type(client) != Client:
+            return render_template("admin/clients.html", clients=clients, error=client)
+        conection = Conection.conectar()
+        if conection == None:
+            return render_template("admin/clients.html", clients=clients, error= "Error en la conexión.")
+        insert = ModelClient.insertClient(conection, client)
+        if insert:
+            conexion = Conection.conectar()
+            clients = ModelClient.get_all(conexion)
+            Conection.desconectar()
+            return render_template("admin/clients.html", clients=clients, done = "Cliente creado correctamente.")
+        else:
+            return render_template("admin/clients.html", clients=clients, error= "No se pudo ingresar el cliente.")
     else:
-        print('Algo paso')
-        return redirect(url_for('admin_app.clients', error = "No se pudo ingresar el cliente."))
+        return render_template("admin/clients.html", clients=clients)
 
 @admin_app.route("/clientes/actualizar/<documentId>", methods=['GET'])
 @login_required
@@ -94,10 +94,9 @@ def updateClient():
         print('Algo paso')
         return redirect(url_for('admin_app.clients', error = "No se pudo actualizar el cliente."))
 
-
-
-
 @admin_app.route("/clientes/ver/<cedula>")
+@login_required
+@admin_permission.require()
 def verCliente(cedula):
     conexion = Conection.conectar()
     client = ModelClient.get_cliente_by_cedula(conexion, cedula)
@@ -109,7 +108,21 @@ def verCliente(cedula):
         # Manejar el caso en que no se encuentre el cliente
         return "Cliente no encontrado"
 
+@admin_app.route("/clientes/eliminar", methods = ['POST'])
+@login_required
+@admin_permission.require()
+def deleteClient():
+    data = request.get_json()
+    clientId = data.get('clientId')
+    conexion = Conection.conectar()
+    delete = ModelClient.deleteClient(conexion, clientId)
+    Conection.desconectar()
 
+    if delete:
+        return jsonify({"message": "Hecho"})
+    else:
+        # Manejar el caso en que no se encuentre el cliente
+        return jsonify({"error": "No se pudo eliminar"})
 
 
 
