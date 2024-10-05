@@ -29,7 +29,7 @@
                         <div class="card form-container" id="formCliente" style="display: none;">
                             <div class="card-body">
                                 <div class="form-validation">
-                                    <form class="needs-validation" action="/admin/insertClient" method="POST">
+                                    <form class="needs-validation" action="/admin/clients" novalidate method="POST">
                                         <div class="row">
                                             <div class="col-xl-6">
                                                 <div class="mb-3 row">
@@ -245,7 +245,7 @@
                                                         <a href="{{ url_for('admin_app.viewUpdateClient', documentId=client['DocumentId']) }}" class="btn btn-primary shadow btn-xs sharp me-1">
                                                             <i class="fa fa-pencil"></i>
                                                         </a>
-                                                        <button onclick="eliminarPrueba()" id="deshabilitar" class="btn btn-danger shadow btn-xs sharp">
+                                                        <button onclick="deleteClient(event)" data-id="{{ client['DocumentId'] }}" id="deshabilitar-{{ client['DocumentId'] }}" class="btn btn-danger shadow btn-xs sharp">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </div>
@@ -268,6 +268,7 @@
 
 
 {% block scripts %}
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('btnAgregarCliente').addEventListener('click', function () {
@@ -301,4 +302,5 @@
             })
     })()
 </script>
+
 {% endblock %}

@@ -24,8 +24,11 @@ class ModelUser:
                     return 'Inactive'
             else:
                 return "Invalid User"
+        except BaseException as ex:
+            print(f"Error en ModelUser login: {ex}")
+            return "DataBase"
         except Exception as ex:
-            print(f"Error en login: {ex}")
+            print(f"Error en ModelUser login: {ex}")
             return None
 
 
