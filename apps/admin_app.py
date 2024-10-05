@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, jsonif
 from flask_login import login_required, current_user
 from db.conection import Conection
 from db.models.ModelUser import ModelUser
+from db.models.ModelTrainer import ModelTrainer
 from db.models.ModelClient import ModelClient
 from db.models.entities.User import User
 from db.models.entities.Client import Client
@@ -242,7 +243,19 @@ def users():
     finally:
         Conection().desconectar()
 
-    return render_template("admin/users.html", users=users)  
+    # Obtener clientes y entrenadores
+    try:
+        conexion = Conection.conectar()
+        clients = ModelTrainer.get_all_clients(conexion) 
+        trainers = ModelTrainer.get_all_trainers(conexion) 
+    except Exception as e:
+        print(f"Error al obtener clientes o entrenadores: {e}")
+        clients = []
+        trainers = []
+    finally:
+        Conection().desconectar()
+
+    return render_template("admin/users.html", users=users, clients=clients, trainers=trainers)
 
 
 @admin_app.route("/users/view/<DocumentId>")
