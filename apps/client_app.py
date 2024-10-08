@@ -2,7 +2,8 @@
 from flask import Blueprint, render_template, jsonify, redirect, url_for
 from flask_login import login_required, current_user
 from apps.permissions import client_permission
-
+from db.conection import Conection
+from db.models.ModelClient import ModelClient
 #Creación de los blueprint para usar en app.py
 client_app = Blueprint('client_app', __name__)
 
@@ -26,6 +27,25 @@ def forbidden(error):
 @client_app.route('/notAutorized')
 def notAutorized():
     return "No tienes permisos para ingresar"
+
+
+    #-------------Rutas de Perfil -------------#
+@client_app.route("/perfil")
+@login_required
+
+def perfil():
+    try:
+        conexion = Conection.conectar()
+        client = ModelClient.get_cliente_by_cedula(conexion, current_user.DocumentId)
+        print(client)
+    except Exception as ex:
+        print(f"Error al obtener el perfil del cliente: {ex}")
+        client = None
+    finally:
+        Conection.desconectar()
+    
+    return render_template("client/perfil.html", client=client)
+
 
 #-------------Rutas de inventario-------------#
 @client_app.route("/inventario")
@@ -58,7 +78,3 @@ def estadisticas():
 def verEstadisticas():
     return render_template("client/verEstadistica.html")
 
-#-------------Rutas de perfil-------------#
-@client_app.route("/perfil")
-def perfil():
-    return render_template("client/perfil.html")

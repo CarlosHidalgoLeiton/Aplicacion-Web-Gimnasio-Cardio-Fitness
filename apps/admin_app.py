@@ -262,12 +262,81 @@ def viewUser(DocumentId):
 
     return render_template("/admin/viewUser.html", user=user)
 
-    
-@admin_app.route("/usuarios/actualizar")
-@login_required
-def actualizarUsuario():
-    return render_template("/admin/actualizarUsuario.html")
 
+@admin_app.route("/users/update/<string:DocumentId>", methods=["GET", "POST"])
+@login_required   
+def updateUser(DocumentId):
+        try:
+            conexion = Conection.conectar()
+            user = ModelUser.get_UserU(conexion, DocumentId)
+
+            if not user:
+                return render_template("/admin/updateUser.html", error="Usuario no encontrado.")
+            
+            if request.method == "POST":
+                documentId = request.form['DocumentId']
+                password = request.form.get('Password')
+                confirmPassword = request.form.get('ConfirmPassword')
+                state = request.form['State']
+                role = request.form['Role']
+                email = request.form['Email']
+                if password and password != confirmPassword:
+                    return render_template("/admin/updateUser.html", user=user, error="Las contraseñas no coinciden.")
+
+                if password:
+                    hashed_password = User.generate_password_hash(password)
+                else:
+                    hashed_password = user.Password  
+
+                updatedUser = User(user.id, documentId, hashed_password, state, role, user.CreationDate, email)
+
+                try:
+                    ModelUser.update_User(conexion, updatedUser)
+                    return redirect(url_for('admin_app.users'))
+                except Exception as e:
+                    print(f"Error actualizando usuario: {e}")
+                    return render_template("/admin/updateUser.html", user=user, error="Error actualizando usuario.")
+
+            return render_template("/admin/updateUser.html", user=user)
+
+        except Exception as ex:
+            print(f"Error al obtener el usuario: {ex}")
+            return render_template("/admin/updateUser.html", error="Error al obtener el usuario.")
+        finally:
+            Conection().desconectar()
+
+
+@admin_app.route("/users/disable", methods = ['POST'])
+@login_required
+@admin_permission.require()
+def disableUser():
+    data = request.get_json()
+    DocumentId = data.get('DocumentId')
+    conexion = Conection.conectar()
+    disable = ModelUser.disableUser(conexion, DocumentId)
+    Conection.desconectar()
+
+    if disable:
+        return jsonify({"message": "Hecho"})
+    else:
+        # Manejar el caso en que no se encuentre el cliente
+        return jsonify({"error": "No se pudo deshabilitar"})
+    
+@admin_app.route("/users/able", methods = ['POST'])
+@login_required
+@admin_permission.require()
+def ableUser():
+    data = request.get_json()
+    DocumentId = data.get('DocumentId')
+    conexion = Conection.conectar()
+    able = ModelUser.ableUser(conexion, DocumentId)
+    Conection.desconectar()
+
+    if able:
+        return jsonify({"message": "Hecho"})
+    else:
+        # Manejar el caso en que no se encuentre el cliente
+        return jsonify({"error": "No se pudo habilitar"})
 
 
 #-------------Rutas de facturas-------------#

@@ -20,73 +20,67 @@
 							<form class="needs-validation" novalidate>
 								<div class="row">
 									<div class="col-xl-6">
-										
 										<div class="mb-3 row">
-											<label class="col-lg-4 col-form-label"
-												for="validationCustom01">Cédula
-											</label>
+											<label class="col-lg-4 col-form-label" for="validationCustomDocumentId">Cédula</label>
 											<div class="col-lg-6">
-												<input type="text" class="form-control" id="validationCustom01"
-													value="Información" >
-											</div>
-										</div>
-										<div class="mb-3 row">
-											<label class="col-lg-4 col-form-label"
-												for="validationCustom02">Rol 
-											</label>
-											<div class="col-lg-6">
-												<input type="text" class="form-control" id="validationCustom02"
-													value="Información" >
-												
-											</div>
-										</div>
-										<div class="mb-3 row">
-											<label class="col-lg-4 col-form-label"
-												for="validationCustom02">Nombre 
-											</label>
-											<div class="col-lg-6">
-												<input type="text" class="form-control" id="validationCustom02"
-													value="Información" >
-												
+												<input type="text" class="form-control" id="validationCustomDocumentId"
+													value="{{ client.DocumentId }}" name="DocumentId" readonly >
 											</div>
 										</div>
 										
+										<div class="mb-3 row">
+											<label class="col-lg-4 col-form-label" for="validationCustomName">Nombre </label>
+											<div class="col-lg-6">
+												<input type="text" class="form-control" id="validationCustomName"
+													value="{{ client.Name }}" name="Name" readonly>
+											</div>
+										</div>
+
+										<div class="mb-3 row">
+											<label class="col-lg-4 col-form-label" for="validationCustomEmail">Correo</label>
+											<div class="col-lg-6">
+												<input type="text" class="form-control" id="validationCustomEmail"
+													value="{{ client.Mail }}" name="Email" readonly>
+											</div>
+										</div>
+
+										<div class="mb-3 row">
+											<label class="col-lg-4 col-form-label" for="validationCustomRole">Rol</label>
+											<div class="col-lg-6">
+												<input type="text" class="form-control" id="validationCustomRole"
+													value="{{ current_user.role }}" name="Role" readonly>
+											</div>
+										</div>
+
 									</div>
+
 									<div class="col-xl-6">
+
 										<div class="mb-3 row">
-											<label class="col-lg-4 col-form-label"
-												for="validationCustom11">Apellidos
-											</label>
+											<label class="col-lg-4 col-form-label" for="validationCustomLastName"> Primer Apellido</label>
 											<div class="col-lg-6">
-												<input type="text" class="form-control" id="validationCustom11"
-													value="Información" >
-												
+												<input type="text" class="form-control" id="validationCustomLastName"
+													value="{{client.First_LastName }}" name="lastName" readonly>
 											</div>
 										</div>
-										
+
 										<div class="mb-3 row">
-											<label class="col-lg-4 col-form-label"
-												for="validationCustom11">Correo
-											</label>
+											<label class="col-lg-4 col-form-label" for="validationCustomLastName2">Segundo Apellido </label>
 											<div class="col-lg-6">
-												<input type="text" class="form-control" id="validationCustom11"
-													value="Información" >
-												
+												<input type="text" class="form-control" id="validationCustomLastName2"
+													value="{{ client.Second_LastName }}" name="lastName2" readonly>
 											</div>
-											
 										</div>
+								
 										<div class="mb-3 row">
-											<label class="col-lg-4 col-form-label"
-												for="validationCustom11">Edad
-											</label>
+											<label class="col-lg-4 col-form-label" for="validationCustomAge">Edad</label>
 											<div class="col-lg-6">
-												<input type="text" class="form-control" id="validationCustom11"
-													value="Información" >
-												
+												<input type="text" class="form-control" id="validationCustomAge"
+													value="{{ client.Age }}" name="Age" readonly >
 											</div>
-											
 										</div>
 									</div>
+
 								</div>
 								<div class="my-5">
 									<a type="button" class="btn btn-danger me-2"

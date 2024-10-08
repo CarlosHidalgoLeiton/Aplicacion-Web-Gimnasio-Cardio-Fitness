@@ -47,50 +47,56 @@
                                     </div>
                                 </div>
 
-                                <div class="mb-3 row" id="adminCedulaContainer" style="display: none;" >
-                                    <label class="col-lg-4 col-form-label"
-                                        for="validationCustomCedulaAdmin">Cédula<span
+                                <div class="mb-3 row" id="adminCedulaContainer" style="display: none;">
+                                    <label class="col-lg-4 col-form-label" for="validationCustomCedulaAdmin">Cédula<span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustomCedulaAdmin" name="DocumentId" placeholder="Ingrese cédula" required>
+                                        <input type="text" class="form-control" id="validationCustomCedulaAdmin"
+                                            name="DocumentId" placeholder="Ingrese cédula" required>
                                         <div class="invalid-feedback">Por favor seleccione una cédula.</div>
                                     </div>
                                 </div>
-                            
+
                                 <div class="mb-3 row" id="trainerSelectContainer" style="display: none;">
-                                    <label class="col-lg-4 col-form-label" for="validationCustomCedulaTrainer">Cédula Entrenador
+                                    <label class="col-lg-4 col-form-label" for="validationCustomCedulaTrainer">Cédula
+                                        Entrenador
                                         <span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <select class="form-control single-select" id="validationCustomCedulaTrainer" name="DocumentIdTrainer" required>
+                                        <select class="form-control single-select" id="validationCustomCedulaTrainer"
+                                            name="DocumentIdTrainer" required>
                                             <option value="" disabled selected>Seleccionar la cédula</option>
                                             {% if trainers %}
-                                                {% for trainer in trainers %}
-                                                    <option class="trainer" value="{{ trainer.DocumentId }}">{{ trainer.Name }} {{ trainer.lastName }} {{ trainer.lastName2 }} (Entrenador)</option>
-                                                {% endfor %}
+                                            {% for trainer in trainers %}
+                                            <option class="trainer" value="{{ trainer.DocumentId }}">{{ trainer.Name }}
+                                                {{ trainer.lastName }} {{ trainer.lastName2 }} (Entrenador)</option>
+                                            {% endfor %}
                                             {% endif %}
                                             {% if not trainers %}
-                                                <option value="" disabled>No hay entrenadores disponibles</option>
+                                            <option value="" disabled>No hay entrenadores disponibles</option>
                                             {% endif %}
                                         </select>
                                         <div class="invalid-feedback">Por favor seleccione una cédula.</div>
                                     </div>
                                 </div>
-                            
+
                                 <div class="mb-3 row" id="clientSelectContainer" style="display: none;">
-                                    <label class="col-lg-4 col-form-label" for="validationCustomCedulaClient">Cédula Cliente
+                                    <label class="col-lg-4 col-form-label" for="validationCustomCedulaClient">Cédula
+                                        Cliente
                                         <span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <select class="form-control single-select" id="validationCustomCedulaClient" name="DocumentIdClient" required>
+                                        <select class="form-control single-select" id="validationCustomCedulaClient"
+                                            name="DocumentIdClient" required>
                                             <option value="" disabled selected>Seleccionar la cédula</option>
                                             {% if clients %}
-                                                {% for client in clients %}
-                                                    <option class="client" value="{{ client.DocumentId }}">{{ client.Name }} {{ client.First_LastName }} {{ client.Second_LastName }} (Cliente)</option>
-                                                {% endfor %}
+                                            {% for client in clients %}
+                                            <option class="client" value="{{ client.DocumentId }}">{{ client.Name }} {{
+                                                client.First_LastName }} {{ client.Second_LastName }} (Cliente)</option>
+                                            {% endfor %}
                                             {% endif %}
                                             {% if not clients %}
-                                                <option value="" disabled>No hay clientes disponibles</option>
+                                            <option value="" disabled>No hay clientes disponibles</option>
                                             {% endif %}
                                         </select>
                                         <div class="invalid-feedback">Por favor seleccione una cédula.</div>
@@ -184,25 +190,33 @@
                                 <td>{{ user.role }}</td>
                                 <td>{{ user.State }}</td>
                                 <td>
+                                    {% if user['State'] == 1 %}
                                     <div class="d-flex">
                                         <a href="{{ url_for('admin_app.viewUser', DocumentId=user.DocumentId) }}"
                                             class="btn btn-primary shadow btn-xs sharp me-1">
                                             <i class="fa fa-eye"></i>
                                         </a>
 
-                                        <a href="{{ url_for('admin_app.actualizarUsuario', DocumentId=user.DocumentId) }}"
+                                        <a href="{{ url_for('admin_app.updateUser', DocumentId=user.DocumentId) }}"
                                             class="btn btn-primary shadow btn-xs sharp me-1">
                                             <i class="fa fa-pencil"></i>
                                         </a>
-                                        <a href="" class="btn btn-danger shadow btn-xs sharp">
+                                        <button onclick="disableUser(event)" data-id="{{ user['DocumentId'] }}"
+                                            id="deshabilitar-{{ user['DocumentId'] }}"
+                                            class="btn btn-danger shadow btn-xs sharp">
                                             <i class="fa fa-trash"></i>
-                                        </a>
+                                        </button>
+
+                                    {% else %}
+                                        <button onclick="ableUser(event)" data-id="{{ user['DocumentId'] }}"
+                                            id="habilitar-{{ user['DocumentId'] }}"
+                                            class="btn btn-success shadow btn-xs sharp">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+
+                                        {% endif %}
                                     </div>
                                 </td>
-                            </tr>
-                            {% else %}
-                            <tr>
-                                <td colspan="4">No se encontraron usuarios.</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -225,60 +239,60 @@
 
 {% block scripts %}
 <script>
-    
-(function () {
 
-    document.getElementById('validationCustomRole').addEventListener('change', function() {
-        const role = this.value;
-        const trainerSelectContainer = document.getElementById('trainerSelectContainer');
-        const clientSelectContainer = document.getElementById('clientSelectContainer');
-        const adminCedulaContainer= document.getElementById('adminCedulaContainer');
- 
-        // Ocultar ambos select
-        trainerSelectContainer.style.display = 'none';
-        clientSelectContainer.style.display = 'none';
-        adminCedulaContainer.style.display = 'none';
+    (function () {
 
-        // Mostrar el select correspondiente según el rol
-        if (role === 'trainer') {
-            trainerSelectContainer.style.display = 'flex';
-        } else if (role === 'client') {
-            clientSelectContainer.style.display = 'flex';
-        } else if (role === 'admin') {
-            adminCedulaContainer.style.display = 'flex';
-        }
+        document.getElementById('validationCustomRole').addEventListener('change', function () {
+            const role = this.value;
+            const trainerSelectContainer = document.getElementById('trainerSelectContainer');
+            const clientSelectContainer = document.getElementById('clientSelectContainer');
+            const adminCedulaContainer = document.getElementById('adminCedulaContainer');
+
+            // Ocultar ambos select
+            trainerSelectContainer.style.display = 'none';
+            clientSelectContainer.style.display = 'none';
+            adminCedulaContainer.style.display = 'none';
+
+            // Mostrar el select correspondiente según el rol
+            if (role === 'trainer') {
+                trainerSelectContainer.style.display = 'flex';
+            } else if (role === 'client') {
+                clientSelectContainer.style.display = 'flex';
+            } else if (role === 'admin') {
+                adminCedulaContainer.style.display = 'flex';
+            }
+
+        });
+
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('btnAgregarCliente').addEventListener('click', function () {
+            document.getElementById('formCliente').style.display = 'block';
+        });
+
+        document.getElementById('btnCancelar').addEventListener('click', function () {
+            document.getElementById('formCliente').style.display = 'none';
+        });
 
     });
-
-    'use strict'
-
-    // Fetch all the forms we want to apply custom Bootstrap validation styles to
-    var forms = document.querySelectorAll('.needs-validation')
-
-    // Loop over them and prevent submission
-    Array.prototype.slice.call(forms)
-        .forEach(function (form) {
-            form.addEventListener('submit', function (event) {
-                if (!form.checkValidity()) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                }
-
-                form.classList.add('was-validated')
-            }, false)
-        })
-})()
-
-document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('btnAgregarCliente').addEventListener('click', function () {
-        document.getElementById('formCliente').style.display = 'block';
-    });
-
-    document.getElementById('btnCancelar').addEventListener('click', function () {
-        document.getElementById('formCliente').style.display = 'none';
-    });
-
-});
 
 
 </script>

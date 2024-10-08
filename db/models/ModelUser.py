@@ -175,7 +175,20 @@ class ModelUser:
             print(f"Error en get_User: {ex}")
             return None
         
-        
+    @classmethod
+    def get_UserU(cls, conexion, documentId):
+        try:
+            with conexion.cursor() as cursor:
+                sql = "SELECT ID_Usuario, Cedula, Contrasena, Estado, Rol, FechaCreacion, Correo FROM Usuario WHERE Cedula = %s"
+                cursor.execute(sql, (documentId,))
+                row = cursor.fetchone()
+                if row is not None:
+                    return User(row[0], row[1], row[2], row[3], row[4], row[5],row[6])  
+                return None
+        except Exception as ex:
+            print(f"Error en get_User: {ex}")
+            return None
+
     @classmethod
     def validateDataForm(cls, request):
         role = request.form['role']
@@ -250,3 +263,63 @@ class ModelUser:
         # Si todas las validaciones pasan, devuelve el objeto User
         return User(None, DocumentId, hashPassword, State, role, datetime.now(), Email)
     
+
+    @classmethod
+    def update_User(cls, conexion, user):
+        try:
+            cursor = conexion.cursor()
+            sql = """UPDATE Usuario 
+                    SET Cedula = %s, Contrasena = %s, Estado = %s, Rol = %s, FechaCreacion = %s, Correo = %s
+                    WHERE ID_Usuario  = %s"""
+            # Asegúrate de incluir la fecha de creación en la tupla de parámetros
+            cursor.execute(sql, (user.DocumentId, user.Password, user.State, user.role, user.CreationDate, user.Email, user.id))
+            conexion.commit()
+            return True
+        except Exception as ex:
+            print(f"Error en update_User: {ex}")
+            return False
+
+
+    @classmethod
+    def disableUser(cls, conection, DocumentId):
+        if DocumentId != None:
+            try:
+                cursor = conection.cursor()
+                sql = """UPDATE usuario SET Estado = 0  WHERE Cedula = %s"""
+                cursor.execute(sql, (DocumentId))
+                if cursor.rowcount > 0:
+                    conection.commit()
+                    return True
+                else:
+                    print("No se pudo actualizar el usuario.")
+                    conection.rollback()
+                    return False
+
+            except Exception as ex:
+                print(f"Ocurrió un error en actualizar un usuario {ex}")
+                conection.rollback()
+                return False
+        else:
+            return False
+        
+    @classmethod
+    def ableUser(cls, conection, DocumentId):
+        if DocumentId != None:
+            try:
+                cursor = conection.cursor()
+                sql = """UPDATE usuario SET Estado = 1  WHERE Cedula = %s"""
+                cursor.execute(sql, (DocumentId))
+                if cursor.rowcount > 0:
+                    conection.commit()
+                    return True
+                else:
+                    print("No se pudo actualizar el usuario.")
+                    conection.rollback()
+                    return False
+
+            except Exception as ex:
+                print(f"Ocurrió un error en actualizar un usuario {ex}")
+                conection.rollback()
+                return False
+        else:
+            return False
