@@ -39,7 +39,6 @@ class ModelUser:
                 return User(row[0], row[1], None, None, row[2],None,row[3])
             return None
         except Exception as ex:
-            
             print(f"Error en ModelUser en get_by_id: {ex}")
             return None
 
@@ -85,7 +84,7 @@ class ModelUser:
         except Exception as ex:
             print(f"Error en get_Users: {ex}")
             return []
-     
+
 
     @classmethod
     def get_User(cls, conexion, documentId):

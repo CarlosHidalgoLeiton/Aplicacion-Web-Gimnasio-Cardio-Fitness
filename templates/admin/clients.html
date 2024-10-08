@@ -5,263 +5,270 @@
 <!--**********************************
             Content body start
         ***********************************-->
-                <div class="page-titles">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Clientes</a></li>
-                    </ol>
-                </div>
-                <!-- row -->
-                <div class="row">
+<div class="page-titles">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active"><a href="javascript:void(0)">Clientes</a></li>
+    </ol>
+</div>
+<!-- row -->
+<div class="row">
 
-                    <div class="col-xl-12">
-                        <div class="card-header d-sm-flex flex-wrap d-block pb-0 border-0">
-                            <div class="me-auto pe-3 mb-3"></div>
-                            <button class="btn rounded btn-primary mb-3" id="btnAgregarCliente">
-                                <i class="flaticon-381-user-8 mx-2"></i>
-                                Agregar Cliente
-                            </button>
-                        </div>
-                    </div>
-                    <!--**********************************
+    <div class="col-xl-12">
+        <div class="card-header d-sm-flex flex-wrap d-block pb-0 border-0">
+            <div class="me-auto pe-3 mb-3"></div>
+            <button class="btn rounded btn-primary mb-3" id="btnAgregarCliente">
+                <i class="flaticon-381-user-8 mx-2"></i>
+                Agregar Cliente
+            </button>
+        </div>
+    </div>
+    <!--**********************************
                         VALIDACION CON JQUERY
                     ***********************************-->
-                    <div class="col-lg-12">
-                        <div class="card form-container" id="formCliente" style="display: none;">
-                            <div class="card-body">
-                                <div class="form-validation">
-                                    <form class="needs-validation" action="/admin/clients" novalidate method="POST">
-                                        <div class="row">
-                                            <div class="col-xl-6">
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom01">Cedula
-                                                        <span class="text-danger">*</span>
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom01"
-                                                            placeholder="" name="documentId" required>
-                                                        <div class="invalid-feedback">
-                                                            Por favor ingresar Cedula
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom02">Nombre <span
-                                                            class="text-danger">*</span>
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom02"
-                                                            placeholder="" name="name" required>
-                                                        <div class="invalid-feedback">
-                                                            Por favor ingresar nombre
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom03">Apellido 1
-                                                        <span class="text-danger">*</span>
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom03"
-                                                            placeholder="" name="firstLastName" required>
-                                                        <div class="invalid-feedback">
-                                                            Por favor ingresar Apellido 1
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom04">Apellido 2 <span
-                                                            class="text-danger">*</span>
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom04"
-                                                            placeholder="" name="secondLastName" required>
-                                                        <div class="invalid-feedback">
-                                                            Por favor ingresar Apellido 2
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom04">Fecha Nacimiento<span
-                                                            class="text-danger">*</span>
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="date" id="mdate" name="Date_Birth" class="form-control"
-                                                            placeholder="" required>
-                                                        <div class="invalid-feedback">
-                                                            Por favor ingresar Fecha de Nacimiento
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-6">
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom06">Correo
-                                                        <span class="text-danger">*</span>
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="mail" name="mail" class="form-control" id="validationCustom06"
-                                                            placeholder="" required>
-                                                        <div class="invalid-feedback">
-                                                            Por favor ingresar Correo.
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom07">Telefono
-                                                        <span class="text-danger">*</span>
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="number" name="phone" class="form-control" id="validationCustom07"
-                                                            placeholder="" required>
-                                                        <div class="invalid-feedback">
-                                                            Por favor ingresar Telefono.
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom08">Ocupación
-                                                        <span class="text-danger">*</span>
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" name="ocupation" class="form-control" id="validationCustom08"
-                                                            placeholder="" required>
-                                                        <div class="invalid-feedback">
-                                                            Por favor ingresar Ocupación.
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom09">Teléfono de emergencia<span
-                                                            class="text-danger">*</span>
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="number" class="form-control" id="validationCustom09"
-                                                            placeholder="" required name="emergencyPhone">
-                                                        <div class="invalid-feedback">
-                                                            Por favor ingresar teléfono de emergencia.
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom10">Dirección <span
-                                                            class="text-danger">*</span>
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom10"
-                                                            placeholder="" name="adress" required>
-                                                        <div class="invalid-feedback">
-                                                            Por favor ingresar Dirección.
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom11">Padecimiento
-                                                        <span class="text-danger">*</span>
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" name="ailments" class="form-control" id="validationCustom11"
-                                                            placeholder="" required>
-                                                        <div class="invalid-feedback">
-                                                            Por favor ingresar Padecimiento.
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom12">Limitaciones
-                                                        <span class="text-danger">*</span>
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom11"
-                                                            placeholder="" name="limitation" required>
-                                                        <div class="invalid-feedback">
-                                                            Por favor ingresar Limitaciones.
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
+    <div class="col-lg-12">
+        <div class="card form-container" id="formCliente" style="display: none;">
+            <div class="card-body">
+                <div class="form-validation">
+                    <form class="needs-validation" action="/admin/clients" novalidate method="POST">
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom01">Cedula
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom01"
+                                            value="{{client.DocumentId}}" name="documentId" required>
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar Cedula
                                         </div>
-                                        <div class="my-3 ">
-                                            <div class="d-flex justify-content-start ">
-                                                <button type="submit" class="btn btn-primary ms-2">Agregar</button>
-                                                <button class="btn btn-danger ms-2" id="btnCancelar">Cancelar</button>
-                                            </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom02">Nombre <span
+                                            class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom02"
+                                            value="{{client.Name}}" name="name" required>
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar nombre
                                         </div>
-                                    </form>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom03">Apellido 1
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom03"
+                                            value="{{client.First_LastName}}" name="firstLastName" required>
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar Apellido 1
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom04">Apellido 2 <span
+                                            class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom04"
+                                            value="{{client.Second_LastName}}" name="secondLastName" required>
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar Apellido 2
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom04">Fecha
+                                        Nacimiento<span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="date" id="mdate" name="Date_Birth" class="form-control" required>
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar Fecha de Nacimiento
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="col-xl-6">
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom06">Correo
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="mail" name="mail" class="form-control" id="validationCustom06"
+                                            value="{{client.Mail}}" required>
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar Correo.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom07">Telefono
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="number" name="phone" class="form-control" id="validationCustom07"
+                                            value="{{client.Phone}}" required>
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar Telefono.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom08">Ocupación
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" name="ocupation" class="form-control" id="validationCustom08"
+                                            value="{{client.Occupation}}" required>
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar Ocupación.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom09">Teléfono de
+                                        emergencia<span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="number" class="form-control" id="validationCustom09"
+                                            value="{{client.TelephoneEmergency}}" required name="emergencyPhone">
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar teléfono de emergencia.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom10">Dirección <span
+                                            class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom10"
+                                            value="{{client.Address}}" name="adress" required>
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar Dirección.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom11">Padecimiento
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" name="ailments" class="form-control" id="validationCustom11"
+                                            value="{{client.Ailments}}" required>
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar Padecimiento.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom12">Limitaciones
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom11"
+                                            value="{{client.Limitation}}" name="limitation" required>
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar Limitaciones.
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
-                    </div>
-                    <!--**********************************
+                        <div class="my-3 ">
+                            <div class="d-flex justify-content-start ">
+                                <button type="submit" class="btn btn-primary ms-2">Agregar</button>
+                                <button class="btn btn-danger ms-2" id="btnCancelar">Cancelar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--**********************************
                         DATATABLES 
                     ***********************************-->
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title">Lista de Clientes</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table id="example2" class="display min-w850">
-                                        <thead>
-                                            <tr>
-                                                <th>Cedula</th>
-                                                <th>Nombre</th>
-                                                <th>Apellidos</th> <!-- Columna unificada de apellidos -->
-                                                <th>Ocupación</th>
-                                                <th>Acciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for client in clients %}
-                                            <tr>
-                                                <td>{{ client['DocumentId'] }}</td>
-                                                <td>{{ client['Name'] }}</td>
-                                                <td>{{ client['First_LastName'] }} {{ client['Second_LastName'] }}</td> <!-- Apellidos combinados -->
-                                                <td>{{ client['Occupation'] }}</td>
-                                                <td>
-                                                    <div class="d-flex">
-                                                        <a href="{{ url_for('admin_app.rutinasCliente') }}" class="btn btn-primary shadow btn-xs sharp me-1">
-                                                            <i class="flaticon-381-notepad"></i>
-                                                        </a>
-                                                        <a href="{{ url_for('admin_app.estadisticas') }}" class="btn btn-primary shadow btn-xs sharp me-1">
-                                                            <i class="fas fa-chart-bar"></i>
-                                                        </a>
-                                                        <a href="{{ url_for('admin_app.verCliente',cedula=client['DocumentId']) }}" class="btn btn-primary shadow btn-xs sharp me-1">
-                                                            <i class="fa fa-eye"></i>
-                                                        </a>
-                                                        <a href="{{ url_for('admin_app.viewUpdateClient', documentId=client['DocumentId']) }}" class="btn btn-primary shadow btn-xs sharp me-1">
-                                                            <i class="fa fa-pencil"></i>
-                                                        </a>
-                                                        <button onclick="deleteClient(event)" data-id="{{ client['DocumentId'] }}" id="deshabilitar-{{ client['DocumentId'] }}" class="btn btn-danger shadow btn-xs sharp">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Lista de Clientes</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="example2" class="display min-w850">
+                        <thead>
+                            <tr>
+                                <th>Cedula</th>
+                                <th>Nombre</th>
+                                <th>Apellidos</th> <!-- Columna unificada de apellidos -->
+                                <th>Ocupación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for client in clients %}
+                            <tr>
+                                <td>{{ client['DocumentId'] }}</td>
+                                <td>{{ client['Name'] }}</td>
+                                <td>{{ client['First_LastName'] }} {{ client['Second_LastName'] }}</td>
+                                <!-- Apellidos combinados -->
+                                <td>{{ client['Occupation'] }}</td>
+                                <td>
+                                    {% if client['State'] == 1 %}
+                                    <div class="d-flex">
+                                        <a href="{{ url_for('admin_app.rutinasCliente') }}"
+                                            class="btn btn-primary shadow btn-xs sharp me-1">
+                                            <i class="flaticon-381-notepad"></i>
+                                        </a>
+                                        <a href="{{ url_for('admin_app.estadisticas') }}"
+                                            class="btn btn-primary shadow btn-xs sharp me-1">
+                                            <i class="fas fa-chart-bar"></i>
+                                        </a>
+                                        <a href="{{ url_for('admin_app.verCliente',cedula=client['DocumentId']) }}"
+                                            class="btn btn-primary shadow btn-xs sharp me-1">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        <a href="{{ url_for('admin_app.viewUpdateClient', documentId=client['DocumentId']) }}"
+                                            class="btn btn-primary shadow btn-xs sharp me-1">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
 
+
+                                        <button onclick="disableClient(event)" data-id="{{ client['DocumentId'] }}"
+                                            id="deshabilitar-{{ client['DocumentId'] }}"
+                                            class="btn btn-danger shadow btn-xs sharp">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+
+                                        {% else %}
+
+                                        <button onclick="ableClient(event)" data-id="{{ client['DocumentId'] }}"
+                                            id="habilitar-{{ client['DocumentId'] }}"
+                                            class="btn btn-success shadow btn-xs sharp">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
+            </div>
+        </div>
+    </div>
 
-        <!--**********************************
+</div>
+
+<!--**********************************
             Content body end
         ***********************************-->
 {% endblock %}

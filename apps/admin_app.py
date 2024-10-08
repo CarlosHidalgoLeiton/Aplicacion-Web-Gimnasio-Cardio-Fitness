@@ -41,29 +41,35 @@ def inicio():
 @login_required
 @admin_permission.require()
 def clients():
-    conexion = Conection.conectar()
-    clients = ModelClient.get_all(conexion)
+    conection = Conection.conectar()
+    clients = ModelClient.get_all(conection)
     Conection.desconectar()
+    doneMessage = request.args.get('done')
     if request.method == 'POST':
-        client = ModelClient.getDataClient()
-        client = ModelClient.validateDataForm(request)
-        if type(client) != Client:
-            return render_template("admin/clients.html", clients=clients, error=client)
+        client = ModelClient.getDataClient(request)
+        clientValidated = ModelClient.validateDataForm(client)
+        if not type(clientValidated) == bool:
+            return render_template("admin/clients.html", clients=clients, error=clientValidated, client = client)
         conection = Conection.conectar()
         if conection == None:
-            return render_template("admin/clients.html", clients=clients, error= "Error en la conexión.")
+            return render_template("admin/clients.html", clients=clients, error= "Error en la conexión.", client = client)
         insert = ModelClient.insertClient(conection, client)
-        if insert:
-            conexion = Conection.conectar()
-            clients = ModelClient.get_all(conexion)
+        if insert and type(insert) == bool:
+            clients = ModelClient.get_all(conection)
             Conection.desconectar()
-            return render_template("admin/clients.html", clients=clients, done = "Cliente creado correctamente.")
+            return render_template("admin/clients.html", clients=clients, done = "Cliente creado correctamente.", client = None)
+        elif insert == "Primary":
+            Conection.desconectar()
+            return render_template("admin/clients.html", clients=clients, error= "El número de cédula ingresado ya esta registrado con otro cliente.", client = client)
+        elif insert == "DataBase":
+            return render_template("admin/clients.html", clients=clients, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", client = client)
         else:
-            return render_template("admin/clients.html", clients=clients, error= "No se pudo ingresar el cliente.")
+            Conection.desconectar()
+            return render_template("admin/clients.html", clients=clients, error= "No se pudo ingresar el cliente, por favor inténtalo más tarde.", client = client)
     else:
-        return render_template("admin/clients.html", clients=clients)
+        return render_template("admin/clients.html", clients=clients, client = None, done = doneMessage)
 
-@admin_app.route("/clientes/actualizar/<documentId>", methods=['GET'])
+@admin_app.route("/clients/update/<documentId>", methods=['GET'])
 @login_required
 @admin_permission.require()
 def viewUpdateClient(documentId):
@@ -74,26 +80,33 @@ def viewUpdateClient(documentId):
         return render_template("admin/updateClient.html", client=client)
     else:
         # Manejar el caso en que no se encuentre el cliente
-        return "Cliente no encontrado"
+        return redirect(url_for("admin_app.clients", error = "Cliente no encontrado"))
     
-@admin_app.route("/client/update/", methods=['POST'])
+@admin_app.route("/client/update", methods=['POST'])
 @login_required
 @admin_permission.require()
 def updateClient():
-    client = ModelClient.validateDataForm(request)
-    if type(client) != Client:
-        return redirect(url_for('admin_app.clients', error = client))
-    id = request.form['id']
+    client = ModelClient.getDataClient(request)
+    clientValidated = ModelClient.validateDataForm(client)
+    if not type(clientValidated) == bool:
+        return render_template("admin/updateClient.html", error=clientValidated, client = client)
     conection = Conection.conectar()
     if conection == None:
-        return redirect(url_for('admin_app.clients', error = "Error en la conexion"))
-    update = ModelClient.updateClient(conection, client, id)
-    if update:
-        print('Actualizado conrrectamente')
+        return render_template("admin/updateClient.html", error= "Error en la conexión.", client = client)
+    id = request.form['id']
+    insert = ModelClient.updateClient(conection, client, id)
+    if insert and type(insert) == bool:
+        clients = ModelClient.get_all(conection)
+        Conection.desconectar()
         return redirect(url_for('admin_app.clients', done = "Cliente actualizado correctamente."))
+    elif insert == "Primary":
+        Conection.desconectar()
+        return render_template("admin/updateClient.html", error= "El número de cédula ingresado ya esta registrado con otro cliente.", client = client)
+    elif insert == "DataBase":
+        return render_template("admin/updateClient.html", error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", client = client)
     else:
-        print('Algo paso')
-        return redirect(url_for('admin_app.clients', error = "No se pudo actualizar el cliente."))
+        Conection.desconectar()
+        return render_template("admin/updateClient.html", error= "No se pudo actualizar el cliente, por favor inténtalo más tarde.", client = client)
 
 @admin_app.route("/clientes/ver/<cedula>")
 @login_required
@@ -109,21 +122,37 @@ def verCliente(cedula):
         # Manejar el caso en que no se encuentre el cliente
         return "Cliente no encontrado"
 
-@admin_app.route("/clientes/eliminar", methods = ['POST'])
+@admin_app.route("/clientes/deshabilitar", methods = ['POST'])
 @login_required
 @admin_permission.require()
-def deleteClient():
+def disableClient():
     data = request.get_json()
     clientId = data.get('clientId')
     conexion = Conection.conectar()
-    delete = ModelClient.deleteClient(conexion, clientId)
+    disable = ModelClient.disableClient(conexion, clientId)
     Conection.desconectar()
 
-    if delete:
+    if disable:
         return jsonify({"message": "Hecho"})
     else:
         # Manejar el caso en que no se encuentre el cliente
-        return jsonify({"error": "No se pudo eliminar"})
+        return jsonify({"error": "No se pudo deshabilitar"})
+    
+@admin_app.route("/clientes/habilitar", methods = ['POST'])
+@login_required
+@admin_permission.require()
+def ableClient():
+    data = request.get_json()
+    clientId = data.get('clientId')
+    conexion = Conection.conectar()
+    able = ModelClient.ableClient(conexion, clientId)
+    Conection.desconectar()
+
+    if able:
+        return jsonify({"message": "Hecho"})
+    else:
+        # Manejar el caso en que no se encuentre el cliente
+        return jsonify({"error": "No se pudo habilitar"})
 
 
 
