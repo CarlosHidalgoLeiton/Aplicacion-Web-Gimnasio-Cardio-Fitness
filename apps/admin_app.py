@@ -266,44 +266,44 @@ def viewUser(DocumentId):
 @admin_app.route("/users/update/<string:DocumentId>", methods=["GET", "POST"])
 @login_required   
 def updateUser(DocumentId):
-        try:
-            conexion = Conection.conectar()
-            user = ModelUser.get_UserU(conexion, DocumentId)
+    try:
+        conexion = Conection.conectar()
+        user = ModelUser.get_UserU(conexion, DocumentId)
 
-            if not user:
-                return render_template("/admin/updateUser.html", error="Usuario no encontrado.")
-            
-            if request.method == "POST":
-                documentId = request.form['DocumentId']
-                password = request.form.get('Password')
-                confirmPassword = request.form.get('ConfirmPassword')
-                state = request.form['State']
-                role = request.form['Role']
-                email = request.form['Email']
-                if password and password != confirmPassword:
-                    return render_template("/admin/updateUser.html", user=user, error="Las contraseñas no coinciden.")
+        if not user:
+            return render_template("/admin/updateUser.html", error="Usuario no encontrado.")
 
-                if password:
-                    hashed_password = User.generate_password_hash(password)
-                else:
-                    hashed_password = user.Password  
+        if request.method == "POST":
+            # Validar el formulario
+            validatedUser = ModelUser.validateDataFormUpdate(request, user)
+            if isinstance(validatedUser, str):  
+                return render_template("/admin/updateUser.html", user=user, error=validatedUser)
+o
+            try:
+                conection = Conection.conectar()
+                if conection is None:
+                    return render_template("/admin/updateUser.html", user=user, error="Error en la conexión.")
+                
+                update_result = ModelUser.update_User(conection, validatedUser)
+                Conection.desconectar()
 
-                updatedUser = User(user.id, documentId, hashed_password, state, role, user.CreationDate, email)
-
-                try:
-                    ModelUser.update_User(conexion, updatedUser)
+                if update_result:
                     return redirect(url_for('admin_app.users'))
-                except Exception as e:
-                    print(f"Error actualizando usuario: {e}")
-                    return render_template("/admin/updateUser.html", user=user, error="Error actualizando usuario.")
+                else:
+                    return render_template("/admin/updateUser.html", user=user, error="No se pudo actualizar el usuario.")
 
-            return render_template("/admin/updateUser.html", user=user)
+            except Exception as e:
+                print(f"Error actualizando usuario: {e}")
+                return render_template("/admin/updateUser.html", user=user, error="Error actualizando usuario.")
 
-        except Exception as ex:
-            print(f"Error al obtener el usuario: {ex}")
-            return render_template("/admin/updateUser.html", error="Error al obtener el usuario.")
-        finally:
-            Conection().desconectar()
+        return render_template("/admin/updateUser.html", user=user)
+
+    except Exception as ex:
+        print(f"Error al obtener el usuario: {ex}")
+        return render_template("/admin/updateUser.html", error="Error al obtener el usuario.")
+    finally:
+        Conection.desconectar()
+
 
 
 @admin_app.route("/users/disable", methods = ['POST'])
@@ -319,7 +319,7 @@ def disableUser():
     if disable:
         return jsonify({"message": "Hecho"})
     else:
-        # Manejar el caso en que no se encuentre el cliente
+        
         return jsonify({"error": "No se pudo deshabilitar"})
     
 @admin_app.route("/users/able", methods = ['POST'])
@@ -335,7 +335,7 @@ def ableUser():
     if able:
         return jsonify({"message": "Hecho"})
     else:
-        # Manejar el caso en que no se encuentre el cliente
+       
         return jsonify({"error": "No se pudo habilitar"})
 
 

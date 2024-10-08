@@ -265,13 +265,78 @@ class ModelUser:
     
 
     @classmethod
+    def validateDataFormUpdate(cls, request, user):
+        DocumentId = request.form['DocumentId']
+        State = request.form['State']
+        role = request.form['Role']
+        Password = request.form['Password']
+        ConfirmPassword = request.form['ConfirmPassword']
+        Email = request.form['Email']
+
+        
+        if not DocumentId:
+            return "Debe ingresar el número de cédula."
+
+        if "-" not in DocumentId and not any(d.isalpha() for d in DocumentId):  
+            if len(DocumentId) < 9:
+                return "El número de cédula ingresado no es válido. Debe ingresar 9 dígitos."
+        else:
+            return "El número de cédula no debe contener letras ni caracteres especiales."
+
+        
+        conexion = Conection.conectar()
+        if conexion is None:
+            return "Error en la conexión a la base de datos."
+        
+        if ModelUser.document_exists(conexion, DocumentId) and DocumentId != user.DocumentId:
+            Conection.desconectar()
+            return "El número de cédula ya está registrado por otro usuario."
+        
+        Conection.desconectar()
+
+        # Validación para contraseña
+        if Password and ConfirmPassword:
+            if Password != ConfirmPassword:
+                return "Las contraseñas no coinciden."
+
+            if len(Password) < 8:
+                return "La contraseña debe tener al menos 8 caracteres."
+
+            if not re.search(r"[A-Z]", Password):
+                return "La contraseña debe contener al menos una letra mayúscula."
+
+            if not re.search(r"[a-z]", Password):
+                return "La contraseña debe contener al menos una letra minúscula."
+
+            if not re.search(r"[0-9]", Password):
+                return "La contraseña debe contener al menos un número."
+
+            if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", Password):
+                return "La contraseña debe contener al menos un carácter especial."
+            
+            hashPassword = User.generate_password_hash(Password)
+        else:
+            hashPassword = user.Password  # Mantener la contraseña actual si no se proporciona una nueva
+        
+        # Validación para correo
+        if not Email:
+            return "Debe ingresar el correo."
+        
+        expression = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'  # Validar formato de correo
+        if not re.match(expression, Email):
+            return "El correo ingresado no es válido."
+
+        # Si todas las validaciones pasan, devuelve el objeto User
+        return User(user.id, DocumentId, hashPassword, State, role, user.CreationDate, Email)
+
+    @classmethod
     def update_User(cls, conexion, user):
         try:
             cursor = conexion.cursor()
             sql = """UPDATE Usuario 
                     SET Cedula = %s, Contrasena = %s, Estado = %s, Rol = %s, FechaCreacion = %s, Correo = %s
                     WHERE ID_Usuario  = %s"""
-            # Asegúrate de incluir la fecha de creación en la tupla de parámetros
+            
             cursor.execute(sql, (user.DocumentId, user.Password, user.State, user.role, user.CreationDate, user.Email, user.id))
             conexion.commit()
             return True
