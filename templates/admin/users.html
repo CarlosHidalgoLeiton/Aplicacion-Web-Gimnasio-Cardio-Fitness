@@ -29,8 +29,7 @@
         <div class="card form-container" id="formCliente" style="display: none;">
             <div class="card-body">
                 <div class="form-validation">
-                    <form class="needs-validation" action="/admin/users" method="POST" novalidate
-                        onsubmit="return validatePassword();">
+                    <form class="needs-validation" action="/admin/users" method="POST">
                         <div class="row">
                             <div class="col-xl-6">
 
@@ -38,7 +37,7 @@
                                     <label class="col-lg-4 col-form-label" for="validationCustomRole">Tipo de Selección
                                         <span class="text-danger">*</span></label>
                                     <div class="col-lg-4">
-                                        <select class="form-control" id="validationCustomRole" name="Role">
+                                        <select class="form-control" id="validationCustomRole" name="role">
                                             <option value="" disabled selected>Seleccione un rol</option>
                                             <option value="admin">Admin</option>
                                             <option value="trainer">Entrenador</option>
@@ -46,46 +45,55 @@
                                         </select>
                                         <div class="invalid-feedback">Por favor seleccione un rol.</div>
                                     </div>
-                                    <div class="col-lg-2">
-                                        <button class="btn btn-primary ms-2" id="addRoleButton" style="display: none;">+</button>
-                                    </div>
                                 </div>
-                                
-                                <div class="mb-3 row" id="additionalSelectContainer" style="display: none;">
-                                    <label class="col-lg-4 col-form-label" for="additionalSelect">Selecciona un nuevo rol</label>
-                                    <div class="col-lg-6">
-                                        <select class="form-control" id="additionalSelect">
-                                            <option value="" disabled selected>Seleccionar un nuevo rol</option>
-                                            <option value="admin">Admin</option>
-                                            <option value="trainer">Entrenador</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
 
-                                
-                                <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label" for="validationCustomCedula">Cédula
+                                <div class="mb-3 row" id="adminCedulaContainer" style="display: none;">
+                                    <label class="col-lg-4 col-form-label"
+                                        for="validationCustomCedulaAdmin">Cédula<span
+                                            class="text-danger">*</span></label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustomCedulaAdmin" name="DocumentId" placeholder="Ingrese cédula" >
+                                        <div class="invalid-feedback">Por favor seleccione una cédula.</div>
+                                    </div>
+                                </div>
+                            
+                                <div class="mb-3 row" id="trainerSelectContainer" style="display: none;">
+                                    <label class="col-lg-4 col-form-label" for="validationCustomCedulaTrainer">Cédula Entrenador
                                         <span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <select class="form-control  single-select" id="validationCustomCedula" name="DocumentId">
+                                        <select class="form-control single-select" id="validationCustomCedulaTrainer" name="DocumentIdTrainer" >
                                             <option value="" disabled selected>Seleccionar la cédula</option>
                                             {% if trainers %}
                                                 {% for trainer in trainers %}
-                                                    <option class="trainer" value="{{ trainer.DocumentId }}">{{ trainer.DocumentId }} (Entrenador)</option>
+                                                    <option class="trainer" value="{{ trainer.DocumentId }}">{{ trainer.Name }} {{ trainer.lastName }} {{ trainer.lastName2 }} (Entrenador)</option>
                                                 {% endfor %}
                                             {% endif %}
-                                            {% if clients %}
-                                                {% for client in clients %}
-                                                    <option class="client" value="{{ client.DocumentId }}">{{ client.DocumentId }} (Cliente)</option>
-                                                {% endfor %}
-                                            {% endif %}
-                                            {% if not trainers and not clients %}
-                                                <option value="" disabled>No hay entrenadores ni clientes disponibles</option>
+                                            {% if not trainers %}
+                                                <option value="" disabled>No hay entrenadores disponibles</option>
                                             {% endif %}
                                         </select>
-                                        <div class="invalid-feedback">Por favor seleccione un tipo.</div>
+                                        <div class="invalid-feedback">Por favor seleccione una cédula.</div>
+                                    </div>
+                                </div>
+                            
+                                <div class="mb-3 row" id="clientSelectContainer" style="display: none;">
+                                    <label class="col-lg-4 col-form-label" for="validationCustomCedulaClient">Cédula Cliente
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <select class="form-control single-select" id="validationCustomCedulaClient" name="DocumentIdClient" >
+                                            <option value="" disabled selected>Seleccionar la cédula</option>
+                                            {% if clients %}
+                                                {% for client in clients %}
+                                                    <option class="client" value="{{ client.DocumentId }}">{{ client.Name }} {{ client.First_LastName }} {{ client.Second_LastName }} (Cliente)</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                            {% if not clients %}
+                                                <option value="" disabled>No hay clientes disponibles</option>
+                                            {% endif %}
+                                        </select>
+                                        <div class="invalid-feedback">Por favor seleccione una cédula.</div>
                                     </div>
                                 </div>
 
@@ -105,7 +113,7 @@
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-6">
                                         <input type="password" class="form-control" id="validationCustomPasswordConfirm"
-                                            name="ConfirmpPassword" placeholder="" required>
+                                            name="ConfirmPassword" placeholder="" required>
                                         <div class="invalid-feedback">Por favor confirme la contraseña.</div>
                                     </div>
                                 </div>
@@ -167,7 +175,6 @@
                                 <th>Rol</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
-
                             </tr>
                         </thead>
                         <tbody>
@@ -209,6 +216,7 @@
 </div>
 
 
+
 <!--**********************************
     Content body end
 ***********************************-->
@@ -218,45 +226,30 @@
 {% block scripts %}
 <script>
     
-    document.addEventListener('DOMContentLoaded', function() {
-    const roleSelect = document.getElementById('validationCustomRole');
-    const addRoleButton = document.getElementById('addRoleButton');
-    const additionalSelectContainer = document.getElementById('additionalSelectContainer');
-    const additionalSelect = document.getElementById('additionalSelect');
-
-    roleSelect.addEventListener('change', function() {
-        const selectedRole = roleSelect.value;
-
-        // Mostrar el botón solo si se selecciona Admin o Entrenador
-        if (selectedRole === 'admin' || selectedRole === 'trainer') {
-            addRoleButton.style.display = 'flex';
-            additionalSelectContainer.style.display = 'none';
-        } else {
-            addRoleButton.style.display = 'none';
-            additionalSelectContainer.style.display = 'none';
-        }
-    });
-
-    addRoleButton.addEventListener('click', function() {
-        additionalSelectContainer.style.display = 'flex'; // Mostrar el contenedor
-
-        const selectedRole = roleSelect.value;
-
-        // Deshabilitar la opción seleccionada en el segundo select
-        if (selectedRole === 'admin') {
-            additionalSelect.querySelector('option[value="admin"]').style.display = 'none';
-            additionalSelect.querySelector('option[value="trainer"]').style.display = 'block'; // Asegúrate de que la opción de Entrenador esté visible
-        } else if (selectedRole === 'trainer') {
-            additionalSelect.querySelector('option[value="trainer"]').style.display = 'none';
-            additionalSelect.querySelector('option[value="admin"]').style.display = 'block'; // Asegúrate de que la opción de Admin esté visible
-        }
-
-        // Reiniciar la selección en el primer select
-        roleSelect.value = ''; // Reiniciar selección
-    });
-});
-
 (function () {
+
+    document.getElementById('validationCustomRole').addEventListener('change', function() {
+        const role = this.value;
+        const trainerSelectContainer = document.getElementById('trainerSelectContainer');
+        const clientSelectContainer = document.getElementById('clientSelectContainer');
+        const adminCedulaContainer= document.getElementById('adminCedulaContainer');
+ 
+        // Ocultar ambos select
+        trainerSelectContainer.style.display = 'none';
+        clientSelectContainer.style.display = 'none';
+        adminCedulaContainer.style.display = 'none';
+
+        // Mostrar el select correspondiente según el rol
+        if (role === 'trainer') {
+            trainerSelectContainer.style.display = 'flex';
+        } else if (role === 'client') {
+            clientSelectContainer.style.display = 'flex';
+        } else if (role === 'admin') {
+            adminCedulaContainer.style.display = 'flex';
+        }
+
+    });
+
     'use strict'
 
     // Fetch all the forms we want to apply custom Bootstrap validation styles to

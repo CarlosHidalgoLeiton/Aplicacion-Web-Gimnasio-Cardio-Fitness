@@ -219,73 +219,34 @@ def actualizarEntrenador():
     return render_template("admin/actualizarEntrenador")
 
 
-
 #-------------Rutas de user-------------#
-@admin_app.route('/users', methods=["GET", "POST"])
+@admin_app.route("/users", methods = ['GET', 'POST'])
 @login_required
+@admin_permission.require()
 def users():
-    if request.method == "POST":
-        # Obtener los datos del formulario
-        documentId = request.form['DocumentId']
-        password = request.form['Password']
-        confirmPassword = request.form['ConfirmpPassword']
-        state = request.form['State']
-        role = request.form['Role']
-        email = request.form['Email']
-        
-        # Validación de contraseñas
-        if password != confirmPassword:
-            return render_template("admin/users.html", error="Las contraseñas no coinciden.")
-
-        # Crear nuevo usuario
-        newUser = User(
-            id=0,  
-            DocumentId=documentId,
-            Password=User.generate_password_hash(password), 
-            State=state,
-            Role=role,
-            CreationDate=datetime.now(),
-            Email=email
-        )
-
-        try:
-            conexion = Conection.conectar()
-            userCreated = ModelUser.insertUser(newUser, conexion)
-            
-            if userCreated:
-                return redirect(url_for('admin_app.users')) 
-            else:
-                return render_template("admin/users.html", error="Error al crear usuario.")
-        except Exception as e:
-            print(e)
-            return render_template("admin/users.html", error="Error al conectar a la base de datos.")
-        finally:
-            Conection().desconectar()  
-
-    # lista de usuarios
-    try:
-        conexion = Conection.conectar()
-        users = ModelUser.get_Users(conexion)  
-    except Exception as e:
-        print(f"Error al obtener usuarios: {e}")
-        users = []  
-    finally:
-        Conection().desconectar()
-
-    # Obtener clientes y entrenadores
-    try:
-        conexion = Conection.conectar()
-        clients = ModelTrainer.get_all_clients(conexion) 
-        trainers = ModelTrainer.get_all_trainers(conexion) 
-    except Exception as e:
-        print(f"Error al obtener clientes o entrenadores: {e}")
-        clients = []
-        trainers = []
-    finally:
-        Conection().desconectar()
-
-    return render_template("admin/users.html", users=users, clients=clients, trainers=trainers)
-
+    conection = Conection.conectar()
+    users = ModelUser.get_Users(conection)
+    clients = ModelUser.get_Clients(conection) 
+    trainers = ModelUser.get_Trainers(conection) 
+    Conection.desconectar()
+    if request.method == 'POST':
+        user = ModelUser.validateDataForm(request)
+        if type(user) != User:
+            return render_template("admin/users.html", users=users, clients=clients, trainers=trainers,  error=user)
+        conection = Conection.conectar()
+        if conection == None:
+            return render_template("admin/users.html", users=users, clients=clients, trainers=trainers,  error= "Error en la conexión.")
+        insert = ModelUser.insertUser(conection, user)
+        if insert:
+            users = ModelUser.get_Users(conection)
+            Conection.desconectar()
+            return render_template("admin/users.html", users=users,  clients=clients, trainers=trainers, done = "Cliente creado correctamente.")
+        else:
+            Conection.desconectar()
+            return render_template("admin/users.html", users=users,  clients=clients, trainers=trainers, error= "No se pudo ingresar el cliente.")
+    else:
+        return render_template("admin/users.html", users=users, clients=clients, trainers=trainers)
+    
 
 @admin_app.route("/users/view/<DocumentId>")
 def viewUser(DocumentId):
@@ -301,7 +262,6 @@ def viewUser(DocumentId):
     return render_template("/admin/viewUser.html", user=user)
 
     
-
 @admin_app.route("/usuarios/actualizar")
 @login_required
 def actualizarUsuario():
