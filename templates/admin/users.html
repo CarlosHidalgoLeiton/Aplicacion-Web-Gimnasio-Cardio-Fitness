@@ -29,7 +29,7 @@
         <div class="card form-container" id="formCliente" style="display: none;">
             <div class="card-body">
                 <div class="form-validation">
-                    <form class="needs-validation" action="/admin/users" method="POST">
+                    <form class="needs-validation" action="/admin/users" novalidate method="POST">
                         <div class="row">
                             <div class="col-xl-6">
 
@@ -37,7 +37,7 @@
                                     <label class="col-lg-4 col-form-label" for="validationCustomRole">Tipo de Selección
                                         <span class="text-danger">*</span></label>
                                     <div class="col-lg-4">
-                                        <select class="form-control" id="validationCustomRole" name="role">
+                                        <select class="form-control" id="validationCustomRole" name="role" required>
                                             <option value="" disabled selected>Seleccione un rol</option>
                                             <option value="admin">Admin</option>
                                             <option value="trainer">Entrenador</option>
@@ -47,12 +47,12 @@
                                     </div>
                                 </div>
 
-                                <div class="mb-3 row" id="adminCedulaContainer" style="display: none;">
+                                <div class="mb-3 row" id="adminCedulaContainer" style="display: none;" >
                                     <label class="col-lg-4 col-form-label"
                                         for="validationCustomCedulaAdmin">Cédula<span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustomCedulaAdmin" name="DocumentId" placeholder="Ingrese cédula" >
+                                        <input type="text" class="form-control" id="validationCustomCedulaAdmin" name="DocumentId" placeholder="Ingrese cédula" required>
                                         <div class="invalid-feedback">Por favor seleccione una cédula.</div>
                                     </div>
                                 </div>
@@ -62,7 +62,7 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <select class="form-control single-select" id="validationCustomCedulaTrainer" name="DocumentIdTrainer" >
+                                        <select class="form-control single-select" id="validationCustomCedulaTrainer" name="DocumentIdTrainer" required>
                                             <option value="" disabled selected>Seleccionar la cédula</option>
                                             {% if trainers %}
                                                 {% for trainer in trainers %}
@@ -82,7 +82,7 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <select class="form-control single-select" id="validationCustomCedulaClient" name="DocumentIdClient" >
+                                        <select class="form-control single-select" id="validationCustomCedulaClient" name="DocumentIdClient" required>
                                             <option value="" disabled selected>Seleccionar la cédula</option>
                                             {% if clients %}
                                                 {% for client in clients %}
@@ -102,7 +102,7 @@
                                         <span class="text-danger">*</span></label>
                                     <div class="col-lg-6">
                                         <input type="password" class="form-control" id="validationCustomPassword"
-                                            name="Password" placeholder="" required>
+                                            name="Password" placeholder="Ingresar Contraseña" required>
                                         <div class="invalid-feedback">Por favor ingrese una contraseña.</div>
                                     </div>
                                 </div>
@@ -113,7 +113,7 @@
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-6">
                                         <input type="password" class="form-control" id="validationCustomPasswordConfirm"
-                                            name="ConfirmPassword" placeholder="" required>
+                                            name="ConfirmPassword" placeholder="Ingresar Contraseña" required>
                                         <div class="invalid-feedback">Por favor confirme la contraseña.</div>
                                     </div>
                                 </div>
