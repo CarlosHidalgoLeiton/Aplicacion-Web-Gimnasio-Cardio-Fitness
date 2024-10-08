@@ -278,7 +278,8 @@ def updateUser(DocumentId):
             validatedUser = ModelUser.validateDataFormUpdate(request, user)
             if isinstance(validatedUser, str):  
                 return render_template("/admin/updateUser.html", user=user, error=validatedUser)
-o
+
+            # Si las validaciones pasan, se actualiza el usuario
             try:
                 conection = Conection.conectar()
                 if conection is None:

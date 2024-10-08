@@ -20,7 +20,11 @@
                                 <div class="mb-3 row">
                                     <label class="col-lg-4 col-form-label">Cédula <span class="text-danger">*</span></label>
                                     <div class="col-lg-6">
+                                        {% if user.role == "Admin" %}
                                         <input type="text" class="form-control" name="DocumentId" value="{{ user.DocumentId }}" required>
+                                        {% else %}
+                                        <input type="text" class="form-control" name="DocumentId" value="{{ user.DocumentId }}" readonly>
+                                        {% endif %}
                                         <div class="invalid-feedback">Por favor ingresar la cédula</div>
                                     </div>
                                 </div>
@@ -34,7 +38,7 @@
                                             <option value="Cliente" {% if user.role == 'Cliente' %} selected {% endif %}>Cliente</option>
                                         </select>
                                     </div>
-                                </div>                                
+                                </div>
 
                                 <div class="mb-3 row">
                                     <label class="col-lg-4 col-form-label">Contraseña</label>
