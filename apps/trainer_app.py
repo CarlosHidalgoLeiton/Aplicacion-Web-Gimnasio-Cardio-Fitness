@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import login_user, logout_user, login_required, current_user
 from db.conection import Conection
 from db.models.ModelClient import ModelClient
@@ -30,13 +30,14 @@ def perfil():
 
 
 #-------------Rutas de Clientes-------------#
-@trainer_app.route("/client" )
+@trainer_app.route("/clients", methods = ['GET'] )
 @login_required
-def client():
+def clients():
     conexion = Conection.conectar()
     clients = ModelClient.get_all(conexion)
+    errorMessage = request.args.get('error')
     Conection.desconectar()
-    return render_template("trainer/client.html", clients=clients)
+    return render_template("trainer/clients.html", clients=clients, error = errorMessage)
 
 @trainer_app.route("/editarEstadistica" )
 @login_required
@@ -78,17 +79,17 @@ def rutinas():
 def sesionesRutinaCliente():
     return render_template("trainer/sesionesRutinaCliente.html")
 
-@trainer_app.route("/verCliente/<cedula>" )
+@trainer_app.route("/viewClient/<documentId>" )
 @login_required
-def verCliente(cedula):
+def viewClient(documentId):
     conexion = Conection.conectar()
-    client = ModelClient.get_cliente_by_cedula(conexion, cedula)
+    client = ModelClient.get_cliente_by_cedula(conexion, documentId)
     Conection.desconectar()
     if client:
-        return render_template("trainer/verCliente.html", client=client)
+        return render_template("trainer/viewClient.html", client=client)
     else:
         # Manejar el caso en que no se encuentre el cliente
-        return "Cliente no encontrado"
+        return redirect(url_for('trainer_app.clients', error="Cliente no encontrado"))
 
 @trainer_app.route("/verEstadistica" )
 @login_required

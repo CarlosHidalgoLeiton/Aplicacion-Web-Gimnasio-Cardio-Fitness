@@ -45,6 +45,7 @@ def clients():
     clients = ModelClient.get_all(conection)
     Conection.desconectar()
     doneMessage = request.args.get('done')
+    errorMessage = request.args.get('error')
     if request.method == 'POST':
         client = ModelClient.getDataClient(request)
         clientValidated = ModelClient.validateDataForm(client)
@@ -67,7 +68,7 @@ def clients():
             Conection.desconectar()
             return render_template("admin/clients.html", clients=clients, error= "No se pudo ingresar el cliente, por favor inténtalo más tarde.", client = client)
     else:
-        return render_template("admin/clients.html", clients=clients, client = None, done = doneMessage)
+        return render_template("admin/clients.html", clients=clients, client = None, done = doneMessage, error = errorMessage)
 
 @admin_app.route("/clients/update/<documentId>", methods=['GET'])
 @login_required
@@ -108,19 +109,19 @@ def updateClient():
         Conection.desconectar()
         return render_template("admin/updateClient.html", error= "No se pudo actualizar el cliente, por favor inténtalo más tarde.", client = client)
 
-@admin_app.route("/clientes/ver/<cedula>")
+@admin_app.route("/clientes/ver/<documentId>", methods = ['GET'])
 @login_required
 @admin_permission.require()
-def verCliente(cedula):
+def viewClient(documentId):
     conexion = Conection.conectar()
-    client = ModelClient.get_cliente_by_cedula(conexion, cedula)
+    client = ModelClient.get_cliente_by_cedula(conexion, documentId)
     Conection.desconectar()
 
     if client:
         return render_template("admin/viewClient.html", client=client)
     else:
         # Manejar el caso en que no se encuentre el cliente
-        return "Cliente no encontrado"
+        return redirect(url_for('admin_app.clients', error="Cliente no encontrado"))
 
 @admin_app.route("/clientes/deshabilitar", methods = ['POST'])
 @login_required

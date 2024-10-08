@@ -98,6 +98,68 @@ class ModelUser:
             print(f"Error en get_Users: {ex}")
             return []
 
+    #SE TRRAEN LOS CLIENTES POR EL FILTRO (EXISTE EN USUARIO O NO )
+    @classmethod
+    def get_Clients(cls, conexion):
+        try:
+            cursor = conexion.cursor()
+            sql = "SELECT * FROM Cliente WHERE NOT EXISTS (SELECT 1 FROM usuario WHERE usuario.Cedula = Cliente.Cedula) "
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+            clients = []
+            for row in rows:
+                client = Client(
+                    DocumentId=row[0],
+                    Name=row[1],
+                    First_LastName=row[2],
+                    Second_LastName=row[3],
+                    Date_Birth=row[4],
+                    Age=row[5],
+                    Mail=row[6],
+                    Phone=row[7],
+                    Registration_Date=row[8],
+                    Occupation=row[9],
+                    TelephoneEmergency=row[10],
+                    Address=row[11],
+                    Entry_Date=row[12],
+                    Ailments=row[13],
+                    Limitation=row[14],
+                    ExpirationMembership=row[15],
+                    State=row[16],
+                    Membership_ID=row[17]
+                )
+                clients.append(client)
+            return clients
+        except Exception as ex:
+            print(f"Error al obtener clientes: {ex}")
+            return None
+
+     #SE TRRAEN LOS ENTRENADORES POR EL FILTRO (EXISTE EN USUARIO O NO )
+    @classmethod
+    def get_Trainers(cls, conexion):
+        try:
+            cursor = conexion.cursor()
+            sql = "SELECT * FROM Entrenador WHERE NOT EXISTS (SELECT 1 FROM usuario WHERE usuario.Cedula = Entrenador.Cedula) "
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+            trainers = []
+            for row in rows:
+                trainer = Trainer(
+                    DocumentId=row[0],
+                    Name=row[1],
+                    lastName=row[2],
+                    lastName2=row[3],
+                    DateOfBirth=row[4],
+                    Age=row[5],
+                    Email=row[6],
+                    Phone=row[7],
+                    State=row[8]
+                )
+                trainers.append(trainer)
+            return trainers
+        except Exception as ex:
+            print(f"Error al obtener los entrenadores: {ex}")
+            return None
 
     @classmethod
     def get_User(cls, conexion, documentId):

@@ -2,46 +2,73 @@
 <html lang="en">
 
 <head>
-    <!-- Title -->
-    <title>Cardio - Fitness</title>
+	<!-- Title -->
+	<title>Cardio - Fitness</title>
 
-    <!-- Meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="author" content="DexignZone">
-    <meta name="robots" content="">
+	<!-- Meta -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="author" content="DexignZone">
+	<meta name="robots" content="">
 
-    <meta property="og:image" content="">
-    <meta name="format-detection" content="telephone=no">
+	<meta property="og:image" content="">
+	<meta name="format-detection" content="telephone=no">
 
-    <!-- Mobile Specific -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Mobile Specific -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Favicon icon -->
-    <link href="../images/favicon.png" rel="shortcut icon" type="image/x-icon">
+	<!-- Favicon icon -->
+	<link href="../images/favicon.png" rel="shortcut icon" type="image/x-icon">
 
-    <!-- Toastr -->
-    <link href="../../../static/vendor/toastr/css/toastr.min.css" rel="stylesheet" >
+	<!-- Toastr -->
+	<link href="../../../static/vendor/toastr/css/toastr.min.css" rel="stylesheet">
 
-    <!-- Datatable -->
-    <link rel="stylesheet" href="../../../static/vendor/datatables/css/jquery.dataTables.min.css">
+	<!-- Datatable -->
+	<link rel="stylesheet" href="../../../static/vendor/datatables/css/jquery.dataTables.min.css">
 
-    <!-- Form step -->
-    <link rel="stylesheet" href="../../../static/vendor/jquery-smartwizard/dist/css/smart_wizard.min.css">
+	<!-- Form step -->
+	<link rel="stylesheet" href="../../../static/vendor/jquery-smartwizard/dist/css/smart_wizard.min.css">
 
-    <!-- Select 2 -->
-    <link rel="stylesheet" href="../vendor/chartist/css/chartist.min.css">
-    <link rel="stylesheet" href="../../../static/vendor/bootstrap-select/css/bootstrap-select.min.css">
-    <link rel="stylesheet" href="../../../static/vendor/select2/css/select2.min.css">
+	<!-- Select 2 -->
+	<link rel="stylesheet" href="../vendor/chartist/css/chartist.min.css">
+	<link rel="stylesheet" href="../../../static/vendor/bootstrap-select/css/bootstrap-select.min.css">
+	<link rel="stylesheet" href="../../../static/vendor/select2/css/select2.min.css">
 
-    <!-- Custom Stylesheet -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&display=swap">
-    <link rel="stylesheet" href="../../../static/css/style.css">
+	<!-- Custom Stylesheet -->
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&display=swap">
+	<link rel="stylesheet" href="../../../static/css/style.css">
 
 </head>
 
 <body>
+	<!-- Required vendors -->
+	<script src="../../../static/vendor/global/global.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<!-- Toastr -->
+	<link rel="stylesheet" type="text/css"
+		href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+	<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
+	<script src="../../static/js/toastrConfig.js"></script>
+
+	<!-- Actions -->
+	<!-- Cambiar esto -->
+	<script src="../../static/js/stateClient.js"></script>
+
+
+	<!-- Alerts toastr -->
+	{% if error %}
+	<script>
+		errorMessage("{{ error|escape }}");
+	</script>
+	{% endif %}
+	{% if done %}
+	<script>
+		successMessage("{{ done|escape }}");
+	</script>
+	{% endif %}
 	<!--*******************
         Preloader start
     ********************-->
@@ -96,16 +123,18 @@
 						<ul class="navbar-nav header-right">
 
 							<li class="nav-item dropdown notification_dropdown">
-                                <a class="nav-link bell dz-theme-mode" href="javascript:void(0);" aria-label="theme-mode">
+								<a class="nav-link bell dz-theme-mode" href="javascript:void(0);"
+									aria-label="theme-mode">
 									<i id="icon-light" class="fas fa-sun"></i>
-                                    <i id="icon-dark" class="fas fa-moon"></i>
-                                </a>
+									<i id="icon-dark" class="fas fa-moon"></i>
+								</a>
 							</li>
 
-							
+
 							<li class="nav-item dropdown ">
-								<a class="nav-link d-flex" href="javascript:void(0)" role="button" data-bs-toggle="dropdown">
-										<div class="header-info ">
+								<a class="nav-link d-flex" href="javascript:void(0)" role="button"
+									data-bs-toggle="dropdown">
+									<div class="header-info ">
 										<span class="text-black"><strong>Hersal Alfaro</strong></span>
 										<span class="dropdown-toggle me-2"></span>
 
@@ -157,7 +186,7 @@
 						</a>
 					</li>
 
-					<li><a href="{{ url_for('trainer_app.client')}}" class="ai-icon" aria-expanded="false">
+					<li><a href="{{ url_for('trainer_app.clients')}}" class="ai-icon" aria-expanded="false">
 							<i class="flaticon-381-user-8"></i>
 							<span class="nav-text">Clientes</span>
 						</a>
@@ -176,12 +205,12 @@
             Sidebar end
         ***********************************-->
 
-        <!--**********************************
+		<!--**********************************
             Content body start
         ***********************************-->
 		{% block content%}
 		{% endblock %}
-        <!--**********************************
+		<!--**********************************
             Content body end
         ***********************************-->
 
@@ -206,33 +235,32 @@
     ***********************************-->
 
 	<!-- Required vendors -->
-    <script src="../../../static/vendor/global/global.min.js"></script>
-    <script src="../../../static/vendor/bootstrap-select/js/bootstrap-select.min.js"></script>
-    <!--select plugins-file-->
-    <script src="../../../static/vendor/select2/js/select2.full.min.js"></script>
-    <!-- Toastr -->
-    <script src="../../../static/vendor/toastr/js/toastr.min.js"></script>
-    <!-- Pasos -->
-    <script src="../../../static/vendor/jquery-steps/js/jquery.steps.min.js"></script>
-    <script src="../../../static/vendor/jquery-smartwizard/dist/js/jquery.smartWizard.js"></script>
-    <!-- Datatable -->
-    <script src="../../../static/vendor/datatables/js/jquery.dataTables.min.js"></script>
-    <!-- ck-editor -->
-    <script src="../../../static/vendor/ckeditor/ckeditor.js"></script>
-    <!-- Apex Chart -->
-    <script src="../../../static/vendor/apexchart/apexchart.js"></script>
-    <!-- Chart piety plugin files -->
-    <script src="../../../static/vendor/peity/jquery.peity.min.js"></script>
+	<script src="../../../static/vendor/bootstrap-select/js/bootstrap-select.min.js"></script>
+	<!--select plugins-file-->
+	<script src="../../../static/vendor/select2/js/select2.full.min.js"></script>
+	<!-- Toastr -->
+	<script src="../../../static/vendor/toastr/js/toastr.min.js"></script>
+	<!-- Pasos -->
+	<script src="../../../static/vendor/jquery-steps/js/jquery.steps.min.js"></script>
+	<script src="../../../static/vendor/jquery-smartwizard/dist/js/jquery.smartWizard.js"></script>
+	<!-- Datatable -->
+	<script src="../../../static/vendor/datatables/js/jquery.dataTables.min.js"></script>
+	<!-- ck-editor -->
+	<script src="../../../static/vendor/ckeditor/ckeditor.js"></script>
+	<!-- Apex Chart -->
+	<script src="../../../static/vendor/apexchart/apexchart.js"></script>
+	<!-- Chart piety plugin files -->
+	<script src="../../../static/vendor/peity/jquery.peity.min.js"></script>
 
-    <!-- All init script -->
-    <script src="../../../static/js/plugins-init/select2-init.js"></script>
-    <script src="../../../static/js/plugins-init/toastr-init.js"></script>
-    <script src="../../../static/js/plugins-init/datatables.init.js"></script>
+	<!-- All init script -->
+	<script src="../../../static/js/plugins-init/select2-init.js"></script>
+	<script src="../../../static/js/plugins-init/toastr-init.js"></script>
+	<script src="../../../static/js/plugins-init/datatables.init.js"></script>
 
-    <!-- CUSTOM SCRIPT -->
-    <script src="../../../static/js/dashboard/dashboard-1.js"></script>
-    <script src="../../../static/js/custom.min.js"></script>
-    <script src="../../../static/js/deznav-init.js"></script>
+	<!-- CUSTOM SCRIPT -->
+	<script src="../../../static/js/dashboard/dashboard-1.js"></script>
+	<script src="../../../static/js/custom.min.js"></script>
+	<script src="../../../static/js/deznav-init.js"></script>
 
 	<script>
 		function carouselReview() {
@@ -281,8 +309,8 @@
 			$('#smartwizard').smartWizard();
 		});
 	</script>
-    {% block scripts %}
-    {% endblock %}
+	{% block scripts %}
+	{% endblock %}
 
 </body>
 
