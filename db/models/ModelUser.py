@@ -196,11 +196,11 @@ class ModelUser:
         DocumentId = None
 
         # Obtener DocumentId dependiendo del rol
-        if role == 'admin':
+        if role == 'Admin':
             DocumentId = request.form['DocumentId']
-        elif role == 'trainer':
+        elif role == 'Trainer':
             DocumentId = request.form['DocumentIdTrainer']
-        elif role == 'client':
+        elif role == 'Client':
             DocumentId = request.form['DocumentIdClient']
         
         Password = request.form['Password']
@@ -263,7 +263,6 @@ class ModelUser:
         # Si todas las validaciones pasan, devuelve el objeto User
         return User(None, DocumentId, hashPassword, State, role, datetime.now(), Email)
     
-
     @classmethod
     def validateDataFormUpdate(cls, request, user):
         DocumentId = request.form['DocumentId']
@@ -330,14 +329,14 @@ class ModelUser:
         return User(user.id, DocumentId, hashPassword, State, role, user.CreationDate, Email)
 
     @classmethod
-    def update_User(cls, conexion, user):
+    def update_User(cls, conexion, user, id):
         try:
             cursor = conexion.cursor()
             sql = """UPDATE Usuario 
                     SET Cedula = %s, Contrasena = %s, Estado = %s, Rol = %s, FechaCreacion = %s, Correo = %s
                     WHERE ID_Usuario  = %s"""
             
-            cursor.execute(sql, (user.DocumentId, user.Password, user.State, user.role, user.CreationDate, user.Email, user.id))
+            cursor.execute(sql, (user.DocumentId, user.Password, user.State, user.role, user.CreationDate, user.Email, id))
             conexion.commit()
             return True
         except Exception as ex:

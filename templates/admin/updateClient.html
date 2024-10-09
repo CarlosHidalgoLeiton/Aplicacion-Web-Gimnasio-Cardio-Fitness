@@ -17,8 +17,7 @@
             <div class="card-body">
                 <h4 class="card-title mb-4">Cliente {{ client.Name + " " + client.First_LastName }}</h4>
                 <div class="form-validation">
-                    <form class="needs-validation" action="/admin/client/update" novalidate method="POST">
-                        <input type="hidden" name="id" value="{{ client.DocumentId }}">
+                    <form class="needs-validation" action="/admin/client/update/{{client.DocumentId}}" novalidate method="POST">
                         <div class="row">
                             <div class="col-xl-6">
                                 <div class="mb-3 row">

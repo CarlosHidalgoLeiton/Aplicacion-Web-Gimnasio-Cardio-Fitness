@@ -29,9 +29,10 @@
         <div class="card form-container" id="formCliente" style="display: none;">
             <div class="card-body">
                 <div class="form-validation">
-                    <form class="needs-validation" action="/admin/users" novalidate method="POST">
+                    <form class="needs-validation" action="/admin/users" method="POST">
                         <div class="row">
                             <div class="col-xl-6">
+
                                 <div class="mb-3 row">
                                     <label class="col-lg-4 col-form-label" for="validationCustomRole">Tipo de Selección
                                         <span class="text-danger">*</span></label>
@@ -51,7 +52,7 @@
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustomCedulaAdmin"
-                                            name="DocumentId" placeholder="Ingrese cédula" required>
+                                            name="DocumentId" placeholder="Ingrese cédula">
                                         <div class="invalid-feedback">Por favor seleccione una cédula.</div>
                                     </div>
                                 </div>
@@ -107,7 +108,7 @@
                                         <span class="text-danger">*</span></label>
                                     <div class="col-lg-6">
                                         <input type="password" class="form-control" id="validationCustomPassword"
-                                            name="Password" placeholder="Ingresar Contraseña" required>
+                                            name="Password" placeholder="" required>
                                         <div class="invalid-feedback">Por favor ingrese una contraseña.</div>
                                     </div>
                                 </div>
@@ -118,7 +119,7 @@
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-6">
                                         <input type="password" class="form-control" id="validationCustomPasswordConfirm"
-                                            name="ConfirmPassword" placeholder="Ingresar Contraseña" required>
+                                            name="ConfirmPassword" placeholder="" required>
                                         <div class="invalid-feedback">Por favor confirme la contraseña.</div>
                                     </div>
                                 </div>
@@ -129,7 +130,7 @@
                                     <label class="col-lg-4 col-form-label" for="validationCustomState">Estado
                                         <span class="text-danger">*</span></label>
                                     <div class="col-lg-6">
-                                        <select class="form-control" id="validationCustomState" name="State">
+                                        <select class="form-control" id="validationCustomState" name="State" required>
                                             <option value="">Seleccione un estado</option>
                                             <option value="1">Activo</option>
                                             <option value="0">Inactivo</option>
@@ -189,8 +190,8 @@
                                 <td>{{ user.role }}</td>
                                 <td>{{ user.State }}</td>
                                 <td>
-                                    {% if user['State'] == 1 %}
                                     <div class="d-flex">
+                                        {% if user['State'] == 1 %}
                                         <a href="{{ url_for('admin_app.viewUser', DocumentId=user.DocumentId) }}"
                                             class="btn btn-primary shadow btn-xs sharp me-1">
                                             <i class="fa fa-eye"></i>
@@ -206,16 +207,19 @@
                                             <i class="fa fa-trash"></i>
                                         </button>
 
-                                    {% else %}
+                                        {% else %}
                                         <button onclick="ableUser(event)" data-id="{{ user['DocumentId'] }}"
                                             id="habilitar-{{ user['DocumentId'] }}"
                                             class="btn btn-success shadow btn-xs sharp">
                                             <i class="fa fa-check"></i>
                                         </button>
-
                                         {% endif %}
                                     </div>
                                 </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4">No se encontraron usuarios.</td>
                             </tr>
                             {% endfor %}
                         </tbody>

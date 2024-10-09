@@ -8,7 +8,6 @@ from db.models.ModelClient import ModelClient
 from db.models.entities.User import User
 from db.models.entities.Client import Client
 from apps.permissions import admin_permission
-import datetime
 
 #Creación de los blueprint para usar en app.py
 admin_app = Blueprint('admin_app', __name__)
@@ -68,45 +67,38 @@ def clients():
     else:
         return render_template("admin/clients.html", clients=clients, client = None, done = doneMessage, error = errorMessage)
 
-@admin_app.route("/clients/update/<documentId>", methods=['GET'])
+    
+@admin_app.route("/client/update/<documentId>", methods=['POST', 'GET'])
 @login_required
 @admin_permission.require(http_exception=403)
-def viewUpdateClient(documentId):
+def UpdateClient(documentId):
     conexion = Conection.conectar()
     client = ModelClient.get_cliente_by_cedula(conexion, documentId)
     Conection.desconectar()
     if client:
-        return render_template("admin/updateClient.html", client=client)
+        if request.method == 'POST':
+            clientupdated = ModelClient.getDataClient(request)
+            clientValidated = ModelClient.validateDataForm(clientupdated)
+            if not type(clientValidated) == bool:
+                return render_template("admin/updateClient.html", error=clientValidated, client = client)
+            conection = Conection.conectar()
+            if conection == None:
+                return render_template("admin/updateClient.html", error= "Error en la conexión.", client = client)
+            update = ModelClient.updateClient(conection, clientupdated, client.DocumentId)
+            Conection.desconectar()
+            if update and type(update) == bool:
+                return redirect(url_for('admin_app.clients', done = "Cliente actualizado correctamente."))
+            elif update == "Primary":
+                return render_template("admin/updateClient.html", error= "El número de cédula ingresado ya esta registrado con otro cliente.", client = client)
+            elif update == "DataBase":
+                return render_template("admin/updateClient.html", error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", client = client)
+            else:
+                return render_template("admin/updateClient.html", error= "No se pudo actualizar el cliente.", client = client)
+        else:
+            return render_template("admin/updateClient.html", client=client)
     else:
-        # Manejar el caso en que no se encuentre el cliente
         return redirect(url_for("admin_app.clients", error = "Cliente no encontrado"))
     
-@admin_app.route("/client/update", methods=['POST'])
-@login_required
-@admin_permission.require(http_exception=403)
-def updateClient():
-    client = ModelClient.getDataClient(request)
-    clientValidated = ModelClient.validateDataForm(client)
-    if not type(clientValidated) == bool:
-        return render_template("admin/updateClient.html", error=clientValidated, client = client)
-    conection = Conection.conectar()
-    if conection == None:
-        return render_template("admin/updateClient.html", error= "Error en la conexión.", client = client)
-    id = request.form['id']
-    insert = ModelClient.updateClient(conection, client, id)
-    if insert and type(insert) == bool:
-        clients = ModelClient.get_all(conection)
-        Conection.desconectar()
-        return redirect(url_for('admin_app.clients', done = "Cliente actualizado correctamente."))
-    elif insert == "Primary":
-        Conection.desconectar()
-        return render_template("admin/updateClient.html", error= "El número de cédula ingresado ya esta registrado con otro cliente.", client = client)
-    elif insert == "DataBase":
-        return render_template("admin/updateClient.html", error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", client = client)
-    else:
-        Conection.desconectar()
-        return render_template("admin/updateClient.html", error= "No se pudo actualizar el cliente, por favor inténtalo más tarde.", client = client)
-
 @admin_app.route("/clientes/ver/<documentId>", methods = ['GET'])
 @login_required
 @admin_permission.require(http_exception=403)
@@ -228,6 +220,8 @@ def users():
     clients = ModelUser.get_Clients(conection) 
     trainers = ModelUser.get_Trainers(conection) 
     Conection.desconectar()
+    doneMessage = request.args.get('done')
+    errorMessage = request.args.get('error')
     if request.method == 'POST':
         user = ModelUser.validateDataForm(request)
         if type(user) != User:
@@ -244,7 +238,7 @@ def users():
             Conection.desconectar()
             return render_template("admin/users.html", users=users,  clients=clients, trainers=trainers, error= "No se pudo ingresar el cliente.")
     else:
-        return render_template("admin/users.html", users=users, clients=clients, trainers=trainers)
+        return render_template("admin/users.html", users=users, clients=clients, trainers=trainers, done = doneMessage, errorMessage = errorMessage)
     
 
 @admin_app.route("/users/view/<DocumentId>")
@@ -262,49 +256,32 @@ def viewUser(DocumentId):
 
     return render_template("/admin/viewUser.html", user=user)
 
-
-@admin_app.route("/users/update/<string:DocumentId>", methods=["GET", "POST"])
+@admin_app.route("/users/update/<DocumentId>", methods=["POST", 'GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def updateUser(DocumentId):
-    try:
-        conexion = Conection.conectar()
-        user = ModelUser.get_UserU(conexion, DocumentId)
-
-        if not user:
-            return render_template("/admin/updateUser.html", error="Usuario no encontrado.")
-
-        if request.method == "POST":
-            # Validar el formulario
+    conection = Conection.conectar()
+    user = ModelUser.get_UserU(conection, DocumentId)
+    Conection.desconectar()
+    if user:
+        if request.method == 'POST':
             validatedUser = ModelUser.validateDataFormUpdate(request, user)
-            if isinstance(validatedUser, str):  
+            if type(validatedUser) == str:  
                 return render_template("/admin/updateUser.html", user=user, error=validatedUser)
+            conection = Conection.conectar()
+            if conection == None:
+                return render_template("/admin/updateUser.html", user=user, error="Error en la conexión.")
+            update_result = ModelUser.update_User(conection, validatedUser, user.id)
+            Conection.desconectar()
+            if update_result:
+                return redirect(url_for('admin_app.users', done = "Usuario actualizado correctamente"))
+            else:
+                return render_template("/admin/updateUser.html", user=user, error="No se pudo actualizar el usuario.")
+        else:
+            return render_template('admin/updateUser.html', user = user)
+    else:
+        return redirect(url_for("admin_app.users", error = "Usuario no encontrado"))
 
-            # Si las validaciones pasan, se actualiza el usuario
-            try:
-                conection = Conection.conectar()
-                if conection is None:
-                    return render_template("/admin/updateUser.html", user=user, error="Error en la conexión.")
-                
-                update_result = ModelUser.update_User(conection, validatedUser)
-                Conection.desconectar()
-
-                if update_result:
-                    return redirect(url_for('admin_app.users'))
-                else:
-                    return render_template("/admin/updateUser.html", user=user, error="No se pudo actualizar el usuario.")
-
-            except Exception as e:
-                print(f"Error actualizando usuario: {e}")
-                return render_template("/admin/updateUser.html", user=user, error="Error actualizando usuario.")
-
-        return render_template("/admin/updateUser.html", user=user)
-
-    except Exception as ex:
-        print(f"Error al obtener el usuario: {ex}")
-        return render_template("/admin/updateUser.html", error="Error al obtener el usuario.")
-    finally:
-        Conection.desconectar()
 
 
 
@@ -337,7 +314,6 @@ def ableUser():
     if able:
         return jsonify({"message": "Hecho"})
     else:
-       
         return jsonify({"error": "No se pudo habilitar"})
 
 
