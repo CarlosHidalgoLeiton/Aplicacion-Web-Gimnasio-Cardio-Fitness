@@ -32,7 +32,7 @@ def notAutorized():
     #-------------Rutas de Perfil -------------#
 @client_app.route("/perfil")
 @login_required
-
+@client_permission.require(http_exception=403)
 def perfil():
     try:
         conexion = Conection.conectar()

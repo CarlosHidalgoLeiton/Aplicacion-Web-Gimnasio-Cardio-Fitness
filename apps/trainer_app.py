@@ -10,14 +10,14 @@ trainer_app = Blueprint('trainer_app', __name__)
 
 @trainer_app.route("/")
 @login_required
-@trainer_permission.require()
+@trainer_permission.require(http_exception=403)
 def inicio():
     return render_template("trainer/index.html")
 
 #-------------Rutas de Perfil -------------#
 @trainer_app.route("/perfil")
 @login_required
-@trainer_permission.require()
+@trainer_permission.require(http_exception=403)
 def perfil():
     try:
         conexion = Conection.conectar()
@@ -35,7 +35,7 @@ def perfil():
 #-------------Rutas de Clientes-------------#
 @trainer_app.route("/clients", methods = ['GET'] )
 @login_required
-@trainer_permission.require()
+@trainer_permission.require(http_exception=403)
 def clients():
     conexion = Conection.conectar()
     clients = ModelClient.get_all(conexion)
@@ -85,7 +85,7 @@ def sesionesRutinaCliente():
 
 @trainer_app.route("/viewClient/<documentId>")
 @login_required
-@trainer_permission.require()
+@trainer_permission.require(http_exception=403)
 def viewClient(documentId):
     conexion = Conection.conectar()
     client = ModelClient.get_cliente_by_cedula(conexion, documentId)

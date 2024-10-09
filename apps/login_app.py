@@ -52,7 +52,7 @@ def login():
                                 login_user(logged_user)
                                 if logged_user.role == "Admin":
                                     return redirect(url_for('admin_app.inicio'))
-                                elif logged_user.role == "Cliente":
+                                elif logged_user.role == "Client":
                                     return redirect(url_for('client_app.inicio'))
                                 elif logged_user.role == 'Trainer':
                                     return redirect(url_for('trainer_app.inicio'))

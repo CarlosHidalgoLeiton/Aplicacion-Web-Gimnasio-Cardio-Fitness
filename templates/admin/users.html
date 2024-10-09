@@ -29,19 +29,18 @@
         <div class="card form-container" id="formCliente" style="display: none;">
             <div class="card-body">
                 <div class="form-validation">
-                    <form class="needs-validation" action="/admin/users" method="POST" novalidate>
+                    <form class="needs-validation" action="/admin/users" novalidate method="POST">
                         <div class="row">
                             <div class="col-xl-6">
-
                                 <div class="mb-3 row">
                                     <label class="col-lg-4 col-form-label" for="validationCustomRole">Tipo de Selección
                                         <span class="text-danger">*</span></label>
                                     <div class="col-lg-4">
-                                        <select class="form-control" id="validationCustomRole" name="role" required>
+                                        <select class="form-control" id="validationCustomRole" name="role">
                                             <option value="" disabled selected>Seleccione un rol</option>
-                                            <option value="admin">Admin</option>
-                                            <option value="trainer">Entrenador</option>
-                                            <option value="client">Cliente</option>
+                                            <option value="Admin">Administrador</option>
+                                            <option value="Trainer">Entrenador</option>
+                                            <option value="Client">Cliente</option>
                                         </select>
                                         <div class="invalid-feedback">Por favor seleccione un rol.</div>
                                     </div>
@@ -64,7 +63,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <select class="form-control single-select" id="validationCustomCedulaTrainer"
-                                            name="DocumentIdTrainer" required>
+                                            name="DocumentIdTrainer">
                                             <option value="" disabled selected>Seleccionar la cédula</option>
                                             {% if trainers %}
                                             {% for trainer in trainers %}
@@ -87,7 +86,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <select class="form-control single-select" id="validationCustomCedulaClient"
-                                            name="DocumentIdClient" required>
+                                            name="DocumentIdClient">
                                             <option value="" disabled selected>Seleccionar la cédula</option>
                                             {% if clients %}
                                             {% for client in clients %}
@@ -130,7 +129,7 @@
                                     <label class="col-lg-4 col-form-label" for="validationCustomState">Estado
                                         <span class="text-danger">*</span></label>
                                     <div class="col-lg-6">
-                                        <select class="form-control" id="validationCustomState" name="State" required>
+                                        <select class="form-control" id="validationCustomState" name="State">
                                             <option value="">Seleccione un estado</option>
                                             <option value="1">Activo</option>
                                             <option value="0">Inactivo</option>
@@ -254,11 +253,11 @@
             adminCedulaContainer.style.display = 'none';
 
             // Mostrar el select correspondiente según el rol
-            if (role === 'trainer') {
+            if (role === 'Trainer') {
                 trainerSelectContainer.style.display = 'flex';
-            } else if (role === 'client') {
+            } else if (role === 'Client') {
                 clientSelectContainer.style.display = 'flex';
-            } else if (role === 'admin') {
+            } else if (role === 'Admin') {
                 adminCedulaContainer.style.display = 'flex';
             }
 

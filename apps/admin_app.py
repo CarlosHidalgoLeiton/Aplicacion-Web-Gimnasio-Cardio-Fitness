@@ -16,22 +16,20 @@ admin_app = Blueprint('admin_app', __name__)
 #Routes redirectioned
 @admin_app.errorhandler(403)
 def forbidden(error):
-    return redirect(url_for('client_app.notAutorized'))
+    return redirect(url_for('admin_app.notAutorized'))
 
 @admin_app.errorhandler(401)
 def forbidden(error):
-    return redirect(url_for('client_app.notAutorized'))
-
+    return redirect(url_for('admin_app.notAutorized'))
 
 @admin_app.route('/notAutorized')
 def notAutorized():
     return "No tienes permisos para ingresar"
 
-
 #Configuración de rutas y solicitudes
 @admin_app.route("/")
 @login_required
-@admin_permission.require()
+@admin_permission.require(http_exception=403)
 def inicio():
     print(current_user.role)
     return render_template("admin/index.html")
@@ -39,7 +37,7 @@ def inicio():
 #-------------Rutas de Clientes-------------#
 @admin_app.route("/clients", methods = ['GET', 'POST'])
 @login_required
-@admin_permission.require()
+@admin_permission.require(http_exception=403)
 def clients():
     conection = Conection.conectar()
     clients = ModelClient.get_all(conection)
@@ -72,7 +70,7 @@ def clients():
 
 @admin_app.route("/clients/update/<documentId>", methods=['GET'])
 @login_required
-@admin_permission.require()
+@admin_permission.require(http_exception=403)
 def viewUpdateClient(documentId):
     conexion = Conection.conectar()
     client = ModelClient.get_cliente_by_cedula(conexion, documentId)
@@ -85,7 +83,7 @@ def viewUpdateClient(documentId):
     
 @admin_app.route("/client/update", methods=['POST'])
 @login_required
-@admin_permission.require()
+@admin_permission.require(http_exception=403)
 def updateClient():
     client = ModelClient.getDataClient(request)
     clientValidated = ModelClient.validateDataForm(client)
@@ -111,7 +109,7 @@ def updateClient():
 
 @admin_app.route("/clientes/ver/<documentId>", methods = ['GET'])
 @login_required
-@admin_permission.require()
+@admin_permission.require(http_exception=403)
 def viewClient(documentId):
     conexion = Conection.conectar()
     client = ModelClient.get_cliente_by_cedula(conexion, documentId)
@@ -125,7 +123,7 @@ def viewClient(documentId):
 
 @admin_app.route("/clientes/deshabilitar", methods = ['POST'])
 @login_required
-@admin_permission.require()
+@admin_permission.require(http_exception=403)
 def disableClient():
     data = request.get_json()
     clientId = data.get('clientId')
@@ -141,7 +139,7 @@ def disableClient():
     
 @admin_app.route("/clientes/habilitar", methods = ['POST'])
 @login_required
-@admin_permission.require()
+@admin_permission.require(http_exception=403)
 def ableClient():
     data = request.get_json()
     clientId = data.get('clientId')
@@ -223,7 +221,7 @@ def actualizarEntrenador():
 #-------------Rutas de user-------------#
 @admin_app.route("/users", methods = ['GET', 'POST'])
 @login_required
-@admin_permission.require()
+@admin_permission.require(http_exception=403)
 def users():
     conection = Conection.conectar()
     users = ModelUser.get_Users(conection)
@@ -250,6 +248,8 @@ def users():
     
 
 @admin_app.route("/users/view/<DocumentId>")
+@login_required
+@admin_permission.require(http_exception=403)
 def viewUser(DocumentId):
     try:
         conection = Conection.conectar()
@@ -264,7 +264,8 @@ def viewUser(DocumentId):
 
 
 @admin_app.route("/users/update/<string:DocumentId>", methods=["GET", "POST"])
-@login_required   
+@login_required
+@admin_permission.require(http_exception=403)
 def updateUser(DocumentId):
     try:
         conexion = Conection.conectar()
@@ -309,7 +310,7 @@ def updateUser(DocumentId):
 
 @admin_app.route("/users/disable", methods = ['POST'])
 @login_required
-@admin_permission.require()
+@admin_permission.require(http_exception=403)
 def disableUser():
     data = request.get_json()
     DocumentId = data.get('DocumentId')
@@ -325,7 +326,7 @@ def disableUser():
     
 @admin_app.route("/users/able", methods = ['POST'])
 @login_required
-@admin_permission.require()
+@admin_permission.require(http_exception=403)
 def ableUser():
     data = request.get_json()
     DocumentId = data.get('DocumentId')
