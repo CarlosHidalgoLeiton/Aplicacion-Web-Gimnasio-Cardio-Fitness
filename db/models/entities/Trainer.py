@@ -1,7 +1,6 @@
-from flask_login import UserMixin
 
 
-class Trainer(UserMixin):
+class Trainer():
 
     def __init__(self, DocumentId = None, Name = None, lastName = None, lastName2 = None, DateOfBirth =  None, Age = None, Email = None, Phone = None, State = None) -> None:
         self.DocumentId = DocumentId

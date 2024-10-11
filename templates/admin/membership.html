@@ -28,15 +28,15 @@
         <div class="card form-container" id="formCliente" style="display: none;">
             <div class="card-body">
                 <div class="form-validation">
-                    <form class="needs-validation" novalidate>
+                    <form class="needs-validation" novalidate action="/admin/membresias" method="POST">
                         <div class="row">
                             <div class="col-xl-6">
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label" for="validationCustomCedula">Nombre <span
+                                    <label class="col-lg-4 col-form-label" for="validationCustomCedula">Nombre<span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustomCedula"
-                                            placeholder="" required>
+                                        <input type="text" name="Nombre" class="form-control" id="validationCustomCedula"
+                                            required value="{{ membership.Name }}">
                                         <div class="invalid-feedback">Por favor ingrese Nombre.</div>
                                     </div>
                                 </div>
@@ -45,8 +45,8 @@
                                     <label class="col-lg-4 col-form-label" for="validationCustomPassword">Descripción
                                         <span class="text-danger">*</span></label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustomPassword"
-                                            placeholder="" required>
+                                        <input type="text" name="Descripcion" class="form-control" id="validationCustomPassword"
+                                            required value="{{ membership.Description }}">
                                         <div class="invalid-feedback">Por favor ingrese Descripción.</div>
                                     </div>
                                 </div>
@@ -55,8 +55,8 @@
                                     <label class="col-lg-4 col-form-label" for="validationCustomPasswordConfirm">Precio
                                         <span class="text-danger">*</span></label>
                                     <div class="col-lg-6">
-                                        <input type="number" class="form-control" id="validationCustomPasswordConfirm"
-                                            placeholder="" required>
+                                        <input type="number" name="Precio" class="form-control" id="validationCustomPasswordConfirm"
+                                            required value="{{ membership.Price }}">
                                         <div class="invalid-feedback">Por favor ingrese Precio.</div>
                                     </div>
                                 </div>
@@ -95,23 +95,43 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for membership in memberships %}
                             <tr>
-                                <td>Membresia</td>
-                                <td>18000</td>
+                                <td>{{ membership['Name'] }}</td>
+                                <td>{{ membership['Precio'] }}</td>
                                 <td>
                                     <div class="d-flex">
+                                        {% if membership['State'] == 1 %}
+                                        <a href="{{ url_for('admin_app.viewMembership', id=membership['id']) }}"
+                                            class="btn btn-primary shadow btn-xs sharp me-1">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        <a href="{{ url_for('admin_app.updateMembership', id=membership['id']) }}"
+                                            class="btn btn-primary shadow btn-xs sharp me-1">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
 
-                                        <a href="{{ url_for('admin_app.verMembresia') }}" class="btn btn-primary shadow btn-xs sharp me-1"><i
-                                                class="fa fa-eye"></i></a>
-                                        <a href="{{ url_for('admin_app.actualizarMembresia') }}"
-                                            class="btn btn-primary shadow btn-xs sharp me-1"><i
-                                                class="fa fa-pencil"></i></a>
-                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
-                                                class="fa fa-trash"></i></a>
 
+                                        <button onclick="disableMembership(event)" data-id="{{ membership['id'] }}"
+                                            id="deshabilitar-{{ membership['id'] }}"
+                                            class="btn btn-danger shadow btn-xs sharp">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+
+                                        {% else %}
+
+                                        <button onclick="ableMembership(event)" data-id="{{ membership['id'] }}"
+                                            id="habilitar-{{ membership['id'] }}"
+                                            class="btn btn-success shadow btn-xs sharp">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+
+                                        {% endif %}
                                     </div>
+
                                 </td>
                             </tr>
+                            {% endfor %}
 
                         </tbody>
                     </table>

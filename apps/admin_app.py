@@ -5,8 +5,8 @@ from db.conection import Conection
 from db.models.ModelUser import ModelUser
 from db.models.ModelTrainer import ModelTrainer
 from db.models.ModelClient import ModelClient
+from db.models.ModelMembership import ModelMembership
 from db.models.entities.User import User
-from db.models.entities.Client import Client
 from apps.permissions import admin_permission
 
 #Creación de los blueprint para usar en app.py
@@ -119,8 +119,10 @@ def viewClient(documentId):
 def disableClient():
     data = request.get_json()
     clientId = data.get('clientId')
-    conexion = Conection.conectar()
-    disable = ModelClient.disableClient(conexion, clientId)
+    conection = Conection.conectar()
+    if conection == None:
+        return redirect(url_for('admin_app.client', error = "No se pudo conectar con la base de datos"))
+    disable = ModelClient.disableClient(conection, clientId)
     Conection.desconectar()
 
     if disable:
@@ -135,8 +137,10 @@ def disableClient():
 def ableClient():
     data = request.get_json()
     clientId = data.get('clientId')
-    conexion = Conection.conectar()
-    able = ModelClient.ableClient(conexion, clientId)
+    conection = Conection.conectar()
+    if conection == None:
+        return redirect(url_for('admin_app.client', error = "No se pudo conectar con la base de datos"))
+    able = ModelClient.ableClient(conection, clientId)
     Conection.desconectar()
 
     if able:
@@ -372,18 +376,79 @@ def perfil():
     return render_template("admin/perfil.html")
 
 #-------------Rutas de Membresias-------------#
-@admin_app.route("/menbresias")
+@admin_app.route("/membresias", methods = ['GET', 'POST'])
 @login_required
-def membresias():
-    return render_template("admin/membresias.html")
+@admin_permission.require(http_exception=403)
+def memberships():
+    conection = Conection.conectar()
+    memberships = ModelMembership.get_all(conection)
+    Conection.desconectar()
+    doneMessage = request.args.get('done')
+    errorMessage = request.args.get('error')
+    if request.method == 'POST':
+        membership = ModelMembership.getDataClient(request)
+        membershipValidated = ModelMembership.validateDataForm(membership)
+        if not type(membershipValidated) == bool:
+            return render_template("admin/membership.html", memberships=memberships, error=membershipValidated, membership = membership)
+        conection = Conection.conectar()
+        if conection == None:
+            return render_template("admin/membership.html", memberships=memberships, error= "Error en la conexión.", membership = membership)
+        insert = ModelMembership.insertMembership(conection, membership)
+        if insert and type(insert) == bool:
+            memberships = ModelMembership.get_all(conection)
+            Conection.desconectar()
+            return render_template("admin/membership.html", memberships=memberships, done = "Membresía creada correctamente.", membership = None)
+        elif insert == "DataBase":
+            return render_template("admin/membership.html", memberships=memberships, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", membership = membership)
+        else:
+            Conection.desconectar()
+            return render_template("admin/membership.html", memberships=memberships, error= "No se pudo ingresar la membresía, por favor inténtalo más tarde.", membership = membership)
+    else:
+        return render_template("admin/membership.html", memberships=memberships, membership = None, done = doneMessage, error = errorMessage)
+
+
 
 @admin_app.route("/menbresias/ver")
 @login_required
-def verMembresia():
+def viewMembership():
     return render_template("admin/verMembresia.html")
 
 @admin_app.route("/menbresias/actualizar")
 @login_required
-def actualizarMembresia():
+def updateMembership():
     return render_template("admin/actualizarMembresia.html")
 
+@admin_app.route("/membresias/deshabilitar", methods = ['POST'])
+@login_required
+@admin_permission.require(http_exception=403)
+def disableMembership():
+    data = request.get_json()
+    membershipId = data.get('membershipId')
+    conection = Conection.conectar()
+    if conection == None:
+        return redirect(url_for('admin_app.memberships', error = "No se pudo conectar con la base de datos."))
+    disable = ModelMembership.disableMembership(conection, membershipId)
+    Conection.desconectar()
+
+    if disable:
+        return jsonify({"message": "Hecho"})
+    else:
+        return jsonify({"error": "No se pudo deshabilitar"})
+    
+@admin_app.route("/membresias/habilitar", methods = ['POST'])
+@login_required
+@admin_permission.require(http_exception=403)
+def ableMembership():
+    data = request.get_json()
+    membershipId = data.get('membershipId')
+    conection = Conection.conectar()
+    if conection == None:
+        return redirect(url_for('admin_app.memberships', error = "No se pudo conectar con la base de datos"))
+    able = ModelMembership.ableMembership(conection, membershipId)
+    Conection.desconectar()
+
+    if able:
+        return jsonify({"message": "Hecho"})
+    else:
+        # Manejar el caso en que no se encuentre el cliente
+        return jsonify({"error": "No se pudo habilitar"})

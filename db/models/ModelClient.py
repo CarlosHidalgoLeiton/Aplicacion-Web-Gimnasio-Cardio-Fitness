@@ -72,47 +72,6 @@ class ModelClient:
         else:
             return "Error"
 
-
-    # @classmethod
-    # def get_all_clients(cls, conexion):
-    #     try:
-    #         cursor = conexion.cursor()
-    #         sql = "SELECT Cedula, Nombre, Primer_Apellido, Segundo_Apellido, Fecha_Nacimiento, Edad, Correo, Telefono, FechaInscripcion, Ocupacion, TelefonoEmergencia, Direccion, FechaIngreso, Padecimientos, Limitacion, VencimientoMembresia, Estado, ID_Membresia FROM Cliente WHERE Estado = 1"
-    #         cursor.execute(sql)
-    #         rows = cursor.fetchall()
-
-    #         clientes = []
-    #         for row in rows:
-    #             # Crear un objeto `cliente` por cada fila
-
-    #             client = Client(
-    #                 Cedula=row[0],
-    #                 Nombre=row[1],
-    #                 Primer_Apellido=row[2],
-    #                 Segundo_Apellido=row[3],
-    #                 Fecha_Nacimiento=row[4],
-    #                 Edad=row[5],
-    #                 Correo=row[6],
-    #                 Telefono=row[7],
-    #                 FechaInscripcion=row[8],
-    #                 Ocupacion=row[9],
-    #                 TelefonoEmergencia=row[10],
-    #                 Direccion=row[11],
-    #                 FechaIngreso=row[12],
-    #                 Padecimientos=row[13],
-    #                 Limitacion=row[14],
-    #                 VencimientoMembresia=row[15],
-    #                 Estado=row[16],
-    #                 ID_Membresia=row[17]
-    #             )
-    #             clientes.append(client)
-
-    #         return clientes
-    #     except Exception as ex:
-    #         print(f"Error al obtener clientes: {ex}")
-    #         return None
-
-
     @classmethod
     def get_all(cls, conexion):
         try:
@@ -245,7 +204,8 @@ class ModelClient:
 
         #Validation for documentID 
         if client.DocumentId != None:
-            if "-" not in client.DocumentId and not any( d.isalpha() for d in client.DocumentId): #Valida que no sea alfabetico y que no tenga un "-"
+            print(all(m.isalpha() for m in client.DocumentId))
+            if "-" not in client.DocumentId and not any(m.isalpha() for m in client.DocumentId): #Valida que no sea alfabetico y que no tenga un "-"
                 if len(client.DocumentId) < 9:
                     return "El número de cédula ingresado no es válido. Debe ingresar 9 dígitos."
             else:
