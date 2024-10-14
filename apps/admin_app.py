@@ -345,17 +345,39 @@ def inventario():
     return render_template("admin/inventario.html")
 
 #-------------Rutas de Notificaciones-------------#
-@admin_app.route("/notificaciones")
+@admin_app.route("/notifications", methods = ['GET', 'POST'])
 @login_required
-def notificaciones():
-    return render_template("admin/notificaciones.html")
+def notifications():
+    conection = Conection.conectar()
+    notifications = ModelUser.get_Notifications(conection)
+    Conection.desconectar()
+    doneMessage = request.args.get('done')
+    errorMessage = request.args.get('error')
+    if request.method == 'POST':
+        notification = ModelUser.getDataNotification(request)
+        conection = Conection.conectar()
+        if conection == None:
+            return render_template("admin/notifications.html", notifications=notifications, error= "Error en la conexión.", notification=notification)
+        insert = ModelUser.insertNotification(conection, notification)
+        if insert and type(insert) == bool:
+            notifications = ModelUser.get_Notifications(conection)
+            Conection.desconectar()
+            return render_template("admin/notifications.html", notifications=notifications, done = "Notificación creada correctamente.", notification = None)
+        else:
+            Conection.desconectar()
+            return render_template("admin/notifications.html", notifications=notifications, error= "No se pudo ingresar la notificación, por favor inténtalo más tarde.", notification=notification)
+    else:
+        return render_template("admin/notifications.html", notifications=notifications, notification = None, done = doneMessage, error = errorMessage)
 
-@admin_app.route("/notificaciones/ver")
+@admin_app.route("/notifications/ver")
 @login_required
-def verNotificacion():
+def notificationsView(id):
     return render_template("admin/verNotificacion.html")
 
-
+@admin_app.route("/notifications/delete")
+@login_required
+def notificationsDesable(id):
+    return render_template("admin/verNotificacion.html")
 
     #-------------Reportes------------#
 @admin_app.route("/reportesFacturacion")
