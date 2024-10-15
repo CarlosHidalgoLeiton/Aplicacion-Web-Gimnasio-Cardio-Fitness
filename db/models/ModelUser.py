@@ -1,5 +1,6 @@
 from .entities.User import User
 from .entities.Client import Client
+from .entities.Notification import Notification
 from .entities.Trainer import Trainer
 from db.conection import Conection
 from datetime import datetime
@@ -387,3 +388,55 @@ class ModelUser:
                 return False
         else:
             return False
+
+
+    @classmethod
+    def get_Notifications(cls, conexion):
+        try:
+            cursor = conexion.cursor()
+            sql = "SELECT ID_Notificacion, Asunto, Fecha, Hora, Estado FROM notificacion"
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+            notifications = []
+            for row in rows:
+                notification = Notification(row[0], row[1],row[2], row[3],row[4])
+                notifications.append(notification)
+            return notifications
+        except Exception as ex:
+            print(f"Error en get_notifications: {ex}")
+            return []
+
+    @classmethod
+    def getDataNotification(cls, request):
+        Subject = request.form['Subject']
+        Date = request.form['Date']
+        Hour = request.form['Hour']
+        return Notification(None,Subject, Date, Hour, None)
+
+    @classmethod
+    def insertNotification(cls, conexion, Notification):
+        try:
+            cursor = conexion.cursor()
+            Notification.State = 1
+            
+            sql = """INSERT INTO `notificacion` (`Asunto`, `Fecha`, `Hora`, `Estado`)  
+                    VALUES (%s, %s, %s, %s)"""
+            
+            cursor.execute(sql, (Notification.Subject, Notification.Date, Notification.Hour, Notification.State))
+            
+            conexion.commit()
+            
+            if cursor.rowcount > 0:
+                print("Notificación creada exitosamente.")
+                return True
+            else:
+                print("No se pudo crear la Notificación.")
+                return None
+
+        except Exception as ex:
+            print(f"Error al crear Notificación: {ex}")
+            return None
+
+        finally:
+            if cursor:
+                cursor.close()
