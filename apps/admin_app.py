@@ -179,10 +179,40 @@ def verSesionCliente():
     return render_template("admin/verSesion.html")
 
 #-------------Rutas de Entrenadores-------------#
-@admin_app.route("/entrenadores")
+
+#Aquí he cambiadooo
+@admin_app.route("/trainers", methods = ['POST', 'GET'])
 @login_required
-def entrenadores():
-    return render_template("admin/entrenadores.html")
+def trainers():
+    conection = Conection.conectar()
+    trainers = ModelTrainer.get_all(conection)
+    Conection.desconectar()
+    doneMessage = request.args.get('done')
+    errorMessage = request.args.get('error')
+    if request.method == 'POST':
+        trainer = ModelTrainer.getDataTrainer(request)
+        trainerValidated = ModelTrainer.validateDataForm(trainer)
+        if not type(trainerValidated) == bool:
+            return render_template("admin/trainers.html", trainers=trainers, error=trainerValidated, trainer = trainer)
+        conection = Conection.conectar()
+        if conection == None:
+            return render_template("admin/trainers.html", trainers=trainers, error= "Error en la conexión.", trainer = trainer)
+        insert = ModelTrainer.insertTrainer(conection, trainer)
+        if insert and type(insert) == bool:
+            trainers = ModelTrainer.get_all(conection)
+            Conection.desconectar()
+            return render_template("admin/trainers.html", trainers=trainers, done = "Entrenador creado correctamente.", trainer = None)
+        elif insert == "Primary":
+            Conection.desconectar()
+            return render_template("admin/trainers.html", trainers=trainers, error= "El número de cédula ingresado ya esta registrado con otro entrenador.", trainer = trainer)
+        elif insert == "DataBase":
+            return render_template("admin/trainers.html", trainers=trainers, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", trainer = trainer)
+        else:
+            Conection.desconectar()
+            return render_template("admin/trainers.html", trainers=trainers, error= "No se pudo ingresar el entrenador, por favor inténtalo más tarde.", trainer = trainer)
+    else:
+        return render_template("admin/trainers.html", trainers=trainers, trainer = None, done = doneMessage, error = errorMessage)
+
 
 @admin_app.route("/entrenadores/ver")
 @login_required
@@ -416,17 +446,39 @@ def updateProduct():
 
 
 #-------------Rutas de Notificaciones-------------#
-@admin_app.route("/notificaciones")
+@admin_app.route("/notifications", methods = ['GET', 'POST'])
 @login_required
-def notificaciones():
-    return render_template("admin/notificaciones.html")
+def notifications():
+    conection = Conection.conectar()
+    notifications = ModelUser.get_Notifications(conection)
+    Conection.desconectar()
+    doneMessage = request.args.get('done')
+    errorMessage = request.args.get('error')
+    if request.method == 'POST':
+        notification = ModelUser.getDataNotification(request)
+        conection = Conection.conectar()
+        if conection == None:
+            return render_template("admin/notifications.html", notifications=notifications, error= "Error en la conexión.", notification=notification)
+        insert = ModelUser.insertNotification(conection, notification)
+        if insert and type(insert) == bool:
+            notifications = ModelUser.get_Notifications(conection)
+            Conection.desconectar()
+            return render_template("admin/notifications.html", notifications=notifications, done = "Notificación creada correctamente.", notification = None)
+        else:
+            Conection.desconectar()
+            return render_template("admin/notifications.html", notifications=notifications, error= "No se pudo ingresar la notificación, por favor inténtalo más tarde.", notification=notification)
+    else:
+        return render_template("admin/notifications.html", notifications=notifications, notification = None, done = doneMessage, error = errorMessage)
 
-@admin_app.route("/notificaciones/ver")
+@admin_app.route("/notifications/ver")
 @login_required
-def verNotificacion():
+def notificationsView(id):
     return render_template("admin/verNotificacion.html")
 
-
+@admin_app.route("/notifications/delete")
+@login_required
+def notificationsDesable(id):
+    return render_template("admin/verNotificacion.html")
 
     #-------------Reportes------------#
 @admin_app.route("/reportesFacturacion")

@@ -1,10 +1,9 @@
 {% extends "./layout/Layout_Admin.html" %}
 
-
 {% block content %}
 <!--**********************************
-            Content body start
-        ***********************************-->
+        Content body start
+    ***********************************-->
 
 <div class="page-titles">
 	<ol class="breadcrumb">
@@ -13,7 +12,6 @@
 </div>
 <!-- row -->
 <div class="row">
-
 	<div class="col-xl-12">
 		<div class="card-header d-sm-flex flex-wrap d-block pb-0 border-0">
 			<div class="me-auto pe-3 mb-3"></div>
@@ -23,57 +21,57 @@
 			</button>
 		</div>
 	</div>
+
 	<!--**********************************
-                        VALIDACION CON JQUERY
-                    ***********************************-->
+            FORMULARIO DE VALIDACIÓN
+        ***********************************-->
 	<div class="col-lg-12">
 		<div class="card form-container" id="formCliente" style="display: none;">
 			<div class="card-body">
 				<div class="form-validation">
-					<form class="needs-validation" novalidate>
+					<form class="needs-validation" action="/admin/notifications" novalidate method="POST">
 						<div class="row">
 							<div class="mb-3 col-md-6">
-								<label class=" col-form-label" for="validationCustom01">Asunto
+								<label class="col-form-label" for="validationCustom01">Asunto
 									<span class="text-danger">*</span>
 								</label>
 								<div class="col-lg-12">
-									<input type="text" class="form-control" id="validationCustom01" placeholder=""
-										required>
+									<input type="text" class="form-control" id="validationCustom01"
+										value="{{notification.Subject}}" name="Subject" required>
 									<div class="invalid-feedback">
 										Por favor ingresar Asunto
 									</div>
 								</div>
 							</div>
 							<div class="mb-3 col-md-6">
-								<label class=" col-form-label" for="validationCustom02">Fecha <span
-										class="text-danger">*</span>
+								<label class="col-form-label" for="validationCustom02">Fecha
+									<span class="text-danger">*</span>
 								</label>
 								<div class="col-lg-12">
-									<input type="text" id="date-format" class="form-control" placeholder="Fecha">
-
+									<input type="date" class="form-control" id="validationCustom01"
+										value="{{notification.Date}}" name="Date" required>
 									<div class="invalid-feedback">
 										Por favor ingresar Fecha
 									</div>
 								</div>
-
 							</div>
-							<div class="mb-3 row">
-								<label class=" col-form-label" for="validationCustom03">Hora
+							<div class="mb-3 col-md-6">
+								<label class="col-form-label" for="validationCustom03">Hora
 									<span class="text-danger">*</span>
 								</label>
-								<div class="col-lg-6">
-									<input type="text" class="form-control" id="validationCustom03" placeholder=""
-										required>
+								<div class="col-lg-12">
+									<input type="time" class="form-control" id="validationCustom01"
+										value="{{notification.Hour}}" name="Hour" required>
 									<div class="invalid-feedback">
 										Por favor ingresar Hora
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="my-3 ">
-							<div class="d-flex justify-content-start ">
+						<div class="my-3">
+							<div class="d-flex justify-content-start">
 								<button type="submit" class="btn btn-primary ms-2">Agregar</button>
-								<button class="btn btn-danger ms-2" id="btnCancelar">Cancelar</button>
+								<button type="button" class="btn btn-danger ms-2" id="btnCancelar">Cancelar</button>
 							</div>
 						</div>
 					</form>
@@ -83,8 +81,8 @@
 	</div>
 
 	<!--**********************************
-                        DATATABLES 
-                    ***********************************-->
+            DATATABLES
+        ***********************************-->
 	<div class="col-12">
 		<div class="card">
 			<div class="card-header">
@@ -97,25 +95,32 @@
 							<tr>
 								<th>Fecha</th>
 								<th>Hora</th>
+								<th>Asunto</th>
 								<th>Acciones</th>
 							</tr>
 						</thead>
 						<tbody>
+							{% if notifications %}
+							{% for notification in notifications %}
 							<tr>
-								<td>0-0000-000</td>
-								<td>00:00</td>
+								<td>{{ notification['Date'] }}</td>
+								<td>{{ notification['Hour'] }}</td>
+								<td>{{ notification['Subject'] }}</td>
 								<td>
 									<div class="d-flex">
-										<a href="{{ url_for('admin_app.verNotificacion') }}"
-											class="btn btn-primary shadow btn-xs sharp me-1"><i
+										<a href="" class="btn btn-primary shadow btn-xs sharp me-1"><i
 												class="fa fa-eye"></i></a>
-										<a href="#" class="btn btn-danger shadow btn-xs sharp"><i
+										<a href="" class="btn btn-danger shadow btn-xs sharp"><i
 												class="fa fa-trash"></i></a>
-
 									</div>
 								</td>
 							</tr>
-
+							{% endfor %}
+							{% else %}
+							<tr>
+								<td colspan="4">No hay notificaciones disponibles</td>
+							</tr>
+							{% endif %}
 						</tbody>
 					</table>
 				</div>
@@ -126,21 +131,24 @@
 </div>
 
 <!--**********************************
-            Content body end
-        ***********************************-->
+        Content body end
+    ***********************************-->
 {% endblock %}
 
 {% block scripts %}
 <script>
 	document.addEventListener('DOMContentLoaded', function () {
-		document.getElementById('btnAgregarCliente').addEventListener('click', function () {
-			document.getElementById('formCliente').style.display = 'block';
+		const btnAgregarCliente = document.getElementById('btnAgregarCliente');
+		const btnCancelar = document.getElementById('btnCancelar');
+		const formCliente = document.getElementById('formCliente');
+
+		btnAgregarCliente.addEventListener('click', function () {
+			formCliente.style.display = 'block';
 		});
 
-		document.getElementById('btnCancelar').addEventListener('click', function () {
-			document.getElementById('formCliente').style.display = 'none';
+		btnCancelar.addEventListener('click', function () {
+			formCliente.style.display = 'none';
 		});
-
 	});
 </script>
 {% endblock %}

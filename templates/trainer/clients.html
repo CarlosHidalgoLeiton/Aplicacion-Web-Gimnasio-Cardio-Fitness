@@ -47,7 +47,7 @@
                                                         <a href="{{ url_for ('trainer_app.rutinaCliente') }}"
                                                         class="btn btn-primary shadow btn-xs sharp me-1"><i
                                                             class="flaticon-381-notepad"></i></a>
-                                                        <a href="{{ url_for ('trainer_app.estadisticasCliente') }}"
+                                                        <a href="{{ url_for ('trainer_app.estadisticasCliente',documentId=client['DocumentId']) }}"
                                                         class="btn btn-primary shadow btn-xs sharp me-1"><i
                                                             class="fas fa-chart-bar"></i></a>
                                                             <a href="{{ url_for('trainer_app.viewClient', documentId=client['DocumentId']) }}"

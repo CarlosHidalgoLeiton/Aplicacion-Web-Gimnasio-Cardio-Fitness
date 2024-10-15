@@ -3,6 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from db.conection import Conection
 from db.models.ModelClient import ModelClient
 from db.models.ModelTrainer import ModelTrainer
+from db.models.ModelStatistics import ModelStatistics
 from apps.permissions import trainer_permission
 
 
@@ -58,10 +59,54 @@ def editarSesion():
 def editarSesionesRutinaCliente():
     return render_template("trainer/editarSesionesRutinaCliente.html")
 
-@trainer_app.route("/estadisticasCliente" )
+
+@trainer_app.route("/estadisticasCliente/<documentId>", methods=['GET', 'POST'])
 @login_required
-def estadisticasCliente():
-    return render_template("trainer/estadisticasCliente.html")
+def estadisticasCliente(documentId):
+    conection = Conection.conectar()
+
+    # Obtener las estadísticas del cliente por su ID
+    statistics = ModelStatistics.getStatisticsByClientId(conection, documentId)
+    client = ModelStatistics.getClientById(conection, documentId)
+    Conection.desconectar()
+    if client is None:
+        return redirect(url_for('trainer_app.clients', error="Cliente no encontrado"))
+    
+    doneMessage = request.args.get('done')
+    errorMessage = request.args.get('error')
+
+    if request.method == 'POST':
+        # Obtener y validar datos de estadísticas del formulario
+        statistics_data = ModelStatistics.getDataStatistics(request)
+        statisticsValidated = ModelStatistics.validateDataForm(statistics_data)
+
+        if not isinstance(statisticsValidated, bool):
+            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error=statisticsValidated, statistics_data=statistics_data, documentId=documentId)
+
+        conection = Conection.conectar()
+        if conection is None:
+            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error="Error en la conexión.", statistics_data=statistics_data)
+
+        # Intentar insertar las estadísticas
+        statistics_data.Client_ID = documentId  # Asegurar que el Client_ID esté presente en los datos
+        insert = ModelStatistics.insertStatistics(conection, statistics_data)
+
+        if insert and isinstance(insert, bool):
+            # Obtener las estadísticas nuevamente para actualizar la vista
+            statistics = ModelStatistics.getStatisticsByClientId(conection, documentId)
+            Conection.desconectar()
+            return render_template("trainer/estadisticasCliente.html", statistics=statistics, done="Estadísticas creadas correctamente.", statistics_data=None,documentId=documentId)
+        elif insert == "Primary":
+            Conection.desconectar()
+            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error="El registro de estadísticas ya existe.", statistics_data=statistics_data,documentId=documentId)
+        elif insert == "DataBase":
+            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error="No se puede conectar a la base de datos, por favor inténtalo más tarde o comuníquese con el desarrollador.", statistics_data=statistics_data,documentId=documentId)
+        else:
+            Conection.desconectar()
+            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error="No se pudo ingresar las estadísticas, por favor inténtalo más tarde.", statistics_data=statistics_data,documentId=documentId)
+    else:
+        return render_template("trainer/estadisticasCliente.html", client = client, statistics=statistics, statistics_data=None, done=doneMessage, error=errorMessage, documentId = documentId)
+
 
 @trainer_app.route("/nuevaRutina" )
 @login_required

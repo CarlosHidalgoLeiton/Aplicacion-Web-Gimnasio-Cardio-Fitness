@@ -2,14 +2,14 @@
 
 class Trainer():
 
-    def __init__(self, DocumentId = None, Name = None, lastName = None, lastName2 = None, DateOfBirth =  None, Age = None, Email = None, Phone = None, State = None) -> None:
+    def __init__(self, DocumentId = None, Name = None, First_LastName = None, Second_LastName = None, Date_Birth =  None, Age = None, Mail = None, Phone = None, State = None) -> None:
         self.DocumentId = DocumentId
         self.Name = Name
-        self.lastName = lastName
-        self.lastName2 = lastName2
-        self.DateOfBirth = DateOfBirth
+        self.First_LastName = First_LastName
+        self.Second_LastName = Second_LastName
+        self.Date_Birth = Date_Birth
         self.Age = Age
-        self.Email = Email
+        self.Mail = Mail
         self.Phone = Phone
         self.State = State
 

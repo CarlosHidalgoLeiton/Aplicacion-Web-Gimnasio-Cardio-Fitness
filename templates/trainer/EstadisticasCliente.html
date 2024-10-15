@@ -10,7 +10,7 @@
 		<div class="container-fluid">
 			<div class="page-titles">
 				<ol class="breadcrumb">
-					<li class="breadcrumb-item"><a href="{{ url_for ('trainer_app.client') }}">Clientes</a></li>
+					<li class="breadcrumb-item"><a href="{{ url_for ('trainer_app.clients') }}">Clientes</a></li>
 					<li class="breadcrumb-item active"><a href="">Estadísticas</a></li>
 				</ol>
 			</div>
@@ -30,225 +30,201 @@
 					VALIDACION CON JQUERY
 				***********************************-->
 				<div class="col-lg-12">
-					<div class="card form-container" id="formCliente" style="display: none;">
+					<div class="card form-container" id="formStatistics" style="display: none;">
 						<div class="card-body">
 							<div class="form-validation">
-								<form class="needs-validation" novalidate>
-									
-									
-									<h4>Información Personal</h4>
-									<hr>
-									<div class="row">
-										<div class="col-xl-6">
-											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom01">Nombre Completo <span class="text-danger">*</span></label>
-												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom01" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar nombre completo.</div>
-												</div>
-											</div>
-											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom02">Edad <span class="text-danger">*</span></label>
-												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom02" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar edad.</div>
-												</div>
-											</div>
-											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom03">Estatura <span class="text-danger">*</span></label>
-												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom03" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar estatura.</div>
-												</div>
-											</div>
-											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom04">Fecha de Medición <span class="text-danger">*</span></label>
-												<div class="col-lg-6">
-													<input type="text" id="mdate" class="form-control" placeholder="Fecha" required>
-													<div class="invalid-feedback">Por favor ingresar fecha de medición.</div>
-												</div>
-											</div>
-										</div>
-										<div class="col-xl-6">
-											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom05">Peso <span class="text-danger">*</span></label>
-												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom05" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar peso.</div>
-												</div>
-											</div>
-											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom06">IMC <span class="text-danger">*</span></label>
-												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom06" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar IMC.</div>
-												</div>
-											</div>
-											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom07">FC Reposo <span class="text-danger">*</span></label>
-												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom07" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar FC Reposo.</div>
-												</div>
-											</div>
-											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom08">FC Max <span class="text-danger">*</span></label>
-												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom08" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar FC Max.</div>
-												</div>
-											</div>
-											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom09">Presión Arterial <span class="text-danger">*</span></label>
-												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom09" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar presión arterial.</div>
-												</div>
-											</div>
-										</div>
-									</div>
-				
-									
+								<form class="needs-validation" action="{{ url_for('trainer_app.estadisticasCliente', documentId=documentId) }}" novalidate method="POST">
 									<h4>Escaneo</h4>
 									<hr>
 									<div class="row">
 										<div class="col-xl-6">
+
+									
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom10">Peso <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label">Nombre completo<span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom10" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar peso.</div>
+													<input type="text" class="form-control"  value="{{ client[0] }} {{ client[1] }} {{ client[2] }}" readonly>
+												</div>
+											</div>
+									
+										
+											<div class="mb-3 row">
+												<label class="col-lg-4 col-form-label" for="validationCustom01" >Fecha de Medición<span class="text-danger">*</span></label>
+												<div class="col-lg-6">
+													<input type="text" class="form-control" id="validationCustom01" name ="Measurement_Date"  value="{{statistics_data.Measurement_Date}}" required>
+													<div class="invalid-feedback">Por favor ingresar fecha de medición.</div>
+												</div>
+											</div>
+
+											<div class="mb-3 row">
+												<label class="col-lg-4 col-form-label" >Estatura <span class="text-danger">*</span></label>
+												<div class="col-lg-6">
+													<input type="text" class="form-control" name ="Stature"  value="{{statistics_data.Stature}}">
 												</div>
 											</div>
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom11">IMC <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label" >Peso <span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom11" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar IMC.</div>
+													<input type="text" class="form-control" name ="Weight" value="{{statistics_data.Weight}}" >
+													
 												</div>
 											</div>
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom12">FC Reposo <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label" >IMC <span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom12" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar FC Reposo.</div>
+													<input type="text" class="form-control" name="IMC" value="{{statistics_data.IMC}}" >
+												</div>
+											</div>
+
+											<div class="mb-3 row">
+												<label class="col-lg-4 col-form-label" >FC Reposo<span class="text-danger">*</span></label>
+												<div class="col-lg-6">
+													<input type="text" class="form-control" name="FC_Repose" value="{{statistics_data.FC_Repose}}" >
 												</div>
 											</div>
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom13">FC Max <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label" >FC Max <span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom13" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar FC Max.</div>
+													<input type="text" class="form-control" name="FC_MAX" value="{{statistics_data.FC_MAX}}" >
 												</div>
 											</div>
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom14">Presión Arterial <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label" >Presión Arterial <span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom14" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar presión arterial.</div>
+													<input type="text" class="form-control" name="Blood_pressure" value="{{statistics_data.Blood_pressure}}" >
 												</div>
 											</div>
+
 										</div>
 										<div class="col-xl-6">
+											
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom15">BMR <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label" >Edad<span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom15" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar BMR.</div>
+													<input type="text" class="form-control" value="{{client[3]}}" readonly>
+												</div>
+											</div>
+										
+
+											<div class="mb-3 row">
+												<label class="col-lg-4 col-form-label" >BMR <span class="text-danger">*</span></label>
+												<div class="col-lg-6">
+													<input type="text" class="form-control" name="BMR" value="{{statistics_data.BMR}}" >
 												</div>
 											</div>
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom16">% Grasa Corporal <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label" >Grasa Corporal <span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom16" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar % grasa corporal.</div>
+													<input type="text" class="form-control" name="Body_Fat" value="{{statistics_data.Body_Fat}}" >
 												</div>
 											</div>
+
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom17">% Agua <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label" >Porcentaje Agua <span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom17" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar % agua.</div>
+													<input type="text" class="form-control" name="Percent_Water" value="{{statistics_data.Percent_Water}}">
 												</div>
 											</div>
+
+											<div class="mb-3 row">
+												<label class="col-lg-4 col-form-label" >Masa Muscular <span class="text-danger">*</span></label>
+												<div class="col-lg-6">
+													<input type="text" class="form-control" name="Muscle_Mass" value="{{statistics_data.Muscle_Mass}}">
+												</div>
+											</div>
+
+											<div class="mb-3 row">
+												<label class="col-lg-4 col-form-label" >Edad Metabólica <span class="text-danger">*</span></label>
+												<div class="col-lg-6">
+													<input type="text" class="form-control" name="Metabolic_Age" value="{{statistics_data.Metabolic_Age}}">
+												</div>
+											</div>
+
+											<div class="mb-3 row">
+												<label class="col-lg-4 col-form-label" >Masa Ósea<span class="text-danger">*</span></label>
+												<div class="col-lg-6">
+													<input type="text" class="form-control" name="Bone_Mass" value="{{statistics_data.Bone_Mass}}" >
+												</div>
+											</div>
+
+											<div class="mb-3 row">
+												<label class="col-lg-4 col-form-label" >Grasa Visceral<span class="text-danger">*</span></label>
+												<div class="col-lg-6">
+													<input type="text" class="form-control" name = "Visceral_Fat" value="{{statistics_data.Visceral_Fat}}" >
+												</div>
+											</div>
+
+
 										</div>
 									</div>
 				
+									
+							
 									
 									<h4>Circunferencias</h4>
 									<hr>
 									<div class="row">
 										<div class="col-xl-6">
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom18">Pecho <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label" >Pecho <span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom18" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar circunferencia del pecho.</div>
+													<input type="text" class="form-control" name="Chest_Circum" value="{{statistics_data.Chest_Circum}}">
 												</div>
 											</div>
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom19">Brazo Derecho <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label" >Brazo Derecho <span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom19" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar circunferencia del brazo derecho.</div>
+													<input type="text" class="form-control" name="Right_Arm_Circum" value="{{statistics_data.Right_Arm_Circum}}" >
 												</div>
 											</div>
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom20">Brazo Izquierdo <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label" >Brazo Izquierdo <span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom20" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar circunferencia del brazo izquierdo.</div>
+													<input type="text" class="form-control" name="Left_Arm_Circum" value="{{statistics_data.Left_Arm_Circum}}">
 												</div>
 											</div>
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom21">Cintura <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label" >Cintura <span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom21" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar circunferencia de la cintura.</div>
+													<input type="text" class="form-control" name="Circum_Waist" value="{{statistics_data.Circum_Waist}}">
 												</div>
 											</div>
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom22">Abdomen <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label">Abdomen <span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom22" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar circunferencia del abdomen.</div>
+													<input type="text" class="form-control" name="Circum_Abdomen" value="{{statistics_data.Circum_Abdomen}}" >
 												</div>
 											</div>
 										</div>
 										<div class="col-xl-6">
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom23">Cadera <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label" >Cadera <span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom23" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar circunferencia de la cadera.</div>
+													<input type="text" class="form-control" name="Hip_Circum" value="{{statistics_data.Hip_Circum}}">
 												</div>
 											</div>
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom24">Muslo Derecho <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label" >Muslo Derecho <span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom24" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar circunferencia del muslo derecho.</div>
+													<input type="text" class="form-control" name="Circum_Thigh_Right" value="{{statistics_data.Circum_Thigh_Right}}">
 												</div>
 											</div>
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom25">Muslo Izquierdo <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label" >Muslo Izquierdo <span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom25" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar circunferencia del muslo izquierdo.</div>
+													<input type="text" class="form-control" name="Circum_Thigh_Left" value="{{statistics_data.Circum_Thigh_Left}}" >
 												</div>
 											</div>
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom26">Pantorrilla Derecha <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label" >Pantorrilla Derecha <span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom26" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar circunferencia de la pantorrilla derecha.</div>
+													<input type="text" class="form-control" name="Circum_Calf_Right" value="{{statistics_data.Circum_Calf_Right}}"  >
 												</div>
 											</div>
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom27">Pantorrilla Izquierda <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label" >Pantorrilla Izquierda <span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom27" placeholder="" required>
-													<div class="invalid-feedback">Por favor ingresar circunferencia de la pantorrilla izquierda.</div>
+													<input type="text" class="form-control" name="Circum_Calf_Left" value="{{statistics_data.Circum_Calf_Left}}"  >
 												</div>
 											</div>
 										</div>
@@ -260,39 +236,42 @@
 									<div class="row">
 										<div class="col-xl-6">
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom28">Consideraciones Especiales <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label" >Consideraciones Especiales <span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom28" placeholder="Enfermedad, medicamentos, operación, lesión, etc." required>
-													<div class="invalid-feedback">Por favor ingresar consideraciones especiales.</div>
+													<input type="text" class="form-control" name="Special_Considerations" value="{{statistics_data.Special_Considerations}}">
 												</div>
 											</div>
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom29">¿Es deportista? <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label" >¿Es deportista? <span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<select class="form-control" id="validationCustom29" required>
-														<option value="" disabled selected>Seleccione</option>
-														<option value="si">Sí</option>
-														<option value="no">No</option>
-													</select>
-													<div class="invalid-feedback">Por favor seleccione si es deportista.</div>
+													<input type="text" class="form-control" name="sportsman" value="{{statistics_data.sportsman}}" >
+												</div>
+											</div>
+											<div class="mb-3 row">
+												<label class="col-lg-4 col-form-label" >Disponibilidad de Tiempo <span class="text-danger">*</span></label>
+												<div class="col-lg-6">
+													<input type="text" class="form-control" name="Disponibilidad" value="{{statistics_data.Disponibilidad}}">
 												</div>
 											</div>
 										</div>
 										<div class="col-xl-6">
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom30">Método de Entrenamiento <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label" >Objetivo<span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom30" placeholder="Objetivo y énfasis" required>
-													<div class="invalid-feedback">Por favor ingresar método de entrenamiento.</div>
+													<input type="text" class="form-control" name="Training_Goal" value="{{statistics_data.Training_Goal}}" >
 												</div>
 											</div>
+
 											<div class="mb-3 row">
-												<label class="col-lg-4 col-form-label" for="validationCustom31">Disponibilidad de Tiempo <span class="text-danger">*</span></label>
+												<label class="col-lg-4 col-form-label" >Énfasis<span class="text-danger">*</span></label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" id="validationCustom31" placeholder="Disponibilidad horaria" required>
-													<div class="invalid-feedback">Por favor ingresar disponibilidad de tiempo.</div>
+													<input type="text" class="form-control" name="Emphasis_Training" value="{{statistics_data.Emphasis_Training}}" >
 												</div>
 											</div>
+
+											<input type="hidden" name="Client_ID" value="{{documentId}}">
+											<input type="hidden" name="Trainer_ID" value="{{current_user.DocumentId}}">
+											<input type="hidden" name="State" value=1>
 										</div>
 									</div>
 				
@@ -329,24 +308,39 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
-										<td>09/08/2024</td>
-										<td>Carlos Hidalgo</td>
-										<td>
-											<div class="d-flex">
-												
-												<a href="{{ url_for ('trainer_app.verEstadistica') }}"
-													class="btn btn-primary shadow btn-xs sharp me-1"><i
-														class="fa fa-eye"></i></a>
-												<a href="{{ url_for ('trainer_app.editarEstadistica') }}"
-													class="btn btn-primary shadow btn-xs sharp me-1"><i
-														class="fa fa-pencil"></i></a>
-												<a href="#" class="btn btn-danger shadow btn-xs sharp"><i
-														class="fa fa-trash"></i></a>
-											</div>
-										</td>
-									</tr>
-
+									{% if statistics %}
+										{% for stat in statistics %}
+										<tr>
+											<td>{{ stat[1].strftime('%d/%m/%Y') }}</td>
+											<td>{{ stat[2] }} {{stat[3]}}</td>
+											<td>
+												<div class="d-flex">
+													<!-- Ver estadística -->
+													<a href="{{ url_for('trainer_app.verEstadistica', statistic_id=stat.ID_Statistics) }}"
+														class="btn btn-primary shadow btn-xs sharp me-1">
+														<i class="fa fa-eye"></i>
+													</a>
+													<!-- Editar estadística -->
+													<a href="{{ url_for('trainer_app.editarEstadistica') }}"
+														class="btn btn-primary shadow btn-xs sharp me-1">
+														<i class="fa fa-pencil"></i>
+													</a>
+													<!-- Eliminar estadística -->
+													<a href=""
+														class="btn btn-danger shadow btn-xs sharp">
+														<i class="fa fa-trash"></i>
+													</a>
+												</div>
+											</td>
+										</tr>
+										{% endfor %}
+									{% else %}
+										<tr>
+											<td colspan="3">No hay estadísticas registradas para este cliente.</td>
+											<td ></td>
+											<td ></td>
+										</tr>
+									{% endif %}
 								</tbody>
 							</table>
 						</div>
@@ -367,11 +361,11 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('btnAgregarCliente').addEventListener('click', function () {
-                document.getElementById('formCliente').style.display = 'block';
+                document.getElementById('formStatistics').style.display = 'block';
             });
 
             document.getElementById('btnCancelar').addEventListener('click', function () {
-                document.getElementById('formCliente').style.display = 'none';
+                document.getElementById('formStatistics').style.display = 'none';
             });
 
         });
