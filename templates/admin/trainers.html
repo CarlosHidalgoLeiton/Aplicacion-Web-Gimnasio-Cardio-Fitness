@@ -29,7 +29,7 @@
         <div class="card form-container" id="formCliente" style="display: none;">
             <div class="card-body">
                 <div class="form-validation">
-                    <form class="needs-validation" novalidate>
+                    <form class="needs-validation" novalidate action="/admin/trainers" method="POST">
                         <div class="row">
                             <div class="col-xl-6">
                                 <div class="mb-3 row">
@@ -37,8 +37,8 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom01" placeholder=""
-                                            required>
+                                        <input type="number" class="form-control" id="validationCustom01" name="documentId"
+                                            required value="{{trainer.DocumentId}}">
                                         <div class="invalid-feedback">
                                             Por favor ingresar Cedula
                                         </div>
@@ -49,8 +49,8 @@
                                             class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom02" placeholder=""
-                                            required>
+                                        <input type="text" class="form-control" id="validationCustom02" name="name"
+                                            required value="{{trainer.Name}}">
                                         <div class="invalid-feedback">
                                             Por favor ingresar nombre
                                         </div>
@@ -61,8 +61,8 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom03" placeholder=""
-                                            required>
+                                        <input type="text" class="form-control" id="validationCustom03" name="firstLastName"
+                                            required value="{{trainer.First_LastName}}">
                                         <div class="invalid-feedback">
                                             Por favor ingresar Apellido 1
                                         </div>
@@ -73,8 +73,8 @@
                                             class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom04" placeholder=""
-                                            required>
+                                        <input type="text" class="form-control" id="validationCustom04" name="secondLastName"
+                                            required value="{{trainer.Second_LastName}}">
                                         <div class="invalid-feedback">
                                             Por favor ingresar Apellido 2
                                         </div>
@@ -87,7 +87,7 @@
                                         Nacimiento<span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <input type="text" id="mdate" class="form-control" placeholder="Fecha" required>
+                                        <input type="date" id="mdate" class="form-control" name="Date_Birth" required>
                                         <div class="invalid-feedback">
                                             Por favor ingresar Fecha de Nacimiento
                                         </div>
@@ -98,8 +98,8 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom06" placeholder=""
-                                            required>
+                                        <input type="email" class="form-control" id="validationCustom06" name="mail"
+                                            required value="{{trainer.Mail}}">
                                         <div class="invalid-feedback">
                                             Por favor ingresar Correo.
                                         </div>
@@ -110,8 +110,8 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom07" placeholder=""
-                                            required>
+                                        <input type="number" class="form-control" id="validationCustom07" name="phone"
+                                            required value="{{trainer.Phone}}">
                                         <div class="invalid-feedback">
                                             Por favor ingresar Telefono.
                                         </div>
@@ -152,25 +152,54 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for trainer in trainers %}
                             <tr>
-                                <td>0-0000-000</td>
-                                <td>Hersal</td>
-                                <td>Alfaro Cisneros</td>
-                                <td>21</td>
+                                <td>{{ trainer['DocumentId'] }}</td>
+                                <td>{{ trainer['Name'] }}</td>
+                                <td>{{ trainer['First_LastName'] }} {{ trainer['Second_LastName'] }}</td>
+                                <!-- Apellidos combinados -->
+                                <td>{{ trainer['Age'] }}</td>
                                 <td>
                                     <div class="d-flex">
+                                        {% if trainer['State'] == 1 %}
+                                        <a href="{{ url_for('admin_app.rutinasCliente') }}"
+                                            class="btn btn-primary shadow btn-xs sharp me-1">
+                                            <i class="flaticon-381-notepad"></i>
+                                        </a>
+                                        <a href="{{ url_for('admin_app.estadisticas') }}"
+                                            class="btn btn-primary shadow btn-xs sharp me-1">
+                                            <i class="fas fa-chart-bar"></i>
+                                        </a>
+                                        <a href="{{ url_for('admin_app.viewClient', documentId=trainer['DocumentId']) }}"
+                                            class="btn btn-primary shadow btn-xs sharp me-1">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        <a href="{{ url_for('admin_app.UpdateClient', documentId=trainer['DocumentId']) }}"
+                                            class="btn btn-primary shadow btn-xs sharp me-1">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
 
-                                        <a href="{{ url_for('admin_app.verEntrenador') }}"
-                                            class="btn btn-primary shadow btn-xs sharp me-1"><i
-                                                class="fa fa-eye"></i></a>
-                                        <a href="{{ url_for('admin_app.actualizarEntrenador') }}"
-                                            class="btn btn-primary shadow btn-xs sharp me-1"><i
-                                                class="fa fa-pencil"></i></a>
-                                        <a href="#" class="btn btn-danger shadow btn-xs sharp"><i
-                                                class="fa fa-trash"></i></a>
+
+                                        <button onclick="disableClient(event)" data-id="{{ trainer['DocumentId'] }}"
+                                            id="deshabilitar-{{ trainer['DocumentId'] }}"
+                                            class="btn btn-danger shadow btn-xs sharp">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+
+                                        {% else %}
+
+                                        <button onclick="ableClient(event)" data-id="{{ trainer['DocumentId'] }}"
+                                            id="habilitar-{{ trainer['DocumentId'] }}"
+                                            class="btn btn-success shadow btn-xs sharp">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+
+                                        {% endif %}
                                     </div>
+
                                 </td>
                             </tr>
+                            {% endfor %}
 
                         </tbody>
                     </table>
