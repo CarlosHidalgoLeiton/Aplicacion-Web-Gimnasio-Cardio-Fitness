@@ -372,6 +372,9 @@ def inventory():
             products = ModelProduct.get_all(conection)
             Conection.desconectar()
             return render_template("admin/inventory.html", products=products, done = "Producto creado correctamente.", product = None)
+        elif insert == "Unique":
+            Conection.desconectar()
+            return render_template("admin/inventory.html", products=products, error= "El nombre del producto ingresado ya esta registrado.", product = product)
         elif insert == "DataBase":
             return render_template("admin/inventory.html", products=products, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", product = product)
         else:
@@ -443,6 +446,34 @@ def updateProduct():
             return render_template("admin/updateProduct.html", product=product)
     else:
         return redirect(url_for("admin_app.inventory", error = "Producto no encontrado"))
+
+@admin_app.route("/inventory/view/disable", methods = ['POST'])
+@login_required
+@admin_permission.require(http_exception=403)
+def disableProduct():
+    data = request.get_json()
+    ID_Product = data.get('ProductId')
+    conexion = Conection.conectar()
+    disable = ModelProduct.disableProduct(conexion, ID_Product)
+    Conection.desconectar()
+    if disable:
+        return jsonify({"message": "Hecho"})
+    else:
+        return jsonify({"error": "No se pudo deshabilitar"})
+    
+@admin_app.route("/inventory/view/able", methods = ['POST'])
+@login_required
+@admin_permission.require(http_exception=403)
+def ableProduct():
+    data = request.get_json()
+    ID_Product = data.get('ProductId')
+    conexion = Conection.conectar()
+    able = ModelProduct.ableProduct(conexion, ID_Product)
+    Conection.desconectar()
+    if able:
+        return jsonify({"message": "Hecho"})
+    else:
+        return jsonify({"error": "No se pudo habilitar"})
 
 
 #-------------Rutas de Notificaciones-------------#

@@ -21,8 +21,13 @@ class ModelProduct:
                     print(f"Producto {product.Name} creado exitosamente.")
                     return True
                 else:
-                    print("No se pudo crear el product.")
+                    print("No se pudo crear el producto.")
                     return "Error"
+                
+            except IntegrityError as ex:
+                print(f"Error en ModelProduct updateClient: {ex}")
+                conection.rollback()
+                return "Unique"
             except BaseException as ex:
                 print(f"Error en ModelProduct insertProduct: {ex}")
                 conection.rollback()
@@ -38,18 +43,23 @@ class ModelProduct:
     def updateProduct(cls, conection, product, IdProducto):
         if product != None:
             try:
+                product.State = 1
                 cursor = conection.cursor()
-                sql = """UPDATE Product SET Nombre = %s, Detalle = %s, Precio = %s, Cantidad = %s, Imagen = %s, Estado = %s WHERE ID_Producto = %s"""
-                cursor.execute(sql, (product.Nmae, product.Detail, product.Price, product.Stock, product.Image, product.State, IdProducto))
+                sql = """UPDATE Producto SET Nombre = %s, Detalle = %s, Precio = %s, Cantidad = %s, Imagen = %s, Estado = %s WHERE ID_Producto = %s"""
+                cursor.execute(sql, (product.Name, product.Detail, product.Price, product.Stock, product.Image, product.State, IdProducto))
                 conection.commit()
 
                 if cursor.rowcount > 0:
-                    print(f"Producto {product.Nmae} actualizado exitosamente.")
+                    print(f"Producto {product.Name} actualizado exitosamente.")
                     return True
                 else:
                     print("No se pudo actualizar el producto.")
                     return "Error"
                 
+            except IntegrityError as ex:
+                print(f"Error en ModelProduct updateClient: {ex}")
+                conection.rollback()
+                return "Unique"
             except BaseException as ex:
                 print(f"Error en ModelProduct updateProduct: {ex}")
                 conection.rollback()
@@ -128,49 +138,49 @@ class ModelProduct:
             return None
     
 
-    # @classmethod
-    # def disableProduct(cls, conection, productId):
-    #     if productId != None:
-    #         try:
-    #             cursor = conection.cursor()
-    #             sql = """UPDATE Producte SET Estado = 0  WHERE Cedula = %s"""
-    #             cursor.execute(sql, (productId))
-    #             if cursor.rowcount > 0:
-    #                 conection.commit()
-    #                 return True
-    #             else:
-    #                 print("No se pudo actualizar el product.")
-    #                 conection.rollback()
-    #                 return False
+    @classmethod
+    def disableProduct(cls, conection, ID_Product):
+        if ID_Product != None:
+            try:
+                cursor = conection.cursor()
+                sql = """UPDATE Producto SET Estado = 0  WHERE ID_Producto = %s"""
+                cursor.execute(sql, (ID_Product))
+                if cursor.rowcount > 0:
+                    conection.commit()
+                    return True
+                else:
+                    print("No se pudo deshabilitar el producto.")
+                    conection.rollback()
+                    return False
 
-    #         except Exception as ex:
-    #             print(f"Ocurrió un error en actualizar un product {ex}")
-    #             conection.rollback()
-    #             return False
-    #     else:
-    #         return False
+            except Exception as ex:
+                print(f"Ocurrió un error en deshabilitar un producto {ex}")
+                conection.rollback()
+                return False
+        else:
+            return False
         
-    # @classmethod
-    # def ableProduct(cls, conection, productId):
-    #     if productId != None:
-    #         try:
-    #             cursor = conection.cursor()
-    #             sql = """UPDATE Producte SET Estado = 1  WHERE Cedula = %s"""
-    #             cursor.execute(sql, (productId))
-    #             if cursor.rowcount > 0:
-    #                 conection.commit()
-    #                 return True
-    #             else:
-    #                 print("No se pudo actualizar el product.")
-    #                 conection.rollback()
-    #                 return False
+    @classmethod
+    def ableProduct(cls, conection, ID_Product):
+        if ID_Product != None:
+            try:
+                cursor = conection.cursor()
+                sql = """UPDATE Producto SET Estado = 1  WHERE ID_Producto = %s"""
+                cursor.execute(sql, (ID_Product))
+                if cursor.rowcount > 0:
+                    conection.commit()
+                    return True
+                else:
+                    print("No se pudo habilitar el producto.")
+                    conection.rollback()
+                    return False
 
-    #         except Exception as ex:
-    #             print(f"Ocurrió un error en actualizar un product {ex}")
-    #             conection.rollback()
-    #             return False
-    #     else:
-    #         return False
+            except Exception as ex:
+                print(f"Ocurrió un error en habilitar un producto {ex}")
+                conection.rollback()
+                return False
+        else:
+            return False
     
     @classmethod
     def getDataProduct(cls, request):
@@ -188,17 +198,19 @@ class ModelProduct:
 
     @classmethod
     def validateDataForm(cls, product):
-        # Validar que el nombre no esté vacío
-        if not product.Name or len(product.Name.strip()) == 0:
-            print("El nombre del producto es requerido.")
-            return False
-        
         # Validar que la imagen no sea None o esté vacía
         if not product.Image:
             print("La imagen del producto es requerida.")
             return False
-
-        # Si todas las validaciones pasan
+        
+        if product.Price is not None:
+            if any(p.isalpha() for p in str(product.Price)):
+                return "El precio no debe contener letras."
+            elif any(p in "-$" for p in str(product.Price)):  # Verifica si contiene caracteres no permitidos
+                return "El precio no debe contener caracteres especiales como '-'."
+        else:
+            return "Debe ingresar el precio en número."
+       
         return True
             
         

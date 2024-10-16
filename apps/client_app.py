@@ -1,9 +1,10 @@
 #Importaciones
-from flask import Blueprint, render_template, jsonify, redirect, url_for
+from flask import Blueprint, render_template, session, jsonify, request, redirect, url_for
 from flask_login import login_required, current_user
 from apps.permissions import client_permission
 from db.conection import Conection
 from db.models.ModelClient import ModelClient
+from db.models.ModelProduct import ModelProduct
 #Creación de los blueprint para usar en app.py
 client_app = Blueprint('client_app', __name__)
 
@@ -48,13 +49,47 @@ def perfil():
 
 
 #-------------Rutas de inventario-------------#
-@client_app.route("/inventario")
-def inventario():
-    return render_template("client/inventario.html")
+@client_app.route("/inventory", methods = ['GET', 'POST'])
+@login_required
+@client_permission.require(http_exception=403)
+def inventory():
+    conection = Conection.conectar()
+    products = ModelProduct.get_all(conection)
+    Conection.desconectar()
+    doneMessage = request.args.get('done')
+    errorMessage = request.args.get('error')
+    return render_template("client/inventory.html", products=products, product = None, done = doneMessage, error = errorMessage)
 
-@client_app.route("/verProducto")
-def verProducto():
-    return render_template("client/verProducto.html")
+@client_app.route("/inventory/selectProduct/", methods=['POST', 'GET'])
+@login_required
+@client_permission.require(http_exception=403)
+def select_Product():
+    action = request.args.get('action')
+    productId = request.args.get('IdProduct')  # Obtener el IdProduct desde los parámetros de la URL
+    if not productId:
+        return redirect(url_for('client_app.inventory', error="No product selected."))
+    session['IdProduct'] = productId
+    if action == 'view':
+        return redirect(url_for('client_app.viewProduct'))
+    else:
+        return redirect(url_for('client_app.inventory', error="Invalid action."))
+
+@client_app.route("/inventory/view", methods=['GET'])
+@login_required
+@client_permission.require(http_exception=403)
+def viewProduct():
+    productId = session.get('IdProduct') 
+    if not productId:
+        return redirect(url_for('client_app.inventory', error="No product selected."))
+    conexion = Conection.conectar()
+    product = ModelProduct.get_product_by_id(conexion, productId)  # Asegurarse de que se usa productId
+    Conection.desconectar()
+
+    if product:
+        return render_template("client/viewProduct.html", product=product)
+    else:
+        return redirect(url_for('client_app.inventory', error="Producto no encontrado"))
+    
 #-------------Rutas de rutinas-------------#
 @client_app.route("/rutinaCliente")
 def rutina():

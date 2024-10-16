@@ -52,11 +52,11 @@
                                 <div class="new-arrival-content mt-md-0 mt-3 pr">
                                     <div class="col-xl-12 col-sm-10">
                                         <div class="mb-3 row">
-                                            <label class="col-lg-4 col-form-label" for="validationCustom01">Nombre
+                                            <label class="col-lg-4 col-form-label" for="validationName">Nombre
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <div class="col-lg-12">
-                                                <input type="text" class="form-control" id="validationCustom01" value="{{ product.Name }}" name="Name" required>
+                                                <input type="text" class="form-control" id="validationName" value="{{ product.Name }}" name="Name" required>
                                                 <div class="invalid-feedback">
                                                     Por favor ingresar Nombre
                                                 </div>
@@ -64,11 +64,11 @@
                                         </div>
 
                                         <div class="mb-3 row">
-                                            <label class="col-lg-4 col-form-label" for="validationCustom01">Precio
+                                            <label class="col-lg-4 col-form-label" for="validationPrice">Precio
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <div class="col-lg-12">
-                                                <input type="number" class="form-control" id="validationCustom01" value="{{product.Price}}" name="Price" required>
+                                                <input type="number" class="form-control" id="validationPrice" value="{{product.Price}}" name="Price" required>
                                                 <div class="invalid-feedback">
                                                     Por favor ingresar Precio
                                                 </div>
@@ -76,11 +76,11 @@
                                         </div>
 
                                         <div class="mb-3 row">
-                                            <label class="col-lg-4 col-form-label" for="validationCustom01">Cantidad
+                                            <label class="col-lg-4 col-form-label" for="validationStock">Cantidad
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <div class="col-lg-12">
-                                                <input type="number" class="form-control" id="validationCustom01" value="{{product.Stock}}" name="Stock" required>
+                                                <input type="number" class="form-control" id="validationStock" value="{{product.Stock}}" name="Stock" required>
                                                 <div class="invalid-feedback">
                                                     Por favor ingresar Cantidad
                                                 </div>
@@ -88,7 +88,7 @@
                                         </div>
 
                                         <div class="mb-3 row">
-                                            <label class="col-lg-4 col-form-label" for="validationCustom01">Detalle
+                                            <label class="col-lg-4 col-form-label" for="validationDetail">Detalle
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <div class="col-lg-12">
@@ -101,8 +101,7 @@
 
                                         <div class="me-3">
                                             <button class="btn btn-primary" type="submit">Actualizar</button>
-                                            <a class="btn btn-danger"
-                                                href="{{ url_for('admin_app.viewProduct')}}">Cancelar</a>
+                                            <a class="btn btn-danger" href="{{ url_for('admin_app.viewProduct')}}">Cancelar</a>
                                         </div>
 
                                     </div>
