@@ -312,9 +312,11 @@
 										{% for stat in statistics %}
 										<tr>
 											<td>{{ stat[1].strftime('%d/%m/%Y') }}</td>
-											<td>{{ stat[2] }} {{stat[3]}}</td>
+											<td>{{ stat[3] }} {{stat[4]}}</td>
 											<td>
 												<div class="d-flex">
+													{% if stat[2] == 1 %}
+
 													<!-- Ver estadística -->
 													<a href="{{ url_for('trainer_app.verEstadistica', statistic_id=stat.ID_Statistics) }}"
 														class="btn btn-primary shadow btn-xs sharp me-1">
@@ -326,10 +328,19 @@
 														<i class="fa fa-pencil"></i>
 													</a>
 													<!-- Eliminar estadística -->
-													<a href=""
-														class="btn btn-danger shadow btn-xs sharp">
-														<i class="fa fa-trash"></i>
-													</a>
+													<button onclick="disableStatistics(event)" data-id="{{ stat[2] }}"
+													id="deshabilitar-{{ stat[4] }}"
+													class="btn btn-danger shadow btn-xs sharp">
+													<i class="fa fa-trash"></i>
+													</button>
+													{% else %}
+
+													<button onclick="ableStatistics(event)" data-id="{{ stat[2] }}"
+													id="habilitar-{{ stat[4] }}"
+													class="btn btn-success shadow btn-xs sharp">
+													<i class="fa fa-check"></i>
+												</button>
+													{% endif %}
 												</div>
 											</td>
 										</tr>
