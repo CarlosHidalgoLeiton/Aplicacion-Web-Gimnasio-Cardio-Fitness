@@ -39,84 +39,63 @@
 
 
         <div class="col-xl-12">
-            <form action="" id="entrenadorForm" class="form-container">
+            <div id="entrenadorForm" class="form-container">
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-lg-4 order-lg-2 mb-4">
-                                <h4 class="d-flex justify-content-between align-items-center mb-3">
-                                    <span class="text-black">Entrenadores</span>
-                                </h4>
-                                <ul class="list-group mb-3">
-                                    <li class="list-group-item d-flex justify-content-between lh-condensed">
-                                        <div>
-                                            <h6 class="my-0">Pago Entrenador</h6>
-                                            <small class="text-muted">1 día</small>
-                                        </div>
-                                        <span class="text-muted">₡19 000</span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between">
-                                        <span>Total (CRC)</span>
-                                        <strong>₡19 000</strong>
-                                    </li>
-                                </ul>
-
-                            </div>
-                            <div class="col-lg-8 order-lg-1">
-                                <h4 class="mb-3">Información Entrenador</h4>
-                                <form class="needs-validation" novalidate="">
+                            <div class="col-md-12 order-lg-1">
+                                <h4 class="mb-3">Información de Pago de Entrenador</h4>
+                                <form class="needs-validation" novalidate action="/admin/facturas" method="POST">
+                                    <input id="typeEntity" name="typeEntity" type="hidden" value="Trainer">
                                     <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Entrenador</label>
-                                            <select class="default-select form-control wide w-100">
-                                                <option selected>Hersal Alfaro - 201230321</option>
-                                                <option value="1">Carlos Hidalgo - 201230321</option>
-                                                <option value="1">Kenneth Perez - 201230321</option>
-                                                <option value="1">Jimena Jimenez - 201230321</option>
+                                        <div class="col-md-12 mb-3">
+                                            <label class="form-label">Entrenador
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-control single-select"
+                                                id="validationCustomCedulaTrainer" name="DocumentIdTrainer">
+                                                <option value="" disabled selected>Seleccionar el entrenador</option>
+                                                {% if trainers %}
+                                                {% for trainer in trainers %}
+                                                <option value="{{ trainer.DocumentId }}">{{ trainer.Name }}
+                                                    {{trainer.First_LastName }} {{ trainer.Second_LastName }}
+                                                    (Entrenador)
+                                                </option>
+                                                {% endfor %}
+                                                {% endif %}
+                                                {% if not trainers %}
+                                                <option value="" disabled>No hay entrenadores disponibles</option>
+                                                {% endif %}
                                             </select>
                                             <div class="invalid-feedback">
                                                 Por favor ingresar un valor valido
                                             </div>
                                         </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="firstName" class="form-label">Nombre</label>
-                                            <input type="text" class="form-control" id="firstName" placeholder="Nombre"
-                                                value="" required="">
-                                            <div class="invalid-feedback">
-                                                Por favor ingresar un valor valido
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="lastName" class="form-label">Apellido</label>
-                                            <input type="text" class="form-control" id="lastName" placeholder="Apellido"
-                                                value="" required="">
-                                            <div class="invalid-feedback">
-                                                Por favor ingresar un valor valido
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="lastName" class="form-label"> Segundo
-                                                Apellido</label>
-                                            <input type="text" class="form-control" id="lastName"
-                                                placeholder="2Apellido" value="" required="">
-                                            <div class="invalid-feedback">
-                                                Por favor ingresar un valor valido
-                                            </div>
-                                        </div>
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="monto" class="form-label">Monto</label>
-                                        <input type="text" class="form-control" id="monto" placeholder="₡" required="">
+                                        <label for="AmountTrainerBill" class="form-label">Monto
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" name="AmountTrainerBill"
+                                            id="AmountTrainerBill" value="{{ trainerValidated.Amount }}" placeholder="₡"
+                                            required>
                                         <div class="invalid-feedback">
                                             Por favor ingresar un valor valido
                                         </div>
                                     </div>
+                                    <div class="mb-3">
+                                        <label for="date" class="form-label">Fecha
+                                        </label>
+                                        <input type="text" class="form-control" name="date" id="date" readonly>
+                                    </div>
 
                                     <div class="mb-3">
-                                        <label for="Descripcion" class="form-label">Descripcion</label>
-                                        <input type="text" class="form-control" id="Descripcion" placeholder=""
-                                            required="">
+                                        <label for="Description" class="form-label">Descripción
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" name="Description" id="Description"
+                                            placeholder="" value="{{ trainerValidated.Description }}" required>
                                         <div class="invalid-feedback">
                                             Por favor ingresar un valor valido
                                         </div>
@@ -130,39 +109,23 @@
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
 
         <div class="col-xl-12">
-            <form action="" id="gastoForm" class="form-container">
+            <div id="gastoForm" class="form-container">
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-lg-4 order-lg-2 mb-4">
-                                <h4 class="d-flex justify-content-between align-items-center mb-3">
-                                    <span class="text-black">Gatos Generales</span>
-                                </h4>
-                                <ul class="list-group mb-3">
-                                    <li class="list-group-item d-flex justify-content-between lh-condensed">
-                                        <div>
-                                            <h6 class="my-0">Gatos</h6>
-                                            <small class="text-muted">Productos nuevos</small>
-                                        </div>
-                                        <span class="text-muted">₡19 000</span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between">
-                                        <span>Total (CRC)</span>
-                                        <strong>₡19 000</strong>
-                                    </li>
-                                </ul>
-
-                            </div>
-                            <div class="col-lg-8 order-lg-1">
-                                <h4 class="mb-3">Gastos Generales</h4>
-                                <form class="needs-validation" novalidate="">
+                            <div class="col-md-12 order-lg-1">
+                                <h4 class="mb-3">Información de Pago General</h4>
+                                <form class="needs-validation" novalidate action="/admin/facturas" method="POST">
+                                    <input id="typeEntity" name="typeEntity" type="hidden" value="General">
                                     <div class="row">
                                         <div class="mb-3">
-                                            <label for="monto" class="form-label">Monto</label>
+                                            <label for="monto" class="form-label">Monto
+                                                <span class="text-danger">*</span>
+                                            </label>
                                             <input type="text" class="form-control" id="monto" placeholder="₡"
                                                 required="">
                                             <div class="invalid-feedback">
@@ -171,7 +134,15 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="Descripcion" class="form-label">Descripcion</label>
+                                            <label for="date" class="form-label">Fecha
+                                            </label>
+                                            <input type="text" class="form-control" name="date" id="date" readonly>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="Descripcion" class="form-label">Descripción
+                                                <span class="text-danger">*</span>
+                                            </label>
                                             <input type="text" class="form-control" id="Descripcion" placeholder=""
                                                 required="">
                                             <div class="invalid-feedback">
@@ -188,44 +159,33 @@
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
 
         <div class="col-xl-12">
-            <form action="" id="productosForm" class="form-container">
+            <div id="productosForm" class="form-container">
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-lg-4 order-lg-2 mb-4">
-                                <h4 class="d-flex justify-content-between align-items-center mb-3">
-                                    <span class="text-black">Pagos De Productos</span>
-                                </h4>
-                                <ul class="list-group mb-3">
-                                    <li class="list-group-item d-flex justify-content-between lh-condensed">
-                                        <div>
-                                            <h6 class="my-0">Creatina</h6>
-                                            <small class="text-muted">1 scoop</small>
-                                        </div>
-                                        <span class="text-muted">₡1 000</span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between">
-                                        <span>Total (CRC)</span>
-                                        <strong>₡1 000</strong>
-                                    </li>
-                                </ul>
-
-                            </div>
                             <div class="col-lg-8 order-lg-1">
-                                <h4 class="mb-3">Información Producto</h4>
-                                <form class="needs-validation" novalidate="">
+                                <h4 class="mb-3">Información de Pago de Producto</h4>
+                                <form class="needs-validation" novalidate action="/admin/facturas" method="POST">
                                     <div class="row">
                                         <div class=" mb-3">
-                                            <label class="form-label">Productos</label>
-                                            <select class="default-select form-control wide w-100">
-                                                <option selected>Creatina - 1 scoop</option>
-                                                <option value="1">Creatina - 1 scoop</option>
-                                                <option value="1">Creatina - 1 scoop</option>
-                                                <option value="1">Creatina - 1 scoop</option>
+                                            <label class="form-label">Productos
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-control single-select" id="validationCustomProductId"
+                                                name="DocumentIdProduct">
+                                                {% if products %}
+                                                {% for product in products %}
+                                                <option value="{{ product.ID_Product }}">{{ product.Name }} (Producto)
+                                                </option>
+                                                {% endfor %}
+                                                {% endif %}
+                                                {% if not products %}
+                                                <option value="" disabled>No hay productos disponibles</option>
+                                                {% endif %}
                                             </select>
                                             <div class="invalid-feedback">
                                                 Por favor ingresar un valor valido
@@ -234,7 +194,9 @@
 
 
                                         <div class="mb-3">
-                                            <label for="monto" class="form-label">Monto</label>
+                                            <label for="monto" class="form-label">Monto
+                                                <span class="text-danger">*</span>
+                                            </label>
                                             <input type="number" class="form-control" id="monto" placeholder="₡"
                                                 required="">
                                             <div class="invalid-feedback">
@@ -243,7 +205,15 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="Descripcion" class="form-label">Descripcion</label>
+                                            <label for="date" class="form-label">Fecha
+                                            </label>
+                                            <input type="text" class="form-control" name="date" id="date" readonly>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="Descripcion" class="form-label">Descripción
+                                                <span class="text-danger">*</span>
+                                            </label>
                                             <input type="text" class="form-control" id="Descripcion" placeholder=""
                                                 required="">
                                             <div class="invalid-feedback">
@@ -261,76 +231,67 @@
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
 
         <div class="col-xl-12">
-            <form action="" id="membresiaForm" class="form-container">
+            <div id="membresiaForm" class="form-container">
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-lg-4 order-lg-2 mb-4">
-                                <h4 class="d-flex justify-content-between align-items-center mb-3">
-                                    <span class="text-black">Compra</span>
-                                </h4>
-                                <ul class="list-group mb-3">
-                                    <li class="list-group-item d-flex justify-content-between lh-condensed">
-                                        <div>
-                                            <h6 class="my-0">Membresia</h6>
-                                            <small class="text-muted">1 mes</small>
-                                        </div>
-                                        <span class="text-muted">₡19 000</span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between">
-                                        <span>Total (CRC)</span>
-                                        <strong>₡19 000</strong>
-                                    </li>
-                                </ul>
-
-                            </div>
-                            <div class="col-lg-8 order-lg-1">
-                                <h4 class="mb-3">Informacion Cliente</h4>
-                                <form class="needs-validation" novalidate="">
+                            <div class="col-md-12 order-lg-1">
+                                <h4 class="mb-3">Información de Pago de Membresia</h4>
+                                <form class="needs-validation" novalidate action="/admin/facturas" method="POST">
                                     <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Cliente</label>
-                                            <select class="default-select form-control wide w-100">
-                                                <option selected>Hersal Alfaro - 208570335</option>
-                                                <option value="1">Carlos Hidalgo - 208310231</option>
+                                        <div class="col-md-12 mb-3">
+                                            <label class="form-label">Cliente
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-control single-select" id="validationCustomCedulaClient"
+                                                name="DocumentIdClient">
+                                                <option value="" disabled selected>Seleccionar el cliente</option>
+                                                {% if clients %}
+                                                {% for client in clients %}
+                                                <option value="{{ client.DocumentId }}">{{ client.Name }}
+                                                    {{
+                                                    client.First_LastName }} {{ client.Second_LastName }} (Cliente)
+                                                </option>
+                                                {% endfor %}
+                                                {% endif %}
+                                                {% if not clients %}
+                                                <option value="" disabled>No hay clientes disponibles</option>
+                                                {% endif %}
                                             </select>
-                                            <div class="invalid-feedback">
-                                                Por favor ingresar un valor valido
-                                            </div>
                                         </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="firstName" class="form-label">Nombre</label>
-                                            <input type="text" class="form-control" id="firstName" placeholder="Hersal"
-                                                value="" required="">
-                                            <div class="invalid-feedback">
-                                                Por favor ingresar un valor valido
-                                            </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3">
+                                            <label class="form-label">Membresia
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-control single-select" id="validationCustomMembresiaId"
+                                                name="DocumentIdMembresia">
+                                                <option value="" disabled selected>Seleccionar la membresia</option>
+                                                {% if memberships %}
+                                                {% for membership in memberships %}
+                                                <option value="{{ membership.id }}">{{ membership.Name }} (Membresia)
+                                                </option>
+                                                {% endfor %}
+                                                {% endif %}
+                                                {% if not memberships %}
+                                                <option value="" disabled>No hay membresias disponibles</option>
+                                                {% endif %}
+                                            </select>
                                         </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="lastName" class="form-label">Apellido</label>
-                                            <input type="text" class="form-control" id="lastName" placeholder="Alfaro"
-                                                value="" required="">
-                                            <div class="invalid-feedback">
-                                                Por favor ingresar un valor valido
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="lastName" class="form-label"> Segundo
-                                                Apellido</label>
-                                            <input type="text" class="form-control" id="lastName" placeholder="Cisneros"
-                                                value="" required="">
-                                            <div class="invalid-feedback">
-                                                Por favor ingresar un valor valido
-                                            </div>
-                                        </div>
+
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="monto" class="form-label">Monto</label>
+                                        <label for="monto" class="form-label">Monto
+                                            <span class="text-danger">*</span>
+                                        </label>
                                         <input type="text" class="form-control" id="monto" placeholder="₡" required="">
                                         <div class="invalid-feedback">
                                             Por favor ingresar un valor valido
@@ -338,7 +299,15 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="Descripcion" class="form-label">Descripcion</label>
+                                        <label for="date" class="form-label">Fecha
+                                        </label>
+                                        <input type="text" class="form-control" name="date" id="date" readonly>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="Descripcion" class="form-label">Descripción
+                                            <span class="text-danger">*</span>
+                                        </label>
                                         <input type="text" class="form-control" id="Descripcion" placeholder=""
                                             required="">
                                         <div class="invalid-feedback">
@@ -354,7 +323,7 @@
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
         <button class="btn btn-danger ms-2 mb-4" id="btnCancelar">Cancelar</button>
     </div>
@@ -380,20 +349,37 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% for bill in bills %}
                         <tr>
-                            <td>00/00/0000</td>
-                            <td>18000</td>
+                            <td>{{ bill['Date'] }}</td>
+                            <td>{{ bill['Amount'] }}</td>
                             <td>
                                 <div class="d-flex">
+                                    {% if bill['State'] == 1 %}
+                                    <a href="{{ url_for('admin_app.verFactura') }}"
+                                        class="btn btn-primary shadow btn-xs sharp me-1"><i class="fa fa-eye"></i></a>
 
-                                    <a href="{{ url_for('admin_app.verFactura') }}" class="btn btn-primary shadow btn-xs sharp me-1"><i
-                                            class="fa fa-eye"></i></a>
-                                    <a href="{{ url_for('admin_app.anular') }}"class="btn btn-danger shadow btn-xs sharp"><i
-                                            class="fa fa-trash"></i></a>
 
+                                    <button onclick="disableClient(event)" data-id="{{ bill['ID_Bill'] }}"
+                                        id="deshabilitar-{{ bill['ID_Bill'] }}"
+                                        class="btn btn-danger shadow btn-xs sharp">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+
+                                    {% else %}
+
+                                    <button onclick="ableClient(event)" data-id="{{ bill['ID_Bill'] }}"
+                                        id="habilitar-{{ bill['ID_Bill'] }}"
+                                        class="btn btn-success shadow btn-xs sharp">
+                                        <i class="fa fa-check"></i>
+                                    </button>
+
+                                    {% endif %}
                                 </div>
+
                             </td>
                         </tr>
+                        {% endfor %}
 
                     </tbody>
                 </table>
@@ -431,20 +417,6 @@
     });
 </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById('invoiceType').addEventListener('change', function () {
-            var value = this.value;
-            document.querySelectorAll('.form-container').forEach(function (el) {
-                el.style.display = 'none';
-                document.getElementById('formCliente').style.display = 'block';
-            });
-            if (value) {
-                document.getElementById(value + 'Form').style.display = 'block';
-            }
-        });
-    });
-</script>
 
 <script>
     (function () {
@@ -466,5 +438,19 @@
                 }, false)
             })
     })()
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var inputsDate = document.getElementsByName('date');
+        var today = new Date();
+        // Ajustar la fecha a la zona horaria local
+        var offset = today.getTimezoneOffset() * 60000; // Convertir minutos a milisegundos
+        var localDate = new Date(today.getTime() - offset);
+        var formattedDate = localDate.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+        for (var i = 0; i < inputsDate.length; i++) {
+            inputsDate[i].value = formattedDate;  // Asignar la fecha formateada
+        }
+    });
 </script>
 {% endblock %}

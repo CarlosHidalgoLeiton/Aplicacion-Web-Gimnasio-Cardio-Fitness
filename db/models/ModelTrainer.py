@@ -105,11 +105,11 @@ class ModelTrainer:
         #Validation for documentID 
         if trainer.DocumentId != None:
             print(all(m.isalpha() for m in trainer.DocumentId))
-            if "-" not in trainer.DocumentId and not any(m.isalpha() for m in trainer.DocumentId): #Valida que no sea alfabetico y que no tenga un "-"
-                if len(trainer.DocumentId) < 9:
-                    return "El número de cédula ingresado no es válido. Debe ingresar 9 dígitos."
+            if re.match("^[a-zA-Z0-9]*$", trainer.DocumentId):
+                if len(trainer.DocumentId) < 9 or len(trainer.DocumentId) > 16:
+                    return "El número de cédula ingresado no es válido. Cantidad de dígitos no válida."
             else:
-                return "El número de cédula no debe contener letras ni caracteres especiales."
+                return "El número de cédula no debe contener caracteres especiales."
         else:
             return "Debe ingresar el número de cédula."
         

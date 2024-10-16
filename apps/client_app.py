@@ -12,8 +12,11 @@ client_app = Blueprint('client_app', __name__)
 @client_app.route("/")
 @login_required
 @client_permission.require(http_exception=403)
+#-------------Rutas de notificaciones-------------#
 def inicio():
-    return render_template("client/index.html")
+    conection = Conection.conectar()
+    notifications = ModelClient.get_Notifications(conection)
+    return render_template("client/index.html" , notifications=notifications)
 
 
 @client_app.errorhandler(403)
@@ -113,3 +116,4 @@ def estadisticas():
 def verEstadisticas():
     return render_template("client/verEstadistica.html")
 
+#-------------Rutas de notificaciones-------------#

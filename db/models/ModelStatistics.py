@@ -57,6 +57,7 @@ class ModelStatistics:
                 SELECT 
                     e.ID_Estadistica, 
                     e.FechaMedicion, 
+                    e.Estado,
                     t.Nombre,
                     t.Primer_Apellido
                 FROM 
@@ -199,21 +200,23 @@ class ModelStatistics:
     def validateDataForm(cls, statistics):
 
         #Validation for Measurement_Date
-        if statistics.Measurement_Date != None:
-            if statistics.Measurement_Date > datetime.now().date():
-                return "La fecha ingresada no es válida."
-        else:
-            return "Debe ingresar la fecha de medición."
-        
-        
-        #Validation for State
-        if statistics.State is not None:
-            if statistics.State != "1":
-                return "Error con el estado de la estadística"
-        else:
-            return "No se logro obtener el estado al crear la estadística."
+        if statistics.Measurement_Date is not None:
+            # Convertir a datetime si es un string
+            if isinstance(statistics.Measurement_Date, str):
+                measurement_date = datetime.strptime(statistics.Measurement_Date, '%Y-%m-%d').date()
+            else:
+                measurement_date = statistics.Measurement_Date
 
-        
+            # Imprimir para depuración
+            print("Fecha ingresada:", measurement_date)
+            print("Fecha actual:", datetime.now().date())
+
+            # Comprobar si la fecha obtenida es diferente de la fecha actual
+            if measurement_date != datetime.now().date():
+                return "La fecha de medición debe ser la fecha actual."
+        else:
+            return "No se logro obtener la fecha de medición "
+                        
             #Validation for documentID 
         if statistics.Client_ID != None:
             if "-" not in statistics.Client_ID and not any( d.isalpha() for d in statistics.Client_ID): #Valida que no sea alfabetico y que no tenga un "-"
@@ -236,3 +239,46 @@ class ModelStatistics:
        
         return True
         
+    @classmethod
+    def disableStatistics(cls, conection, ID_Statistics):
+        if ID_Statistics != None:
+            try:
+                cursor = conection.cursor()
+                sql = """UPDATE Estadistica SET Estado = 0  WHERE ID_Estadistica = %s"""
+                cursor.execute(sql, (ID_Statistics))
+                if cursor.rowcount > 0:
+                    conection.commit()
+                    return True
+                else:
+                    print("No se pudo actualizar la estadística .")
+                    conection.rollback()
+                    return False
+
+            except Exception as ex:
+                print(f"Ocurrió un error en actualizar la estadística  {ex}")
+                conection.rollback()
+                return False
+        else:
+            return False
+        
+    @classmethod
+    def ableStatistics(cls, conection, ID_Statistics):
+        if ID_Statistics != None:
+            try:
+                cursor = conection.cursor()
+                sql = """UPDATE Estadistica SET Estado = 1  WHERE ID_Estadistica = %s"""
+                cursor.execute(sql, (ID_Statistics))
+                if cursor.rowcount > 0:
+                    conection.commit()
+                    return True
+                else:
+                    print("No se pudo actualizar la estadística .")
+                    conection.rollback()
+                    return False
+
+            except Exception as ex:
+                print(f"Ocurrió un error en actualizar la estadística  {ex}")
+                conection.rollback()
+                return False
+        else:
+            return False
