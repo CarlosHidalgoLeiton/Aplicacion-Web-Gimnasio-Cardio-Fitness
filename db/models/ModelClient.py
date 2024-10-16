@@ -205,11 +205,11 @@ class ModelClient:
         #Validation for documentID 
         if client.DocumentId != None:
             print(all(m.isalpha() for m in client.DocumentId))
-            if "-" not in client.DocumentId and not any(m.isalpha() for m in client.DocumentId): #Valida que no sea alfabetico y que no tenga un "-"
-                if len(client.DocumentId) < 9:
-                    return "El número de cédula ingresado no es válido. Debe ingresar 9 dígitos."
+            if re.match("^[a-zA-Z0-9]*$", client.DocumentId):
+                if len(client.DocumentId) < 9 or len(client.DocumentId) > 16:
+                    return "El número de cédula ingresado no es válido. Cantidad de dígitos no válida."
             else:
-                return "El número de cédula no debe contener letras ni caracteres especiales."
+                return "El número de cédula no debe contener caracteres especiales."
         else:
             return "Debe ingresar el número de cédula."
         
@@ -261,7 +261,7 @@ class ModelClient:
         
         #Validation for ocupation
         if client.Occupation != None:
-            if not client.Occupation.isalpha():
+            if not all(c.isalpha() or c.isspace() for c in client.Occupation):
                 return "La ocupación no debe contener números ni caracteres especiales"
         else:
             return "Debe ingresar la ocupación."
