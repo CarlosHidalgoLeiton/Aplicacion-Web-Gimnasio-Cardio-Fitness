@@ -1,0 +1,213 @@
+{% extends "./layout/Layout_Admin.html" %}
+
+
+{% block content %}
+<!--**********************************
+    Content body start
+***********************************-->
+
+<div class="page-titles">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active"><a href="javascript:void(0)">Productos</a></li>
+    </ol>
+</div>
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card-header d-sm-flex flex-wrap d-block pb-0 border-0">
+            <div class="me-auto pe-3 mb-3"></div>
+            <button class="btn rounded btn-primary mb-3" id="btnAgregarCliente">
+                Agregar Producto
+            </button>
+        </div>
+    </div>
+    <div class="card form-container" id="formCliente" style="display: none;">
+
+        <div class="col-lg-12">
+            <div class="card-body">
+                <div class="form-validation">
+                    <form class="needs-validation" action="/admin/inventory" method="POST" novalidate enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationName">Nombre
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationName" placeholder="" name="Name"
+                                            required>
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar Nombre
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationPrice">Precio <span
+                                            class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="number" class="form-control" id="validationPrice" placeholder="₡" name="Price" required
+                                         >
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar Precio
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationStock">Cantidad
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="number" class="form-control" id="validationStock" placeholder="" name="Stock"  required>
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar Cantidad
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationDetail">Detalle
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationDetail" placeholder="" name="Detail" required>
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar Detalle
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-6">
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationImage">Imagen
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <div class="card-body">
+                                            <div class="avatar-upload d-flex align-items-center">
+                                                <div class=" position-relative ">
+                                                    <div class="avatar-preview">
+                                                        <div id="imagePreview" >
+                                                        </div>
+                                                    </div>
+                                                    <div class="change-btn d-flex align-items-center flex-wrap">
+                                                        <input type='file' class="form-control d-none" id="imageUpload" name="Image" accept=".png, .jpg, .jpeg" required>
+                                                        <label for="imageUpload" class="btn btn-success ms-0">Seleccionar Imagen</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="my-3 ">
+                            <div class="d-flex justify-content-start ">
+                                <button type="submit" class="btn btn-primary ms-2">Agregar</button>
+                                <button class="btn btn-danger ms-2" id="btnCancelar">Cancelar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+
+        <div class="card-header">
+            <h4 class="card-title">Lista de Productos</h4>
+        </div>
+    </div>
+
+    {% if products %}
+        {% for product in products %}
+        <div class="col-xl-2 col-xxl-3 col-md-4 col-sm-6">
+            <div class="card">
+                <div class="card-body product-grid-card">
+                    <div class="new-arrival-product">
+                        <div class="new-arrivals-img-contnent">
+                            <a href="{{ url_for('admin_app.select_Product', IdProduct=product.ID_Product, action='view') }}">
+                                <img class="img-fluid rounded" src="data:image/jpeg;base64,{{ product.Image }}" alt="{{ product.Name }}">
+                            </a>
+                        </div>
+                        <div class="new-arrival-content text-center mt-3">
+                            <h4>{{ product.Name }}</h4>
+                            <del class="discount"></del>
+                            <span class="price">₡ {{ product.Price }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% if not products %}
+    <option value="" disabled>No hay productos disponibles</option>
+    {% endif %}
+
+</div>
+<!--**********************************
+            Content body end
+        ***********************************-->
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('btnAgregarCliente').addEventListener('click', function () {
+            document.getElementById('formCliente').style.display = 'block';
+        });
+
+        document.getElementById('btnCancelar').addEventListener('click', function () {
+            document.getElementById('formCliente').style.display = 'none';
+        });
+
+    });
+</script>
+
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
+                $('#imagePreview').hide();
+                $('#imagePreview').fadeIn(650);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    $("#imageUpload").on('change', function () {
+
+        readURL(this);
+    });
+    $('.remove-img').on('click', function () {
+        var imageUrl = "images/no-img-avatar.png";
+        $('.avatar-preview, #imagePreview').removeAttr('style');
+        $('#imagePreview').css('background-image', 'url(' + imageUrl + ')');
+    });
+</script>
+
+
+<script>
+    (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script>
+{% endblock %}

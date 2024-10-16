@@ -1,0 +1,129 @@
+{% extends "./layout/Layout_Admin.html" %}
+
+
+{% block content %}
+<!--**********************************
+            Content body start
+        ***********************************-->
+<div class="page-titles">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('admin_app.inventory') }}">Producto</a></li>
+        <li class="breadcrumb-item active"><a href="javascript:void(0)">Ver Producto</a></li>
+    </ol>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+
+            <div class="card-body">
+                <h4 class="card-title mb-4">Producto</h4>
+                <div class="row">
+                    <div class="col-xl-3 col-lg-6  col-md-6 col-xxl-5 ">
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel"
+                                aria-labelledby="home-tab" tabindex="0">
+                                <img class="img-fluid rounded " src="data:image/jpeg;base64,{{ product.Image }}"
+                                    alt="{{ product.Name }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Tab slider End-->
+                    <div class="col-xl-9 col-lg-6  col-md-6 col-xxl-7 col-sm-12">
+                        <div class="product-detail-content">
+                            <!--Product details-->
+                            <div class="new-arrival-content mt-md-0 mt-3 pr">
+                                <div class="col-xl-12 col-sm-10">
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Nombre</label>
+                                        <input type="text" class="form-control" value="{{ product.Name }}" readonly>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Precio</label>
+                                        <input type="text" class="form-control" value="₡ {{ product.Price }}" readonly>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Cantidad</label>
+                                        <input type="text" class="form-control" value="{{ product.Stock }}" readonly>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Detalle</label>
+                                        <input type="text" class="form-control" value="{{ product.Detail }}" readonly>
+                                    </div>
+
+                                    <div class="me-3">
+                                        <a class="btn btn-primary" href="{{ url_for('admin_app.select_Product', IdProduct=product.ID_Product, action='update') }}">Actualizar</a>
+                                        <a class="btn btn-danger" href="javascript:void();">Deshabilitar</a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a class="btn btn-danger" href="{{ url_for('admin_app.inventory') }}">Volver</a>
+            </div>
+
+        </div>
+    </div>
+    <!-- review -->
+</div>
+
+<!--**********************************
+            Content body end
+        ***********************************-->
+{% endblock %}
+
+
+{% block scripts %}
+
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
+                $('#imagePreview').hide();
+                $('#imagePreview').fadeIn(650);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    $("#imageUpload").on('change', function () {
+
+        readURL(this);
+    });
+    $('.remove-img').on('click', function () {
+        var imageUrl = "images/no-img-avatar.png";
+        $('.avatar-preview, #imagePreview').removeAttr('style');
+        $('#imagePreview').css('background-image', 'url(' + imageUrl + ')');
+    });
+</script>
+
+<script>
+    (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script>
+
+{% endblock %}

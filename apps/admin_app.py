@@ -1,10 +1,11 @@
 #Importaciones
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify
+from flask import Blueprint, render_template, request,session, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 from db.conection import Conection
 from db.models.ModelUser import ModelUser
 from db.models.ModelTrainer import ModelTrainer
 from db.models.ModelClient import ModelClient
+from db.models.ModelProduct import ModelProduct
 from db.models.ModelMembership import ModelMembership
 from db.models.entities.User import User
 from apps.permissions import admin_permission
@@ -176,26 +177,6 @@ def sesionesCliente():
 @login_required
 def verSesionCliente():
     return render_template("admin/verSesion.html")
-
-
-    #-------------Rutas de Productos-------------#
-@admin_app.route("/productos")
-@login_required
-def productos():
-    return render_template("admin/inventario.html")
-
-@admin_app.route("/productos/ver")
-@login_required
-def verProducto():
-    return render_template("admin/verProducto.html")
-
-@admin_app.route("/productos/actualizar")
-@login_required
-def actualizarProducto():
-    return render_template("admin/actualizarProducto.html")
-
-
-
 
 #-------------Rutas de Entrenadores-------------#
 
@@ -391,11 +372,101 @@ def getClientsPay():
 
 
 
-#-------------Rutas de Inventario-------------#
-@admin_app.route("/inventario")
+#-------------Rutas de Inventario - Producto -------------#
+@admin_app.route("/inventory", methods = ['GET', 'POST'])
 @login_required
-def inventario():
-    return render_template("admin/inventario.html")
+@admin_permission.require(http_exception=403)
+def inventory():
+    conection = Conection.conectar()
+    products = ModelProduct.get_all(conection)
+    Conection.desconectar()
+    doneMessage = request.args.get('done')
+    errorMessage = request.args.get('error')
+    if request.method == 'POST':
+        product = ModelProduct.getDataProduct(request)
+        productValidated = ModelProduct.validateDataForm(product)
+        if not type(productValidated) == bool:
+            return render_template("admin/inventory.html", products=products, error=productValidated, product = product)
+        conection = Conection.conectar()
+        if conection == None:
+            return render_template("admin/inventory.html", products=products, error= "Error en la conexión.", product = product)
+        insert = ModelProduct.insertProduct(conection, product)
+        if insert and type(insert) == bool:
+            products = ModelProduct.get_all(conection)
+            Conection.desconectar()
+            return render_template("admin/inventory.html", products=products, done = "Producto creado correctamente.", product = None)
+        elif insert == "DataBase":
+            return render_template("admin/inventory.html", products=products, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", product = product)
+        else:
+            Conection.desconectar()
+            return render_template("admin/inventory.html", products=products, error= "No se pudo ingresar el producto, por favor inténtalo más tarde.", product = product)
+    else:
+        return render_template("admin/inventory.html", products=products, product = None, done = doneMessage, error = errorMessage)
+
+@admin_app.route("/inventory/selectProduct/", methods=['POST', 'GET'])
+@login_required
+@admin_permission.require(http_exception=403)
+def select_Product():
+    action = request.args.get('action')
+    productId = request.args.get('IdProduct')  # Obtener el IdProduct desde los parámetros de la URL
+    if not productId:
+        return redirect(url_for('admin_app.inventory', error="No product selected."))
+    # Almacenar productId en la sesión
+    session['IdProduct'] = productId
+    if action == 'view':
+        return redirect(url_for('admin_app.viewProduct'))
+    elif action == 'update':
+        return redirect(url_for('admin_app.updateProduct'))
+    else:
+        return redirect(url_for('admin_app.inventory', error="Invalid action."))
+
+@admin_app.route("/inventory/view", methods=['GET'])
+@login_required
+@admin_permission.require(http_exception=403)
+def viewProduct():
+    productId = session.get('IdProduct') 
+    if not productId:
+        return redirect(url_for('admin_app.inventory', error="No product selected."))
+
+    conexion = Conection.conectar()
+    product = ModelProduct.get_product_by_id(conexion, productId)  # Asegurarse de que se usa productId
+    Conection.desconectar()
+
+    if product:
+        return render_template("admin/viewProduct.html", product=product)
+    else:
+        return redirect(url_for('admin_app.inventory', error="Producto no encontrado"))
+
+@admin_app.route("/inventory/updateProduct", methods=['POST', 'GET'])
+@login_required
+@admin_permission.require(http_exception=403)
+def updateProduct():
+    productId = session.get('IdProduct') 
+    conexion = Conection.conectar()
+    product = ModelProduct.get_product_by_id(conexion, productId)
+    Conection.desconectar()
+    if product:
+        if request.method == 'POST':
+            productUpdated = ModelProduct.getDataProduct(request)
+            productValidated = ModelProduct.validateDataForm(productUpdated)
+            if not type(productValidated) == bool:
+                return render_template("admin/updateProduct.html", error=productValidated, product = product)
+            conection = Conection.conectar()
+            if conection == None:
+                return render_template("admin/updateProduct.html", error= "Error en la conexión.", product = product)
+            update = ModelProduct.updateProduct(conection, productUpdated, product.ID_Product)
+            Conection.desconectar()
+            if update and type(update) == bool:
+                return redirect(url_for('admin_app.inventory', done = "Producto actualizado correctamente."))
+            elif update == "DataBase":
+                return render_template("admin/updateProduct.html", error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", product = product)
+            else:
+                return render_template("admin/updateProduct.html", error= "No se pudo actualizar el Producto.", product = product)
+        else:
+            return render_template("admin/updateProduct.html", product=product)
+    else:
+        return redirect(url_for("admin_app.inventory", error = "Producto no encontrado"))
+
 
 #-------------Rutas de Notificaciones-------------#
 @admin_app.route("/notifications", methods = ['GET', 'POST'])
