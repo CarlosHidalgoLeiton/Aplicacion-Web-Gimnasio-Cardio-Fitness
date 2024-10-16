@@ -81,11 +81,11 @@ def estadisticasCliente(documentId):
         statisticsValidated = ModelStatistics.validateDataForm(statistics_data)
 
         if not isinstance(statisticsValidated, bool):
-            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error=statisticsValidated, statistics_data=statistics_data, documentId=documentId)
+            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error=statisticsValidated, statistics_data=statistics_data, documentId=documentId,client=client)
 
         conection = Conection.conectar()
         if conection is None:
-            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error="Error en la conexión.", statistics_data=statistics_data)
+            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error="Error en la conexión.", statistics_data=statistics_data,client=client)
 
         # Intentar insertar las estadísticas
         statistics_data.Client_ID = documentId  # Asegurar que el Client_ID esté presente en los datos
@@ -95,15 +95,15 @@ def estadisticasCliente(documentId):
             # Obtener las estadísticas nuevamente para actualizar la vista
             statistics = ModelStatistics.getStatisticsByClientId(conection, documentId)
             Conection.desconectar()
-            return render_template("trainer/estadisticasCliente.html", statistics=statistics, done="Estadísticas creadas correctamente.", statistics_data=None,documentId=documentId)
+            return render_template("trainer/estadisticasCliente.html", statistics=statistics, done="Estadísticas creadas correctamente.", statistics_data=None,documentId=documentId,client=client)
         elif insert == "Primary":
             Conection.desconectar()
-            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error="El registro de estadísticas ya existe.", statistics_data=statistics_data,documentId=documentId)
+            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error="El registro de estadísticas ya existe.", statistics_data=statistics_data,documentId=documentId,client=client)
         elif insert == "DataBase":
-            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error="No se puede conectar a la base de datos, por favor inténtalo más tarde o comuníquese con el desarrollador.", statistics_data=statistics_data,documentId=documentId)
+            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error="No se puede conectar a la base de datos, por favor inténtalo más tarde o comuníquese con el desarrollador.", statistics_data=statistics_data,documentId=documentId,client=client)
         else:
             Conection.desconectar()
-            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error="No se pudo ingresar las estadísticas, por favor inténtalo más tarde.", statistics_data=statistics_data,documentId=documentId)
+            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error="No se pudo ingresar las estadísticas, por favor inténtalo más tarde.", statistics_data=statistics_data,documentId=documentId,client=client)
     else:
         return render_template("trainer/estadisticasCliente.html", client = client, statistics=statistics, statistics_data=None, done=doneMessage, error=errorMessage, documentId = documentId)
 
