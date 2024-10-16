@@ -1,5 +1,6 @@
 from .entities.Client import Client
 from datetime import datetime
+from .entities.Notification import Notification
 import re
 from pymysql import IntegrityError
 
@@ -292,3 +293,19 @@ class ModelClient:
         
         
         
+    
+    @classmethod
+    def get_Notifications(cls, conexion):
+        try:
+            cursor = conexion.cursor()
+            sql = "SELECT ID_Notificacion, Asunto, Fecha, Hora, Estado FROM notificacion"
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+            notifications = []
+            for row in rows:
+                notification = Notification(row[0], row[1],row[2], row[3],row[4])
+                notifications.append(notification)
+            return notifications
+        except Exception as ex:
+            print(f"Error en get_notifications: {ex}")
+            return []
