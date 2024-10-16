@@ -1,3 +1,4 @@
 {
-    "livePreview.defaultPreviewPath": "/Diseño/admin/index.html"
+    "livePreview.defaultPreviewPath": "/Diseño/admin/index.html",
+    "liveServer.settings.port": 5501
 }

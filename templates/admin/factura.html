@@ -69,10 +69,17 @@
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Entrenador</label>
                                             <select class="default-select form-control wide w-100">
-                                                <option selected>Hersal Alfaro - 201230321</option>
-                                                <option value="1">Carlos Hidalgo - 201230321</option>
-                                                <option value="1">Kenneth Perez - 201230321</option>
-                                                <option value="1">Jimena Jimenez - 201230321</option>
+                                                {% if trainers %}
+                                                {% for trainer in trainers %}
+                                                <option class="client" value="{{ trainer.DocumentId }}">{{ trainer.Name }}
+                                                    {{
+                                                        trainer.First_LastName }} {{ trainer.Second_LastName }} (Entrenador)
+                                                </option>
+                                                {% endfor %}
+                                                {% endif %}
+                                                {% if not trainers %}
+                                                <option value="" disabled>No hay entrenadores disponibles</option>
+                                                {% endif %}
                                             </select>
                                             <div class="invalid-feedback">
                                                 Por favor ingresar un valor valido
@@ -292,41 +299,25 @@
                                 <h4 class="mb-3">Informacion Cliente</h4>
                                 <form class="needs-validation" novalidate="">
                                     <div class="row">
-                                        <div class="col-md-6 mb-3">
+                                        <div class="col-md-12 mb-3">
                                             <label class="form-label">Cliente</label>
-                                            <select class="default-select form-control wide w-100">
-                                                <option selected>Hersal Alfaro - 208570335</option>
-                                                <option value="1">Carlos Hidalgo - 208310231</option>
+                                            <select class="form-control single-select" id="validationCustomCedulaClient"
+                                                name="DocumentIdClient">
+                                                <option value="" disabled selected>Seleccionar la cédula</option>
+                                                {% if clients %}
+                                                {% for client in clients %}
+                                                <option class="client" value="{{ client.DocumentId }}">{{ client.Name }}
+                                                    {{
+                                                    client.First_LastName }} {{ client.Second_LastName }} (Cliente)
+                                                </option>
+                                                {% endfor %}
+                                                {% endif %}
+                                                {% if not clients %}
+                                                <option value="" disabled>No hay clientes disponibles</option>
+                                                {% endif %}
                                             </select>
-                                            <div class="invalid-feedback">
-                                                Por favor ingresar un valor valido
-                                            </div>
                                         </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="firstName" class="form-label">Nombre</label>
-                                            <input type="text" class="form-control" id="firstName" placeholder="Hersal"
-                                                value="" required="">
-                                            <div class="invalid-feedback">
-                                                Por favor ingresar un valor valido
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="lastName" class="form-label">Apellido</label>
-                                            <input type="text" class="form-control" id="lastName" placeholder="Alfaro"
-                                                value="" required="">
-                                            <div class="invalid-feedback">
-                                                Por favor ingresar un valor valido
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="lastName" class="form-label"> Segundo
-                                                Apellido</label>
-                                            <input type="text" class="form-control" id="lastName" placeholder="Cisneros"
-                                                value="" required="">
-                                            <div class="invalid-feedback">
-                                                Por favor ingresar un valor valido
-                                            </div>
-                                        </div>
+
                                     </div>
 
                                     <div class="mb-3">
@@ -386,10 +377,10 @@
                             <td>
                                 <div class="d-flex">
 
-                                    <a href="{{ url_for('admin_app.verFactura') }}" class="btn btn-primary shadow btn-xs sharp me-1"><i
-                                            class="fa fa-eye"></i></a>
-                                    <a href="{{ url_for('admin_app.anular') }}"class="btn btn-danger shadow btn-xs sharp"><i
-                                            class="fa fa-trash"></i></a>
+                                    <a href="{{ url_for('admin_app.verFactura') }}"
+                                        class="btn btn-primary shadow btn-xs sharp me-1"><i class="fa fa-eye"></i></a>
+                                    <a href="{{ url_for('admin_app.anular') }}"
+                                        class="btn btn-danger shadow btn-xs sharp"><i class="fa fa-trash"></i></a>
 
                                 </div>
                             </td>
@@ -431,20 +422,6 @@
     });
 </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById('invoiceType').addEventListener('change', function () {
-            var value = this.value;
-            document.querySelectorAll('.form-container').forEach(function (el) {
-                el.style.display = 'none';
-                document.getElementById('formCliente').style.display = 'block';
-            });
-            if (value) {
-                document.getElementById(value + 'Form').style.display = 'block';
-            }
-        });
-    });
-</script>
 
 <script>
     (function () {

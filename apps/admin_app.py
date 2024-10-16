@@ -341,8 +341,8 @@ def disableUser():
 def ableUser():
     data = request.get_json()
     DocumentId = data.get('DocumentId')
-    conexion = Conection.conectar()
-    able = ModelUser.ableUser(conexion, DocumentId)
+    conection = Conection.conectar()
+    able = ModelUser.ableUser(conection, DocumentId)
     Conection.desconectar()
 
     if able:
@@ -355,7 +355,16 @@ def ableUser():
 @admin_app.route("/facturas")
 @login_required
 def facturas():
-    return render_template("admin/factura.html")
+    conection = Conection.conectar()
+
+    if not conection:
+        return render_template("admin/factura.html", error = "No se pudo conectar con la base de datos.", clients = None, trainers = None, memberships = None)
+
+    clients = ModelClient.get_all(conection)
+    trainers = ModelTrainer.get_all(conection)
+    memberships = ModelMembership.get_all(conection)
+
+    return render_template("admin/factura.html", clients = clients, trainers = trainers, memberships = memberships)
 
 @admin_app.route("/facturas/ver")
 @login_required
@@ -366,6 +375,20 @@ def verFactura():
 @login_required
 def anular():
     return render_template("admin/anular.html")  
+
+@admin_app.route('/getClients', methods = ['GET'])
+@login_required
+@admin_permission.require(http_exception=403)
+def getClientsPay():
+    conection = Conection.conectar()
+    clients = ModelClient.get_all(conection)
+    Conection.desconectar()
+
+    if clients != None:
+        return jsonify({'message': 'Hecho','clients': clients})
+    else:
+        return jsonify({'error': 'No se pudieron cargar los clientes.'})
+
 
 
 #-------------Rutas de Inventario-------------#
