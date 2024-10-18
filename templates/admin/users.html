@@ -73,7 +73,7 @@
                                             <option value="" disabled selected>Seleccionar la cédula</option>
                                             {% if trainers %}
                                             {% for trainer in trainers %}
-                                            <option class="trainer" value="{{ trainer.DocumentId }}">{{ trainer.Name }}
+                                            <option value="{{ trainer.DocumentId }}">{{ trainer.Name }}
                                                 {{ trainer.lastName }} {{ trainer.lastName2 }} (Entrenador)</option>
                                             {% endfor %}
                                             {% endif %}
@@ -96,7 +96,7 @@
                                             <option value="" disabled selected>Seleccionar la cédula</option>
                                             {% if clients %}
                                             {% for client in clients %}
-                                            <option class="client" value="{{ client.DocumentId }}">{{ client.Name }} {{
+                                            <option value="{{ client.DocumentId }}">{{ client.Name }} {{
                                                 client.First_LastName }} {{ client.Second_LastName }} (Cliente)</option>
                                             {% endfor %}
                                             {% endif %}

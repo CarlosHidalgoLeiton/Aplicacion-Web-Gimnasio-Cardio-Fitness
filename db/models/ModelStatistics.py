@@ -57,6 +57,7 @@ class ModelStatistics:
                 SELECT 
                     e.ID_Estadistica, 
                     e.FechaMedicion, 
+                    e.Estado,
                     t.Nombre,
                     t.Primer_Apellido
                 FROM 
@@ -238,3 +239,46 @@ class ModelStatistics:
        
         return True
         
+    @classmethod
+    def disableStatistics(cls, conection, ID_Statistics):
+        if ID_Statistics != None:
+            try:
+                cursor = conection.cursor()
+                sql = """UPDATE Estadistica SET Estado = 0  WHERE ID_Estadistica = %s"""
+                cursor.execute(sql, (ID_Statistics))
+                if cursor.rowcount > 0:
+                    conection.commit()
+                    return True
+                else:
+                    print("No se pudo actualizar la estadística .")
+                    conection.rollback()
+                    return False
+
+            except Exception as ex:
+                print(f"Ocurrió un error en actualizar la estadística  {ex}")
+                conection.rollback()
+                return False
+        else:
+            return False
+        
+    @classmethod
+    def ableStatistics(cls, conection, ID_Statistics):
+        if ID_Statistics != None:
+            try:
+                cursor = conection.cursor()
+                sql = """UPDATE Estadistica SET Estado = 1  WHERE ID_Estadistica = %s"""
+                cursor.execute(sql, (ID_Statistics))
+                if cursor.rowcount > 0:
+                    conection.commit()
+                    return True
+                else:
+                    print("No se pudo actualizar la estadística .")
+                    conection.rollback()
+                    return False
+
+            except Exception as ex:
+                print(f"Ocurrió un error en actualizar la estadística  {ex}")
+                conection.rollback()
+                return False
+        else:
+            return False

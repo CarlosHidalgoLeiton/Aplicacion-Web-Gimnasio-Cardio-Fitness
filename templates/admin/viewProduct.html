@@ -55,10 +55,24 @@
                                         <input type="text" class="form-control" value="{{ product.Detail }}" readonly>
                                     </div>
 
+                                    {% if product['State'] == 1 %}
                                     <div class="me-3">
                                         <a class="btn btn-primary" href="{{ url_for('admin_app.select_Product', IdProduct=product.ID_Product, action='update') }}">Actualizar</a>
-                                        <a class="btn btn-danger" href="javascript:void();">Deshabilitar</a>
+                                        <button onclick="disableProduct(event)" data-id="{{ product['ID_Product'] }}"
+                                            id="deshabilitar-{{ product['ID_Product'] }}"
+                                            class="btn btn-danger">Deshabilitar
+                                         </button>
                                     </div>
+
+                                    {% else %}
+                                    <div class="me-3">
+                                        <a class="btn btn-primary" href="{{ url_for('admin_app.select_Product', IdProduct=product.ID_Product, action='update') }}">Actualizar</a>
+                                        <button onclick="ableProduct(event)" data-id="{{ product['ID_Product'] }}"
+                                            id="habilitar-{{ product['ID_Product'] }}"
+                                            class="btn btn-success">Habilitar
+                                        </button>
+                                    </div>
+                                    {% endif %}
 
                                 </div>
                             </div>
