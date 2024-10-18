@@ -37,6 +37,37 @@ class ModelBill:
             return "Error"
         
     @classmethod
+    def insertGeneralBill(cls, conection, bill):
+        if bill != None:
+            try:
+                bill.Type = 'Pago General'
+                date = datetime.now()
+                bill.State = 1
+                cursor = conection.cursor()
+                sql = """INSERT INTO Factura (Monto, Tipo, Descripcion, Fecha, Estado)
+                VALUES (%s, %s, %s, %s, %s)"""
+                cursor.execute(sql, (bill.Amount, bill.Type, bill.Description, date, bill.State))
+                conection.commit()
+
+                if cursor.rowcount > 0:
+                    print(f"Factura creada exitosamente.")
+                    return True
+                else:
+                    print("No se pudo crear la factura.")
+                    return "Error"
+                
+            except BaseException as ex:
+                print(f"Error en ModelBill insertTrainerBill: {ex}")
+                conection.rollback()
+                return "DataBase"
+            except Exception as ex:
+                print(f"Error en ModelBill insertTrainerBill: {ex}")
+                conection.rollback()
+                return "Error"
+        else:
+            return "Error"
+        
+    @classmethod
     def getDataTrainerBill(cls, request):
         ID_Entity = request.form['DocumentIdTrainer']
         Amount = request.form['AmountTrainerBill']
@@ -45,13 +76,34 @@ class ModelBill:
         return Bill(None, Amount, None, Description, None, None, ID_Entity, None)
 
     @classmethod
+    def getDataGeneralBill(cls, request):
+        Amount = request.form['AmountGeneralBill']
+        Description = request.form['Description']
+
+        return Bill(None, Amount, None, Description, None, None, None, None)
+
+    @classmethod
     def validateDataFormTrainer(cls, bill):
         
-        if bill.ID_Entity == None:
+        if not bill.ID_Entity:
             return "Debe seleccionar el entrenador."
         
         if bill.Amount != None:
-            if "-" in bill.Amount and any( m.isalpha() for m in bill.Amount): #Valida que sea alfabetico y que no tenga un "-" 
+            if "-" in bill.Amount or not bill.Amount.isdigit(): #Valida que sea alfabetico y que no tenga un "-" 
+                return "El monto ingresado no es válido."
+        else:
+            return "Debe de ingresar el monto."
+        
+        if bill.Description == None:
+            return "Debe de ingresar la descripción."
+        
+        return True
+    
+    @classmethod
+    def validateDataFormGeneral(cls, bill):
+        
+        if bill.Amount != None:
+            if "-" in bill.Amount and not any( m.isalpha() for m in bill.Amount): #Valida que sea alfabetico y que no tenga un "-" 
                 return "El monto ingresado no es válido."
         else:
             return "Debe de ingresar el monto."
@@ -63,24 +115,10 @@ class ModelBill:
     
     @classmethod
     def getDataGeneralBill(cls, request):
-        Amount = request.form['AmountTrainerBill']
+        Amount = request.form['AmountGeneralBill']
         Description = request.form['Description']
 
         return Bill(None, Amount, None, Description, None, None, None, None)
-
-    @classmethod
-    def validateDataFormTrainer(cls, bill):
-        
-        if bill.Amount != None:
-            if "-" in bill.Amount and any( m.isalpha() for m in bill.Amount): #Valida que sea alfabetico y que no tenga un "-" 
-                return "El monto ingresado no es válido."
-        else:
-            return "Debe de ingresar el monto."
-        
-        if bill.Description == None:
-            return "Debe de ingresar la descripción."
-        
-        return True
     
     @classmethod
     def get_all(cls, conexion):

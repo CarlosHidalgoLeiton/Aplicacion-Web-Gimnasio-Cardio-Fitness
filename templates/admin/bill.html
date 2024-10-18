@@ -45,16 +45,16 @@
                         <div class="row">
                             <div class="col-md-12 order-lg-1">
                                 <h4 class="mb-3">Información de Pago de Entrenador</h4>
-                                <form class="needs-validation" novalidate action="/admin/facturas" method="POST">
+                                <form class="needs-validation" novalidate action="/admin/bills" method="POST">
                                     <input id="typeEntity" name="typeEntity" type="hidden" value="Trainer">
                                     <div class="row">
                                         <div class="col-md-12 mb-3">
                                             <label class="form-label">Entrenador
                                                 <span class="text-danger">*</span>
                                             </label>
-                                            <select class="form-control single-select"
-                                                id="validationCustomCedulaTrainer" name="DocumentIdTrainer">
-                                                <option value="" disabled selected>Seleccionar el entrenador</option>
+                                            <select class="single-select" id="DocumentIdTrainer"
+                                                name="DocumentIdTrainer" required>
+                                                <option disabled value="">Seleccionar el entrenador</option>
                                                 {% if trainers %}
                                                 {% for trainer in trainers %}
                                                 <option value="{{ trainer.DocumentId }}">{{ trainer.Name }}
@@ -64,7 +64,8 @@
                                                 {% endfor %}
                                                 {% endif %}
                                                 {% if not trainers %}
-                                                <option value="" disabled>No hay entrenadores disponibles</option>
+                                                <option disabled value="" selected>No hay entrenadores disponibles
+                                                </option>
                                                 {% endif %}
                                             </select>
                                             <div class="invalid-feedback">
@@ -72,16 +73,15 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="mb-3">
                                         <label for="AmountTrainerBill" class="form-label">Monto
                                             <span class="text-danger">*</span>
                                         </label>
-                                        <input type="text" class="form-control" name="AmountTrainerBill"
+                                        <input type="number" class="form-control" name="AmountTrainerBill"
                                             id="AmountTrainerBill" value="{{ trainerValidated.Amount }}" placeholder="₡"
                                             required>
                                         <div class="invalid-feedback">
-                                            Por favor ingresar un valor valido
+                                            Por favor ingresar un valor válido.
                                         </div>
                                     </div>
                                     <div class="mb-3">
@@ -119,15 +119,16 @@
                         <div class="row">
                             <div class="col-md-12 order-lg-1">
                                 <h4 class="mb-3">Información de Pago General</h4>
-                                <form class="needs-validation" novalidate action="/admin/facturas" method="POST">
+                                <form class="needs-validation" novalidate action="/admin/bills" method="POST">
                                     <input id="typeEntity" name="typeEntity" type="hidden" value="General">
                                     <div class="row">
                                         <div class="mb-3">
-                                            <label for="monto" class="form-label">Monto
+                                            <label for="AmountGeneralBill" class="form-label">Monto
                                                 <span class="text-danger">*</span>
                                             </label>
-                                            <input type="text" class="form-control" id="monto" placeholder="₡"
-                                                required="">
+                                            <input type="text" class="form-control" name="AmountGeneralBill"
+                                                id="AmountGeneralBill" placeholder="₡"
+                                                value="{{ generalValidated.Amount }}" required>
                                             <div class="invalid-feedback">
                                                 Por favor ingresar un valor valido
                                             </div>
@@ -140,11 +141,11 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="Descripcion" class="form-label">Descripción
+                                            <label for="Description" class="form-label">Descripción
                                                 <span class="text-danger">*</span>
                                             </label>
-                                            <input type="text" class="form-control" id="Descripcion" placeholder=""
-                                                required="">
+                                            <input type="text" class="form-control" name="Description" id="Description"
+                                                value="{{ generalValidated.Description }}" required>
                                             <div class="invalid-feedback">
                                                 Por favor ingresar un valor valido
                                             </div>
@@ -169,7 +170,7 @@
                         <div class="row">
                             <div class="col-lg-8 order-lg-1">
                                 <h4 class="mb-3">Información de Pago de Producto</h4>
-                                <form class="needs-validation" novalidate action="/admin/facturas" method="POST">
+                                <form class="needs-validation" novalidate action="/admin/bills" method="POST">
                                     <div class="row">
                                         <div class=" mb-3">
                                             <label class="form-label">Productos
@@ -241,7 +242,7 @@
                         <div class="row">
                             <div class="col-md-12 order-lg-1">
                                 <h4 class="mb-3">Información de Pago de Membresia</h4>
-                                <form class="needs-validation" novalidate action="/admin/facturas" method="POST">
+                                <form class="needs-validation" novalidate action="/admin/bills" method="POST">
                                     <div class="row">
                                         <div class="col-md-12 mb-3">
                                             <label class="form-label">Cliente
@@ -352,7 +353,7 @@
                         {% for bill in bills %}
                         <tr>
                             <td>{{ bill['Date'] }}</td>
-                            <td>{{ bill['Amount'] }}</td>
+                            <td>₡{{ bill['Amount'] }}</td>
                             <td>
                                 <div class="d-flex">
                                     {% if bill['State'] == 1 %}
@@ -396,6 +397,8 @@
 {% endblock %}
 
 {% block scripts %}
+
+<script type="module" src="../../../static/js/handleFormPay.js"></script>
 
 <!-- Oculta los tipos de pago -->
 <style>
@@ -451,6 +454,12 @@
         for (var i = 0; i < inputsDate.length; i++) {
             inputsDate[i].value = formattedDate;  // Asignar la fecha formateada
         }
+    });
+</script>
+
+<script>
+    $(".js-example-tags").select2({
+        tags: true
     });
 </script>
 {% endblock %}

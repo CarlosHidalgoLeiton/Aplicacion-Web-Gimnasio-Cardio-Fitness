@@ -30,7 +30,7 @@
     <link rel="stylesheet" href="../../../static/vendor/jquery-smartwizard/dist/css/smart_wizard.min.css">
 
     <!-- Select 2 -->
-    <link rel="stylesheet" href="../vendor/chartist/css/chartist.min.css">
+    <!-- <link rel="stylesheet" href="../vendor/chartist/css/chartist.min.css"> -->
     <link rel="stylesheet" href="../../../static/vendor/bootstrap-select/css/bootstrap-select.min.css">
     <link rel="stylesheet" href="../../../static/vendor/select2/css/select2.min.css">
 
@@ -54,10 +54,11 @@
 
     <script src="../../../static/js/toastrConfig.js"></script>
 
+    {% block upScripts %}
+
+    {% endblock %}
+
     <!-- Actions -->
-    <script src="../../../static/js/stateClient.js"></script>
-    <script src="../../../static/js/stateUser.js"></script>
-    <script src="../../../static/js/stateMembership.js"></script>
 
     <!-- Alerts toastr -->
     {% if error %}
@@ -210,7 +211,7 @@
                             <span class="nav-text">Facturacion</span>
                         </a>
                         <ul aria-expanded="false">
-                            <li><a href="{{ url_for('admin_app.facturas') }}">Facturas</a></li>
+                            <li><a href="{{ url_for('admin_app.bills') }}">Facturas</a></li>
                             <li><a href="{{ url_for('admin_app.reportesFacturacion') }}">Reporte</a></li>
                         </ul>
                     </li>
@@ -298,9 +299,9 @@
     <!-- Datatable -->
     <script src="../../../static/vendor/datatables/js/jquery.dataTables.min.js"></script>
     <!-- ck-editor -->
-    <script src="../../../static/vendor/ckeditor/ckeditor.js"></script>
+    <!-- <script src="../../../static/vendor/ckeditor/ckeditor.js"></script> -->
     <!-- Apex Chart -->
-    <script src="../../../static/vendor/apexchart/apexchart.js"></script>
+    <!-- <script src="../../../static/vendor/apexchart/apexchart.js"></script> -->
     <!-- Chart piety plugin files -->
     <script src="../../../static/vendor/peity/jquery.peity.min.js"></script>
 
@@ -310,11 +311,10 @@
     <script src="../../../static/js/plugins-init/datatables.init.js"></script>
 
     <!-- CUSTOM SCRIPT -->
-    <script src="../../../static/js/dashboard/dashboard-1.js"></script>
+    <!-- <script src="../../../static/js/dashboard/dashboard-1.js"></script> -->
     <script src="../../../static/js/custom.min.js"></script>
     <script src="../../../static/js/deznav-init.js"></script>
 
-    <script type="module" src="../../../static/js/handleFormPay.js"></script>
 
     <script>
         $(document).ready(function () {
