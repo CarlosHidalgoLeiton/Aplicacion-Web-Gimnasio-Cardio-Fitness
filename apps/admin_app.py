@@ -8,6 +8,7 @@ from db.models.ModelClient import ModelClient
 from db.models.ModelProduct import ModelProduct
 from db.models.ModelMembership import ModelMembership
 from db.models.ModelBill import ModelBill
+from db.models.ModelCancelledBill import ModelCancelledBill
 from db.models.entities.User import User
 from apps.permissions import admin_permission
 
@@ -392,10 +393,62 @@ def bills():
 def verFactura():
     return render_template("admin/verFactura.html")
 
-@admin_app.route("/facturas/anular")
+@admin_app.route("/bills/cancel/<ID_Bill>", methods = ['GET', 'POST'])
 @login_required
-def anular():
-    return render_template("admin/anular.html")  
+@admin_permission.require(http_exception=403)
+def cancelBill(ID_Bill):
+    if request.method == 'POST':
+        cancelBill = ModelCancelledBill.getDataCanceledBill(request)
+        validatedCancel = ModelCancelledBill.validateDataForm(cancelBill)
+
+        if not type(validatedCancel) == bool:
+            return render_template('admin/cancelBill.html', error = validatedCancel, cancelBill = cancelBill, ID_Bill = ID_Bill)
+        
+        conection = Conection.conectar()
+        insert = ModelCancelledBill.insertCancelledBill(conection ,cancelBill)
+
+        if insert and type(insert) == bool:
+            return redirect(url_for('admin_app.bills', done = "Factura anulada correctamente."))
+        elif insert == "DataBase":
+            return render_template("admin/cancelBill.html", error = "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", ID_Bill = ID_Bill, cancelBill = cancelBill) 
+        else:
+            return render_template("admin/cancelBill.html", error = "No se pudo realizar la anulación de la factura.", ID_Bill = ID_Bill, cancelBill = cancelBill) 
+
+    return render_template("admin/cancelBill.html", ID_Bill = ID_Bill, cancelBill = None)  
+
+@admin_app.route("/bills/viewCancelBill/<ID_Bill>", methods = ['GET'])
+@login_required
+@admin_permission.require(http_exception=403)
+def viewcancelBill(ID_Bill):
+    
+    if ID_Bill != None:
+        conection = Conection.conectar()
+        bill = ModelBill.getBill(conection, ID_Bill)
+        cancelBill = ModelCancelledBill.getCancelBill(conection, ID_Bill)
+        if not bill or not cancelBill:
+            return redirect(url_for('admin_app.bills', error = "No se pudo obtener la información de la factura anulada."))
+
+        if bill.EntityType == 'Entrenador':
+            trainer = ModelTrainer.getTrainerBill(conection, bill.ID_Entity)
+            
+            return render_template('admin/viewCancel.html', trainer = trainer, ID_Bill = ID_Bill, bill = bill, cancelBill = cancelBill)
+                
+        elif bill.EntityType == 'Cliente': 
+            client = ModelClient.getClientBill(conection, bill.ID_Entity)
+            
+            return render_template('admin/viewCancel.html', client = client, ID_Bill = ID_Bill, bill = bill, cancelBill = cancelBill)
+        
+        else:
+            return render_template('admin/viewCancel.html', ID_Bill = ID_Bill, bill = bill, cancelBill = cancelBill)
+
+    
+    return redirect(url_for('admin_app.bills', error = "No se pudo obtener la información de la factura anulada."))
+
+
+
+
+
+    return render_template('admin/viewCancel.html', ID_Bill = ID_Bill)
 
 @admin_app.route('/getClients', methods = ['GET'])
 @login_required

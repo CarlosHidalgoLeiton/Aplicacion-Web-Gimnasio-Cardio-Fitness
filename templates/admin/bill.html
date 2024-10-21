@@ -360,20 +360,15 @@
                                     <a href="{{ url_for('admin_app.verFactura') }}"
                                         class="btn btn-primary shadow btn-xs sharp me-1"><i class="fa fa-eye"></i></a>
 
-
-                                    <button onclick="disableClient(event)" data-id="{{ bill['ID_Bill'] }}"
-                                        id="deshabilitar-{{ bill['ID_Bill'] }}"
+                                    <a href="{{ url_for('admin_app.cancelBill', ID_Bill = bill['ID_Bill'] ) }}"
                                         class="btn btn-danger shadow btn-xs sharp">
                                         <i class="fa fa-trash"></i>
-                                    </button>
+                                    </a>
 
                                     {% else %}
 
-                                    <button onclick="ableClient(event)" data-id="{{ bill['ID_Bill'] }}"
-                                        id="habilitar-{{ bill['ID_Bill'] }}"
-                                        class="btn btn-success shadow btn-xs sharp">
-                                        <i class="fa fa-check"></i>
-                                    </button>
+                                    <a href="{{ url_for('admin_app.viewcancelBill', ID_Bill = bill['ID_Bill']) }}"
+                                        class="btn btn-secondary shadow btn-xs sharp me-1"><i class="fa fa-eye"></i></a>
 
                                     {% endif %}
                                 </div>

@@ -121,9 +121,9 @@ class ModelBill:
         return Bill(None, Amount, None, Description, None, None, None, None)
     
     @classmethod
-    def get_all(cls, conexion):
+    def get_all(cls, conection):
         try:
-            cursor = conexion.cursor()
+            cursor = conection.cursor()
             sql = "SELECT ID_Factura, Monto, Fecha, Estado FROM Factura"
             cursor.execute(sql)
             rows = cursor.fetchall()
@@ -141,4 +141,24 @@ class ModelBill:
             print(f"Error en get_all: {ex}")
             return None
 
-
+    @classmethod
+    def getBill(cls, conection, ID_Bill):
+        try:
+            cursor = conection.cursor()
+            sql = "SELECT ID_Factura, Monto, Fecha, Tipo, Descripcion, TipoEntidad, ID_Entidad FROM Factura WHERE ID_Factura = (%s)"
+            cursor.execute(sql, (ID_Bill))
+            row = cursor.fetchone() 
+            if row:
+                return Bill(
+                    ID_Bill= row[0],
+                    Amount= row[1],
+                    Date= row[2],
+                    Type= row[3],
+                    Description= row[4],
+                    EntityType= row[5],
+                    ID_Entity= row[6]
+                )
+            return None
+        except Exception as ex:
+            print(f"Error en getBill: {ex}")
+            return None

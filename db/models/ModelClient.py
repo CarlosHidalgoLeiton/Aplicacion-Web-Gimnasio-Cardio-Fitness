@@ -97,7 +97,7 @@ class ModelClient:
             return None
         
     @classmethod
-    def get_cliente_by_cedula(cls, conexion, DocumentId):
+    def getClient(cls, conexion, DocumentId):
         try:
             cursor = conexion.cursor()
             sql = """SELECT Cedula, Nombre, Primer_Apellido, Segundo_Apellido, Fecha_Nacimiento, Edad, Correo, 
@@ -128,6 +128,27 @@ class ModelClient:
                     ExpirationMembership=row[15],
                     State=row[16],
                     Membership_ID=row[17]
+                )
+            else:
+                return None
+        except Exception as ex:
+            print(f"Error al obtener cliente por cédula: {ex}")
+            return None
+        
+    @classmethod
+    def getClientBill(cls, conexion, DocumentId):
+        try:
+            cursor = conexion.cursor()
+            sql = """SELECT Nombre, Primer_Apellido, Segundo_Apellido FROM Cliente WHERE Cedula = %s"""
+            cursor.execute(sql, (DocumentId))
+            row = cursor.fetchone()
+
+            if row:
+                # Crear y devolver un objeto cliente
+                return Client(
+                    Name=row[0],
+                    First_LastName=row[1],
+                    Second_LastName=row[2],
                 )
             else:
                 return None

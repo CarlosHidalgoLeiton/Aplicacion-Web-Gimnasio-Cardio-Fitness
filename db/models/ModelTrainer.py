@@ -39,9 +39,9 @@ class ModelTrainer:
             return "Error"
 
     @classmethod
-    def getTrainer(cls, conexion, DocumentId):
+    def getTrainer(cls, conection, DocumentId):
         try:
-            cursor = conexion.cursor()
+            cursor = conection.cursor()
             sql = "SELECT Cedula, Nombre, Primer_Apellido, Segundo_Apellido, Fecha_Nacimiento, Edad, Correo, Telefono, Estado FROM Entrenador WHERE Cedula = %s"
             cursor.execute(sql, (DocumentId))
             row = cursor.fetchone()
@@ -56,6 +56,25 @@ class ModelTrainer:
                     Email=row[6],       
                     Phone=row[7],         
                     State=row[8]          
+                )
+                return trainer
+            return None
+        except Exception as ex:
+            print(f"Error al obtener el entrenador: {ex}")
+            return None
+    
+    @classmethod
+    def getTrainerBill(cls, conection, DocumentId):
+        try:
+            cursor = conection.cursor()
+            sql = "SELECT Nombre, Primer_Apellido, Segundo_Apellido FROM Entrenador WHERE Cedula = %s"
+            cursor.execute(sql, (DocumentId))
+            row = cursor.fetchone()
+            if row is not None:
+                trainer = Trainer(
+                    Name=row[0],        
+                    First_LastName=row[1],    
+                    Second_LastName=row[2],          
                 )
                 return trainer
             return None
