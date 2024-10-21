@@ -2,8 +2,8 @@
 
 class Session():
 
-    def __init__(self, ID_Sesion = None, Indicaciones = None, Ejercicios = None, ID_Rutina  = None) -> None:
-        self.ID_Sesion = ID_Sesion
-        self.Indicaciones = Indicaciones
-        self.Ejercicios = Ejercicios
-        self.ID_Rutina = ID_Rutina
+    def __init__(self, Session_ID = None, Indications = None, Exercises = None, Routine_ID  = None) -> None:
+        self.Session_ID = Session_ID
+        self.Indications = Indications
+        self.Exercises = Exercises
+        self.Routine_ID = Routine_ID

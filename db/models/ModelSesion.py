@@ -1,18 +1,17 @@
 from .entities.Session import Session
 from datetime import datetime
-import re
 from pymysql import IntegrityError
 
-class ModelProduct:
+class ModelSession:
 
     @classmethod
-    def insertProduct(cls, conection, session):
+    def insertSession(cls, conection, session):
         if session != None:
             try:
                 cursor = conection.cursor()
                 sql = """INSERT INTO Sesion (Indicaciones, Ejercicios, ID_Rutina)
                     VALUES (%s, %s, %s)"""
-                cursor.execute(sql, (session.Indicaciones, session.Ejercicios, session.ID_Rutina))
+                cursor.execute(sql, (session.Indications, session.Exercises, session.Routine_ID))
                 conection.commit()
 
                 if cursor.rowcount > 0:
@@ -23,27 +22,27 @@ class ModelProduct:
                     return "Error"
                 
             except IntegrityError as ex:
-                print(f"Error en ModelProduct updateClient: {ex}")
+                print(f"Error en ModelSession updateSession: {ex}")
                 conection.rollback()
                 return "Unique"
             except BaseException as ex:
-                print(f"Error en ModelProduct insertProduct: {ex}")
+                print(f"Error en ModelSession insertSession: {ex}")
                 conection.rollback()
                 return "DataBase"
             except Exception as ex:
-                print(f"Error en ModelProduct insertProduct: {ex}")
+                print(f"Error en ModelSession insertSession: {ex}")
                 conection.rollback()
                 return "Error"
         else:
             return "Error"
     
     @classmethod
-    def updateProduct(cls, conection, session, ID_Sesion):
+    def updateSession(cls, conection, session, ID_Sesion):
         if session != None:
             try:
                 cursor = conection.cursor()
                 sql = """UPDATE Sesion SET Indicaciones = %s, Ejercicios = %s, ID_Rutina = %s WHERE ID_Sesion = %s"""
-                cursor.execute(sql, (session.Indicaciones, session.Ejercicios, session.ID_Rutina, ID_Sesion))
+                cursor.execute(sql, (session.Indications, session.Exercises, session.Routine_ID, ID_Sesion))
                 conection.commit()
 
                 if cursor.rowcount > 0:
@@ -54,15 +53,15 @@ class ModelProduct:
                     return "Error"
                 
             except IntegrityError as ex:
-                print(f"Error en ModelProduct updateClient: {ex}")
+                print(f"Error en ModelSession updateSession: {ex}")
                 conection.rollback()
                 return "Unique"
             except BaseException as ex:
-                print(f"Error en ModelProduct updateProduct: {ex}")
+                print(f"Error en ModelSession updateSession: {ex}")
                 conection.rollback()
                 return "DataBase"
             except Exception as ex:
-                print(f"Error en ModelProduct updateProduct: {ex}")
+                print(f"Error en ModelSession updateSession: {ex}")
                 conection.rollback()
                 return "Error"
         else:
@@ -78,10 +77,10 @@ class ModelProduct:
             sessions = []
             for row in rows:
                 session = Session(
-                    ID_Sesion=row[0],
-                    Indicaciones=row[1],
-                    Ejercicios=row[2],
-                    ID_Rutina=row[3],
+                    Session_ID=row[0],
+                    Indications=row[1],
+                    Exercises=row[2],
+                    Routine_ID=row[3],
                 )
                 sessions.append(session)
             return sessions
@@ -101,10 +100,10 @@ class ModelProduct:
 
             if row:
                 return Session(
-                    ID_Sesion=row[0],
-                    Indicaciones=row[1],
-                    Ejercicios=row[2],
-                    ID_Rutina=row[3],
+                    Session_ID=row[0],
+                    Indications=row[1],
+                    Exercises=row[2],
+                    Routine_ID=row[3],
                 )
             else:
                 return None
@@ -113,35 +112,14 @@ class ModelProduct:
             return None
     
     @classmethod
-    def getDataProduct(cls, request):
-        name = request.form['Name']
-        detail = request.form['Detail']
-        price = request.form['Price']
-        stock = request.form['Stock']
-        image_file = request.files['Image']
-        image_blob = None
+    def getDataSession(cls, request):
+        indications = request.form['Indications']
+        exercises = request.form['Exercises']
+        routine_ID = request.form['Routine_ID']
         
-        if image_file:
-            image_blob = image_file.read()
-
-        return Session(None, name, detail, price, stock, image_blob)
+        return Session(None, indications, exercises, routine_ID)
 
     @classmethod
     def validateDataForm(cls, session):
-        # Validar que la imagen no sea None o esté vacía
-        if not session.Image:
-            print("La imagen del sesion es requerida.")
-            return False
-        
-        if session.Price is not None:
-            if any(p.isalpha() for p in str(session.Price)):
-                return "El precio no debe contener letras."
-            elif any(p in "-$" for p in str(session.Price)):  # Verifica si contiene caracteres no permitidos
-                return "El precio no debe contener caracteres especiales como '-'."
-        else:
-            return "Debe ingresar el precio en número."
-       
-        return True
-            
-        
-        
+        # Validar que datos
+       True
