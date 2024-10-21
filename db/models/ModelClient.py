@@ -1,3 +1,5 @@
+"""Client Module"""
+
 from .entities.Client import Client
 from datetime import datetime
 from .entities.Notification import Notification
@@ -5,9 +7,33 @@ import re
 from pymysql import IntegrityError
 
 class ModelClient:
+    """It has the methods over Client."""
 
     @classmethod
     def insertClient(cls, conection, client):
+        """
+            It inserts a new client in the data base.
+
+            This method receives a `Client` object and inserts it into the database table `Cliente`. 
+            It assumes that the `Client` object has attributes corresponding to the fields in the table. 
+            If the insert is successful, it commits the transaction and returns True. If an error occurs 
+            during the process, it performs a rollback and returns an error message.
+            
+            Parameters:
+            conection(obj): conection object to the database
+            client(Client): client object that contains the data to insert
+
+            Return: 
+                `bool`:   `True` if the client was inserted successfuly,
+                `string`: `Error Message` an error message.
+
+            Exceptions:
+                - IntegrityError: If an integrity error occurs (e.g. duplicate primary key).
+                - BaseException: For any other database related errors.
+                - Exception: For other general errors that may occur during execution.
+        """
+        
+
         if client != None:
             try:
                 Entry_Date = datetime.now()
@@ -43,6 +69,29 @@ class ModelClient:
     
     @classmethod
     def updateClient(cls, conection, client, id):
+        """
+            It updates a client in the data base.
+
+            This method receives a `Client` object and updates it in the database table `Cliente`. 
+            It assumes that the `Client` object has attributes corresponding to the fields in the table. 
+            If the update is successful, it commits the transaction and returns True. If an error occurs 
+            during the process, it performs a rollback and returns an error message.
+            
+            Parameters:
+            conection(obj): conection object to the database
+            client(Client): client object that contains the data to update
+            id(str) -- client's identification to update
+
+            Return: 
+                `bool`:   `True` if the client was inserted successfuly,
+                `string`: `Error Message` an error message.
+
+            Exceptions:
+                - IntegrityError: If an integrity error occurs (e.g. duplicate primary key).
+                - BaseException: For any other database related errors.
+                - Exception: For other general errors that may occur during execution.
+        """
+
         if client != None:
             try:
                 cursor = conection.cursor()
@@ -75,6 +124,24 @@ class ModelClient:
 
     @classmethod
     def get_all(cls, conexion):
+        """
+            It get all the clients.
+
+            This method executes a sql query to get all the clients in the table `Cliente` and returns a dictionary list,
+            where each of dictionary represents a `Client` with the fields of `DocumentId`, `Name`, 
+            `First_LastName`, `Second_LastName`, `Occupation`, y `State`.
+            
+            Parameters:
+            conection(obj): conection object to the database
+
+            Return: 
+                `list`: an dictionary list that contains the information about the clients.
+                `None`: if occurs an error return `None`
+
+            Exceptions:
+                - Exception: General errors that may occur during execution.
+        """
+
         try:
             cursor = conexion.cursor()
             sql = "SELECT Cedula, Nombre, Primer_Apellido, Segundo_Apellido, Ocupacion, Estado FROM Cliente"
@@ -98,6 +165,26 @@ class ModelClient:
         
     @classmethod
     def getClient(cls, conexion, DocumentId):
+        """
+            Retrieves a specific client from the database using their ID (DocumentId).
+
+            This method executes a SQL query to fetch a client from the `Cliente` table 
+            in the database. If the client is found, it returns a `Client` object with 
+            the corresponding fields. If the client is not found or an error occurs, it returns `None`.
+
+            Parameters:
+            conexion (obj): The database connection object.
+            DocumentId (str): The client's ID (Cedula) to search for.
+
+            Returns:
+            Client: A `Client` object containing the client's data if found.
+            None: If the client is not found or an error occurs during execution.
+
+            Exceptions:
+                - Exception: Captures general errors that may occur during the execution 
+                of the query or while creating the `Client` object.
+        """
+
         try:
             cursor = conexion.cursor()
             sql = """SELECT Cedula, Nombre, Primer_Apellido, Segundo_Apellido, Fecha_Nacimiento, Edad, Correo, 
@@ -137,6 +224,27 @@ class ModelClient:
         
     @classmethod
     def getClientBill(cls, conexion, DocumentId):
+        """
+            Retrieves the client's name and last names for billing purposes from the database.
+
+            This method executes a SQL query to fetch a client's basic information 
+            (Name, First Last Name, and Second Last Name) from the `Cliente` table using 
+            the provided `DocumentId`. It returns a `Client` object with the relevant 
+            fields if the client is found, otherwise it returns `None`.
+
+            Parameters:
+            conexion (obj): The database connection object.
+            DocumentId (str): The client's ID (Cedula) to search for.
+
+            Returns:
+            Client: A `Client` object containing the client's basic information if found.
+            None: If the client is not found or an error occurs during execution.
+
+            Exceptions:
+            - Exception: Captures any general errors that may occur during the execution 
+            of the query or while creating the `Client` object.
+        """
+        
         try:
             cursor = conexion.cursor()
             sql = """SELECT Nombre, Primer_Apellido, Segundo_Apellido FROM Cliente WHERE Cedula = %s"""
@@ -159,6 +267,27 @@ class ModelClient:
 
     @classmethod
     def disableClient(cls, conection, clientId):
+        """
+            Disables a client by setting their status to 0 (inactive) in the database.
+
+            This method executes an SQL query to update the `Estado` (status) of a client 
+            to 0 (inactive) in the `Cliente` table based on the provided `clientId`. 
+            If the update is successful, it commits the transaction and returns `True`. 
+            If no rows are affected or an error occurs, it rolls back the transaction and returns `False`.
+
+            Parameters:
+            conection (obj): The database connection object.
+            clientId (str): The client's ID (Cedula) to disable.
+
+            Returns:
+            bool: `True` if the client was successfully disabled, 
+                `False` if no client was updated or an error occurred.
+
+            Exceptions:
+            - Exception: Captures any general errors that may occur during the update 
+            process, such as issues with the SQL query or database connection.
+        """
+
         if clientId != None:
             try:
                 cursor = conection.cursor()
@@ -181,6 +310,27 @@ class ModelClient:
         
     @classmethod
     def ableClient(cls, conection, clientId):
+        """
+            Re-enables a client by setting their status to 1 (active) in the database.
+
+            This method executes an SQL query to update the `Estado` (status) of a client 
+            to 1 (active) in the `Cliente` table based on the provided `clientId`. 
+            If the update is successful, it commits the transaction and returns `True`. 
+            If no rows are affected or an error occurs, it rolls back the transaction and returns `False`.
+
+            Parameters:
+            conection (obj): The database connection object.
+            clientId (str): The client's ID (Cedula) to re-enable.
+
+            Returns:
+            bool: `True` if the client was successfully re-enabled, 
+                `False` if no client was updated or an error occurred.
+
+            Exceptions:
+            - Exception: Captures any general errors that may occur during the update 
+            process, such as issues with the SQL query or database connection.
+        """
+
         if clientId != None:
             try:
                 cursor = conection.cursor()
@@ -203,6 +353,29 @@ class ModelClient:
     
     @classmethod
     def getDataClient(cls, request):
+        """
+            Extracts client data from a form request and creates a `Client` object.
+
+            This method retrieves client-related information from the form data in 
+            the provided `request` object, processes the necessary fields (e.g., 
+            date of birth to calculate age), and returns a `Client` object populated 
+            with the extracted data.
+
+            Parameters:
+            request (obj): The form request object containing the client data.
+
+            Returns:
+            Client: A `Client` object with the data extracted from the form.
+
+            Notes:
+            - The date of birth is expected to be in the format "YYYY-MM-DD", 
+            and the method calculates the age based on the current year and the 
+            client's date of birth.
+            - If any fields are missing or in an incorrect format, the method 
+            assumes the form is well-validated beforehand, or additional error handling 
+            can be added as needed.
+        """
+
         documentId = request.form['documentId']
         name = request.form['name']
         firstLastName = request.form['firstLastName']
@@ -223,6 +396,30 @@ class ModelClient:
 
     @classmethod
     def validateDataForm(cls, client):
+        """
+            Validates the data in a `Client` object.
+
+            This method performs a series of validations on the attributes of the 
+            provided `Client` object. It checks for proper format, required fields, 
+            and constraints (e.g., length, characters). If any validation fails, 
+            an appropriate error message is returned. If all validations pass, 
+            the method returns `True`.
+
+            Parameters:
+            client (Client): The `Client` object to validate.
+
+            Returns:
+            str: An error message if any validation fails.
+            True: If all validations pass.
+
+            Notes:
+            - The method expects the `Client` object to have the following fields:
+            `DocumentId`, `Name`, `First_LastName`, `Second_LastName`, `Date_Birth`, 
+            `Mail`, `Phone`, `Occupation`, `TelephoneEmergency`, `Address`, `Ailments`, 
+            and `Limitation`.
+            - The method uses regular expressions to validate fields like `DocumentId`, `Mail`, 
+            and `Phone`.
+        """
 
         #Validation for documentID 
         if client.DocumentId != None:
@@ -317,6 +514,25 @@ class ModelClient:
     
     @classmethod
     def get_Notifications(cls, conexion):
+        """
+            Retrieves all notifications from the `notificacion` table in the database.
+
+            This method executes an SQL query to fetch all rows from the `notificacion` table, 
+            which includes notification ID, subject, date, time, and status. 
+            Each row is used to create a `Notification` object, and the list of notifications 
+            is returned.
+
+            Parameters:
+            conexion (obj): The database connection object.
+
+            Returns:
+            list: A list of `Notification` objects containing the notifications from the database.
+            - If an error occurs, an empty list is returned.
+
+            Exceptions:
+            - Exception: Catches any errors that occur during the database query or connection.
+        """
+
         try:
             cursor = conexion.cursor()
             sql = "SELECT ID_Notificacion, Asunto, Fecha, Hora, Estado FROM notificacion"
