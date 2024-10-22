@@ -44,7 +44,7 @@
                                                 <td>{{ client['Occupation'] }}</td>
                                                 <td>
                                                     <div class="d-flex">
-                                                        <a href="{{ url_for ('trainer_app.rutinaCliente') }}"
+                                                        <a href="{{ url_for ('trainer_app.routineClient', ID_Cliente = client['DocumentId']) }}"
                                                         class="btn btn-primary shadow btn-xs sharp me-1"><i
                                                             class="flaticon-381-notepad"></i></a>
                                                         <a href="{{ url_for ('trainer_app.estadisticasCliente',documentId=client['DocumentId']) }}"

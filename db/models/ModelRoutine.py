@@ -69,11 +69,11 @@ class ModelRoutine:
             return "Error"
 
     @classmethod
-    def get_all(cls, conexion):
+    def get_all(cls, conexion, ID_Cliente):
         try:
             cursor = conexion.cursor()
-            sql = "SELECT ID_Rutina, ID_Cliente, ID_Entrenador, Indicaciones, Fecha, Estado FROM Rutina"
-            cursor.execute(sql)
+            sql = "SELECT ID_Rutina, ID_Cliente, ID_Entrenador, Indicaciones, Fecha, Estado FROM Rutina WHERE ID_Cliente = %s"
+            cursor.execute(sql, (ID_Cliente,))
             rows = cursor.fetchall()
             routines = []
             
@@ -84,7 +84,7 @@ class ModelRoutine:
                     TrainerId=row[2],
                     Indications=row[3],
                     Date=row[4],
-                    State=row[6],
+                    State=row[5],
                 )
                 routines.append(routine)
             

@@ -22,7 +22,7 @@
 							<div class="card-header d-sm-flex flex-wrap d-block pb-0 border-0">
 								<div class="me-auto pe-3 mb-3"></div>
 								
-								<a href="{{ url_for ('trainer_app.sesionesRutinaCliente') }}" class="btn rounded btn-primary mb-3">
+								<a href="{{ url_for ('trainer_app.sessionsRoutineClient') }}" class="btn rounded btn-primary mb-3">
 									<i class="flaticon-381-notepad mx-2"></i>
 									Nueva Rutina
 								</a>
@@ -38,29 +38,49 @@
 									<table id="example2" class="display min-w850">
 										<thead>
 											<tr>
+												<th>Indicaciones</th>
 												<th>Fecha</th>
-												<th>Entrenador</th>
-												<th>Acciones</th>
+												<th>Estado</th>
 											</tr>
 										</thead>
 										<tbody>
+											{% for routine in routines %}
 											<tr>
-												<td>09/08/2024</td>
-												<td>Carlos Hidalgo</td>
+												<td>{{ routine['Indications'] }}</td>
+												<td>{{ routine['Date'] }}</td>
+												<td>{{ routine['State'] }}</td>
 												<td>
 													<div class="d-flex">
-														<a href="{{ url_for ('trainer_app.verSesionesRutinaCliente') }}"
-															class="btn btn-primary shadow btn-xs sharp me-1"><i
-																class="fa fa-eye"></i></a>
-														<a href="{{ url_for ('trainer_app.editarSesionesRutinaCliente') }}"
-															class="btn btn-primary shadow btn-xs sharp me-1"><i
-																class="fa fa-pencil"></i></a>
-														<a href="#" class="btn btn-danger shadow btn-xs sharp"><i
-																class="fa fa-trash"></i></a>
+
+													{% if routine['State'] == 1 %}
+														<a href="{{ url_for('trainer_app.viewRoutine', routineId = routine['RoutineId']) }}"
+															class="btn btn-primary shadow btn-xs sharp me-1">
+															<i class="fa fa-eye"></i>
+														</a>
+
+														<a href="{{ url_for('trainer_app.UpdateRoutine', routineId = routine['RoutineId']) }}"
+															class="btn btn-primary shadow btn-xs sharp me-1">
+															<i class="fa fa-pencil"></i>
+														</a>
+
+														<button onclick="disableRoutine(event)" data-id="{{ routine['RoutineId'] }}"
+															id="deshabilitar-{{ routine['RoutineId'] }}"
+															class="btn btn-danger shadow btn-xs sharp">
+															<i class="fa fa-trash"></i>
+														</button>
+				
+													{% else %}
+														<button onclick="ableRoutine(event)" data-id="{{ routine['RoutineId'] }}"
+															id="habilitar-{{ routine['RoutineId'] }}"
+															class="btn btn-success shadow btn-xs sharp">
+															<i class="fa fa-check"></i>
+														</button>
+													{% endif %}
+
 													</div>
 												</td>
 											</tr>
-
+											{% endfor %}
 										</tbody>
 									</table>
 								</div>
