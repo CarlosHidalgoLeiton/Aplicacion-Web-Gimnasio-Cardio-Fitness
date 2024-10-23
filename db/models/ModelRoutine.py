@@ -91,6 +91,29 @@ class ModelRoutine:
             return None
         
     @classmethod
+    def get_routine(cls, conexion, RoutineId):
+        try:
+            cursor = conexion.cursor()
+            sql = "SELECT ID_Rutina, ID_Cliente, ID_Entrenador, Indicaciones, Fecha, Estado FROM Rutina WHERE ID_Rutina = %s"
+            cursor.execute(sql, (RoutineId))
+            row = cursor.fetchone()
+            
+            if row:
+                return Routine(
+                    RoutineId=row[0],
+                    ClientId=row[1],
+                    TrainerId=row[2],
+                    Indications=row[3],
+                    Date=row[4],
+                    State=row[5],
+                )
+            else:    
+                return None
+        except Exception as ex:
+            print(f"Error en get_routine: {ex}")
+            return None
+
+    @classmethod
     def getDataRoutine(cls, request):
         ClientId = request.form['ClientId']
         TrainerId = request.form['TrainerId']

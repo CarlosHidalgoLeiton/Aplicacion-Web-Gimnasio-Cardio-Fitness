@@ -54,7 +54,7 @@
 													<div class="d-flex">
 
 													{% if routine['State'] == 1 %}
-														<a href="{{ url_for('trainer_app.viewRoutine', routineId = routine['RoutineId']) }}"
+														<a href="{{ url_for('trainer_app.viewRoutine', routineId = routine['RoutineId'], DocumentId= client['DocumentId']) }}"
 															class="btn btn-primary shadow btn-xs sharp me-1">
 															<i class="fa fa-eye"></i>
 														</a>

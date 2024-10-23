@@ -122,12 +122,22 @@ def routinesClient(ID_Cliente):
     Conection.desconectar()
     return render_template("trainer/routinesClient.html", routines=routines, client=client, error=errorMessage)
 
-
-@trainer_app.route("/client/routineClient/viewRoutine/<routineId>",methods=['GET'] )
+@trainer_app.route("/client/routineClient/viewRoutine/<routineId>/<DocumentId>", methods=['GET'])
 @login_required
-def viewRoutine(routineId):
+def viewRoutine(routineId, DocumentId):
+    conexion = Conection.conectar()
+    routine = ModelRoutine.get_routine(conexion, routineId)
+    sessions = ModelSession.get_sesssion_by_Routine(conexion, routineId)
+    client = ModelClient.getClient(conexion, DocumentId)
+    Conection.desconectar()
 
-    return render_template("trainer/rutinas.html")
+    if routine:
+        return render_template("trainer/viewRoutine.html", routine=routine, sessions=sessions, client=client)
+    else:
+        return redirect(url_for('trainer_app.clients', error="Rutina no encontrada"))
+
+
+    
 
 @trainer_app.route("/client/routineClient/UpdateRoutine/<routineId>",methods=['GET'] )
 @login_required

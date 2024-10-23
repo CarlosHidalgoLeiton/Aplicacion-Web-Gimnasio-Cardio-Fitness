@@ -90,7 +90,29 @@ class ModelSession:
             return None
         
     @classmethod
-    def get_product_by_id(cls, conexion, ID_Sesion):
+    def get_sesssion_by_Routine(cls, conexion, routineId):
+        try:
+            cursor = conexion.cursor()
+            sql = "SELECT ID_Sesion, Indicaciones, Ejercicios, ID_Rutina FROM Sesion WHERE ID_Rutina = %s "
+            cursor.execute(sql, (routineId))
+            rows = cursor.fetchall()
+            sessions = []
+            for row in rows:
+                session = Session(
+                    Session_ID=row[0],
+                    Indications=row[1],
+                    Exercises=row[2],
+                    Routine_ID=row[3],
+                )
+                sessions.append(session)
+            return sessions
+        
+        except Exception as ex:
+            print(f"Error in get_all: {ex}")
+            return None
+        
+    @classmethod
+    def get_sesssion_by_id(cls, conexion, ID_Sesion):
         try:
             cursor = conexion.cursor()
             sql = """SELECT ID_Sesion, Indicaciones, Ejercicios, ID_Rutina
