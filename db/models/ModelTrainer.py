@@ -53,7 +53,7 @@ class ModelTrainer:
                     Second_LastName=row[3],   
                     Date_Birth=row[4],   
                     Age=row[5],           
-                    Email=row[6],       
+                    Mail=row[6],       
                     Phone=row[7],         
                     State=row[8]          
                 )

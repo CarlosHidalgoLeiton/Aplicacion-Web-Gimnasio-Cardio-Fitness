@@ -7,8 +7,8 @@
 	 <div class="container-fluid">
 		<div class="page-titles">
 			<ol class="breadcrumb">
-				<li class="breadcrumb-item"><a href="{{ url_for('trainer_app.inicio') }}">Perfil</a></li>
-				<li class="breadcrumb-item active"><a href="javascript:void(0)">Información</a></li>
+				<li class="breadcrumb-item"><a href="{{ url_for('trainer_app.inicio') }}">Inicio</a></li>
+				<li class="breadcrumb-item active"><a href="javascript:void(0)">Perfil</a></li>
 			</ol>
 		</div>
 		<div class="row">
@@ -40,7 +40,7 @@
 											<label class="col-lg-4 col-form-label" for="validationCustomEmail">Correo</label>
 											<div class="col-lg-6">
 												<input type="text" class="form-control" id="validationCustomEmail"
-													value="{{ trainer.Email }}" name="Email" readonly>
+													value="{{ trainer.Mail }}" name="Email" readonly>
 											</div>
 										</div>
 
@@ -60,7 +60,7 @@
 											<label class="col-lg-4 col-form-label" for="validationCustomLastName"> Primer Apellido</label>
 											<div class="col-lg-6">
 												<input type="text" class="form-control" id="validationCustomLastName"
-													value="{{ trainer.lastName }}" name="lastName" readonly>
+													value="{{ trainer.First_LastName }}" name="First_LastName" readonly>
 											</div>
 										</div>
 
@@ -68,7 +68,7 @@
 											<label class="col-lg-4 col-form-label" for="validationCustomLastName2">Segundo Apellido </label>
 											<div class="col-lg-6">
 												<input type="text" class="form-control" id="validationCustomLastName2"
-													value="{{ trainer.lastName2 }}" name="lastName2" readonly>
+													value="{{ trainer.Second_LastName }}" name="Second_LastName" readonly>
 											</div>
 										</div>
 								

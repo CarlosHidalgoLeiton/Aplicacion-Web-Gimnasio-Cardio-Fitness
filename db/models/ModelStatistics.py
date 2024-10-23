@@ -195,7 +195,7 @@ class ModelStatistics:
             Trainer_ID=Trainer_ID
         )
 
-  
+
     @classmethod
     def validateDataForm(cls, statistics):
 
@@ -218,25 +218,12 @@ class ModelStatistics:
             return "No se logro obtener la fecha de medición "
                         
             #Validation for documentID 
-        if statistics.Client_ID != None:
-            if "-" not in statistics.Client_ID and not any( d.isalpha() for d in statistics.Client_ID): #Valida que no sea alfabetico y que no tenga un "-"
-                if len(statistics.Client_ID) < 9:
-                    return "No se logro enlazar con el cliente, por favor inténtalo más tarde.."
-            else:
-                return "No se logro enlazar con el cliente por motivos que se detectaron caracteres especiales."
-        else:
+        if statistics.Client_ID == None:
             return "No se logro enlazar con el cliente, por favor inténtalo más tarde."
         
-        if statistics.Trainer_ID != None:
-            if "-" not in statistics.Trainer_ID and not any( d.isalpha() for d in statistics.Trainer_ID): #Valida que no sea alfabetico y que no tenga un "-"
-                if len(statistics.Trainer_ID) < 9:
-                    return "No se logro enlazar con el entrenador, por favor inténtalo más tarde."
-            else:   
-                return "No se logro enlazar con el cliente por motivos que se detectaron caracteres especiales."
-        else:
+        if statistics.Trainer_ID == None:
             return "No se logro enlazar con el cliente, por favor inténtalo más tarde."
         
-       
         return True
         
     @classmethod

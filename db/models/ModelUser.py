@@ -135,7 +135,7 @@ class ModelUser:
             print(f"Error al obtener clientes: {ex}")
             return None
 
-     #SE TRRAEN LOS ENTRENADORES POR EL FILTRO (EXISTE EN USUARIO O NO )
+    #SE TRRAEN LOS ENTRENADORES POR EL FILTRO (EXISTE EN USUARIO O NO )
     @classmethod
     def get_Trainers(cls, conexion):
         try:
@@ -148,11 +148,11 @@ class ModelUser:
                 trainer = Trainer(
                     DocumentId=row[0],
                     Name=row[1],
-                    lastName=row[2],
-                    lastName2=row[3],
-                    DateOfBirth=row[4],
+                    First_LastName=row[2],
+                    Second_LastName=row[3],
+                    Date_Birth=row[4],
                     Age=row[5],
-                    Email=row[6],
+                    Mail=row[6],
                     Phone=row[7],
                     State=row[8]
                 )

@@ -34,13 +34,13 @@ def notAutorized():
 
 
     #-------------Rutas de Perfil -------------#
-@client_app.route("/perfil")
+@client_app.route("/profile")
 @login_required
 @client_permission.require(http_exception=403)
-def perfil():
+def profile():
     try:
         conexion = Conection.conectar()
-        client = ModelClient.get_cliente_by_cedula(conexion, current_user.DocumentId)
+        client = ModelClient.getClient(conexion, current_user.DocumentId)
         print(client)
     except Exception as ex:
         print(f"Error al obtener el perfil del cliente: {ex}")
@@ -48,7 +48,7 @@ def perfil():
     finally:
         Conection.desconectar()
     
-    return render_template("client/perfil.html", client=client)
+    return render_template("client/profile.html", client=client)
 
 
 #-------------Rutas de inventario-------------#

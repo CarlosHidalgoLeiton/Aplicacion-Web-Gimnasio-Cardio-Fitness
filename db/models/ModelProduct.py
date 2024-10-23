@@ -183,7 +183,7 @@ class ModelProduct:
             return False
     
     @classmethod
-    def getDataProduct(cls, request):
+    def getDataProduct(cls, request, image):
         name = request.form['Name']
         detail = request.form['Detail']
         price = request.form['Price']
@@ -191,8 +191,15 @@ class ModelProduct:
         image_file = request.files['Image']
         image_blob = None
         
-        if image_file:
-            image_blob = image_file.read()
+        if image:
+            if image_file.content_length == 0:
+                image_blob = base64.b64decode(image)
+            else:
+                image_blob = image_file.read()
+        
+        else:
+            if image_file:
+                image_blob = image_file.read()
 
         return Product(None, name, detail, price, stock, image_blob)
 

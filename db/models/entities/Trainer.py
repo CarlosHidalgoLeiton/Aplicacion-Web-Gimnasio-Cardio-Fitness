@@ -13,8 +13,8 @@ class Trainer():
         self.Phone = Phone
         self.State = State
 
-    def __str__(self):
-        return (f"Trainer(DocumentId={self.DocumentId}, Name={self.Name}, "
-                f"lastName={self.lastName}, lastName2={self.lastName2}, "
-                f"DateOfBirth={self.DateOfBirth}, Age={self.Age}, "
-                f"Email={self.Email}, Phone={self.Phone}, State={self.State})")
+    # def __str__(self):
+    #     return (f"Trainer(DocumentId={self.DocumentId}, Name={self.Name}, "
+    #             f"lastName={self.lastName}, lastName2={self.lastName2}, "
+    #             f"DateOfBirth={self.DateOfBirth}, Age={self.Age}, "
+    #             f"Email={self.Email}, Phone={self.Phone}, State={self.State})")

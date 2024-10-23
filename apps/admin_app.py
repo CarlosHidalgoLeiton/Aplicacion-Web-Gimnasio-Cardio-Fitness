@@ -250,7 +250,7 @@ def users():
         if insert:
             users = ModelUser.get_Users(conection)
             Conection.desconectar()
-            return render_template("admin/users.html", users=users,  clients=clients, trainers=trainers, done = "Cliente creado correctamente.")
+            return render_template("admin/users.html", users=users,  clients=clients, trainers=trainers, done = "Usuario creado correctamente.")
         else:
             Conection.desconectar()
             return render_template("admin/users.html", users=users,  clients=clients, trainers=trainers, error= "No se pudo ingresar el cliente.")
@@ -363,7 +363,7 @@ def bills():
             insert = ModelBill.insertTrainerBill(conection, bill)
             Conection.desconectar()
             if insert and type(insert) == bool:
-                return redirect(url_for('admin_app.facturas', done = "Pago registrado correctamente."))
+                return redirect(url_for('admin_app.bills', done = "Pago registrado correctamente."))
             elif insert == "DataBase":
                 return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.', trainerValidated = bill, generalValidated = None ) 
             else:
@@ -379,7 +379,7 @@ def bills():
             insert = ModelBill.insertGeneralBill(conection, bill)
 
             if insert and type(insert) == bool:
-                return redirect(url_for('admin_app.facturas', done = "Pago registrado correctamente."))
+                return redirect(url_for('admin_app.bills', done = "Pago registrado correctamente."))
             elif insert == "DataBase":
                 return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.', trainerValidated = None, generalValidated = bill ) 
             else:
@@ -476,7 +476,7 @@ def inventory():
     doneMessage = request.args.get('done')
     errorMessage = request.args.get('error')
     if request.method == 'POST':
-        product = ModelProduct.getDataProduct(request)
+        product = ModelProduct.getDataProduct(request, None)
         productValidated = ModelProduct.validateDataForm(product)
         if not type(productValidated) == bool:
             return render_template("admin/inventory.html", products=products, error=productValidated, product = product)
@@ -543,7 +543,7 @@ def updateProduct():
     Conection.desconectar()
     if product:
         if request.method == 'POST':
-            productUpdated = ModelProduct.getDataProduct(request)
+            productUpdated = ModelProduct.getDataProduct(request, product.Image)
             productValidated = ModelProduct.validateDataForm(productUpdated)
             if not type(productValidated) == bool:
                 return render_template("admin/updateProduct.html", error=productValidated, product = product)
@@ -640,10 +640,10 @@ def reportesInventario():
 
 
     #-------------Perfil------------#
-@admin_app.route("/perfil")
+@admin_app.route("/profile")
 @login_required
-def perfil():
-    return render_template("admin/perfil.html")
+def profile():
+    return render_template("admin/profile.html")
 
 #-------------Rutas de Membresias-------------#
 @admin_app.route("/memberships", methods = ['GET', 'POST'])
@@ -667,7 +667,7 @@ def memberships():
         if insert and type(insert) == bool:
             memberships = ModelMembership.get_all(conection)
             Conection.desconectar()
-            return render_template("admin/membership.html", memberships=memberships, done = "Membresía creada correctamente.", membership = None)
+            return redirect(url_for('admin_app.memberships', done = "Membresía creada correctamente."))
         elif insert == "DataBase":
             return render_template("admin/membership.html", memberships=memberships, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", membership = membership)
         else:

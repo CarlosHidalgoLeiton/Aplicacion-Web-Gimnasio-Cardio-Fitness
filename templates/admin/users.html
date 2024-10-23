@@ -74,7 +74,7 @@
                                             {% if trainers %}
                                             {% for trainer in trainers %}
                                             <option value="{{ trainer.DocumentId }}">{{ trainer.Name }}
-                                                {{ trainer.lastName }} {{ trainer.lastName2 }} (Entrenador)</option>
+                                                {{ trainer.First_LastName }} {{ trainer.Second_LastName }} (Entrenador)</option>
                                             {% endfor %}
                                             {% endif %}
                                             {% if not trainers %}

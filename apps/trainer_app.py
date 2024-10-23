@@ -16,21 +16,21 @@ def inicio():
     return render_template("trainer/index.html")
 
 #-------------Rutas de Perfil -------------#
-@trainer_app.route("/perfil")
+@trainer_app.route("/profile")
 @login_required
 @trainer_permission.require(http_exception=403)
-def perfil():
+def profile():
     try:
         conexion = Conection.conectar()
         trainer = ModelTrainer.getTrainer(conexion, current_user.DocumentId)
-        print(trainer)
+        # print(trainer)
     except Exception as ex:
         print(f"Error al obtener el perfil del entrenador: {ex}")
         trainer = None
     finally:
         Conection.desconectar()
     
-    return render_template("trainer/perfil.html", trainer=trainer)
+    return render_template("trainer/profile.html", trainer=trainer)
 
 
 #-------------Rutas de Clientes-------------#
