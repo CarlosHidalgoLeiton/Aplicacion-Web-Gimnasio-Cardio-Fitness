@@ -9,9 +9,9 @@ class ModelMembership:
             try:
                 membership.State = 1
                 cursor = conection.cursor()
-                sql = """INSERT INTO Membresia (Nombre, Descripcion, Precio, Estado)
-                VALUES (%s, %s, %s, %s)"""
-                cursor.execute(sql, (membership.Name, membership.Description, membership.Price, membership.State))
+                sql = """INSERT INTO Membresia (Nombre, Descripcion, Precio, Duracion_Dias, Estado)
+                VALUES (%s, %s, %s, %s, %s)"""
+                cursor.execute(sql, (membership.Name, membership.Description, membership.Price, membership.Time, membership.State))
                 conection.commit()
 
                 if cursor.rowcount > 0:
@@ -21,6 +21,10 @@ class ModelMembership:
                     print("No se pudo crear la Membresia.")
                     return "Error"
                 
+            except IntegrityError as ex:
+                print(f"Error en ModelMembership insertMembership: {ex}")
+                conection.rollback()
+                return "Unique"
             except BaseException as ex:
                 print(f"Error en ModelMembership insertMembership: {ex}")
                 conection.rollback()
@@ -38,7 +42,7 @@ class ModelMembership:
     def get_all(cls, conexion):
         try:
             cursor = conexion.cursor()
-            sql = "SELECT ID_Membresia, Nombre, Descripcion, Precio, Estado FROM Membresia"
+            sql = "SELECT ID_Membresia, Nombre, Descripcion, Precio, Duracion_Dias, Estado FROM Membresia"
             cursor.execute(sql)
             rows = cursor.fetchall()
             memberships = []
@@ -48,7 +52,8 @@ class ModelMembership:
                     'Name': row[1],
                     'Description': row[2],
                     'Precio':row[3],
-                    'State': row[4],
+                    'Time': row[4],
+                    'State': row[5],
                 }
                 memberships.append(member)
             return memberships
@@ -61,8 +66,9 @@ class ModelMembership:
         name = request.form['Nombre']
         description = request.form['Descripcion']
         price = request.form['Precio']
+        time = request.form['Duracion']
 
-        return Membership(None, name, description, price, None)
+        return Membership(None, name, description, price, time, None)
     
     @classmethod
     def validateDataForm(cls, membership):
@@ -79,11 +85,13 @@ class ModelMembership:
         else:
             return "Debe ingresar la descripción de la membresia."
         
-        if membership.Price != None:
+        if membership.Time != None:
             if "-" in membership.Price or any(m.isalpha() for m in membership.Price):
-                return "El precio ingresado no es válido."
+                return "La duración en días ingresada no es válida."
         else:
-            return "Debe ingresar el precio de la membresia."
+            return "Debe ingresar la duracion en días de la membresia."
+
+
 
         return True
     

@@ -668,6 +668,8 @@ def memberships():
             memberships = ModelMembership.get_all(conection)
             Conection.desconectar()
             return redirect(url_for('admin_app.memberships', done = "Membresía creada correctamente."))
+        elif insert == "Unique":
+            return render_template("admin/membership.html", memberships=memberships, error= "Ya existe una membresía con el nombre ingresado.", membership = membership)
         elif insert == "DataBase":
             return render_template("admin/membership.html", memberships=memberships, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", membership = membership)
         else:
