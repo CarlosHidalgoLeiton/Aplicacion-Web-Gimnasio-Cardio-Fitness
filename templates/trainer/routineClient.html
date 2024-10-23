@@ -1,99 +1,132 @@
 {% extends "./layout/Layout_Trainer.html" %}
 
-
 {% block content %}
-        
-	<!--**********************************
-		Content body start
-	***********************************-->
-	<div class="content-body default-height">
-		<!-- row -->
-		<div class="container-fluid">
-			<div class="page-titles">
-				<ol class="breadcrumb">
-					<li class="breadcrumb-item"><a href="{{ url_for ('trainer_app.clients') }}">Clientes</a></li>
-					<li class="breadcrumb-item active"><a href="javascript:void(0)">Rutinas</a></li>
-				</ol>
-			</div>
-			<div class="row">
-				<div class="col-xl-12 col-xxl-12">
-					<div class="row">
-						<div class="col-xl-12">
-							<div class="card-header d-sm-flex flex-wrap d-block pb-0 border-0">
-								<div class="me-auto pe-3 mb-3"></div>
-								
-								<a href="{{ url_for ('trainer_app.sessionsRoutineClient') }}" class="btn rounded btn-primary mb-3">
-									<i class="flaticon-381-notepad mx-2"></i>
-									Nueva Rutina
-								</a>
-							</div>
-						</div>
 
-						<div class="card">
-							<div class="card-header">
-								<h4 class="card-title">Lista de Rutinas</h4>
-							</div>
-							<div class="card-body">
-								<div class="table-responsive">
-									<table id="example2" class="display min-w850">
-										<thead>
-											<tr>
-												<th>Indicaciones</th>
-												<th>Fecha</th>
-												<th>Estado</th>
-											</tr>
-										</thead>
-										<tbody>
-											{% for routine in routines %}
-											<tr>
-												<td>{{ routine['Indications'] }}</td>
-												<td>{{ routine['Date'] }}</td>
-												<td>{{ routine['State'] }}</td>
-												<td>
-													<div class="d-flex">
+    <!--**********************************
+        Content body start
+    ***********************************-->
+    <div class="content-body default-height">
+        <!-- row -->
+        <div class="container-fluid">
+            <div class="page-titles">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for ('trainer_app.clients') }}">Clientes</a></li>
+                    <li class="breadcrumb-item"><a href="">Rutinas</a></li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Nueva Rutina</a></li>
+                </ol>
+            </div>
 
-													{% if routine['State'] == 1 %}
-														<a href="{{ url_for('trainer_app.viewRoutine', routineId = routine['RoutineId']) }}"
-															class="btn btn-primary shadow btn-xs sharp me-1">
-															<i class="fa fa-eye"></i>
-														</a>
+            <div class="row">
+                <div class="col-xl-12 col-xxl-12">
+                    <div class="row">
+                        <div class="card plan-list">
+                            <div class="card-header d-sm-flex flex-wrap d-block pb-0 border-0">
+                                <div class="me-auto pe-3 mb-2">
+                                    <h4 class="text-black fs-20">Rutina</h4>
+                                </div>
+                            </div>
 
-														<a href="{{ url_for('trainer_app.UpdateRoutine', routineId = routine['RoutineId']) }}"
-															class="btn btn-primary shadow btn-xs sharp me-1">
-															<i class="fa fa-pencil"></i>
-														</a>
+                            <div class="card-body tab-content pt-2">
+                                <form id="routineForm" method="POST" class="needs-validation" novalidate>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" 
+                                               value="{{ current_user.DocumentId }}" name="TrainerId" readonly >
+                                    </div>
 
-														<button onclick="disableRoutine(event)" data-id="{{ routine['RoutineId'] }}"
-															id="deshabilitar-{{ routine['RoutineId'] }}"
-															class="btn btn-danger shadow btn-xs sharp">
-															<i class="fa fa-trash"></i>
-														</button>
-				
-													{% else %}
-														<button onclick="ableRoutine(event)" data-id="{{ routine['RoutineId'] }}"
-															id="habilitar-{{ routine['RoutineId'] }}"
-															class="btn btn-success shadow btn-xs sharp">
-															<i class="fa fa-check"></i>
-														</button>
-													{% endif %}
+                                    <div class="row">
+                                        <div class="col-xl-12">
+                                            <div class="mb-3 row">
+                                                <label class="col-lg-12 col-form-label" for="validationIndications">Indicaciones 
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <div class="col-lg-12">
+                                                    <textarea class="form-control" id="validationIndications" rows="5" name="Indications" required></textarea>
+                                                    <div class="invalid-feedback">
+                                                        Por favor ingresar Indicaciones
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
 
-													</div>
-												</td>
-											</tr>
-											{% endfor %}
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
+                                <!-- Contenedor de sesiones dinámicas -->
+                                <div id="sessionList"></div>
 
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                                <div class="my-3 d-flex justify-content-end">
+                                    <button id="addSessionBtn" class="btn btn-success btn rounded btn-primary mb-3">Agregar Sesión</button>
+                                </div>
 
-	<!--**********************************
-		Content body end
-	***********************************-->
+                                <div class="my-3 row">
+                                    <div class="col ms-2">
+                                        <button type="submit" class="btn btn-primary ms-2" form="routineForm">Guardar</button>
+                                        <button id="cancelBtn" class="btn btn-danger ms-2">Cancelar</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--**********************************
+        Content body end
+    ***********************************-->
+
+    <script>
+        let sessions = [];
+
+        document.getElementById('addSessionBtn').addEventListener('click', function (event) {
+            event.preventDefault();
+            window.location.href = "{{ url_for('trainer_app.newSession') }}";
+        });
+
+        function addSessionToRoutine(session) {
+            sessions.push(session);
+            updateSessionList();
+        }
+
+        function updateSessionList() {
+            const sessionList = document.getElementById('sessionList');
+            sessionList.innerHTML = '';
+
+            sessions.forEach((session, index) => {
+                sessionList.innerHTML += `
+                    <div class="d-flex border-bottom flex-wrap pt-3 list-row align-items-center mb-2 px-3">
+                        <div class="col-xl-8 col-xxl-9 col-lg-10 col-sm-12 d-flex align-items-center">
+                            <div class="list-icon bgl-primary me-3 mb-3">
+                                <p class="fs-24 text-primary mb-0 mt-2">${index + 1}</p>
+                                <span class="fs-14 text-primary">Ses</span>
+                            </div>
+                            <div class="info mb-3">
+                                <h4 class="fs-20">
+                                    <a href="javascript:void(0)" class="text-black"> ${session.name} </a>
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-xxl-3 col-lg-2 col-sm-12 d-flex align-items-center">
+                            <button class="btn mb-3 play-button rounded me-3" onclick="viewSession(${index})">Visualizar</button>
+                            <button class="btn btn-danger mb-3" onclick="deleteSession(${index})">Eliminar</button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function deleteSession(index) {
+            sessions.splice(index, 1);
+            updateSessionList();
+        }
+
+
+
+        document.getElementById('cancelBtn').addEventListener('click', function () {
+            sessions = [];
+            window.location.href = "{{ url_for('trainer_app.routineClient') }}";
+        });
+
+    </script>
+
 {% endblock %}

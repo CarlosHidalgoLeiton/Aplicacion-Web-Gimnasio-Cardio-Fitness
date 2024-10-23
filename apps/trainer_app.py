@@ -1,10 +1,11 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, session
 from flask_login import login_user, logout_user, login_required, current_user
 from db.conection import Conection
 from db.models.ModelClient import ModelClient
 from db.models.ModelTrainer import ModelTrainer
 from db.models.ModelRoutine import ModelRoutine
 from db.models.ModelStatistics import ModelStatistics
+from db.models.ModelSesion import ModelSession
 from apps.permissions import trainer_permission
 
 
@@ -17,21 +18,21 @@ def inicio():
     return render_template("trainer/index.html")
 
 #-------------Rutas de Perfil -------------#
-@trainer_app.route("/profile")
+@trainer_app.route("/perfil")
 @login_required
 @trainer_permission.require(http_exception=403)
-def profile():
+def perfil():
     try:
         conexion = Conection.conectar()
         trainer = ModelTrainer.getTrainer(conexion, current_user.DocumentId)
-        # print(trainer)
+        print(trainer)
     except Exception as ex:
         print(f"Error al obtener el perfil del entrenador: {ex}")
         trainer = None
     finally:
         Conection.desconectar()
     
-    return render_template("trainer/profile.html", trainer=trainer)
+    return render_template("trainer/perfil.html", trainer=trainer)
 
 
 #-------------Rutas de Clientes-------------#
@@ -109,10 +110,10 @@ def estadisticasCliente(documentId):
         return render_template("trainer/estadisticasCliente.html", client = client, statistics=statistics, statistics_data=None, done=doneMessage, error=errorMessage, documentId = documentId)
 
 
-@trainer_app.route("/nuevaRutina" )
+@trainer_app.route("/newSession" )
 @login_required
-def nuevaRutina():
-    return render_template("trainer/nuevaRutina.html")
+def newSession():
+    return render_template("trainer/newSession.html")
 
 
 @trainer_app.route("/rutinas" )
@@ -121,20 +122,31 @@ def rutinas():
     return render_template("trainer/rutinas.html")
 
 ## VER RUTINAS
-@trainer_app.route("/client/routineClient/<ID_Cliente>", methods=['GET'])
+@trainer_app.route("/client/routinesClient/<ID_Cliente>", methods=['GET', 'POST'])
 @login_required
 @trainer_permission.require(http_exception=403)
-def routineClient(ID_Cliente):
+def routinesClient(ID_Cliente):
     conexion = Conection.conectar()
     routines = ModelRoutine.get_all(conexion, ID_Cliente)  
     errorMessage = request.args.get('error')
     Conection.desconectar()
-    return render_template("trainer/routineClient.html", routines=routines, error=errorMessage)
+    return render_template("trainer/routinesClient.html", routines=routines, error=errorMessage)
 
 
-@trainer_app.route("/sessionsRoutineClient", methods=['GET', 'POST'])
+@trainer_app.route("/client/routineClient/viewRoutine/<routineId>",methods=['GET'] )
 @login_required
-def sessionsRoutineClient():
+def viewRoutine(routineId):
+
+    return render_template("trainer/rutinas.html")
+
+@trainer_app.route("/client/routineClient/UpdateRoutine/<routineId>",methods=['GET'] )
+@login_required
+def UpdateRoutine(routineId):
+    return render_template("trainer/rutinas.html")
+    
+@trainer_app.route("/client/routineClient", methods=['GET', 'POST'])
+@login_required
+def routineClient():
     conection = Conection.conectar()
     Conection.desconectar()
     doneMessage = request.args.get('done')
@@ -143,25 +155,25 @@ def sessionsRoutineClient():
         routine = ModelRoutine.getDataRoutine(request)
         routineValidated = ModelRoutine.validateDataForm(routine)
         if not type(routineValidated) == bool:
-            return render_template("admin/sessionsRoutineClient.html", routines=routines,  error=routineValidated, routine = routine)
+            return render_template("admin/routineClient.html", routines=routines,  error=routineValidated, routine = routine)
         conection = Conection.conectar()
         if conection == None:
-            return render_template("admin/sessionsRoutineClient.html", routines=routines,  error= "Error en la conexión.", routine = routine)
+            return render_template("admin/routineClient.html", routines=routines,  error= "Error en la conexión.", routine = routine)
         insert = ModelRoutine.insertRoutine(conection, routine)
         if insert and type(insert) == bool:
             routines = ModelRoutine.get_all(conection)
             Conection.desconectar()
-            return render_template("admin/sessionsRoutineClient.html", routines=routines,  done = "Producto creado correctamente.", routine = None)
+            return render_template("trainer/routineClient.html", routines=routines,  done = "Producto creado correctamente.", routine = None)
         elif insert == "Unique":
             Conection.desconectar()
-            return render_template("admin/sessionsRoutineClient.html", routines=routines,  error= "El nombre del producto ingresado ya esta registrado.", routine = routine)
+            return render_template("trainer/routineClient.html", routines=routines,  error= "El nombre del producto ingresado ya esta registrado.", routine = routine)
         elif insert == "DataBase":
-            return render_template("admin/sessionsRoutineClient.html", routines=routines,  error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", routine = routine)
+            return render_template("trainer/routineClient.html", routines=routines,  error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", routine = routine)
         else:
             Conection.desconectar()
-            return render_template("admin/sessionsRoutineClient.html", routines=routines, error= "No se pudo ingresar el producto, por favor inténtalo más tarde.", routine = routine)
+            return render_template("trainer/routineClient.html", routines=routines, error= "No se pudo ingresar el producto, por favor inténtalo más tarde.", routine = routine)
     else:
-        return render_template("admin/sessionsRoutineClient.html", routines=routines, routine = None, done = doneMessage, error = errorMessage)
+        return render_template("trainer/routineClient.html", routines=None, routine = None, done = doneMessage, error = errorMessage)
 
 
 @trainer_app.route("/viewClient/<documentId>")

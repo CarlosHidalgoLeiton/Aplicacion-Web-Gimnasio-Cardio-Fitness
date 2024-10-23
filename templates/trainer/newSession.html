@@ -1,0 +1,85 @@
+{% extends "./layout/Layout_Trainer.html" %}
+
+{% block content %}
+
+    <!--**********************************
+        Content body start
+    ***********************************-->
+    <div class="content-body default-height">
+        <!-- row -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title mb-4">Nueva Sesión</h4>
+                            <div class="form-validation">
+                                <form id="sessionForm" class="needs-validation" novalidate>
+                                    <div class="row">
+                                        <div class="col-xl-12">
+                                            <div class="mb-3">
+                                                <label for="nombreSesion" class="form-label">Nombre Sesión</label>
+                                                <input type="text" class="form-control" id="nombreSesion" required>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="ejercicio1" class="form-label">Ejercicio 1</label>
+                                                <input type="text" class="form-control" id="ejercicio1" required>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="ejercicio2" class="form-label">Ejercicio 2</label>
+                                                <input type="text" class="form-control" id="ejercicio2">
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="ejercicio3" class="form-label">Ejercicio 3</label>
+                                                <input type="text" class="form-control" id="ejercicio3">
+                                            </div>
+
+                                            <label class="col-lg-12 col-form-label" for="indicacionesSesion">Indicaciones Generales <span
+                                                class="text-danger">*</span>
+                                            </label>
+                                            <div class="col-lg-12">
+                                                <textarea class="form-control" id="indicacionesSesion" rows="5" required></textarea>
+                                                <div class="invalid-feedback">
+                                                    Por favor ingresar indicaciones
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <div class="my-5">
+                                    <button id="saveSessionBtn" class="btn btn-primary ms-2">Guardar</button>
+                                    <a class="btn btn-danger ms-2" href="{{ url_for('trainer_app.routineClient') }}">Cancelar</a>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('saveSessionBtn').addEventListener('click', function () {
+            const session = {
+                name: document.getElementById('nombreSesion').value,
+                exercises: [
+                    document.getElementById('ejercicio1').value,
+                    document.getElementById('ejercicio2').value,
+                    document.getElementById('ejercicio3').value
+                ],
+                indications: document.getElementById('indicacionesSesion').value
+            };
+
+            
+            window.opener.addSessionToRoutine(session);
+            window.close();
+        });
+    </script>
+
+{% endblock %}
