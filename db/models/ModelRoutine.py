@@ -10,9 +10,9 @@ class ModelRoutine:
             try:
                 routine.State = 1
                 cursor = conection.cursor()
-                sql = """INSERT INTO Rutina (ID_Rutina, ID_Cliente, ID_Entrenador, Indicaciones, Fecha, Estado)
-                VALUES (%s, %s, %s, %s, %s, %s)"""
-                cursor.execute(sql, (routine.RoutineId, routine.ClientId, routine.TrainerId, routine.Indications, routine.Date, routine.State))
+                sql = """INSERT INTO Rutina ( ID_Cliente, ID_Entrenador, Indicaciones, Fecha, Estado)
+                VALUES ( %s, %s, %s, %s, %s)"""
+                cursor.execute(sql, ( routine.ClientId, routine.TrainerId, routine.Indications, routine.Date, routine.State))
                 conection.commit()
 
                 if cursor.rowcount > 0:
@@ -22,10 +22,6 @@ class ModelRoutine:
                     print("No se pudo crear la rutina.")
                     return "Error"
                 
-            except IntegrityError as ex:
-                print(f"Error en ModelRoutine insertRoutin: {ex}")
-                conection.rollback()
-                return "Primary"
             except BaseException as ex:
                 print(f"Error en ModelRoutin insertRoutin: {ex}")
                 conection.rollback()
@@ -101,7 +97,7 @@ class ModelRoutine:
         Indications = request.form['Indications']
         Date = datetime.now()
 
-        return Routine(ClientId, TrainerId, Indications, Date)
+        return Routine(None, ClientId, TrainerId, Indications, Date)
 
     @classmethod
     def validateDataForm(cls, routine):

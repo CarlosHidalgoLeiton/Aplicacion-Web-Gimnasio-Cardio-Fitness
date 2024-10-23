@@ -1,85 +1,128 @@
 {% extends "./layout/Layout_Trainer.html" %}
 
+
 {% block content %}
 
-    <!--**********************************
+
+<!--**********************************
         Content body start
     ***********************************-->
-    <div class="content-body default-height">
-        <!-- row -->
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title mb-4">Nueva Sesión</h4>
-                            <div class="form-validation">
-                                <form id="sessionForm" class="needs-validation" novalidate>
-                                    <div class="row">
-                                        <div class="col-xl-12">
-                                            <div class="mb-3">
-                                                <label for="nombreSesion" class="form-label">Nombre Sesión</label>
-                                                <input type="text" class="form-control" id="nombreSesion" required>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label for="ejercicio1" class="form-label">Ejercicio 1</label>
-                                                <input type="text" class="form-control" id="ejercicio1" required>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label for="ejercicio2" class="form-label">Ejercicio 2</label>
-                                                <input type="text" class="form-control" id="ejercicio2">
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label for="ejercicio3" class="form-label">Ejercicio 3</label>
-                                                <input type="text" class="form-control" id="ejercicio3">
-                                            </div>
-
-                                            <label class="col-lg-12 col-form-label" for="indicacionesSesion">Indicaciones Generales <span
-                                                class="text-danger">*</span>
+<div class="content-body default-height">
+    <!-- row -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Nueva Sesión</h4>
+                        <form id="exerciseForm" class="needs-validation" novalidate>
+                            <div class="row">
+                                <div class="col-xl-12">
+                                    <div class="mb-3">
+                                        <label for="nombreSesion" class="form-label">Nombre Sesión
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" id="nombreSesion" name="nombreSesion" placeholder="Nombre Sesión" required>
+                                    </div>
+                        
+                                    <div id="exercisesContainer">
+                                        <div class="mb-3 exercise">
+                                            <label for="exercises1" class="form-label">Ejercicio 1
+                                                <span class="text-danger">*</span>
                                             </label>
-                                            <div class="col-lg-12">
-                                                <textarea class="form-control" id="indicacionesSesion" rows="5" required></textarea>
-                                                <div class="invalid-feedback">
-                                                    Por favor ingresar indicaciones
-                                                </div>
-                                            </div>
+                                            <input type="text" class="form-control" id="exercises1" name="Exercises[]" placeholder="Ejercicio" required>
                                         </div>
                                     </div>
-                                </form>
-
-                                <div class="my-5">
-                                    <button id="saveSessionBtn" class="btn btn-primary ms-2">Guardar</button>
-                                    <a class="btn btn-danger ms-2" href="{{ url_for('trainer_app.routineClient') }}">Cancelar</a>
-
+                        
+                                    <div class="d-flex justify-content-end">
+                                        <button type="button" class="btn btn-primary btn-sm" id="addEjercicioBtn">
+                                            <i class="flaticon-381-plus"></i>
+                                        </button>
+                                    </div>
+                        
+                                    <label class="col-lg-12 col-form-label" for="indicaciones">Indicaciones
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-12">
+                                        <textarea class="form-control" id="indicaciones" name="Indications" rows="5" required></textarea>
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar Indicaciones
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        
+                            <div class="my-5">
+                                <button type="submit" class="btn btn-primary ms-2">Guardar</button>
+                                <a class="btn btn-danger ms-2" href="{{ url_for('trainer_app.routineClient', ID_Cliente=client.DocumentId) }}">Cancelar</a>
+                            </div>
+                        </form>
                     </div>
                 </div>
-
             </div>
+
         </div>
     </div>
-
+</div>
+<!--**********************************
+        Content body end
+    ***********************************-->
     <script>
-        document.getElementById('saveSessionBtn').addEventListener('click', function () {
-            const session = {
-                name: document.getElementById('nombreSesion').value,
-                exercises: [
-                    document.getElementById('ejercicio1').value,
-                    document.getElementById('ejercicio2').value,
-                    document.getElementById('ejercicio3').value
-                ],
-                indications: document.getElementById('indicacionesSesion').value
+        let exercisesCount = 1;
+    
+        function addExerciseField(container, value = '', count) {
+            const newExerciseDiv = document.createElement('div');
+            newExerciseDiv.className = 'mb-3 exercise';
+            newExerciseDiv.innerHTML = `
+                <label for="exercises${count}" class="form-label">Ejercicio ${count}
+                    <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control" id="exercises${count}" name="Exercises[]" placeholder="Ejercicio" value="${value}" required>
+            `;
+            container.appendChild(newExerciseDiv);
+        }
+    
+        window.onload = function() {
+            const storedSessions = JSON.parse(localStorage.getItem('exerciseSessions')) || [];
+            console.log(storedSessions);
+        };
+    
+        document.getElementById('addEjercicioBtn').addEventListener('click', function() {
+            exercisesCount++;
+            const exercisesContainer = document.getElementById('exercisesContainer');
+            addExerciseField(exercisesContainer, '', exercisesCount);
+        });
+    
+        document.getElementById('exerciseForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+    
+            const nombreSesion = document.getElementById('nombreSesion').value;
+            const indicaciones = document.getElementById('indicaciones').value;
+            const exercises = Array.from(document.querySelectorAll('input[name="Exercises[]"]')).map(input => input.value);
+    
+            const newSessionData = {
+                nombreSesion: nombreSesion,
+                indications: indicaciones,
+                exercises: exercises
             };
-
-            
-            window.opener.addSessionToRoutine(session);
-            window.close();
+    
+            // Cargar sesiones anteriores
+            const storedSessions = JSON.parse(localStorage.getItem('exerciseSessions')) || [];
+            storedSessions.push(newSessionData); // Añadir nueva sesión al arreglo
+    
+            // Guardar el nuevo arreglo en local storage
+            localStorage.setItem('exerciseSessions', JSON.stringify(storedSessions));
+    
+            alert('Datos de sesión guardados en local storage');
+    
+            // Limpiar el formulario después de guardar
+            document.getElementById('exerciseForm').reset();
+            exercisesCount = 1; // Reiniciar el contador de ejercicios
+            const exercisesContainer = document.getElementById('exercisesContainer');
+            exercisesContainer.innerHTML = ''; // Limpiar el contenedor de ejercicios
+            addExerciseField(exercisesContainer, '', exercisesCount); // Agregar el primer ejercicio de nuevo
         });
     </script>
+
 
 {% endblock %}

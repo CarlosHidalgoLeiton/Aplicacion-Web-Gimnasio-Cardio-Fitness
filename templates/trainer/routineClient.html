@@ -2,131 +2,138 @@
 
 {% block content %}
 
-    <!--**********************************
+<!--**********************************
         Content body start
     ***********************************-->
-    <div class="content-body default-height">
-        <!-- row -->
-        <div class="container-fluid">
-            <div class="page-titles">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url_for ('trainer_app.clients') }}">Clientes</a></li>
-                    <li class="breadcrumb-item"><a href="">Rutinas</a></li>
-                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Nueva Rutina</a></li>
-                </ol>
-            </div>
+<div class="content-body default-height">
+    <!-- row -->
+    <div class="container-fluid">
+        <div class="page-titles">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for ('trainer_app.clients') }}">Clientes</a></li>
+                <li class="breadcrumb-item"><a href="">Rutinas</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">Nueva Rutina</a></li>
+            </ol>
+        </div>
 
-            <div class="row">
-                <div class="col-xl-12 col-xxl-12">
-                    <div class="row">
-                        <div class="card plan-list">
-                            <div class="card-header d-sm-flex flex-wrap d-block pb-0 border-0">
-                                <div class="me-auto pe-3 mb-2">
-                                    <h4 class="text-black fs-20">Rutina</h4>
-                                </div>
+        <div class="row">
+            <div class="col-xl-12 col-xxl-12">
+                <div class="row">
+                    <div class="card plan-list">
+                        <div class="card-header d-sm-flex flex-wrap d-block pb-0 border-0">
+                            <div class="me-auto pe-3 mb-2">
+                                <h4 class="text-black fs-20">Rutina</h4>
                             </div>
+                        </div>
 
-                            <div class="card-body tab-content pt-2">
-                                <form id="routineForm" method="POST" class="needs-validation" novalidate>
-                                    <div class="col-lg-6">
-                                        <input type="text" class="form-control" 
-                                               value="{{ current_user.DocumentId }}" name="TrainerId" readonly >
-                                    </div>
+                        <div class="card-body tab-content pt-2">
+                            <form class="needs-validation" action="/trainer/client/routineClient/{{client.DocumentId }}" novalidate method="POST">
 
-                                    <div class="row">
-                                        <div class="col-xl-12">
-                                            <div class="mb-3 row">
-                                                <label class="col-lg-12 col-form-label" for="validationIndications">Indicaciones 
-                                                    <span class="text-danger">*</span>
-                                                </label>
-                                                <div class="col-lg-12">
-                                                    <textarea class="form-control" id="validationIndications" rows="5" name="Indications" required></textarea>
-                                                    <div class="invalid-feedback">
-                                                        Por favor ingresar Indicaciones
-                                                    </div>
+                                <div class="col-lg-6">
+                                    <input type="hidden" class="form-control" value="{{ current_user.DocumentId }}"
+                                        name="TrainerId" readonly>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <input type="hidden" class="form-control" value="{{ client.DocumentId }}"
+                                        name="ClientId" readonly>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xl-12">
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-12 col-form-label"
+                                                for="validationIndications">Indicaciones
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="col-lg-12">
+                                                <textarea class="form-control" id="validationIndications" rows="5"
+                                                    name="Indications" required></textarea>
+                                                <div class="invalid-feedback">
+                                                    Por favor ingresar Indicaciones
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </form>
+                                </div>
 
-                                <!-- Contenedor de sesiones dinámicas -->
-                                <div id="sessionList"></div>
+
+                                <div id="sessionsContainer">
+                                    <!-- Aquí se cargarán las sesiones -->
+                                </div>
 
                                 <div class="my-3 d-flex justify-content-end">
-                                    <button id="addSessionBtn" class="btn btn-success btn rounded btn-primary mb-3">Agregar Sesión</button>
-                                </div>
+                                    <div class="ms-auto">
+                                        <a href="{{ url_for ('trainer_app.newSession', ID_Cliente = client['DocumentId']) }}" class="btn btn-success btn rounded btn-primary mb-3"> Agregar
+                                            Sesión</a>
+                                    </div>
+                                </div> 
 
                                 <div class="my-3 row">
                                     <div class="col ms-2">
-                                        <button type="submit" class="btn btn-primary ms-2" form="routineForm">Guardar</button>
-                                        <button id="cancelBtn" class="btn btn-danger ms-2">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary ms-2">Guardar</button>
+                                        <a class="btn btn-danger ms-2" href="">Cancelar</a>
                                     </div>
                                 </div>
 
-                            </div>
+                            </form>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!--**********************************
+
+<script>
+    window.onload = function() {
+        const storedSessions = JSON.parse(localStorage.getItem('exerciseSessions')) || [];
+        const sessionsContainer = document.getElementById('sessionsContainer');
+
+        storedSessions.forEach((session, index) => {
+            const sessionDiv = document.createElement('div');
+            sessionDiv.className = 'd-flex border-bottom flex-wrap pt-3 list-row align-items-center mb-2 px-3';
+            sessionDiv.innerHTML = `
+                <div class="col-xl-8 col-xxl-9 col-lg-10 col-sm-12 d-flex align-items-center">
+                    <div class="list-icon bgl-primary me-3 mb-3">
+                        <p class="fs-24 text-primary mb-0 mt-2">${index + 1}</p>
+                        <span class="fs-14 text-primary">Sec</span>
+                    </div>
+                    <div class="info mb-3">
+                        <h4 class="fs-20 ">
+                            <a href="workout-statistic.html" class="text-black">${session.nombreSesion}</a>
+                        </h4>
+                    </div>
+                </div>
+
+                <div class="col-xl-4 col-xxl-3 col-lg-2 col-sm-12 d-flex align-items-center">
+                    <a href="{{ url_for('trainer_app.verSesion') }}" class="btn mb-3 play-button rounded me-3">
+                        <i class="las la-caret-right scale-2 me-3"></i>Visualizar
+                    </a>
+                    <div class="dropdown mb-3">
+                        <a href="javascript:void(0)" class="more-button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <svg width="6" height="26" viewBox="0 0 6 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6 3C6 4.65685 4.65685 6 3 6C1.34315 6 0 4.65685 0 3C0 1.34315 1.34315 0 3 0C4.65685 0 6 1.34315 6 3Z" fill="#585858"></path>
+                                <path d="M6 13C6 14.6569 4.65685 16 3 16C1.34315 16 0 14.6569 0 13C0 11.3431 1.34315 10 3 10C4.65685 10 6 11.3431 6 13Z" fill="#585858"></path>
+                                <path d="M6 23C6 24.6569 4.65685 26 3 26C1.34315 26 0 24.6569 0 23C0 21.3431 1.34315 20 3 20C4.65685 20 6 21.3431 6 23Z" fill="#585858"></path>
+                            </svg>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <a class="dropdown-item" href="">Editar</a>
+                            <a class="dropdown-item" href="javascript:void(0);">Borrar</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            sessionsContainer.appendChild(sessionDiv);
+        });
+    };
+</script>
+
+<!--**********************************
         Content body end
     ***********************************-->
-
-    <script>
-        let sessions = [];
-
-        document.getElementById('addSessionBtn').addEventListener('click', function (event) {
-            event.preventDefault();
-            window.location.href = "{{ url_for('trainer_app.newSession') }}";
-        });
-
-        function addSessionToRoutine(session) {
-            sessions.push(session);
-            updateSessionList();
-        }
-
-        function updateSessionList() {
-            const sessionList = document.getElementById('sessionList');
-            sessionList.innerHTML = '';
-
-            sessions.forEach((session, index) => {
-                sessionList.innerHTML += `
-                    <div class="d-flex border-bottom flex-wrap pt-3 list-row align-items-center mb-2 px-3">
-                        <div class="col-xl-8 col-xxl-9 col-lg-10 col-sm-12 d-flex align-items-center">
-                            <div class="list-icon bgl-primary me-3 mb-3">
-                                <p class="fs-24 text-primary mb-0 mt-2">${index + 1}</p>
-                                <span class="fs-14 text-primary">Ses</span>
-                            </div>
-                            <div class="info mb-3">
-                                <h4 class="fs-20">
-                                    <a href="javascript:void(0)" class="text-black"> ${session.name} </a>
-                                </h4>
-                            </div>
-                        </div>
-                        <div class="col-xl-4 col-xxl-3 col-lg-2 col-sm-12 d-flex align-items-center">
-                            <button class="btn mb-3 play-button rounded me-3" onclick="viewSession(${index})">Visualizar</button>
-                            <button class="btn btn-danger mb-3" onclick="deleteSession(${index})">Eliminar</button>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        function deleteSession(index) {
-            sessions.splice(index, 1);
-            updateSessionList();
-        }
-
-
-
-        document.getElementById('cancelBtn').addEventListener('click', function () {
-            sessions = [];
-            window.location.href = "{{ url_for('trainer_app.routineClient') }}";
-        });
-
-    </script>
 
 {% endblock %}

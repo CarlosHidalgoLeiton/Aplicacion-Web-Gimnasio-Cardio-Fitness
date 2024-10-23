@@ -22,7 +22,7 @@
 							<div class="card-header d-sm-flex flex-wrap d-block pb-0 border-0">
 								<div class="me-auto pe-3 mb-3"></div>
 								
-								<a href="{{ url_for ('trainer_app.routineClient') }}" class="btn rounded btn-primary mb-3">
+								<a href="{{ url_for ('trainer_app.routineClient', ID_Cliente = client['DocumentId']) }}" class="btn rounded btn-primary mb-3">
 									<i class="flaticon-381-notepad mx-2"></i>
 									Nueva Rutina
 								</a>
