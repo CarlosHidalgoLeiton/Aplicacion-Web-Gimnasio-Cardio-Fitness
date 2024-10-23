@@ -30,16 +30,19 @@
 
 								<div class="card-body tab-content pt-2">
 									<form class="needs-validation" novalidate>
+										<div class="col-lg-6">
+											<input type="text" class="form-control" 
+												value="{{ current_user.DocumentId }}" name="TrainerId" readonly >
+										</div>
+
 										<div class="row">
 											<div class="col-xl-12">
 												<div class="mb-3 row">
-													<label class="col-lg-12 col-form-label"
-														for="validationCustom04">Indicaciones <span
-															class="text-danger">*</span>
+													<label class="col-lg-12 col-form-label" for="validationIndications">Indicaciones 
+														<span class="text-danger">*</span>
 													</label>
 													<div class="col-lg-12">
-														<textarea class="form-control" id="validationCustom04" rows="5"
-															placeholder="" required></textarea>
+														<textarea class="form-control" id="validationIndications" rows="5" placeholder="" name="Indications" required></textarea>
 														<div class="invalid-feedback">
 															Por favor ingresar Indicaciones
 														</div>
@@ -49,20 +52,19 @@
 										</div>
 									</form>
 
-									<div
-										class="d-flex border-bottom flex-wrap pt-3 list-row align-items-center mb-2 px-3">
+									<div class="d-flex border-bottom flex-wrap pt-3 list-row align-items-center mb-2 px-3">
 										<div class="col-xl-8 col-xxl-9 col-lg-10 col-sm-12 d-flex align-items-center">
 											<div class="list-icon bgl-primary me-3 mb-3">
 												<p class="fs-24 text-primary mb-0 mt-2">1</p>
 												<span class="fs-14 text-primary">Sec</span>
 											</div>
 											<div class="info mb-3">
-												<h4 class="fs-20 "><a href="workout-statistic.html" class="text-black">
-														Sesion 1 </a></h4>
+												<h4 class="fs-20 ">
+													<a href="workout-statistic.html" class="text-black"> Sesion 1 </a>
+												</h4>
 											</div>
 										</div>
 
-										
 
 										<div class="col-xl-4 col-xxl-3 col-lg-2 col-sm-12 d-flex align-items-center">
 											<a href="{{ url_for ('trainer_app.verSesion') }}" class="btn mb-3 play-button rounded me-3">
@@ -73,14 +75,11 @@
 													data-bs-toggle="dropdown" aria-expanded="false">
 													<svg width="6" height="26" viewBox="0 0 6 26" fill="none"
 														xmlns="http://www.w3.org/2000/svg">
-														<path
-															d="M6 3C6 4.65685 4.65685 6 3 6C1.34315 6 0 4.65685 0 3C0 1.34315 1.34315 0 3 0C4.65685 0 6 1.34315 6 3Z"
+														<path d="M6 3C6 4.65685 4.65685 6 3 6C1.34315 6 0 4.65685 0 3C0 1.34315 1.34315 0 3 0C4.65685 0 6 1.34315 6 3Z"
 															fill="#585858"></path>
-														<path
-															d="M6 13C6 14.6569 4.65685 16 3 16C1.34315 16 0 14.6569 0 13C0 11.3431 1.34315 10 3 10C4.65685 10 6 11.3431 6 13Z"
+														<path d="M6 13C6 14.6569 4.65685 16 3 16C1.34315 16 0 14.6569 0 13C0 11.3431 1.34315 10 3 10C4.65685 10 6 11.3431 6 13Z"
 															fill="#585858"></path>
-														<path
-															d="M6 23C6 24.6569 4.65685 26 3 26C1.34315 26 0 24.6569 0 23C0 21.3431 1.34315 20 3 20C4.65685 20 6 21.3431 6 23Z"
+														<path d="M6 23C6 24.6569 4.65685 26 3 26C1.34315 26 0 24.6569 0 23C0 21.3431 1.34315 20 3 20C4.65685 20 6 21.3431 6 23Z"
 															fill="#585858"></path>
 													</svg>
 												</a>

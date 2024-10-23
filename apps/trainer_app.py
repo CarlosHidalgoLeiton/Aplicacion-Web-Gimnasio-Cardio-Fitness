@@ -3,6 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from db.conection import Conection
 from db.models.ModelClient import ModelClient
 from db.models.ModelTrainer import ModelTrainer
+from db.models.ModelRoutine import ModelRoutine
 from db.models.ModelStatistics import ModelStatistics
 from apps.permissions import trainer_permission
 
@@ -113,20 +114,55 @@ def estadisticasCliente(documentId):
 def nuevaRutina():
     return render_template("trainer/nuevaRutina.html")
 
-@trainer_app.route("/rutinaCliente" )
-@login_required
-def rutinaCliente():
-    return render_template("trainer/rutinaCliente.html")
 
 @trainer_app.route("/rutinas" )
 @login_required
 def rutinas():
     return render_template("trainer/rutinas.html")
 
-@trainer_app.route("/sesionesRutinaCliente" )
+## VER RUTINAS
+@trainer_app.route("/client/routineClient/<ID_Cliente>", methods=['GET'])
 @login_required
-def sesionesRutinaCliente():
-    return render_template("trainer/sesionesRutinaCliente.html")
+@trainer_permission.require(http_exception=403)
+def routineClient(ID_Cliente):
+    conexion = Conection.conectar()
+    routines = ModelRoutine.get_all(conexion, ID_Cliente)  
+    errorMessage = request.args.get('error')
+    Conection.desconectar()
+    return render_template("trainer/routineClient.html", routines=routines, error=errorMessage)
+
+
+@trainer_app.route("/sessionsRoutineClient", methods=['GET', 'POST'])
+@login_required
+def sessionsRoutineClient():
+    conection = Conection.conectar()
+    Conection.desconectar()
+    doneMessage = request.args.get('done')
+    errorMessage = request.args.get('error')
+    if request.method == 'POST':
+        routine = ModelRoutine.getDataRoutine(request)
+        routineValidated = ModelRoutine.validateDataForm(routine)
+        if not type(routineValidated) == bool:
+            return render_template("admin/sessionsRoutineClient.html", routines=routines,  error=routineValidated, routine = routine)
+        conection = Conection.conectar()
+        if conection == None:
+            return render_template("admin/sessionsRoutineClient.html", routines=routines,  error= "Error en la conexión.", routine = routine)
+        insert = ModelRoutine.insertRoutine(conection, routine)
+        if insert and type(insert) == bool:
+            routines = ModelRoutine.get_all(conection)
+            Conection.desconectar()
+            return render_template("admin/sessionsRoutineClient.html", routines=routines,  done = "Producto creado correctamente.", routine = None)
+        elif insert == "Unique":
+            Conection.desconectar()
+            return render_template("admin/sessionsRoutineClient.html", routines=routines,  error= "El nombre del producto ingresado ya esta registrado.", routine = routine)
+        elif insert == "DataBase":
+            return render_template("admin/sessionsRoutineClient.html", routines=routines,  error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", routine = routine)
+        else:
+            Conection.desconectar()
+            return render_template("admin/sessionsRoutineClient.html", routines=routines, error= "No se pudo ingresar el producto, por favor inténtalo más tarde.", routine = routine)
+    else:
+        return render_template("admin/sessionsRoutineClient.html", routines=routines, routine = None, done = doneMessage, error = errorMessage)
+
 
 @trainer_app.route("/viewClient/<documentId>")
 @login_required
