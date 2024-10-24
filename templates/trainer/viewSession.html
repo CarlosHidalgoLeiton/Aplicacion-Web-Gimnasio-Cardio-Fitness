@@ -17,9 +17,9 @@
                                 <div class="row">
                                     <div class="col-xl-12">
                                         <div class="mb-3">
-                                            <label for="nombreSesion" class="form-label">ID Sesión</label>
-                                            <input type="text" class="form-control" id="nombreSesion"
-                                                value="{{ session.Session_ID }}" readonly>
+                                            <label for="Name" class="form-label">Nombre</label>
+                                            <input type="text" class="form-control" id="Name"
+                                                value="{{ session.Name }}" readonly>
                                         </div>
 
                                         <!-- Mostrar ejercicios -->
@@ -29,7 +29,7 @@
                                                 <label for="ejercicio{{ loop.index }}" class="form-label">Ejercicio {{ loop.index }}</label>
                                                 <input type="text" class="form-control" id="ejercicio{{ loop.index }}"
                                                     value="{{ ejercicio.nombre }}" readonly>
-                                                <small>Repeticiones: {{ ejercicio.repeticiones }}</small><br>
+                                                 <small>Repeticiones: {{ ejercicio.repeticiones }}</small><br>
                                                 <small>Series: {{ ejercicio.series }}</small>
                                             </div>
                                             <a href="{{ ejercicio.Link }}" class="btn btn-danger ms-2" target="_blank" title="Ver video">
@@ -38,9 +38,9 @@
                                         </div>
                                         {% endfor %}
 
-                                        <label class="col-lg-12 col-form-label" for="indicaciones">Indicaciones</label>
+                                        <label class="col-lg-12 col-form-label" for="Indications">Indicaciones</label>
                                         <div class="col-lg-12">
-                                            <textarea class="form-control" id="indicaciones" rows="5" readonly>{{ session.Indications }}</textarea>
+                                            <textarea class="form-control" id="Indications" rows="5" readonly>{{ session.Indications }}</textarea>
                                         </div>
 
                                     </div>
@@ -50,7 +50,8 @@
 
                         <div class="my-5">
                             <a type="button" class="btn btn-danger ms-2"
-                                href="{{ url_for('trainer_app.viewRoutine', routineId=routine.ID_Rutina, DocumentId=routine.ClientId) }}">
+                                href="{{ url_for('trainer_app.viewRoutine', routineId=routine.RoutineId, DocumentId=routine.ClientId) }}">
+    
                                 Volver
                             </a>
                         </div>

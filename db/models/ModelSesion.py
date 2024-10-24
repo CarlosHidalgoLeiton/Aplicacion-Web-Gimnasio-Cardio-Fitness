@@ -4,37 +4,48 @@ from pymysql import IntegrityError
 import json
 class ModelSession:
 
+   
+
     @classmethod
     def insertSession(cls, conection, session):
-        if session != None:
+        if session is not None:
             try:
                 cursor = conection.cursor()
-                sql = """INSERT INTO Sesion (Indicaciones, Ejercicios, ID_Rutina)
-                    VALUES (%s, %s, %s)"""
-                cursor.execute(sql, (session.Indications, session.Exercises, session.Routine_ID))
+                sql = """INSERT INTO Sesion (Indicaciones, Ejercicios, ID_Rutina, Nombre)
+                        VALUES (%s, %s, %s, %s)"""
+
+                # Convertir la lista de ejercicios a JSON, asegurándonos que sea válido
+                ejercicios_json = json.dumps(session['Exercises'])
+
+                # Imprimir los datos para depuración
+                print(f"Datos de la sesión: Indicaciones={session['Indications']}, Ejercicios={ejercicios_json}, ID_Rutina={session['Routine_ID']}, Nombre={session['Name']}")
+
+                # Ejecutar la inserción con los datos convertidos
+                cursor.execute(sql, (session['Indications'], ejercicios_json, session['Routine_ID'], session['Name']))
                 conection.commit()
 
                 if cursor.rowcount > 0:
-                    print(f"Sesion {session.Name} creada exitosamente.")
+                    print(f"Sesión {session['Name']} creada exitosamente.")
                     return True
                 else:
-                    print("No se pudo crear la sesion.")
+                    print("No se pudo crear la sesión.")
                     return "Error"
-                
+
             except IntegrityError as ex:
-                print(f"Error en ModelSession updateSession: {ex}")
+                print(f"Error de integridad al insertar la sesión: {ex}")
                 conection.rollback()
                 return "Unique"
             except BaseException as ex:
-                print(f"Error en ModelSession insertSession: {ex}")
+                print(f"Error en la base de datos al insertar la sesión: {ex}")
                 conection.rollback()
                 return "DataBase"
             except Exception as ex:
-                print(f"Error en ModelSession insertSession: {ex}")
+                print(f"Error general al insertar la sesión: {ex}")
                 conection.rollback()
                 return "Error"
         else:
             return "Error"
+
     
     @classmethod
     def updateSession(cls, conection, session, ID_Sesion):
@@ -71,7 +82,7 @@ class ModelSession:
     def get_all(cls, conexion):
         try:
             cursor = conexion.cursor()
-            sql = "SELECT ID_Sesion, Indicaciones, Ejercicios, ID_Rutina FROM Sesion"
+            sql = "SELECT ID_Sesion, Indicaciones, Ejercicios, ID_Rutina, Nombre FROM Sesion"
             cursor.execute(sql)
             rows = cursor.fetchall()
             sessions = []
@@ -81,6 +92,7 @@ class ModelSession:
                     Indications=row[1],
                     Exercises=row[2],
                     Routine_ID=row[3],
+                    Name=row[4],
                 )
                 sessions.append(session)
             return sessions
@@ -93,7 +105,7 @@ class ModelSession:
     def get_sesssion_by_Routine(cls, conexion, routineId):
         try:
             cursor = conexion.cursor()
-            sql = "SELECT ID_Sesion, Indicaciones, Ejercicios, ID_Rutina FROM Sesion WHERE ID_Rutina = %s "
+            sql = "SELECT ID_Sesion, Indicaciones, Ejercicios, ID_Rutina, Nombre FROM Sesion WHERE ID_Rutina = %s "
             cursor.execute(sql, (routineId))
             rows = cursor.fetchall()
             sessions = []
@@ -103,6 +115,7 @@ class ModelSession:
                     Indications=row[1],
                     Exercises=row[2],
                     Routine_ID=row[3],
+                    Name=row[4],
                 )
                 sessions.append(session)
             return sessions
@@ -115,7 +128,7 @@ class ModelSession:
     def get_sesssion_by_id(cls, conexion, ID_Sesion):
         try:
             cursor = conexion.cursor()
-            sql = """SELECT ID_Sesion, Indicaciones, Ejercicios, ID_Rutina
+            sql = """SELECT ID_Sesion, Indicaciones, Ejercicios, ID_Rutina, Nombre
                     FROM Sesion WHERE ID_Sesion = %s"""
             cursor.execute(sql, (ID_Sesion,))
             row = cursor.fetchone()
@@ -126,6 +139,7 @@ class ModelSession:
                     Indications=row[1],
                     Exercises=row[2],  # Esto es un string JSON
                     Routine_ID=row[3],
+                    Name=row[4],
                 )
             else:
                 return None

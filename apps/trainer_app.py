@@ -155,26 +155,56 @@ def routineClient(ID_Cliente):
     Conection.desconectar()
     doneMessage = request.args.get('done')
     errorMessage = request.args.get('error')
+    clear_local_storage = request.args.get('clear_local_storage') 
+
     if request.method == 'POST':
         routine = ModelRoutine.getDataRoutine(request)
         routineValidated = ModelRoutine.validateDataForm(routine)
-        if not type(routineValidated) == bool:
-            return render_template("trainer/routineClient.html", routines=routines, client=client, error=routineValidated, routine = routine)
-        conection = Conection.conectar()
-        if conection == None:
-            return render_template("trainer/routineClient.html", routines=routines, client=client,  error= "Error en la conexión.", routine = routine)
-        insert = ModelRoutine.insertRoutine(conection, routine)
-        if insert and type(insert) == bool:
-            Conection.desconectar()
-            return redirect(url_for('trainer_app.routinesClient', ID_Cliente=ID_Cliente, done="Rutina creada correctamente."))
 
-        elif insert == "DataBase":
-            return render_template("trainer/routineClient.html", routines=routines, client=client, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", routine = routine)
-        else:
+        if not isinstance(routineValidated, bool):
+            return render_template("trainer/routineClient.html", routines=routines, client=client, error=routineValidated, routine=routine)
+
+        conection = Conection.conectar()
+        if conection is None:
+            return render_template("trainer/routineClient.html", routines=routines, client=client, error="Error en la conexión.", routine=routine)
+
+        try:
+            conection.begin()
+            insert, success = ModelRoutine.insertRoutine(conection, routine)
+
+            if not success:
+                raise Exception("Error al insertar la rutina.")
+
+            Routine_ID = insert.RoutineId  # Obtener el ID de la rutina creada
+            sessions = request.form.get('sessions')
+
+            if sessions:
+                sessions_data = json.loads(sessions)
+
+                for session in sessions_data:
+                    session['Routine_ID'] = Routine_ID
+                    session_result = ModelSession.insertSession(conection, session)
+                    if session_result != True:
+                        raise Exception(f"Error al insertar la sesión: {session['Name']}")
+
+            conection.commit()
             Conection.desconectar()
-            return render_template("trainer/routineClient.html", routines=routines, client=client, error= "No se pudo ingresar la rutina, por favor inténtalo más tarde.", routine = routine)
+
+            return redirect(url_for('trainer_app.routinesClient', ID_Cliente=ID_Cliente, done="Rutina creada correctamente.", clear_local_storage=True))
+
+        except Exception as e:
+            conection.rollback()
+            print(f"Error durante la creación de la rutina y sesiones: {e}")
+            if 'Routine_ID' in locals():
+                ModelRoutine.deleteRoutine(conection, Routine_ID)
+                print(f"Rutina {Routine_ID} eliminada debido a un fallo en las sesiones.")
+            
+            Conection.desconectar()
+            return render_template("trainer/routineClient.html", routines=routines, client=client, error="Error al crear la rutina o sesiones.", routine=routine)
+
     else:
-        return render_template("trainer/routineClient.html", routines=None, routine = None, client=client, done = doneMessage, error = errorMessage)
+        return render_template("trainer/routineClient.html", routines=routines, routine=None, client=client, done=doneMessage, error=errorMessage, clear_local_storage=clear_local_storage)
+
 
 
 
@@ -268,3 +298,7 @@ def viewSession(Session_ID):
         return render_template("trainer/viewSession.html", session=session, routine=routine)
     else:
          return redirect(url_for('trainer_app.viewRoutine', routineId=routine.RoutineId, DocumentId=routine.ClientId, error="Sesión no encontrada"))
+
+
+
+
