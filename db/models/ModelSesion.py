@@ -1,7 +1,7 @@
 from .entities.Session import Session
 from datetime import datetime
 from pymysql import IntegrityError
-
+import json
 class ModelSession:
 
     @classmethod
@@ -117,21 +117,22 @@ class ModelSession:
             cursor = conexion.cursor()
             sql = """SELECT ID_Sesion, Indicaciones, Ejercicios, ID_Rutina
                     FROM Sesion WHERE ID_Sesion = %s"""
-            cursor.execute(sql, (ID_Sesion))
+            cursor.execute(sql, (ID_Sesion,))
             row = cursor.fetchone()
 
             if row:
                 return Session(
                     Session_ID=row[0],
                     Indications=row[1],
-                    Exercises=row[2],
+                    Exercises=row[2],  # Esto es un string JSON
                     Routine_ID=row[3],
                 )
             else:
                 return None
         except Exception as ex:
-            print(f"Error al obtener session por cédula: {ex}")
+            print(f"Error al obtener session por ID: {ex}")
             return None
+
     
     @classmethod
     def getDataSession(cls, request):

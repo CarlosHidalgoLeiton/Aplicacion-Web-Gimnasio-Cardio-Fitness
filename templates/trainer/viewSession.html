@@ -1,0 +1,68 @@
+{% extends "./layout/Layout_Trainer.html" %}
+
+{% block content %}
+<!--**********************************
+    Content body start
+***********************************-->
+<div class="content-body default-height">
+    <!-- row -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Ver Sesión</h4>
+                        <div class="form-validation">
+                            <form class="needs-validation" novalidate>
+                                <div class="row">
+                                    <div class="col-xl-12">
+                                        <div class="mb-3">
+                                            <label for="nombreSesion" class="form-label">ID Sesión</label>
+                                            <input type="text" class="form-control" id="nombreSesion"
+                                                value="{{ session.Session_ID }}" readonly>
+                                        </div>
+
+                                        <!-- Inicializar un contador -->
+                                        {% set counter = 0 %}
+                                        <!-- Mostrar ejercicios -->
+                                        {% for ejercicio in session.Exercises %}
+                                        <div class="mb-3 d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <label for="ejercicio{{ counter }}" class="form-label">Ejercicio {{ counter + 1 }}</label>
+                                                <input type="text" class="form-control" id="ejercicio{{ counter }}"
+                                                    value="{{ ejercicio.nombre }}" readonly>
+                                            </div>
+                                            <a href="{{ ejercicio.Link }}" class="btn btn-danger ms-2" target="_blank">
+                                                <i class="fas fa-play"></i>
+                                            </a>
+                                        </div>
+                                        <!-- Aumentar el contador -->
+                                        {% set counter = counter + 1 %}
+                                        {% endfor %}
+
+                                        <label class="col-lg-12 col-form-label" for="indicaciones">Indicaciones</label>
+                                        <div class="col-lg-12">
+                                            <textarea class="form-control" id="indicaciones" rows="5" readonly>{{ session.Indications }}</textarea>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="my-5">
+                            <a type="button" class="btn btn-danger ms-2"
+                                href="{{ url_for('trainer_app.viewRoutine', routineId= routine.RoutineId, DocumentId=routine.ClientId) }}">
+                                Volver
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--**********************************
+    Content body end
+***********************************-->
+{% endblock %}

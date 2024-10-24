@@ -1,6 +1,6 @@
 {% extends "./layout/Layout_Trainer.html" %}
 
-{% block content%}
+{% block content %}
 
 <!--**********************************
     Content body start
@@ -12,7 +12,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ url_for ('trainer_app.clients') }}">Clientes</a></li>
                 <li class="breadcrumb-item"><a
-                        href="{{ url_for ('trainer_app.routineClient', ID_Cliente=client.DocumentId) }}">Rutinas</a>
+                        href="{{ url_for ('trainer_app.routinesClient', ID_Cliente=client.DocumentId) }}">Rutinas</a>
                 </li>
                 <li class="breadcrumb-item active"><a href="javascript:void(0)">Ver Rutina</a></li>
             </ol>
@@ -46,7 +46,7 @@
                                 </div>
                             </form>
 
-                            <!-- Iterar sobre las sesiones sin mostrar indicaciones -->
+                            
                             {% for session in sessions %}
                             <div class="d-flex border-bottom flex-wrap pt-3 list-row align-items-center mb-2 px-3">
                                 <div class="col-xl-8 col-xxl-9 col-lg-10 col-sm-12 d-flex align-items-center">
@@ -56,19 +56,19 @@
                                     </div>
                                     <div class="info mb-3">
                                         <h4 class="fs-20 ">
-                                            <a href="{{ url_for('trainer_app.verSesion', sessionId=session.Session_ID) }}"
+                                            <a href="{{ url_for('trainer_app.viewSession', Session_ID=session.Session_ID) }}"
                                                 class="text-black">
                                                 Sesion {{ loop.index }}
-                                            </a>
+                                            </a> 
                                         </h4>
                                     </div>
                                 </div>
 
                                 <div class="col-xl-4 col-xxl-3 col-lg-2 col-sm-12 d-flex align-items-center">
-                                    <a href="{{ url_for('trainer_app.verSesion', sessionId=session.Session_ID) }}"
+                                    <a href="{{ url_for('trainer_app.viewSession', Session_ID=session.Session_ID) }}"
                                         class="btn mb-3 play-button rounded me-3">
                                         <i class="las la-caret-right scale-2 me-3"></i>Visualizar
-                                    </a>
+                                    </a> 
                                 </div>
                             </div>
                             {% endfor %}
@@ -76,7 +76,7 @@
                             <div class="my-3 row">
                                 <div class="col ms-2">
                                     <a class="btn btn-danger me-2"
-                                        href="{{ url_for('trainer_app.routineClient', ID_Cliente=client.DocumentId) }}">Volver</a>
+                                        href="{{ url_for('trainer_app.routinesClient', ID_Cliente=client.DocumentId) }}">Volver</a>
                                 </div>
                             </div>
                         </div>

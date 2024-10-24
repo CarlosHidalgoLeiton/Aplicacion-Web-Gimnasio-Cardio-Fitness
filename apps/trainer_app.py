@@ -7,6 +7,7 @@ from db.models.ModelRoutine import ModelRoutine
 from db.models.ModelStatistics import ModelStatistics
 from db.models.ModelSesion import ModelSession
 from apps.permissions import trainer_permission
+import json  
 
 
 trainer_app = Blueprint('trainer_app', __name__)
@@ -122,7 +123,8 @@ def routinesClient(ID_Cliente):
     Conection.desconectar()
     return render_template("trainer/routinesClient.html", routines=routines, client=client, error=errorMessage)
 
-@trainer_app.route("/client/routineClient/viewRoutine/<routineId>/<DocumentId>", methods=['GET'])
+
+@trainer_app.route("/viewRoutine/<routineId>/<DocumentId>", methods=['GET'])
 @login_required
 def viewRoutine(routineId, DocumentId):
     conexion = Conection.conectar()
@@ -251,7 +253,18 @@ def verEstadistica():
 def verSesion():
     return render_template("trainer/verSesion.html")
 
-@trainer_app.route("/verSesionesRutinaCliente" )
+
+@trainer_app.route("/viewRoutine/viewSession/<Session_ID>", methods=['GET'])
 @login_required
-def verSesionesRutinaCliente():
-    return render_template("trainer/verSesionesRutinaCliente.html")
+def viewSession(Session_ID):
+    conexion = Conection.conectar()
+    session = ModelSession.get_sesssion_by_id(conexion, Session_ID)
+    routine = ModelRoutine.get_routine(conexion, session.Routine_ID)
+    Conection.desconectar()
+    
+    if session:
+        # Deserializa el JSON a un objeto Python
+        session.Exercises = json.loads(session.Exercises)
+        return render_template("trainer/viewSession.html", session=session, routine=routine)
+    else:
+         return redirect(url_for('trainer_app.viewRoutine', routineId=routine.RoutineId, DocumentId=routine.ClientId, error="Sesión no encontrada"))
