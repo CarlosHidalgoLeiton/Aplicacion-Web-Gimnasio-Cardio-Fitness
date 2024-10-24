@@ -180,7 +180,7 @@
                                         </a>
 
 
-                                        <button onclick="disableClient(event)" data-id="{{ trainer['DocumentId'] }}"
+                                        <button onclick="disableTrainer(event)" data-id="{{ trainer['DocumentId'] }}"
                                             id="deshabilitar-{{ trainer['DocumentId'] }}"
                                             class="btn btn-danger shadow btn-xs sharp">
                                             <i class="fa fa-trash"></i>
@@ -188,7 +188,7 @@
 
                                         {% else %}
 
-                                        <button onclick="ableClient(event)" data-id="{{ trainer['DocumentId'] }}"
+                                        <button onclick="ableTrainer(event)" data-id="{{ trainer['DocumentId'] }}"
                                             id="habilitar-{{ trainer['DocumentId'] }}"
                                             class="btn btn-success shadow btn-xs sharp">
                                             <i class="fa fa-check"></i>

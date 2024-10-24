@@ -226,7 +226,36 @@ def verEntrenador():
 def actualizarEntrenador():
     return render_template("admin/actualizarEntrenador")
 
+@admin_app.route("/trainer/disable", methods = ['POST'])
+@login_required
+@admin_permission.require(http_exception=403)
+def disableTrainer():
+    data = request.get_json()
+    DocumentId = data.get('clientID')
+    conexion = Conection.conectar()
+    disable = ModelTrainer.disableTrainer(conexion, DocumentId)
+    Conection.desconectar()
 
+    if disable:
+        return jsonify({"message": "Hecho"})
+    else:
+        
+        return jsonify({"error": "No se pudo deshabilitar"})
+    
+@admin_app.route("/trainer/able", methods = ['POST'])
+@login_required
+@admin_permission.require(http_exception=403)
+def ableTrainer():
+    data = request.get_json()
+    DocumentId = data.get('clientID')
+    conection = Conection.conectar()
+    able = ModelTrainer.ableTrainer(conection, DocumentId)
+    Conection.desconectar()
+
+    if able:
+        return jsonify({"message": "Hecho"})
+    else:
+        return jsonify({"error": "No se pudo habilitar"})
 #-------------Rutas de user-------------#
 @admin_app.route("/users", methods = ['GET', 'POST'])
 @login_required

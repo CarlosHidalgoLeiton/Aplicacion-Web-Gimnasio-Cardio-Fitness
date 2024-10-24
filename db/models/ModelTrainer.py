@@ -179,3 +179,48 @@ class ModelTrainer:
             return "Debe ingresar el número de teléfono."
     
         return True
+    
+       
+    @classmethod
+    def disableTrainer(cls, conection, DocumentId):
+        if DocumentId != None:
+            try:
+                cursor = conection.cursor()
+                sql = """UPDATE Entrenador SET Estado = 0  WHERE Cedula = %s"""
+                cursor.execute(sql, (DocumentId))
+                if cursor.rowcount > 0:
+                    conection.commit()
+                    return True
+                else:
+                    print("No se pudo actualizar el entrenador.")
+                    conection.rollback()
+                    return False
+
+            except Exception as ex:
+                print(f"Ocurrió un error en actualizar el entrenador {ex}")
+                conection.rollback()
+                return False
+        else:
+            return False
+        
+    @classmethod
+    def ableTrainer(cls, conection, DocumentId):
+        if DocumentId != None:
+            try:
+                cursor = conection.cursor()
+                sql = """UPDATE Entrenador SET Estado = 1  WHERE Cedula = %s"""
+                cursor.execute(sql, (DocumentId))
+                if cursor.rowcount > 0:
+                    conection.commit()
+                    return True
+                else:
+                    print("No se pudo actualizar el entrenador.")
+                    conection.rollback()
+                    return False
+
+            except Exception as ex:
+                print(f"Ocurrió un error en actualizar el entrenador {ex}")
+                conection.rollback()
+                return False
+        else:
+            return False
