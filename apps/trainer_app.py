@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, url_for, session,jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from db.conection import Conection
 from db.models.ModelClient import ModelClient
@@ -62,9 +62,9 @@ def editarSesionesRutinaCliente():
     return render_template("trainer/editarSesionesRutinaCliente.html")
 
 
-@trainer_app.route("/estadisticasCliente/<documentId>", methods=['GET', 'POST'])
+@trainer_app.route("/statisticsClient/<documentId>", methods=['GET', 'POST'])
 @login_required
-def estadisticasCliente(documentId):
+def statisticsClient(documentId):
     conection = Conection.conectar()
 
     # Obtener las estadísticas del cliente por su ID
@@ -83,11 +83,11 @@ def estadisticasCliente(documentId):
         statisticsValidated = ModelStatistics.validateDataForm(statistics_data)
 
         if not isinstance(statisticsValidated, bool):
-            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error=statisticsValidated, statistics_data=statistics_data, documentId=documentId,client=client)
+            return render_template("trainer/statisticsClient.html", statistics=statistics, error=statisticsValidated, statistics_data=statistics_data, documentId=documentId,client=client)
 
         conection = Conection.conectar()
         if conection is None:
-            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error="Error en la conexión.", statistics_data=statistics_data,client=client)
+            return render_template("trainer/statisticsClient.html", statistics=statistics, error="Error en la conexión.", statistics_data=statistics_data,client=client)
 
         # Intentar insertar las estadísticas
         statistics_data.Client_ID = documentId  # Asegurar que el Client_ID esté presente en los datos
@@ -97,17 +97,17 @@ def estadisticasCliente(documentId):
             # Obtener las estadísticas nuevamente para actualizar la vista
             statistics = ModelStatistics.getStatisticsByClientId(conection, documentId)
             Conection.desconectar()
-            return render_template("trainer/estadisticasCliente.html", statistics=statistics, done="Estadísticas creadas correctamente.", statistics_data=None,documentId=documentId,client=client)
+            return render_template("trainer/statisticsClient.html", statistics=statistics, done="Estadísticas creadas correctamente.", statistics_data=None,documentId=documentId,client=client)
         elif insert == "Primary":
             Conection.desconectar()
-            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error="El registro de estadísticas ya existe.", statistics_data=statistics_data,documentId=documentId,client=client)
+            return render_template("trainer/statisticsClient.html", statistics=statistics, error="El registro de estadísticas ya existe.", statistics_data=statistics_data,documentId=documentId,client=client)
         elif insert == "DataBase":
-            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error="No se puede conectar a la base de datos, por favor inténtalo más tarde o comuníquese con el desarrollador.", statistics_data=statistics_data,documentId=documentId,client=client)
+            return render_template("trainer/statisticsClient.html", statistics=statistics, error="No se puede conectar a la base de datos, por favor inténtalo más tarde o comuníquese con el desarrollador.", statistics_data=statistics_data,documentId=documentId,client=client)
         else:
             Conection.desconectar()
-            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error="No se pudo ingresar las estadísticas, por favor inténtalo más tarde.", statistics_data=statistics_data,documentId=documentId,client=client)
+            return render_template("trainer/statisticsClient.html", statistics=statistics, error="No se pudo ingresar las estadísticas, por favor inténtalo más tarde.", statistics_data=statistics_data,documentId=documentId,client=client)
     else:
-        return render_template("trainer/estadisticasCliente.html", client = client, statistics=statistics, statistics_data=None, done=doneMessage, error=errorMessage, documentId = documentId)
+        return render_template("trainer/statisticsClient.html", client = client, statistics=statistics, statistics_data=None, done=doneMessage, error=errorMessage, documentId = documentId)
 
 
 ## VER RUTINAS
@@ -173,6 +173,45 @@ def routineClient(ID_Cliente):
             return render_template("trainer/routineClient.html", routines=routines, client=client, error= "No se pudo ingresar la rutina, por favor inténtalo más tarde.", routine = routine)
     else:
         return render_template("trainer/routineClient.html", routines=None, routine = None, client=client, done = doneMessage, error = errorMessage)
+
+
+
+@trainer_app.route("/statisticsClient/disable", methods = ['POST'])
+@login_required
+@trainer_permission.require(http_exception=403)
+def disableStatistics():
+    data = request.get_json()
+    DocumentId = data.get('statisticsID')
+    conexion = Conection.conectar()
+    disable = ModelStatistics.disableStatistics(conexion, DocumentId)
+    Conection.desconectar()
+
+    if disable:
+        return jsonify({"message": "Hecho"})
+    else:
+        
+        return jsonify({"error": "No se pudo deshabilitar"})
+    
+@trainer_app.route("/statisticsClient/able", methods = ['POST'])
+@login_required
+@trainer_permission.require(http_exception=403)
+def ableStatistics():
+    data = request.get_json()
+    DocumentId = data.get('statisticsID')
+    conection = Conection.conectar()
+    able = ModelStatistics.ableStatistics(conection, DocumentId)
+    Conection.desconectar()
+
+    if able:
+        return jsonify({"message": "Hecho"})
+    else:
+        return jsonify({"error": "No se pudo habilitar"})
+
+
+
+
+
+
 
 ## Sesiones
 

@@ -19,7 +19,7 @@ const disableStatistics = (event) => {
                 data: JSON.stringify({
                     statisticsID: statisticsID,
                 }),
-                url: "/trainer/estadisticasCliente/deshabilitar",
+                url: "/trainer/statisticsClient/disable",
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json",
@@ -39,7 +39,7 @@ const disableStatistics = (event) => {
                         Swal.fire({
                             icon: "success",
                             title: "¡Exito!",
-                            text: "la estadística ha sido deshabilitado correctamente.",
+                            text: "Las estadísticas ha sido deshabilitado correctamente.",
                             confirmButtonColor: 'green',
                         }).then((result) => {
                             if (result.isConfirmed) {
@@ -78,7 +78,7 @@ const ableStatistics = (event) => {
                 data: JSON.stringify({
                     statisticsID: statisticsID,
                 }),
-                url: "/trainer/estadisticasCliente/habilitar",
+                url: "/trainer/statisticsClient/able",
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json",

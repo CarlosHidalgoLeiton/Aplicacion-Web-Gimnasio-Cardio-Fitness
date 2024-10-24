@@ -33,7 +33,7 @@
 					<div class="card form-container" id="formStatistics" style="display: none;">
 						<div class="card-body">
 							<div class="form-validation">
-								<form class="needs-validation" action="{{ url_for('trainer_app.estadisticasCliente', documentId=documentId) }}" novalidate method="POST">
+								<form class="needs-validation" action="{{ url_for('trainer_app.statisticsClient', documentId=documentId) }}" novalidate method="POST">
 									<h4>Escaneo</h4>
 									<hr>
 									<div class="row">
@@ -328,15 +328,15 @@
 														<i class="fa fa-pencil"></i>
 													</a>
 													<!-- Eliminar estadística -->
-													<button onclick="disableStatistics(event)" data-id="{{ stat[2] }}"
-													id="deshabilitar-{{ stat[4] }}"
+													<button onclick="disableStatistics(event)" data-id="{{ stat[0] }}"
+													id="deshabilitar-{{ stat[0] }}"
 													class="btn btn-danger shadow btn-xs sharp">
 													<i class="fa fa-trash"></i>
 													</button>
 													{% else %}
 
-													<button onclick="ableStatistics(event)" data-id="{{ stat[2] }}"
-													id="habilitar-{{ stat[4] }}"
+													<button onclick="ableStatistics(event)" data-id="{{ stat[0] }}"
+													id="habilitar-{{ stat[0] }}"
 													class="btn btn-success shadow btn-xs sharp">
 													<i class="fa fa-check"></i>
 												</button>
