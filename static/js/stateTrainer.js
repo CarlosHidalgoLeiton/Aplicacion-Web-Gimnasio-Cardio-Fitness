@@ -1,12 +1,12 @@
 
-const disableStatistics = (event) => {
+const disableTrainer = (event) => {
 
-    const statisticsID = event.currentTarget.getAttribute('data-id');
+    const clientID = event.currentTarget.getAttribute('data-id');
     
 
     Swal.fire({
         title: "¿Esta seguro?",
-        text: "Se deshabilitará las siguientes estadísticas .",
+        text: "Se deshabilitará el siguiente entrenador .",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
@@ -17,9 +17,9 @@ const disableStatistics = (event) => {
         if (result.isConfirmed) {
             $.ajax({
                 data: JSON.stringify({
-                    statisticsID: statisticsID,
+                    clientID: clientID,
                 }),
-                url: "/trainer/statisticsClient/disable",
+                url: "/admin/trainer/disable",
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json",
@@ -27,7 +27,7 @@ const disableStatistics = (event) => {
                     if (response.error) {
                         Swal.fire({
                             icon: "error",
-                            title: "¡Uy ha Ocurrido un Error!",
+                            title: "¡Uy ha ocurrido un Error!",
                             text: response.error,
                         }).then((result) => {
                             if (result.isConfirmed) {
@@ -39,7 +39,7 @@ const disableStatistics = (event) => {
                         Swal.fire({
                             icon: "success",
                             title: "¡Exito!",
-                            text: "Las estadísticas ha sido deshabilitado correctamente.",
+                            text: "El entrenador ha sido deshabilitado correctamente.",
                             confirmButtonColor: 'green',
                         }).then((result) => {
                             if (result.isConfirmed) {
@@ -58,14 +58,14 @@ const disableStatistics = (event) => {
 }
 
 
-const ableStatistics = (event) => {
+const ableTrainer = (event) => {
 
-    const statisticsID = event.currentTarget.getAttribute('data-id');
+    const clientID = event.currentTarget.getAttribute('data-id');
     
 
     Swal.fire({
         title: "¿Esta seguro?",
-        text: "Se habilitará la siguiente estadística.",
+        text: "Se habilitará el siguiente entrenador.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
@@ -76,9 +76,9 @@ const ableStatistics = (event) => {
         if (result.isConfirmed) {
             $.ajax({
                 data: JSON.stringify({
-                    statisticsID: statisticsID,
+                    clientID: clientID,
                 }),
-                url: "/trainer/statisticsClient/able",
+                url: "/admin/trainer/able",
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json",
@@ -98,7 +98,7 @@ const ableStatistics = (event) => {
                         Swal.fire({
                             icon: "success",
                             title: "¡Exito!",
-                            text: "Las estadísticas ha sido habilitado correctamente.",
+                            text: "El entrenador ha sido habilitado correctamente.",
                             confirmButtonColor: 'green',
                         }).then((result) => {
                             if (result.isConfirmed) {

@@ -3,40 +3,36 @@ from datetime import datetime
 from pymysql import IntegrityError
 
 class ModelRoutine:
-
     @classmethod
     def insertRoutine(cls, conection, routine):
-        if routine != None:
+        if routine is not None:
             try:
                 routine.State = 1
                 cursor = conection.cursor()
-                sql = """INSERT INTO Rutina (ID_Rutina, ID_Cliente, ID_Entrenador, Indicaciones, Fecha, Estado)
-                VALUES (%s, %s, %s, %s, %s, %s)"""
-                cursor.execute(sql, (routine.RoutineId, routine.ClientId, routine.TrainerId, routine.Indications, routine.Date, routine.State))
+                sql = """INSERT INTO Rutina (ID_Cliente, ID_Entrenador, Indicaciones, Fecha, Estado)
+                        VALUES (%s, %s, %s, %s, %s)"""
+                cursor.execute(sql, (routine.ClientId, routine.TrainerId, routine.Indications, routine.Date, routine.State))
                 conection.commit()
 
                 if cursor.rowcount > 0:
+                    routine.RoutineId = cursor.lastrowid  # Obtener el ID de la rutina recién creada
                     print(f"Rutina {routine.RoutineId} creada exitosamente.")
-                    return True
+                    return routine, True  # Retornar la rutina y True
                 else:
                     print("No se pudo crear la rutina.")
-                    return "Error"
-                
-            except IntegrityError as ex:
-                print(f"Error en ModelRoutine insertRoutin: {ex}")
-                conection.rollback()
-                return "Primary"
+                    return "Error",
+                    
             except BaseException as ex:
-                print(f"Error en ModelRoutin insertRoutin: {ex}")
+                print(f"Error en ModelRoutine insertRoutine: {ex}")
                 conection.rollback()
-                return "DataBase"
+                return "DataBase",
             except Exception as ex:
-                print(f"Error en ModelRoutin insertRoutin: {ex}")
+                print(f"Error en ModelRoutine insertRoutine: {ex}")
                 conection.rollback()
-                return "Error"
+                return "Error",
         else:
-            return "Error"
-    
+            return "Error",
+
     @classmethod
     def updateRoutine(cls, conection, routine, id):
         if routine != None:
@@ -95,13 +91,36 @@ class ModelRoutine:
             return None
         
     @classmethod
+    def get_routine(cls, conexion, RoutineId):
+        try:
+            cursor = conexion.cursor()
+            sql = "SELECT ID_Rutina, ID_Cliente, ID_Entrenador, Indicaciones, Fecha, Estado FROM Rutina WHERE ID_Rutina = %s"
+            cursor.execute(sql, (RoutineId))
+            row = cursor.fetchone()
+            
+            if row:
+                return Routine(
+                    RoutineId=row[0],
+                    ClientId=row[1],
+                    TrainerId=row[2],
+                    Indications=row[3],
+                    Date=row[4],
+                    State=row[5],
+                )
+            else:    
+                return None
+        except Exception as ex:
+            print(f"Error en get_routine: {ex}")
+            return None
+
+    @classmethod
     def getDataRoutine(cls, request):
         ClientId = request.form['ClientId']
         TrainerId = request.form['TrainerId']
         Indications = request.form['Indications']
         Date = datetime.now()
 
-        return Routine(ClientId, TrainerId, Indications, Date)
+        return Routine(None, ClientId, TrainerId, Indications, Date)
 
     @classmethod
     def validateDataForm(cls, routine):
@@ -119,4 +138,15 @@ class ModelRoutine:
             return "Debe ingresar las indicaciones."
     
         return True
-        
+
+    @classmethod
+    def deleteRoutine(cls, conection, routine_id):
+        try:
+            cursor = conection.cursor()
+            sql = "DELETE FROM Rutina WHERE ID_Rutina = %s"
+            cursor.execute(sql, (routine_id,))
+            conection.commit()
+            print(f"Rutina {routine_id} eliminada exitosamente.")
+        except Exception as e:
+            print(f"Error al eliminar la rutina {routine_id}: {e}")
+            conection.rollback()

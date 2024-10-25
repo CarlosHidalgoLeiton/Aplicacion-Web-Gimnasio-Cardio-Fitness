@@ -171,35 +171,35 @@
                             <div class="col-lg-8 order-lg-1">
                                 <h4 class="mb-3">Información de Pago de Producto</h4>
                                 <form class="needs-validation" novalidate action="/admin/bills" method="POST">
+                                    <input id="typeEntity" name="typeEntity" type="hidden" value="Product">
                                     <div class="row">
                                         <div class=" mb-3">
                                             <label class="form-label">Productos
                                                 <span class="text-danger">*</span>
                                             </label>
-                                            <select class="form-control single-select" id="validationCustomProductId"
-                                                name="DocumentIdProduct">
-                                                {% if products %}
-                                                {% for product in products %}
-                                                <option value="{{ product.ID_Product }}">{{ product.Name }} (Producto)
-                                                </option>
-                                                {% endfor %}
-                                                {% endif %}
-                                                {% if not products %}
-                                                <option value="" disabled>No hay productos disponibles</option>
-                                                {% endif %}
+                                            <select class="single-select" id="validationCustomProductId" name="DocumentIdProduct" onchange="updateProductPrice()" required>
+                                            <option value="" disabled>Selecciona el producto</option>
+                                            {% if products %}
+                                            {% for product in products %}
+                                            <option value="{{ product.ID_Product }}" data-price="{{ product.Price }}">
+                                                {{ product.Name }} (Producto)
+                                            </option>
+                                            {% endfor %}
+                                            {% endif %}
+                                            {% if not products %}
+                                            <option value="" disabled selected>No hay productos disponibles</option>
+                                            {% endif %}
                                             </select>
                                             <div class="invalid-feedback">
                                                 Por favor ingresar un valor valido
                                             </div>
                                         </div>
-
-
                                         <div class="mb-3">
-                                            <label for="monto" class="form-label">Monto
+                                            <label for="AmountProductBill" class="form-label">Monto
                                                 <span class="text-danger">*</span>
                                             </label>
-                                            <input type="number" class="form-control" id="monto" placeholder="₡"
-                                                required="">
+                                            <input type="text" class="form-control" name="AmountProductBill" 
+                                            id="AmountProductBill" value="{{ productValidated.Amount }}" required="">
                                             <div class="invalid-feedback">
                                                 Por favor ingresar un valor valido
                                             </div>
@@ -215,7 +215,7 @@
                                             <label for="Descripcion" class="form-label">Descripción
                                                 <span class="text-danger">*</span>
                                             </label>
-                                            <input type="text" class="form-control" id="Descripcion" placeholder=""
+                                            <input type="text" class="form-control" id="Descripcion" name = Description placeholder=""
                                                 required="">
                                             <div class="invalid-feedback">
                                                 Por favor ingresar un valor valido
@@ -241,83 +241,89 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12 order-lg-1">
-                                <h4 class="mb-3">Información de Pago de Membresia</h4>
-                                <form class="needs-validation" novalidate action="/admin/bills" method="POST">
+                                <h4 class="mb-3">Información de Pago de Membresía</h4>
+                                <form class="needs-validation" novalidate action="/admin/bills" method="POST" onsubmit="updateMembershipPrice()">
+                                    <input id="typeEntity" name="typeEntity" type="hidden" value="Membership">
+                                    <input type="hidden" id="MembershipType" name="MembershipType" value="">
+                                    
                                     <div class="row">
                                         <div class="col-md-12 mb-3">
                                             <label class="form-label">Cliente
                                                 <span class="text-danger">*</span>
                                             </label>
-                                            <select class="form-control single-select" id="validationCustomCedulaClient"
-                                                name="DocumentIdClient">
-                                                <option value="" disabled selected>Seleccionar el cliente</option>
+                                            <select class="single-select" id="validationCustomCedulaClient" name="DocumentIdClient" required>
+                                                <option value="" disabled>Seleccionar el cliente</option>
                                                 {% if clients %}
                                                 {% for client in clients %}
-                                                <option value="{{ client.DocumentId }}">{{ client.Name }}
-                                                    {{
-                                                    client.First_LastName }} {{ client.Second_LastName }} (Cliente)
+                                                <option value="{{ client.DocumentId }}">
+                                                    {{ client.Name }} {{ client.First_LastName }} {{ client.Second_LastName }} (Cliente)
                                                 </option>
                                                 {% endfor %}
                                                 {% endif %}
                                                 {% if not clients %}
-                                                <option value="" disabled>No hay clientes disponibles</option>
+                                                <option value="" disabled selected>No hay clientes disponibles</option>
                                                 {% endif %}
                                             </select>
+                                            <div class="invalid-feedback">
+                                                Por favor ingresar un valor valido
+                                            </div>
                                         </div>
-
                                     </div>
-
+        
                                     <div class="row">
                                         <div class="col-md-12 mb-3">
-                                            <label class="form-label">Membresia
+                                            <label class="form-label">Membresía
                                                 <span class="text-danger">*</span>
                                             </label>
-                                            <select class="form-control single-select" id="validationCustomMembresiaId"
-                                                name="DocumentIdMembresia">
-                                                <option value="" disabled selected>Seleccionar la membresia</option>
+                                            <select class="single-select" id="validationCustomMembresiaId" name="DocumentIdMembresia" onchange="updateMembershipPrice()" required>
+                                                <option value="" disabled>Seleccionar la membresía</option>
                                                 {% if memberships %}
                                                 {% for membership in memberships %}
-                                                <option value="{{ membership.id }}">{{ membership.Name }} (Membresia)
+                                                <option value="{{ membership.id }}" data-price="{{ membership.Precio }}" data-type="{{ membership.type }}">
+                                                    {{ membership.Name }} (Membresía)
                                                 </option>
                                                 {% endfor %}
                                                 {% endif %}
                                                 {% if not memberships %}
-                                                <option value="" disabled>No hay membresias disponibles</option>
+                                                <option value="" disabled selected>No hay membresías disponibles</option>
                                                 {% endif %}
                                             </select>
+                                            <div class="invalid-feedback">
+                                                Por favor ingresar un valor valido
+                                            </div>
                                         </div>
-
                                     </div>
-
+                                    
+                                    <!-- Campo oculto para TipoMembresia -->
+                                    <input type="hidden" id="TipoMembresia" name="TipoMembresia" value="">
+        
                                     <div class="mb-3">
-                                        <label for="monto" class="form-label">Monto
+                                        <label for="AmountMembershipBill" class="form-label">Monto
                                             <span class="text-danger">*</span>
                                         </label>
-                                        <input type="text" class="form-control" id="monto" placeholder="₡" required="">
+                                        <input type="text" class="form-control" name="AmountMembershipBill" id="AmountMembershipBill" required="">
                                         <div class="invalid-feedback">
                                             Por favor ingresar un valor valido
                                         </div>
                                     </div>
-
+        
                                     <div class="mb-3">
-                                        <label for="date" class="form-label">Fecha
-                                        </label>
+                                        <label for="date" class="form-label">Fecha</label>
                                         <input type="text" class="form-control" name="date" id="date" readonly>
                                     </div>
-
+        
                                     <div class="mb-3">
                                         <label for="Descripcion" class="form-label">Descripción
                                             <span class="text-danger">*</span>
                                         </label>
-                                        <input type="text" class="form-control" id="Descripcion" placeholder=""
-                                            required="">
+                                        <input type="text" class="form-control" id="Descripcion" name="Description" required="">
                                         <div class="invalid-feedback">
                                             Por favor ingresar un valor valido
                                         </div>
                                     </div>
-
+        
                                     <hr class="mb-4">
-
+        
                                     <button class="btn btn-primary btn-lg btn-block" type="submit">Guardar</button>
                                 </form>
                             </div>
@@ -326,6 +332,7 @@
                 </div>
             </div>
         </div>
+
         <button class="btn btn-danger ms-2 mb-4" id="btnCancelar">Cancelar</button>
     </div>
 
@@ -456,5 +463,44 @@
     $(".js-example-tags").select2({
         tags: true
     });
+
+    function updateProductPrice() {
+    var select = document.getElementById('validationCustomProductId');
+    var selectedOption = select.options[select.selectedIndex];
+    var price = selectedOption.getAttribute('data-price');
+    
+    // Asegurarse de que el precio sea un valor numérico y esté correctamente formateado
+    if (price) {
+        var formattedPrice = parseFloat(price).toFixed(2); // Formatear el precio a 2 decimales
+        document.getElementById('AmountProductBill').value = '₡' + formattedPrice;
+    } else {
+        document.getElementById('AmountProductBill').value = ''; // Si no hay precio, limpiar el campo
+    }
+}
+function updateMembershipPrice() {
+    var select = document.getElementById('validationCustomMembresiaId');
+    var selectedOption = select.options[select.selectedIndex];
+    
+    console.log("Opción seleccionada: ", selectedOption);  // Depuración: Verificar la opción seleccionada
+
+    var price = selectedOption.getAttribute('data-price');
+    console.log("Precio capturado: ", price);  // Depuración: Verificar el valor de data-price
+
+    // Obtener el tipo de membresía del atributo data-type
+    var membershipType = selectedOption.getAttribute('data-type');
+    console.log("Tipo de membresía capturado: ", membershipType);  // Depuración: Verificar el tipo de membresía
+
+    // Asegurarse de que el precio sea un valor numérico y esté correctamente formateado
+    if (price) {
+        var formattedPrice = parseFloat(price).toFixed(2); // Formatear el precio a 2 decimales
+        document.getElementById('AmountMembershipBill').value = '₡' + formattedPrice;
+    } else {
+        document.getElementById('AmountMembershipBill').value = ''; // Si no hay precio, limpiar el campo
+    }
+
+    // Actualizar el campo oculto con el tipo de membresía
+    document.getElementById('TipoMembresia').value = membershipType;
+}
+
 </script>
 {% endblock %}

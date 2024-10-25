@@ -226,7 +226,36 @@ def verEntrenador():
 def actualizarEntrenador():
     return render_template("admin/actualizarEntrenador")
 
+@admin_app.route("/trainer/disable", methods = ['POST'])
+@login_required
+@admin_permission.require(http_exception=403)
+def disableTrainer():
+    data = request.get_json()
+    DocumentId = data.get('clientID')
+    conexion = Conection.conectar()
+    disable = ModelTrainer.disableTrainer(conexion, DocumentId)
+    Conection.desconectar()
 
+    if disable:
+        return jsonify({"message": "Hecho"})
+    else:
+        
+        return jsonify({"error": "No se pudo deshabilitar"})
+    
+@admin_app.route("/trainer/able", methods = ['POST'])
+@login_required
+@admin_permission.require(http_exception=403)
+def ableTrainer():
+    data = request.get_json()
+    DocumentId = data.get('clientID')
+    conection = Conection.conectar()
+    able = ModelTrainer.ableTrainer(conection, DocumentId)
+    Conection.desconectar()
+
+    if able:
+        return jsonify({"message": "Hecho"})
+    else:
+        return jsonify({"error": "No se pudo habilitar"})
 #-------------Rutas de user-------------#
 @admin_app.route("/users", methods = ['GET', 'POST'])
 @login_required
@@ -342,7 +371,7 @@ def bills():
     conection = Conection.conectar()
 
     if not conection:
-        return render_template("admin/bill.html", error = "No se pudo conectar con la base de datos.", clients = None, trainers = None, memberships = None)
+        return render_template("admin/bill.html", error = "No se pudo conectar con la base de datos.", clients = None, trainers = None, memberships = None, products = None)
 
     bills = ModelBill.get_all(conection)
     clients = ModelClient.get_all(conection)
@@ -357,7 +386,7 @@ def bills():
             bill = ModelBill.getDataTrainerBill(request)
             validatedBill = ModelBill.validateDataFormTrainer(bill)
             if not type(validatedBill) == bool:
-                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = validatedBill, trainerValidated = bill, generalValidated = None  ) 
+                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = validatedBill, trainerValidated = bill, generalValidated = None, productValidated = None, membershipValidated = None  ) 
 
             conection = Conection.conectar()
             insert = ModelBill.insertTrainerBill(conection, bill)
@@ -365,15 +394,15 @@ def bills():
             if insert and type(insert) == bool:
                 return redirect(url_for('admin_app.bills', done = "Pago registrado correctamente."))
             elif insert == "DataBase":
-                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.', trainerValidated = bill, generalValidated = None ) 
+                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.', trainerValidated = bill, generalValidated = None, productValidated = None, membershipValidated = None ) 
             else:
-                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se pudo realizar el pago.', trainerValidated = bill, generalValidated = None ) 
+                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se pudo realizar el pago.', trainerValidated = bill, generalValidated = None, productValidated = None, membershipValidated = None ) 
     
         if request.form['typeEntity'] == 'General':
             bill = ModelBill.getDataGeneralBill(request)
             validatedBill = ModelBill.validateDataFormGeneral(bill)
             if not type(validatedBill) == bool:
-                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = validatedBill, generalValidated = bill, trainerValidated = None ) 
+                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = validatedBill, generalValidated = bill, trainerValidated = None,productValidated = None, membershipValidated = None ) 
 
             conection = Conection.conectar()
             insert = ModelBill.insertGeneralBill(conection, bill)
@@ -381,12 +410,69 @@ def bills():
             if insert and type(insert) == bool:
                 return redirect(url_for('admin_app.bills', done = "Pago registrado correctamente."))
             elif insert == "DataBase":
-                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.', trainerValidated = None, generalValidated = bill ) 
+                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.', trainerValidated = None, generalValidated = bill, productValidated = None, membershipValidated = None ) 
             else:
-                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se pudo realizar el pago.', generalValidated = bill, trainerValidated = None ) 
+                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se pudo realizar el pago.', generalValidated = bill, trainerValidated = None, productValidated = None, membershipValidated = None ) 
+    
+        if request.form['typeEntity'] == 'Product':
+            bill = ModelBill.getDataProductBill(request)
+            validatedBill = ModelBill.validateDataFormProduct(bill)
+            if not type(validatedBill) == bool:
+                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = validatedBill, productValidated = bill, generalValidated = None, trainerValidated = None, membershipValidated = None  ) 
+
+            conection = Conection.conectar()
+            insert = ModelBill.insertProductBill(conection, bill)
+            Conection.desconectar()
+            if insert and type(insert) == bool:
+                return redirect(url_for('admin_app.bills', done = "Pago registrado correctamente."))
+            elif insert == "DataBase":
+                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.', productValidated = bill, generalValidated = None, trainerValidated = None, membershipValidated = None ) 
+            else:
+                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se pudo realizar el pago.', productValidated = bill, generalValidated = None, trainerValidated = None, membershipValidated = None ) 
+    
+        if request.form['typeEntity'] == 'Membership':
+            bill = ModelBill.getDataMembershipBill(request)
+            validatedBill = ModelBill.validateDataFormMembership(bill)
+            if not type(validatedBill) == bool:
+                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = validatedBill, membershipValidated = bill, generalValidated = None, trainerValidated = None, productValidated = None) 
+
+            conection = Conection.conectar()
+            insert = ModelBill.insertMembershipBill(conection, bill)
+            Conection.desconectar()
+
+            if insert and type(insert) == bool:
+                if request.form['typeEntity']=='Membership':
+                    # Obtener los datos del cliente y membresía
+                    conection = Conection.conectar()
+                    client = ModelBill.getDataMembershipClient(conection, request)
+                    Conection.desconectar()
+
+
+                    # Validar los datos obtenidos del formulario
+                    validation_result = ModelBill.validateDataFormMembershipClient(client)
+                
+                    if validation_result == True:
+                        # Intentar actualizar la membresía del cliente
+                        conection = Conection.conectar()
+                        update_result = ModelBill.updateClientMembership(conection, client)
+                        Conection.desconectar()
+
+
+                        if update_result == True:
+                            return redirect(url_for('admin_app.bills', done="Pago registrado correctamente y cliente actualizado."))
+                        else:
+                            return render_template("admin/bill.html", bills=bills, clients=clients, memberships=memberships, error="Error actualizando el cliente.", membershipValidated=bill, generalValidated=None, trainerValidated=None, productValidated=None)
+                else:
+                    # Si la validación falla, mostrar el mensaje de error
+                    return render_template("admin/bill.html", bills=bills, clients=clients, memberships=memberships, error=validation_result, membershipValidated=bill, generalValidated=None, trainerValidated=None, productValidated=None)
+
+            elif insert == "DataBase":
+                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.', membershipValidated = bill, generalValidated = None, trainerValidated = None, productValidated = None ) 
+            else:
+                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se pudo realizar el pago.',  membershipValidated = bill, generalValidated = None, trainerValidated = None, productValidated = None  ) 
     
     else:
-        return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, trainerValidated = None, generalValidated = None, done = doneMessage, error = errorMessage)
+        return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, trainerValidated = None, generalValidated = None, productValidated = None, membershipValidated = None , done = doneMessage, error = errorMessage)
 
 @admin_app.route("/facturas/ver")
 @login_required

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, url_for, session,jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from db.conection import Conection
 from db.models.ModelClient import ModelClient
@@ -7,6 +7,7 @@ from db.models.ModelRoutine import ModelRoutine
 from db.models.ModelStatistics import ModelStatistics
 from db.models.ModelSesion import ModelSession
 from apps.permissions import trainer_permission
+import json  
 
 
 trainer_app = Blueprint('trainer_app', __name__)
@@ -18,10 +19,10 @@ def inicio():
     return render_template("trainer/index.html")
 
 #-------------Rutas de Perfil -------------#
-@trainer_app.route("/perfil")
+@trainer_app.route("/profile")
 @login_required
 @trainer_permission.require(http_exception=403)
-def perfil():
+def profile():
     try:
         conexion = Conection.conectar()
         trainer = ModelTrainer.getTrainer(conexion, current_user.DocumentId)
@@ -32,7 +33,7 @@ def perfil():
     finally:
         Conection.desconectar()
     
-    return render_template("trainer/perfil.html", trainer=trainer)
+    return render_template("trainer/profile.html", trainer=trainer)
 
 
 #-------------Rutas de Clientes-------------#
@@ -62,9 +63,9 @@ def editarSesionesRutinaCliente():
     return render_template("trainer/editarSesionesRutinaCliente.html")
 
 
-@trainer_app.route("/estadisticasCliente/<documentId>", methods=['GET', 'POST'])
+@trainer_app.route("/statisticsClient/<documentId>", methods=['GET', 'POST'])
 @login_required
-def estadisticasCliente(documentId):
+def statisticsClient(documentId):
     conection = Conection.conectar()
 
     # Obtener las estadísticas del cliente por su ID
@@ -83,11 +84,11 @@ def estadisticasCliente(documentId):
         statisticsValidated = ModelStatistics.validateDataForm(statistics_data)
 
         if not isinstance(statisticsValidated, bool):
-            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error=statisticsValidated, statistics_data=statistics_data, documentId=documentId,client=client)
+            return render_template("trainer/statisticsClient.html", statistics=statistics, error=statisticsValidated, statistics_data=statistics_data, documentId=documentId,client=client)
 
         conection = Conection.conectar()
         if conection is None:
-            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error="Error en la conexión.", statistics_data=statistics_data,client=client)
+            return render_template("trainer/statisticsClient.html", statistics=statistics, error="Error en la conexión.", statistics_data=statistics_data,client=client)
 
         # Intentar insertar las estadísticas
         statistics_data.Client_ID = documentId  # Asegurar que el Client_ID esté presente en los datos
@@ -97,83 +98,166 @@ def estadisticasCliente(documentId):
             # Obtener las estadísticas nuevamente para actualizar la vista
             statistics = ModelStatistics.getStatisticsByClientId(conection, documentId)
             Conection.desconectar()
-            return render_template("trainer/estadisticasCliente.html", statistics=statistics, done="Estadísticas creadas correctamente.", statistics_data=None,documentId=documentId,client=client)
+            return render_template("trainer/statisticsClient.html", statistics=statistics, done="Estadísticas creadas correctamente.", statistics_data=None,documentId=documentId,client=client)
         elif insert == "Primary":
             Conection.desconectar()
-            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error="El registro de estadísticas ya existe.", statistics_data=statistics_data,documentId=documentId,client=client)
+            return render_template("trainer/statisticsClient.html", statistics=statistics, error="El registro de estadísticas ya existe.", statistics_data=statistics_data,documentId=documentId,client=client)
         elif insert == "DataBase":
-            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error="No se puede conectar a la base de datos, por favor inténtalo más tarde o comuníquese con el desarrollador.", statistics_data=statistics_data,documentId=documentId,client=client)
+            return render_template("trainer/statisticsClient.html", statistics=statistics, error="No se puede conectar a la base de datos, por favor inténtalo más tarde o comuníquese con el desarrollador.", statistics_data=statistics_data,documentId=documentId,client=client)
         else:
             Conection.desconectar()
-            return render_template("trainer/estadisticasCliente.html", statistics=statistics, error="No se pudo ingresar las estadísticas, por favor inténtalo más tarde.", statistics_data=statistics_data,documentId=documentId,client=client)
+            return render_template("trainer/statisticsClient.html", statistics=statistics, error="No se pudo ingresar las estadísticas, por favor inténtalo más tarde.", statistics_data=statistics_data,documentId=documentId,client=client)
     else:
-        return render_template("trainer/estadisticasCliente.html", client = client, statistics=statistics, statistics_data=None, done=doneMessage, error=errorMessage, documentId = documentId)
+        return render_template("trainer/statisticsClient.html", client = client, statistics=statistics, statistics_data=None, done=doneMessage, error=errorMessage, documentId = documentId)
 
-
-@trainer_app.route("/newSession" )
-@login_required
-def newSession():
-    return render_template("trainer/newSession.html")
-
-
-@trainer_app.route("/rutinas" )
-@login_required
-def rutinas():
-    return render_template("trainer/rutinas.html")
 
 ## VER RUTINAS
 @trainer_app.route("/client/routinesClient/<ID_Cliente>", methods=['GET', 'POST'])
 @login_required
 @trainer_permission.require(http_exception=403)
 def routinesClient(ID_Cliente):
-    conexion = Conection.conectar()
-    routines = ModelRoutine.get_all(conexion, ID_Cliente)  
+    conection = Conection.conectar()
+    client = ModelClient.getClient(conection,ID_Cliente)
+    routines = ModelRoutine.get_all(conection, ID_Cliente)  
     errorMessage = request.args.get('error')
     Conection.desconectar()
-    return render_template("trainer/routinesClient.html", routines=routines, error=errorMessage)
+    return render_template("trainer/routinesClient.html", routines=routines, client=client, error=errorMessage)
 
 
-@trainer_app.route("/client/routineClient/viewRoutine/<routineId>",methods=['GET'] )
+@trainer_app.route("/viewRoutine/<routineId>/<DocumentId>", methods=['GET'])
 @login_required
-def viewRoutine(routineId):
+def viewRoutine(routineId, DocumentId):
+    conexion = Conection.conectar()
+    routine = ModelRoutine.get_routine(conexion, routineId)
+    sessions = ModelSession.get_sesssion_by_Routine(conexion, routineId)
+    client = ModelClient.getClient(conexion, DocumentId)
+    Conection.desconectar()
 
-    return render_template("trainer/rutinas.html")
+    if routine:
+        return render_template("trainer/viewRoutine.html", routine=routine, sessions=sessions, client=client)
+    else:
+        return redirect(url_for('trainer_app.clients', error="Rutina no encontrada"))
+
+
+    
 
 @trainer_app.route("/client/routineClient/UpdateRoutine/<routineId>",methods=['GET'] )
 @login_required
 def UpdateRoutine(routineId):
     return render_template("trainer/rutinas.html")
     
-@trainer_app.route("/client/routineClient", methods=['GET', 'POST'])
+@trainer_app.route("/client/routineClient/<ID_Cliente>", methods=['GET', 'POST'])
 @login_required
-def routineClient():
+def routineClient(ID_Cliente):
     conection = Conection.conectar()
+    client = ModelClient.getClient(conection, ID_Cliente)  
+    routines = ModelRoutine.get_all(conection, ID_Cliente)  
     Conection.desconectar()
     doneMessage = request.args.get('done')
     errorMessage = request.args.get('error')
+    clear_local_storage = request.args.get('clear_local_storage') 
+
     if request.method == 'POST':
         routine = ModelRoutine.getDataRoutine(request)
         routineValidated = ModelRoutine.validateDataForm(routine)
-        if not type(routineValidated) == bool:
-            return render_template("admin/routineClient.html", routines=routines,  error=routineValidated, routine = routine)
+
+        if not isinstance(routineValidated, bool):
+            return render_template("trainer/routineClient.html", routines=routines, client=client, error=routineValidated, routine=routine)
+
         conection = Conection.conectar()
-        if conection == None:
-            return render_template("admin/routineClient.html", routines=routines,  error= "Error en la conexión.", routine = routine)
-        insert = ModelRoutine.insertRoutine(conection, routine)
-        if insert and type(insert) == bool:
-            routines = ModelRoutine.get_all(conection)
+        if conection is None:
+            return render_template("trainer/routineClient.html", routines=routines, client=client, error="Error en la conexión.", routine=routine)
+
+        try:
+            conection.begin()
+            insert, success = ModelRoutine.insertRoutine(conection, routine)
+
+            if not success:
+                raise Exception("Error al insertar la rutina.")
+
+            Routine_ID = insert.RoutineId  # Obtener el ID de la rutina creada
+            sessions = request.form.get('sessions')
+
+            if sessions:
+                sessions_data = json.loads(sessions)
+
+                for session in sessions_data:
+                    session['Routine_ID'] = Routine_ID
+                    session_result = ModelSession.insertSession(conection, session)
+                    if session_result != True:
+                        raise Exception(f"Error al insertar la sesión: {session['Name']}")
+
+            conection.commit()
             Conection.desconectar()
-            return render_template("trainer/routineClient.html", routines=routines,  done = "Producto creado correctamente.", routine = None)
-        elif insert == "Unique":
+
+            return redirect(url_for('trainer_app.routinesClient', ID_Cliente=ID_Cliente, done="Rutina creada correctamente.", clear_local_storage=True))
+
+        except Exception as e:
+            conection.rollback()
+            print(f"Error durante la creación de la rutina y sesiones: {e}")
+            if 'Routine_ID' in locals():
+                ModelRoutine.deleteRoutine(conection, Routine_ID)
+                print(f"Rutina {Routine_ID} eliminada debido a un fallo en las sesiones.")
+            
             Conection.desconectar()
-            return render_template("trainer/routineClient.html", routines=routines,  error= "El nombre del producto ingresado ya esta registrado.", routine = routine)
-        elif insert == "DataBase":
-            return render_template("trainer/routineClient.html", routines=routines,  error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", routine = routine)
-        else:
-            Conection.desconectar()
-            return render_template("trainer/routineClient.html", routines=routines, error= "No se pudo ingresar el producto, por favor inténtalo más tarde.", routine = routine)
+            return render_template("trainer/routineClient.html", routines=routines, client=client, error="Error al crear la rutina o sesiones.", routine=routine)
+
     else:
-        return render_template("trainer/routineClient.html", routines=None, routine = None, done = doneMessage, error = errorMessage)
+        return render_template("trainer/routineClient.html", routines=routines, routine=None, client=client, done=doneMessage, error=errorMessage, clear_local_storage=clear_local_storage)
+
+
+
+
+@trainer_app.route("/statisticsClient/disable", methods = ['POST'])
+@login_required
+@trainer_permission.require(http_exception=403)
+def disableStatistics():
+    data = request.get_json()
+    DocumentId = data.get('statisticsID')
+    conexion = Conection.conectar()
+    disable = ModelStatistics.disableStatistics(conexion, DocumentId)
+    Conection.desconectar()
+
+    if disable:
+        return jsonify({"message": "Hecho"})
+    else:
+        
+        return jsonify({"error": "No se pudo deshabilitar"})
+    
+@trainer_app.route("/statisticsClient/able", methods = ['POST'])
+@login_required
+@trainer_permission.require(http_exception=403)
+def ableStatistics():
+    data = request.get_json()
+    DocumentId = data.get('statisticsID')
+    conection = Conection.conectar()
+    able = ModelStatistics.ableStatistics(conection, DocumentId)
+    Conection.desconectar()
+
+    if able:
+        return jsonify({"message": "Hecho"})
+    else:
+        return jsonify({"error": "No se pudo habilitar"})
+
+
+
+
+
+
+
+## Sesiones
+
+@trainer_app.route("client/newSession/<ID_Cliente>", methods=['GET', 'POST'])
+@login_required
+def newSession(ID_Cliente):
+    conection = Conection.conectar()
+    client = ModelClient.getClient(conection, ID_Cliente)  
+    Conection.desconectar()
+    return render_template("trainer/newSession.html", client=client)
+
+
+
+
 
 
 @trainer_app.route("/viewClient/<documentId>")
@@ -199,7 +283,22 @@ def verEstadistica():
 def verSesion():
     return render_template("trainer/verSesion.html")
 
-@trainer_app.route("/verSesionesRutinaCliente" )
+
+@trainer_app.route("/viewRoutine/viewSession/<Session_ID>", methods=['GET'])
 @login_required
-def verSesionesRutinaCliente():
-    return render_template("trainer/verSesionesRutinaCliente.html")
+def viewSession(Session_ID):
+    conexion = Conection.conectar()
+    session = ModelSession.get_sesssion_by_id(conexion, Session_ID)
+    routine = ModelRoutine.get_routine(conexion, session.Routine_ID)
+    Conection.desconectar()
+    
+    if session:
+        # Deserializa el JSON a un objeto Python
+        session.Exercises = json.loads(session.Exercises)
+        return render_template("trainer/viewSession.html", session=session, routine=routine)
+    else:
+         return redirect(url_for('trainer_app.viewRoutine', routineId=routine.RoutineId, DocumentId=routine.ClientId, error="Sesión no encontrada"))
+
+
+
+
