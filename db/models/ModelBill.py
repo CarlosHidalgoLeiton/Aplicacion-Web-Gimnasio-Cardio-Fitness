@@ -124,7 +124,7 @@ class ModelBill:
     def get_all(cls, conection):
         try:
             cursor = conection.cursor()
-            sql = "SELECT ID_Factura, Monto, Fecha, Estado FROM Factura"
+            sql = "SELECT ID_Factura, Monto, Fecha, Tipo, Estado FROM Factura"
             cursor.execute(sql)
             rows = cursor.fetchall()
             bills = []
@@ -133,7 +133,8 @@ class ModelBill:
                     'ID_Bill': row[0],
                     'Amount': row[1],
                     'Date': row[2],
-                    'State': row[3]
+                    'Type': row[3],
+                    'State': row[4]
                 }
                 bills.append(bill)
             return bills
@@ -165,7 +166,7 @@ class ModelBill:
 
 
     @classmethod
-    def insertProductBill(cls, conection, bill):
+    def insertProductBill(cls, conection, bill, lot):
         if bill != None:
             try:
                 bill.EntityType = 'Producto'
@@ -176,11 +177,21 @@ class ModelBill:
                 sql = """INSERT INTO Factura (Monto, Tipo, Descripcion, Fecha, TipoEntidad, ID_Entidad, Estado)
                 VALUES (%s, %s, %s, %s, %s, %s, %s)"""
                 cursor.execute(sql, (bill.Amount, bill.Type, bill.Description, date, bill.EntityType, bill.ID_Entity, bill.State))
-                conection.commit()
 
                 if cursor.rowcount > 0:
                     print(f"Factura creada exitosamente.")
-                    return True
+                    cursor.close()
+                    cursor = conection.cursor()
+                    sql2 = "UPDATE Producto set Cantidad = (%s)"
+                    cursor.execute(sql2, (lot))
+
+                    if cursor.rowcount > 0:
+                        print(f"Producto actualizado exitosamente.")
+                        conection.commit()
+                        return True
+                    else:
+                        conection.rollback()
+                        return False
                 else:
                     print("No se pudo crear la factura.")
                     return "Error"
@@ -201,14 +212,15 @@ class ModelBill:
         ID_Entity = request.form['DocumentIdProduct']
         Amount = request.form['AmountProductBill']
         Description = request.form['Description']
+        Lot = request.form['Amount']
 
-        return Bill(None, Amount, None, Description, None, None,ID_Entity, None)
+        return Bill(None, Amount, None, Description, None, None,ID_Entity, None, Lot)
     
 
     @classmethod
     def validateDataFormProduct(cls, bill):
         
-        if not bill.ID_Entity:
+        if bill.ID_Entity == "":
             return "Debe seleccionar el producto."
         
         if bill.Amount:
@@ -236,12 +248,18 @@ class ModelBill:
         if bill.Description == None:
             return "Debe de ingresar la descripción."
         
+        if bill.Lot != None:
+            if "-" in bill.Lot or not bill.Lot.isdigit(): #Valida que sea alfabetico y que no tenga un "-" 
+                return "La cantidad ingresada no es válida."
+        else:
+            return "Debe de ingresar la cantidad."
+
         return True
     @classmethod
     def insertMembershipBill(cls, conection, bill):
         if bill != None:
             try:
-                bill.EntityType = 'Membresia'
+                bill.EntityType = 'Cliente'
                 bill.Type = 'Pago Membresia'
                 date = datetime.now()
                 bill.State = 1
@@ -272,7 +290,7 @@ class ModelBill:
 
     @classmethod
     def getDataMembershipBill(cls, request):
-        ID_Entity = request.form['DocumentIdMembresia']
+        ID_Entity = request.form['DocumentIdClient']
         Amount = request.form['AmountMembershipBill']
         Description = request.form['Description']
 
@@ -318,7 +336,7 @@ class ModelBill:
             cursor = conection.cursor()
             sql = """
             UPDATE Cliente
-            SET ID_Membresia = %s, VencimientoMembresia = %s, FechaIngreso = %s
+            SET ID_Membresia = %s, VencimientoMembresia = %s, FechaInscripcion = %s
             WHERE Cedula = %s
             """
             cursor.execute(sql, (client.Membership_ID, client.ExpirationMembership, client.Entry_Date, client.DocumentId))
@@ -403,3 +421,31 @@ class ModelBill:
         if not client.ExpirationMembership:
             return "No se logro obtener la duracion"
         return True
+    
+
+    
+    @classmethod
+    def getStock(cls, conection, productId):
+        cursor = conection.cursor()
+
+        sql = "SELECT Cantidad FROM Producto WHERE ID_Producto = (%s)"
+        
+        cursor.execute(sql, (productId))
+        result = cursor.fetchone()
+
+        if result:
+            amount = result[0]  # Aquí capturas el tipo de membresía
+            return amount
+        else:   
+            return None
+        
+    @classmethod
+    def validateStock(cls, stock, lot):
+        try:
+            if int(lot) < int(stock) :
+                return True
+            else:
+                return False
+        except Exception as ex:
+            print(ex)
+            return False

@@ -162,7 +162,48 @@ class ModelClient:
         except Exception as ex:
             print(f"Error en get_all: {ex}")
             return None
-        
+    
+    @classmethod
+    def get_allAble(cls, conexion):
+        """
+            It get all the clients that are availabe.
+
+            This method executes a sql query to get all the clients in the table `Cliente` and returns a dictionary list,
+            where each of dictionary represents a `Client` with the fields of `DocumentId`, `Name`, 
+            `First_LastName`, `Second_LastName`, `Occupation`, y `State`.
+            
+            Parameters:
+            conection(obj): conection object to the database
+
+            Return: 
+                `list`: an dictionary list that contains the information about the clients.
+                `None`: if occurs an error return `None`
+
+            Exceptions:
+                - Exception: General errors that may occur during execution.
+        """
+
+        try:
+            cursor = conexion.cursor()
+            sql = "SELECT Cedula, Nombre, Primer_Apellido, Segundo_Apellido, Ocupacion, Estado FROM Cliente WHERE Estado = 1"
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+            clients = []
+            for row in rows:
+                client = {
+                    'DocumentId': row[0],
+                    'Name': row[1],
+                    'First_LastName': row[2],
+                    'Second_LastName':row[3],
+                    'Occupation': row[4],
+                    'State': row[5]
+                }
+                clients.append(client)
+            return clients
+        except Exception as ex:
+            print(f"Error en get_all: {ex}")
+            return None
+
     @classmethod
     def getClient(cls, conexion, DocumentId):
         """

@@ -60,6 +60,29 @@ class ModelMembership:
         except Exception as ex:
             print(f"Error en get_all: {ex}")
             return None
+        
+    @classmethod
+    def get_allAble(cls, conexion):
+        try:
+            cursor = conexion.cursor()
+            sql = "SELECT ID_Membresia, Nombre, Descripcion, Precio, Duracion_Dias, Estado FROM Membresia WHERE Estado = 1"
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+            memberships = []
+            for row in rows:
+                member = {
+                    'id': row[0],
+                    'Name': row[1],
+                    'Description': row[2],
+                    'Precio':row[3],
+                    'Time': row[4],
+                    'State': row[5],
+                }
+                memberships.append(member)
+            return memberships
+        except Exception as ex:
+            print(f"Error en get_all: {ex}")
+            return None
 
     @classmethod
     def getDataClient(cls, request):

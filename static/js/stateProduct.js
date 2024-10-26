@@ -2,11 +2,11 @@
 const disableProduct = (event) => {
 
     const ProductId = event.currentTarget.getAttribute('data-id');
-    
+    const ProductName = event.currentTarget.getAttribute('data-name')
 
     Swal.fire({
         title: "¿Esta seguro?",
-        text: "Se deshabilitará el producto con el Id: '" + ProductId + "'.",
+        text: "Se deshabilitará el producto: '" + ProductName + "'.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
@@ -61,11 +61,12 @@ const disableProduct = (event) => {
 const ableProduct = (event) => {
 
     const ProductId = event.currentTarget.getAttribute('data-id');
+    const ProductName = event.currentTarget.getAttribute('data-name')
     
 
     Swal.fire({
         title: "¿Esta seguro?",
-        text: "Se habilitará el producto con la cédula '" + ProductId+ "'.",
+        text: "Se habilitará el producto '" + ProductName+ "'.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",

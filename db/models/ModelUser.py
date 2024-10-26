@@ -212,12 +212,6 @@ class ModelUser:
         if DocumentId is None:
             return "Debe ingresar el número de cédula."
         
-        if "-" not in DocumentId and not any(d.isalpha() for d in DocumentId):  # Valida que sea numérico y no contenga "-"
-            if len(DocumentId) < 9:
-                return "El número de cédula ingresado no es válido. Debe ingresar 9 dígitos."
-        else:
-            return "El número de cédula no debe contener letras ni caracteres especiales."
-        
         # Verificar si la cédula ya existe en la base de datos
         conexion = Conection.conectar()
         if conexion is None:
@@ -275,14 +269,7 @@ class ModelUser:
 
         
         if not DocumentId:
-            return "Debe ingresar el número de cédula."
-
-        if "-" not in DocumentId and not any(d.isalpha() for d in DocumentId):  
-            if len(DocumentId) < 9:
-                return "El número de cédula ingresado no es válido. Debe ingresar 9 dígitos."
-        else:
-            return "El número de cédula no debe contener letras ni caracteres especiales."
-
+            return "Debe seleccionar el cliente."
         
         conexion = Conection.conectar()
         if conexion is None:

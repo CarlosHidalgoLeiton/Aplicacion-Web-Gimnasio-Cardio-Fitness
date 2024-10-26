@@ -1,11 +1,11 @@
 const disableMembership = (event) => {
 
     const membershipId = event.currentTarget.getAttribute('data-id');
-    
+    const membershipName = event.currentTarget.getAttribute('data-name');
 
     Swal.fire({
         title: "¿Esta seguro?",
-        text: "Se deshabilitará la membresía con el id '" + membershipId + "'.",
+        text: "Se deshabilitará la membresía '" + membershipName + "'.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
@@ -60,11 +60,11 @@ const disableMembership = (event) => {
 const ableMembership = (event) => {
 
     const membershipId = event.currentTarget.getAttribute('data-id');
-    
+    const membershipName = event.currentTarget.getAttribute('data-name');
 
     Swal.fire({
         title: "¿Esta seguro?",
-        text: "Se habilitará la membresía con el id '" + membershipId + "'.",
+        text: "Se habilitará la membresía '" + membershipName + "'.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",

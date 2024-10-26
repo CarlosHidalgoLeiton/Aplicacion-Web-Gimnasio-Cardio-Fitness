@@ -60,16 +60,16 @@
                                     {% if product['State'] == 1 %}
                                     <div class="me-3">
                                         <a class="btn btn-primary" href="{{ url_for('admin_app.select_Product', IdProduct=product.ID_Product, action='update') }}">Actualizar</a>
-                                        <button onclick="disableProduct(event)" data-id="{{ product['ID_Product'] }}"
+                                        <button onclick="disableProduct(event)" data-id="{{ product['ID_Product'] }}" data-name="{{ product['Name'] }}"
                                             id="deshabilitar-{{ product['ID_Product'] }}"
                                             class="btn btn-danger">Deshabilitar
-                                         </button>
+                                        </button>
                                     </div>
 
                                     {% else %}
                                     <div class="me-3">
                                         <a class="btn btn-primary" href="{{ url_for('admin_app.select_Product', IdProduct=product.ID_Product, action='update') }}">Actualizar</a>
-                                        <button onclick="ableProduct(event)" data-id="{{ product['ID_Product'] }}"
+                                        <button onclick="ableProduct(event)" data-id="{{ product['ID_Product'] }}" data-name="{{ product['Name'] }}"
                                             id="habilitar-{{ product['ID_Product'] }}"
                                             class="btn btn-success">Habilitar
                                         </button>

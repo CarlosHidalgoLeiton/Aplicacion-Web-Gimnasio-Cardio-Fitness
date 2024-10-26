@@ -57,7 +57,7 @@ def profile():
 @client_permission.require(http_exception=403)
 def inventory():
     conection = Conection.conectar()
-    products = ModelProduct.get_all(conection)
+    products = ModelProduct.get_allAble(conection)
     Conection.desconectar()
     doneMessage = request.args.get('done')
     errorMessage = request.args.get('error')

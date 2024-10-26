@@ -98,7 +98,7 @@ def statisticsClient(documentId):
             # Obtener las estadísticas nuevamente para actualizar la vista
             statistics = ModelStatistics.getStatisticsByClientId(conection, documentId)
             Conection.desconectar()
-            return render_template("trainer/statisticsClient.html", statistics=statistics, done="Estadísticas creadas correctamente.", statistics_data=None,documentId=documentId,client=client)
+            return redirect(url_for("trainer_app.statisticsClient", documentId = documentId, done = "Estadística creada correctamente"))
         elif insert == "Primary":
             Conection.desconectar()
             return render_template("trainer/statisticsClient.html", statistics=statistics, error="El registro de estadísticas ya existe.", statistics_data=statistics_data,documentId=documentId,client=client)

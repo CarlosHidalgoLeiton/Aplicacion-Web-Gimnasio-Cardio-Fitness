@@ -106,6 +106,40 @@ class ModelProduct:
             return None
         
     @classmethod
+    def get_allAble(cls, conexion):
+        try:
+            cursor = conexion.cursor()
+            sql = "SELECT ID_Producto, Nombre, Detalle, Precio, Cantidad, Imagen, Estado FROM Producto WHERE Estado = 1"
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+            products = []
+            
+            for row in rows:
+            
+                image_blob = row[5]  
+                if image_blob:
+                    image_base64 = base64.b64encode(image_blob).decode('utf-8')
+                else:
+                    image_base64 = None
+                
+                product = Product(
+                    ID_Product=row[0],
+                    Name=row[1],
+                    Detail=row[2],
+                    Price=row[3],
+                    Stock=row[4],
+                    Image=image_base64, 
+                    State=row[6],
+                )
+                products.append(product)
+            
+            return products
+        
+        except Exception as ex:
+            print(f"Error in get_all: {ex}")
+            return None
+        
+    @classmethod
     def get_product_by_id(cls, conexion, IdProducto):
         try:
             cursor = conexion.cursor()

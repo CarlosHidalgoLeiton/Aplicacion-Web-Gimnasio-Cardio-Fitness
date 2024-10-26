@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="content-body default-height">
-	 <div class="container-fluid">
+	<div class="container-fluid">
 		<div class="page-titles">
 			<ol class="breadcrumb">
 				<li class="breadcrumb-item"><a href="{{ url_for('client_app.inicio')}}">Inicio</a></li>
@@ -51,6 +51,7 @@
 													value="{{ current_user.role }}" name="Role" readonly>
 											</div>
 										</div>
+										
 
 									</div>
 
@@ -79,6 +80,31 @@
 													value="{{ client.Age }}" name="Age" readonly >
 											</div>
 										</div>
+
+										<div class="mb-3 row">
+											<label class="col-lg-4 col-form-label" for="validationCustomAge">Fecha de Ingreso</label>
+											<div class="col-lg-6">
+												<input type="text" class="form-control" id="validationCustomAge"
+													value="{{ client.Entry_Date }}" name="Age" readonly >
+											</div>
+										</div>
+
+										{% if client.ExpirationMembership != None %}
+											<div class="mb-3 row">
+												<label class="col-lg-4 col-form-label" for="validationCustomAge">Fecha de inscripcion</label>
+												<div class="col-lg-6">
+													<input type="text" class="form-control" id="validationCustomAge"
+														value="{{ client.Registration_Date }}" name="Registration_Date" readonly >
+												</div>
+											</div>
+											<div class="mb-3 row">
+												<label class="col-lg-4 col-form-label" for="validationCustomAge">Fecha de vencimiento de membresia</label>
+												<div class="col-lg-6">
+													<input type="text" class="form-control" id="validationCustomAge"
+														value="{{ client.ExpirationMembership }}" name="ExpirationMembership" readonly >
+												</div>
+											</div>
+										{% endif %}
 									</div>
 
 								</div>

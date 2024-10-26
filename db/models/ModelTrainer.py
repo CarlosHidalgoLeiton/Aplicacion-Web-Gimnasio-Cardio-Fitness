@@ -103,6 +103,28 @@ class ModelTrainer:
         except Exception as ex:
             print(f"Error en get_all: {ex}")
             return None
+        
+    @classmethod
+    def get_allAble(cls, conexion):
+        try:
+            cursor = conexion.cursor()
+            sql = "SELECT Cedula, Nombre, Primer_Apellido, Segundo_Apellido, Estado FROM Entrenador WHERE Estado = 1"
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+            trainers = []
+            for row in rows:
+                trainer = {
+                    'DocumentId': row[0],
+                    'Name': row[1],
+                    'First_LastName': row[2],
+                    'Second_LastName':row[3],
+                    'State': row[4]
+                }
+                trainers.append(trainer)
+            return trainers
+        except Exception as ex:
+            print(f"Error en get_all: {ex}")
+            return None
     
     @classmethod
     def getDataTrainer(cls, request):
@@ -180,7 +202,6 @@ class ModelTrainer:
     
         return True
     
-       
     @classmethod
     def disableTrainer(cls, conection, DocumentId):
         if DocumentId != None:
@@ -190,6 +211,7 @@ class ModelTrainer:
                 cursor.execute(sql, (DocumentId))
                 if cursor.rowcount > 0:
                     conection.commit()
+                    
                     return True
                 else:
                     print("No se pudo actualizar el entrenador.")

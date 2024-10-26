@@ -125,7 +125,7 @@
                                         </a>
 
 
-                                        <button onclick="disableMembership(event)" data-id="{{ membership['id'] }}"
+                                        <button onclick="disableMembership(event)" data-id="{{ membership['id'] }}" data-name="{{ membership['Name'] }}"
                                             id="deshabilitar-{{ membership['id'] }}"
                                             class="btn btn-danger shadow btn-xs sharp">
                                             <i class="fa fa-trash"></i>
@@ -133,7 +133,7 @@
 
                                         {% else %}
 
-                                        <button onclick="ableMembership(event)" data-id="{{ membership['id'] }}"
+                                        <button onclick="ableMembership(event)" data-id="{{ membership['id'] }}" data-name="{{ membership['Name'] }}"
                                             id="habilitar-{{ membership['id'] }}"
                                             class="btn btn-success shadow btn-xs sharp">
                                             <i class="fa fa-check"></i>
