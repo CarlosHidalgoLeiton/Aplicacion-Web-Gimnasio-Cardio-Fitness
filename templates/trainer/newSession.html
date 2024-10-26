@@ -177,7 +177,18 @@
             };
         });
 
+            
+        
+        const arraySession = JSON.parse(localStorage.getItem('exerciseSessions'));
+        let id = 1;
+        if(arraySession && arraySession.length > 0){
+            const session = arraySession[arraySession.length - 1];
+            id = session['Id'];;
+        }
+        
+
         const newSessionData = {
+            Id: id,
             Name: name,
             Indications: indications,
             Exercises: exercises // Almacenar los ejercicios como un array de objetos

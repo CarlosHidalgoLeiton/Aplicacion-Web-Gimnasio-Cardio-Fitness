@@ -286,11 +286,6 @@ def ableStatistics():
         return jsonify({"error": "No se pudo habilitar"})
 
 
-
-
-
-
-
 ## Sesiones
 
 @trainer_app.route("client/newSession/<ID_Cliente>", methods=['GET', 'POST'])
@@ -310,8 +305,6 @@ def newSessionUpdate(ID_Cliente, ID_Rutina):
     routine = ModelRoutine.get_routine(conection, ID_Rutina) 
     Conection.desconectar()
     return render_template("trainer/newSessionUpdate.html", client=client, routine=routine)
-
-
 
 @trainer_app.route("/viewClient/<documentId>")
 @login_required
@@ -352,6 +345,12 @@ def viewSession(Session_ID):
     else:
         return redirect(url_for('trainer_app.viewRoutine', routineId=routine.RoutineId, DocumentId=routine.ClientId, error="Sesión no encontrada"))
 
-
+@trainer_app.route("/viewSession/<sessionId>/<clientId>", methods=['GET'])
+@login_required
+def viewSessionInsert(sessionId, clientId):
+    if sessionId and clientId:
+        return render_template('trainer/viewNewSession.html', sessionId = sessionId, clientId = clientId)
+    else:
+        return redirect(url_for('trainer_app.routineClient', error="Sesión no encontrada"))
 
 

@@ -6,6 +6,7 @@
         Content body start
     ***********************************-->
 <div class="content-body default-height">
+    <div id="clientId" data-client="{{ client.DocumentId }}"></div>
     <!-- row -->
     <div class="container-fluid">
         <div class="page-titles">
@@ -88,6 +89,7 @@
     window.onload = function () {
         const sessionsContainer = document.getElementById('sessionsContainer');
         const storedSessions = JSON.parse(localStorage.getItem('exerciseSessions')) || [];
+        const clientId = document.getElementById('clientId').getAttribute('data-client');
 
         function renderSessions() {
             sessionsContainer.innerHTML = '';
@@ -107,7 +109,7 @@
                         </div>
                     </div>
                     <div class="col-xl-4 col-xxl-3 col-lg-2 col-sm-12 d-flex align-items-center">
-                        <a href="javascript:void(0);" class="btn mb-3 play-button rounded me-3" onclick="viewSession(${index})">
+                        <a href="/trainer/viewSession/${session.Id}/${clientId}" class="btn mb-3 play-button rounded me-3" onclick="viewSession(${index})">
                             <i class="las la-caret-right scale-2 me-3"></i>Visualizar
                         </a>
                         <button class="btn btn-danger btn-circle btn-sm" onclick="deleteSession(${index})" style="width: 25px; height: 25px; padding: 0;">
@@ -136,7 +138,6 @@
         renderSessions();
     };
 
-
     // Función para manejar el agregar las sesiones del localeStorage al form
     document.querySelector('form').onsubmit = function () {
         const storedSessions = JSON.parse(localStorage.getItem('exerciseSessions')) || [];
@@ -148,10 +149,10 @@
     };
 
     // Validacion para borrar el local cuando se realiza la insercion o se cancela (no funciona aun)
-    if (localStorage.getItem('sessions')) {
-        localStorage.removeItem('sessions');
-        console.log('Sesiones eliminadas del local storage.');
-    }
+    // if (localStorage.getItem('sessions')) {
+    //     localStorage.removeItem('sessions');
+    //     console.log('Sesiones eliminadas del local storage.');
+    // }
 
 </script>
 
