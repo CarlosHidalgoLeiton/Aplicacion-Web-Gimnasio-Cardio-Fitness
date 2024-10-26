@@ -345,7 +345,7 @@ def viewSession(Session_ID):
     else:
         return redirect(url_for('trainer_app.viewRoutine', routineId=routine.RoutineId, DocumentId=routine.ClientId, error="Sesión no encontrada"))
 
-@trainer_app.route("/viewSession/<sessionId>/<clientId>", methods=['GET'])
+@trainer_app.route("/viewNewSession/<sessionId>/<clientId>", methods=['GET'])
 @login_required
 def viewSessionInsert(sessionId, clientId):
     if sessionId and clientId:
