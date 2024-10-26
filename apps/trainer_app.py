@@ -151,41 +151,43 @@ def UpdateRoutine(routineId):
 def routineClient(ID_Cliente):
     conection = Conection.conectar()
     client = ModelClient.getClient(conection, ID_Cliente)  
-    routines = ModelRoutine.get_all(conection, ID_Cliente)  
-    Conection.desconectar()
     doneMessage = request.args.get('done')
     errorMessage = request.args.get('error')
     clear_local_storage = request.args.get('clear_local_storage') 
+    Conection.desconectar()
 
     if request.method == 'POST':
         routine = ModelRoutine.getDataRoutine(request)
         routineValidated = ModelRoutine.validateDataForm(routine)
 
         if not isinstance(routineValidated, bool):
-            return render_template("trainer/routineClient.html", routines=routines, client=client, error=routineValidated, routine=routine)
+            return render_template("trainer/routineClient.html", client=client, error=routineValidated, routine=routine)
 
         conection = Conection.conectar()
         if conection is None:
-            return render_template("trainer/routineClient.html", routines=routines, client=client, error="Error en la conexión.", routine=routine)
+            return render_template("trainer/routineClient.html", client=client, error="Error en la conexión.", routine=routine)
 
         try:
+            sessions = request.form.get('sessions')
+            if sessions == '[]':
+                return render_template("trainer/routineClient.html", client=client, error="Debe ingresar al menos una sesión.", routine=routine) 
+
             conection.begin()
+
             insert, success = ModelRoutine.insertRoutine(conection, routine)
 
             if not success:
                 raise Exception("Error al insertar la rutina.")
 
             Routine_ID = insert.RoutineId  # Obtener el ID de la rutina creada
-            sessions = request.form.get('sessions')
+            
+            sessions_data = json.loads(sessions)
 
-            if sessions:
-                sessions_data = json.loads(sessions)
-
-                for session in sessions_data:
-                    session['Routine_ID'] = Routine_ID
-                    session_result = ModelSession.insertSession(conection, session)
-                    if session_result != True:
-                        raise Exception(f"Error al insertar la sesión: {session['Name']}")
+            for session in sessions_data:
+                session['Routine_ID'] = Routine_ID
+                session_result = ModelSession.insertSession(conection, session)
+                if session_result != True:
+                    raise Exception(f"Error al insertar la sesión: {session['Name']}")
 
             conection.commit()
             Conection.desconectar()
@@ -200,13 +202,10 @@ def routineClient(ID_Cliente):
                 print(f"Rutina {Routine_ID} eliminada debido a un fallo en las sesiones.")
             
             Conection.desconectar()
-            return render_template("trainer/routineClient.html", routines=routines, client=client, error="Error al crear la rutina o sesiones.", routine=routine)
+            return render_template("trainer/routineClient.html", client=client, error="Error al crear la rutina o sesiones.", routine=routine)
 
     else:
-        return render_template("trainer/routineClient.html", routines=routines, routine=None, client=client, done=doneMessage, error=errorMessage, clear_local_storage=clear_local_storage)
-
-
-
+        return render_template("trainer/routineClient.html", routine=None, client=client, done=doneMessage, error=errorMessage, clear_local_storage=clear_local_storage)
 
 @trainer_app.route("/statisticsClient/disable", methods = ['POST'])
 @login_required
@@ -297,7 +296,7 @@ def viewSession(Session_ID):
         session.Exercises = json.loads(session.Exercises)
         return render_template("trainer/viewSession.html", session=session, routine=routine)
     else:
-         return redirect(url_for('trainer_app.viewRoutine', routineId=routine.RoutineId, DocumentId=routine.ClientId, error="Sesión no encontrada"))
+        return redirect(url_for('trainer_app.viewRoutine', routineId=routine.RoutineId, DocumentId=routine.ClientId, error="Sesión no encontrada"))
 
 
 

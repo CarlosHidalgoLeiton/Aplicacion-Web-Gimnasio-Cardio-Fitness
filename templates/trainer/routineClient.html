@@ -27,7 +27,7 @@
                         </div>
 
                         <div class="card-body tab-content pt-2">
-                            <form class="needs-validation" action="/trainer/client/routineClient/{{client.DocumentId }}"
+                            <form class="needs-validation" action="/trainer/client/routineClient/{{client.DocumentId}}"
                                 novalidate method="POST">
 
                                 <div class="col-lg-6">
@@ -69,7 +69,8 @@
                                 <div class="my-3 row">
                                     <div class="col ms-2">
                                         <button type="submit" class="btn btn-primary ms-2">Guardar</button>
-                                        <a type="button" class="btn btn-danger me-2" href="{{ url_for('trainer_app.routinesClient', ID_Cliente=client.DocumentId) }}">Cancelar</a>
+                                        <a type="button" class="btn btn-danger me-2"
+                                            href="{{ url_for('trainer_app.routinesClient', ID_Cliente=client.DocumentId) }}">Cancelar</a>
                                     </div>
                                 </div>
 
@@ -89,7 +90,7 @@
         const storedSessions = JSON.parse(localStorage.getItem('exerciseSessions')) || [];
 
         function renderSessions() {
-            sessionsContainer.innerHTML = ''; 
+            sessionsContainer.innerHTML = '';
             storedSessions.forEach((session, index) => {
                 const sessionDiv = document.createElement('div');
                 sessionDiv.className = 'd-flex border-bottom flex-wrap pt-3 list-row align-items-center mb-2 px-3';
@@ -118,21 +119,21 @@
             });
         }
 
-        
+
         window.viewSession = function (index) {
-            localStorage.setItem('currentSession', JSON.stringify(storedSessions[index])); 
-            window.location.href = "viewNewSession.html"; 
+            localStorage.setItem('currentSession', JSON.stringify(storedSessions[index]));
+            window.location.href = "viewNewSession.html";
         };
 
         // Eliminar sesión
         window.deleteSession = function (index) {
             storedSessions.splice(index, 1); // Eliminar sesión
-            localStorage.setItem('exerciseSessions', JSON.stringify(storedSessions)); 
-            renderSessions(); 
+            localStorage.setItem('exerciseSessions', JSON.stringify(storedSessions));
+            renderSessions();
         };
 
 
-        renderSessions(); 
+        renderSessions();
     };
 
 
@@ -143,7 +144,7 @@
         sessionsInput.type = 'hidden';
         sessionsInput.name = 'sessions';
         sessionsInput.value = JSON.stringify(storedSessions);
-        this.appendChild(sessionsInput); 
+        this.appendChild(sessionsInput);
     };
 
     // Validacion para borrar el local cuando se realiza la insercion o se cancela (no funciona aun)
@@ -152,6 +153,28 @@
         console.log('Sesiones eliminadas del local storage.');
     }
 
+</script>
+
+<script>
+    (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
 </script>
 
 <!--**********************************
