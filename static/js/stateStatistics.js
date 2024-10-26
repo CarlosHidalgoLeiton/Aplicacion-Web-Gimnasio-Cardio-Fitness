@@ -6,7 +6,7 @@ const disableStatistics = (event) => {
 
     Swal.fire({
         title: "¿Esta seguro?",
-        text: "Se deshabilitará las siguientes estadísticas .",
+        text: "Se deshabilitará la estadística.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
@@ -65,7 +65,7 @@ const ableStatistics = (event) => {
 
     Swal.fire({
         title: "¿Esta seguro?",
-        text: "Se habilitará la siguiente estadística.",
+        text: "Se habilitará la estadística.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
