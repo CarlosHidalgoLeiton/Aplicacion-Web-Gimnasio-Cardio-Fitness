@@ -147,7 +147,20 @@ class ModelSession:
             print(f"Error al obtener session por ID: {ex}")
             return None
 
-    
+    @classmethod
+    def deleteSessionsByRoutineID(cls, conexion, routineId):
+        try:
+            cursor = conexion.cursor()
+            sql = "DELETE FROM Sesion WHERE ID_Rutina = %s"
+            cursor.execute(sql, (routineId,))
+            conexion.commit() 
+            return True
+        
+        except Exception as ex:
+            print(f"Error in deleteSessionsByRoutineID: {ex}")
+            conexion.rollback() 
+            return False
+        
     @classmethod
     def getDataSession(cls, request):
         indications = request.form['Indications']

@@ -1,0 +1,161 @@
+{% extends "./layout/Layout_Trainer.html" %}
+
+{% block content %}
+
+<!--**********************************
+        Content body start
+    ***********************************-->
+<div class="content-body default-height">
+    <div class="container-fluid">
+        <div class="page-titles">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('trainer_app.clients') }}">Clientes</a></li>
+                <li class="breadcrumb-item"><a href="">Rutinas</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">Actualizar Rutina</a></li>
+            </ol>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-12 col-xxl-12">
+                <div class="row">
+                    <div class="card plan-list">
+                        <div class="card-header d-sm-flex flex-wrap d-block pb-0 border-0">
+                            <div class="me-auto pe-3 mb-2">
+                                <h4 class="text-black fs-20">Rutina {{ routine.RoutineId }}</h4>
+                            </div>
+                        </div>
+
+                        <div class="card-body tab-content pt-2">
+                            <form class="needs-validation" action="/trainer/client/routineClient/{{client.DocumentId}}" novalidate method="POST">
+
+                                <input type="hidden" class="form-control" value="{{ current_user.DocumentId }}" name="TrainerId" readonly>
+                                <input type="hidden" class="form-control" value="{{ client.DocumentId }}" name="ClientId" readonly>
+
+                                <div class="row">
+                                    <div class="col-xl-12">
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-12 col-form-label" for="validationIndications">Indicaciones <span class="text-danger">*</span></label>
+                                            <div class="col-lg-12">
+                                                <input class="form-control" id="validationIndications" name="Indications" value="{{ routine.Indications }}" required/>
+                                                <div class="invalid-feedback">Por favor ingresar Indicaciones</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="sessionsContainer">
+                                    <!-- Aquí se cargarán las sesiones -->
+                                </div>
+
+                                <div class="my-3 d-flex justify-content-end">
+                                    <div class="ms-auto">
+                                        <a href="{{ url_for('trainer_app.newSessionUpdate', ID_Cliente = client['DocumentId'], ID_Rutina = routine['RoutineId']) }}" class="btn btn-success btn rounded btn-primary mb-3">Actualizar Sesiónes</a>
+                                    </div>
+                                </div>
+
+                                <div class="my-3 row">
+                                    <div class="col ms-2">
+                                        <button type="submit" class="btn btn-primary ms-2">Actualizar</button>
+                                        <a type="button" class="btn btn-danger me-2" href="{{ url_for('trainer_app.routinesClient', ID_Cliente=client.DocumentId) }}">Cancelar</a>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = function () {
+        const sessionsContainer = document.getElementById('sessionsContainer');
+        const storedSessions = JSON.parse(localStorage.getItem('exerciseSessions')) || [];
+
+        // Esta función debe ser llamada con las sesiones obtenidas de la base de datos
+        function renderSessions(dbSessions) {
+            sessionsContainer.innerHTML = '';
+            const allSessions = [...dbSessions, ...storedSessions];
+
+            allSessions.forEach((session, index) => {
+                const sessionDiv = document.createElement('div');
+                sessionDiv.className = 'd-flex border-bottom flex-wrap pt-3 list-row align-items-center mb-2 px-3';
+                sessionDiv.innerHTML = `
+                    <div class="col-xl-8 col-xxl-9 col-lg-10 col-sm-12 d-flex align-items-center">
+                        <div class="list-icon bgl-primary me-3 mb-3">
+                            <p class="fs-24 text-primary mb-0 mt-2">${index + 1}</p>
+                            <span class="fs-14 text-primary">Sec</span>
+                        </div>
+                        <div class="info mb-3">
+                            <h4 class="fs-20 ">
+                                <a href="javascript:void(0);" class="text-black" onclick="viewSession(${index})">${session.Name}</a>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-xxl-3 col-lg-2 col-sm-12 d-flex align-items-center">
+                        <a href="javascript:void(0);" class="btn mb-3 play-button rounded me-3" onclick="viewSession(${index})">
+                            <i class="las la-caret-right scale-2 me-3"></i>Visualizar
+                        </a>
+                        <button class="btn btn-danger btn-circle btn-sm" onclick="deleteSession(${index})" style="width: 25px; height: 25px; padding: 0;">
+                            <i class="fa fa-minus" style="font-size: 14px;"></i>
+                        </button>
+                    </div>
+                `;
+                sessionsContainer.appendChild(sessionDiv);
+            });
+        }
+
+        window.viewSession = function (index) {
+            const allSessions = [...JSON.parse(localStorage.getItem('exerciseSessions')) || [], ...dbSessions];
+            localStorage.setItem('currentSession', JSON.stringify(allSessions[index]));
+            window.location.href = "viewNewSession.html";
+        };
+
+        window.deleteSession = function (index) {
+            if (index < storedSessions.length) {
+                storedSessions.splice(index, 1);
+                localStorage.setItem('exerciseSessions', JSON.stringify(storedSessions));
+            } else {
+                const dbIndex = index - storedSessions.length; // Ajusta el índice para las sesiones de la DB
+                // Lógica para eliminar sesión de la base de datos aquí
+            }
+            renderSessions(dbSessions); // Renderiza nuevamente con las sesiones actualizadas
+        };
+
+        // Simula la obtención de sesiones de la base de datos
+        const dbSessions = [];
+        console.log(dbSessions) // Aquí debes insertar la lógica para obtener las sesiones de la base de datos
+        renderSessions(dbSessions);
+
+        document.querySelector('form').onsubmit = function () {
+            const sessionsInput = document.createElement('input');
+            sessionsInput.type = 'hidden';
+            sessionsInput.name = 'sessions';
+            sessionsInput.value = JSON.stringify(storedSessions);
+            this.appendChild(sessionsInput);
+        };
+
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    };
+</script>
+
+
+<!--**********************************
+        Content body end
+    ***********************************-->
+
+{% endblock %}
