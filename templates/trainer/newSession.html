@@ -21,6 +21,9 @@
                                             <span class="text-danger">*</span>
                                         </label>
                                         <input type="text" class="form-control" id="name" name="name" placeholder="Nombre Sesión" required>
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar el nombre de la sesión
+                                        </div>
                                     </div>
                                     
                                     <div id="exercisesContainer">
@@ -29,11 +32,11 @@
                                                 <label for="exercises1" class="form-label">Ejercicio 
                                                     <span class="text-danger">*</span>
                                                 </label>
-                                                <button type="button" class="btn btn-danger btn-circle btn-sm" onclick="removeExerciseField(this)">
-                                                    <i class="fa fa-minus"></i>
-                                                </button>
                                             </div>
                                             <input type="text" class="form-control mb-2" id="exercises1" name="Exercises[]" placeholder="Nombre del Ejercicio" required>
+                                            <div class="invalid-feedback">
+                                                Por favor ingresar el nombre del ejercicio
+                                            </div>
 
                                             <div class="d-flex align-items-end mb-2">
                                                 <div class="me-2">
@@ -41,12 +44,18 @@
                                                         <span class="text-danger">*</span>
                                                     </label>
                                                     <input type="number" class="form-control" id="reps1" name="Repetitions[]" placeholder="Reps" required>
+                                                    <div class="invalid-feedback">
+                                                        Por favor ingresar las repeticiones
+                                                    </div>
                                                 </div>
                                                 <div>
                                                     <label for="sets1" class="form-label">Series
                                                         <span class="text-danger">*</span>
                                                     </label>
                                                     <input type="number" class="form-control" id="sets1" name="Sets[]" placeholder="Sets" required>
+                                                    <div class="invalid-feedback">
+                                                        Por favor ingresar las series
+                                                    </div>
                                                 </div>
                                             </div>
 
@@ -54,6 +63,9 @@
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <input type="url" class="form-control mb-3" id="video1" name="VideoLinks[]" placeholder="Enlace del Video" required>
+                                            <div class="invalid-feedback">
+                                                Por favor ingresar el enlace
+                                            </div>
                                         </div>
                                     </div>
 
@@ -115,9 +127,9 @@
                 <label for="exercises${count}" class="form-label">Ejercicio
                     <span class="text-danger">*</span>
                 </label>
-                <button type="button" class="btn btn-danger btn-circle btn-sm" onclick="removeExerciseField(this)">
+                ${count > 1 ? `<button type="button" class="btn btn-danger btn-circle btn-sm" onclick="removeExerciseField(this)">
                     <i class="fa fa-minus"></i>
-                </button>
+                </button>` : ''}
             </div>
             <input type="text" class="form-control mb-2" id="exercises${count}" name="Exercises[]" placeholder="Nombre del Ejercicio" value="${value}" required>
 
@@ -150,6 +162,7 @@
         exerciseDiv.remove();
     }
 
+    // Agregar nuevo ejercicio
     document.getElementById('addEjercicioBtn').addEventListener('click', function() {
         exercisesCount++;
         const exercisesContainer = document.getElementById('exercisesContainer');
@@ -158,6 +171,13 @@
 
     document.getElementById('exerciseForm').addEventListener('submit', function(event) {
         event.preventDefault();
+
+        // Validar que todos los campos requeridos estén llenos
+        const form = event.target;
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated'); // Añade estilos de validación de Bootstrap
+            return; // Si algún campo no es válido, no se guarda la sesión
+        }
 
         const name = document.getElementById('name').value;
         const indications = document.getElementById('indications').value;
@@ -214,6 +234,5 @@
         window.location.href = "{{ url_for('trainer_app.routineClient', ID_Cliente=client.DocumentId) }}";
     });
 </script>
-
 
 {% endblock %}
