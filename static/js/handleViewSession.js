@@ -82,57 +82,10 @@ $(document).ready(() => {
         event.preventDefault();
 
         const form = event.target;
-        let allValid = true; // Variable para rastrear si todos son válidos
-
-        // Obtener todos los campos requeridos
-        const nameField = form.querySelectorAll('input[name="name"]');
-        const exerciseFields = form.querySelectorAll('input[name="Exercises[]"]');
-        const repsFields = form.querySelectorAll('input[name="Repetitions[]"]');
-        const setsFields = form.querySelectorAll('input[name="Sets[]"]');
-
-        nameField.forEach(field => {
-            if (!field.checkValidity()) {
-                allValid = false; // Si al menos uno no es válido, cambiar la variable
-            } else {
-                field.classList.remove('was-validated'); // Remover la clase si es válido
-            }
-        });
-
-        // Validar los campos de ejercicio
-        exerciseFields.forEach(field => {
-            if (!field.checkValidity()) {
-                field.classList.add('was-validated');
-                allValid = false; // Si al menos uno no es válido, cambiar la variable
-            } else {
-                field.classList.remove('was-validated'); // Remover la clase si es válido
-            }
-        });
-
-        // Validar los campos de repeticiones
-        repsFields.forEach(field => {
-            if (!field.checkValidity()) {
-                field.classList.add('was-validated');
-                allValid = false;
-            } else {
-                field.classList.remove('was-validated');
-            }
-        });
-
-        // Validar los campos de series
-        setsFields.forEach(field => {
-            if (!field.checkValidity()) {
-                field.classList.add('was-validated');
-                allValid = false;
-            } else {
-                field.classList.remove('was-validated');
-            }
-        });
-
-        // Si algún campo no es válido, no se guarda la sesión
-        if (!allValid) {
-            return;
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated'); // Añade estilos de validación de Bootstrap
+            return; // Si algún campo no es válido, no se guarda la sesión
         }
-
 
         const name = document.getElementById('name').value;
         const indications = document.getElementById('indications').value;
