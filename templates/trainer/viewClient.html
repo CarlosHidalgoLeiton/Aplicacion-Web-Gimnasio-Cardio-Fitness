@@ -1,220 +1,216 @@
-
-
-
 {% block content %}
 
-        <!--**********************************
+<!--**********************************
             Content body start
         ***********************************-->
-        <div class="content-body default-height">
-            <!-- row -->
-            <div class="container-fluid">
-                <div class="page-titles">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ url_for ('trainer_app.clients') }}">Clientes</a></li>
-                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Ver cliente</a></li>
-                    </ol>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card form-container">
-                            <div class="card-body">
-                                <h4 class="card-title mb-4">Cliente Nombre Apellido</h4>
-                                <div class="form-validation">
-                                    <form class="needs-validation" novalidate>
-                                        <div class="row">
-                                            <div class="col-xl-6">
-                                                
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom01">Cédula
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom01"
-                                                            value="{{ client.DocumentId }}" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom02">Nombre 
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom02"
-                                                            value="{{ client.Name }}" readonly>
-                                                        
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom03">Apellido 1
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" class="form-control"
-                                                            id="validationCustom03" value="{{ client.First_LastName}}" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom03">Apellido 2
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" class="form-control"
-                                                            id="validationCustom03" value="{{ client.Second_LastName }}" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom07">Edad
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom07"
-                                                            value="{{ client.Age }}" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom07">Fecha Nacimiento
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom07"
-                                                            value="{{ client.Date_Birth }}" readonly>
-                                                    </div>
-                                                </div>
-                                                
+<div class="content-body default-height">
+    <!-- row -->
+    <div class="container-fluid">
+        <div class="page-titles">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for ('trainer_app.clients') }}">Clientes</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">Ver cliente</a></li>
+            </ol>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card form-container">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Cliente Nombre Apellido</h4>
+                        <div class="form-validation">
+                            <form class="needs-validation" novalidate>
+                                <div class="row">
+                                    <div class="col-xl-6">
+
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom01">Cédula
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="validationCustom01"
+                                                    value="{{ client.DocumentId }}" readonly>
                                             </div>
-                                            <div class="col-xl-6">
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom06">Correo
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom06"
-                                                            value="{{ client.Mail }}" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom07">Telefono
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom07"
-                                                            value="{{ client.Phone }}" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label" for="validationCustom04">Dirección</label>
-                                                    <div class="col-lg-6">
-                                                        <textarea class="form-control" id="validationCustom04" rows="5" readonly>{{ client.Address }}</textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom08">Ocupación
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom08"
-                                                            value="{{ client.Occupation }}" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom09">Teléfono de emergencia
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom09"
-                                                            value="{{ client.TelephoneEmergency }}" readonly>
-                                                        
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom11">Padecimiento
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom11"
-                                                            value="{{ client.Ailments }}" readonly>
-                                                        
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 row">
-                                                    <label class="col-lg-4 col-form-label"
-                                                        for="validationCustom12">Limitaciones
-                                                    </label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" class="form-control" id="validationCustom11"
-                                                        value="{{ client.Limitation }}" readonly>
-                                                    </div>
-                                                </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom02">Nombre
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="validationCustom02"
+                                                    value="{{ client.Name }}" readonly>
 
                                             </div>
                                         </div>
-                                        <div class="my-5">
-                                            <a type="button" class="btn btn-danger me-2"
-                                                href="{{ url_for ('trainer_app.clients') }}">Volver</a>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom03">Apellido 1
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="validationCustom03"
+                                                    value="{{ client.First_LastName}}" readonly>
+                                            </div>
                                         </div>
-                                    </form>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom03">Apellido 2
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="validationCustom03"
+                                                    value="{{ client.Second_LastName }}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom07">Edad
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="validationCustom07"
+                                                    value="{{ client.Age }}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom07">Fecha
+                                                Nacimiento
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="validationCustom07"
+                                                    value="{{ client.Date_Birth }}" readonly>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-xl-6">
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom06">Correo
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="validationCustom06"
+                                                    value="{{ client.Mail }}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom07">Telefono
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="validationCustom07"
+                                                    value="{{ client.Phone }}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label"
+                                                for="validationCustom04">Dirección</label>
+                                            <div class="col-lg-6">
+                                                <textarea class="form-control" id="validationCustom04" rows="5"
+                                                    readonly>{{ client.Address }}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom08">Ocupación
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="validationCustom08"
+                                                    value="{{ client.Occupation }}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom09">Teléfono de
+                                                emergencia
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="validationCustom09"
+                                                    value="{{ client.TelephoneEmergency }}" readonly>
+
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom11">Padecimiento
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="validationCustom11"
+                                                    value="{{ client.Ailments }}" readonly>
+
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom12">Limitaciones
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="validationCustom11"
+                                                    value="{{ client.Limitation }}" readonly>
+                                            </div>
+                                        </div>
+
+                                    </div>
                                 </div>
-                            </div>
+                                <div class="my-5">
+                                    <a type="button" class="btn btn-danger me-2"
+                                        href="{{ url_for ('trainer_app.clients') }}">Volver</a>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
-        <!--**********************************
+<!--**********************************
             Content body end
         ***********************************-->
 
-    <script>
-        $(document).ready(function () {
-            // SmartWizard initialize
-            $('#smartwizard').smartWizard();
-        });
-    </script>
 
-    <script>
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
-                    $('#imagePreview').hide();
-                    $('#imagePreview').fadeIn(650);
-                }
-                reader.readAsDataURL(input.files[0]);
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    $(document).ready(function () {
+        // SmartWizard initialize
+        $('#smartwizard').smartWizard();
+    });
+</script>
+
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
+                $('#imagePreview').hide();
+                $('#imagePreview').fadeIn(650);
             }
+            reader.readAsDataURL(input.files[0]);
         }
-        $("#imageUpload").on('change', function () {
+    }
+    $("#imageUpload").on('change', function () {
 
-            readURL(this);
-        });
-        $('.remove-img').on('click', function () {
-            var imageUrl = "images/no-img-avatar.png";
-            $('.avatar-preview, #imagePreview').removeAttr('style');
-            $('#imagePreview').css('background-image', 'url(' + imageUrl + ')');
-        });
-    </script>
+        readURL(this);
+    });
+    $('.remove-img').on('click', function () {
+        var imageUrl = "images/no-img-avatar.png";
+        $('.avatar-preview, #imagePreview').removeAttr('style');
+        $('#imagePreview').css('background-image', 'url(' + imageUrl + ')');
+    });
+</script>
 
-    <script>
-        (function () {
-            'use strict'
+<script>
+    (function () {
+        'use strict'
 
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            var forms = document.querySelectorAll('.needs-validation')
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
 
-            // Loop over them and prevent submission
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
 
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-        })()
-    </script>
-
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script>
+<script>
+    localStorage.clear();
+</script>
 {% endblock %}

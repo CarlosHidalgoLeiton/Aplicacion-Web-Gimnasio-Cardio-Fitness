@@ -44,12 +44,11 @@
                                 <div class="row">
                                     <div class="col-xl-12">
                                         <div class="mb-3 row">
-                                            <label class="col-lg-12 col-form-label"
-                                                for="Indications">Indicaciones <span
+                                            <label class="col-lg-12 col-form-label" for="Indications">Indicaciones <span
                                                     class="text-danger">*</span></label>
                                             <div class="col-lg-12">
-                                                <input class="form-control" id="Indications" rows="5"
-                                                    name="Indications" required>
+                                                <input class="form-control" id="Indications" rows="5" name="Indications"
+                                                    required>
                                                 <div class="invalid-feedback">Por favor ingresar Indicaciones</div>
                                             </div>
                                         </div>
@@ -62,7 +61,8 @@
 
                                 <div class="my-3 d-flex justify-content-end">
                                     <div class="ms-auto">
-                                        <a href="{{ url_for ('trainer_app.newSession', ID_Cliente = client['DocumentId']) }}" id="addSession" onclick="loadIndications(event)"
+                                        <a href="{{ url_for ('trainer_app.newSession', ID_Cliente = client['DocumentId']) }}"
+                                            id="addSession" onclick="loadIndications(event)"
                                             class="btn btn-success btn rounded btn-primary mb-3"> Agregar Sesión</a>
                                     </div>
                                 </div>
@@ -93,21 +93,21 @@ Content body end
 
 
 {% block scripts %}
-    <script src="../../../static/js/handleIndication.js"></script>
+<script src="../../../static/js/handleIndication.js"></script>
 
 
-    <script>
-        window.onload = function () {
-            const sessionsContainer = document.getElementById('sessionsContainer');
-            const storedSessions = JSON.parse(localStorage.getItem('exerciseSessions')) || [];
-            const clientId = document.getElementById('clientId').getAttribute('data-client');
-    
-            function renderSessions() {
-                sessionsContainer.innerHTML = '';
-                storedSessions.forEach((session, index) => {
-                    const sessionDiv = document.createElement('div');
-                    sessionDiv.className = 'd-flex border-bottom flex-wrap pt-3 list-row align-items-center mb-2 px-3';
-                    sessionDiv.innerHTML = `
+<script>
+    window.onload = function () {
+        const sessionsContainer = document.getElementById('sessionsContainer');
+        const storedSessions = JSON.parse(localStorage.getItem('exerciseSessions')) || [];
+        const clientId = document.getElementById('clientId').getAttribute('data-client');
+
+        function renderSessions() {
+            sessionsContainer.innerHTML = '';
+            storedSessions.forEach((session, index) => {
+                const sessionDiv = document.createElement('div');
+                sessionDiv.className = 'd-flex border-bottom flex-wrap pt-3 list-row align-items-center mb-2 px-3';
+                sessionDiv.innerHTML = `
                         <div class="col-xl-8 col-xxl-9 col-lg-10 col-sm-12 d-flex align-items-center">
                             <div class="list-icon bgl-primary me-3 mb-3">
                                 <p class="fs-24 text-primary mb-0 mt-2">${index + 1}</p>
@@ -128,64 +128,65 @@ Content body end
                             </button>
                         </div>
                     `;
-                    sessionsContainer.appendChild(sessionDiv);
-                });
-            }
-    
-    
-            window.viewSession = function (index) {
-                localStorage.setItem('currentSession', JSON.stringify(storedSessions[index]));
-                window.location.href = "viewNewSession.html";
-            };
-    
-            // Eliminar sesión
-            window.deleteSession = function (index) {
-                storedSessions.splice(index, 1); // Eliminar sesión
-                localStorage.setItem('exerciseSessions', JSON.stringify(storedSessions));
-                renderSessions();
-            };
-    
-    
+                sessionsContainer.appendChild(sessionDiv);
+            });
+        }
+
+
+        window.viewSession = function (index) {
+            localStorage.setItem('currentSession', JSON.stringify(storedSessions[index]));
+            window.location.href = "viewNewSession.html";
+        };
+
+        // Eliminar sesión
+        window.deleteSession = function (index) {
+            storedSessions.splice(index, 1); // Eliminar sesión
+            localStorage.setItem('exerciseSessions', JSON.stringify(storedSessions));
             renderSessions();
         };
-    
-        // Función para manejar el agregar las sesiones del localeStorage al form
-        document.querySelector('form').onsubmit = function () {
-            const storedSessions = JSON.parse(localStorage.getItem('exerciseSessions')) || [];
-            const sessionsInput = document.createElement('input');
-            sessionsInput.type = 'hidden';
-            sessionsInput.name = 'sessions';
-            sessionsInput.value = JSON.stringify(storedSessions);
-            this.appendChild(sessionsInput);
-        };
-    
-        // Validacion para borrar el local cuando se realiza la insercion o se cancela (no funciona aun)
-        // if (localStorage.getItem('sessions')) {
-        //     localStorage.removeItem('sessions');
-        //     console.log('Sesiones eliminadas del local storage.');
-        // }
-    
-    </script>
-    
-    <script>
-        (function () {
-            'use strict'
-    
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            var forms = document.querySelectorAll('.needs-validation')
-    
-            // Loop over them and prevent submission
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-    
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-        })()
-    </script>
+
+
+        renderSessions();
+    };
+
+    // Función para manejar el agregar las sesiones del localeStorage al form
+    document.querySelector('form').onsubmit = function () {
+        const storedSessions = JSON.parse(localStorage.getItem('exerciseSessions')) || [];
+        const sessionsInput = document.createElement('input');
+        sessionsInput.type = 'hidden';
+        sessionsInput.name = 'sessions';
+        sessionsInput.value = JSON.stringify(storedSessions);
+        this.appendChild(sessionsInput);
+    };
+
+    // Validacion para borrar el local cuando se realiza la insercion o se cancela (no funciona aun)
+    // if (localStorage.getItem('sessions')) {
+    //     localStorage.removeItem('sessions');
+    //     console.log('Sesiones eliminadas del local storage.');
+    // }
+
+</script>
+
+<script>
+    (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script>
+
 {% endblock %}

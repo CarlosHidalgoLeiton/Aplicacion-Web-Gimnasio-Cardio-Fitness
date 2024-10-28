@@ -372,61 +372,66 @@
 		Content body end
 	***********************************-->
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('btnAgregarCliente').addEventListener('click', function () {
-                document.getElementById('formStatistics').style.display = 'block';
-            });
+{% endblock %}
 
-            document.getElementById('btnCancelar').addEventListener('click', function () {
-                document.getElementById('formStatistics').style.display = 'none';
-            });
+{% block scripts %}
 
-        });
-    </script>
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		document.getElementById('btnAgregarCliente').addEventListener('click', function () {
+			document.getElementById('formStatistics').style.display = 'block';
+		});
 
-    <script>
-        $(document).ready(function () {
-            // SmartWizard initialize
-            $('#smartwizard').smartWizard();
-        });
-    </script>
+		document.getElementById('btnCancelar').addEventListener('click', function () {
+			document.getElementById('formStatistics').style.display = 'none';
+		});
 
-    <script>
-        (function () {
-            'use strict'
-
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            var forms = document.querySelectorAll('.needs-validation')
-
-            // Loop over them and prevent submission
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-        })
-
-		document.addEventListener("DOMContentLoaded", function() {
-		var measurementDateInput = document.getElementById('validationCustom01');
-		if (!measurementDateInput.value) {
-			var today = new Date();
-			// Ajustar la fecha a la zona horaria local
-			var offset = today.getTimezoneOffset() * 60000; // Convertir minutos a milisegundos
-			var localDate = new Date(today.getTime() - offset);
-			var formattedDate = localDate.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-			measurementDateInput.value = formattedDate;
-		}
 	});
-	
+</script>
 
-	
-    </script>
+<script>
+	$(document).ready(function () {
+		// SmartWizard initialize
+		$('#smartwizard').smartWizard();
+	});
+</script>
 
+<script>
+	(function () {
+		'use strict'
+
+		// Fetch all the forms we want to apply custom Bootstrap validation styles to
+		var forms = document.querySelectorAll('.needs-validation')
+
+		// Loop over them and prevent submission
+		Array.prototype.slice.call(forms)
+			.forEach(function (form) {
+				form.addEventListener('submit', function (event) {
+					if (!form.checkValidity()) {
+						event.preventDefault()
+						event.stopPropagation()
+					}
+
+					form.classList.add('was-validated')
+				}, false)
+			})
+	})
+
+	document.addEventListener("DOMContentLoaded", function() {
+	var measurementDateInput = document.getElementById('validationCustom01');
+	if (!measurementDateInput.value) {
+		var today = new Date();
+		// Ajustar la fecha a la zona horaria local
+		var offset = today.getTimezoneOffset() * 60000; // Convertir minutos a milisegundos
+		var localDate = new Date(today.getTime() - offset);
+		var formattedDate = localDate.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+		measurementDateInput.value = formattedDate;
+	}
+});
+
+</script>
+
+<script>
+    localStorage.clear();
+</script>
 {% endblock %}

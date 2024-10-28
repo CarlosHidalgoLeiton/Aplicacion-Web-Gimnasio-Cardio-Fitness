@@ -15,4 +15,54 @@
 		</div>
 	</div>
 </div>
+
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('btnAgregarCliente').addEventListener('click', function () {
+            document.getElementById('formCliente').style.display = 'block';
+        });
+
+        document.getElementById('btnCancelar').addEventListener('click', function () {
+            document.getElementById('formCliente').style.display = 'none';
+        });
+
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        // SmartWizard initialize
+        $('#smartwizard').smartWizard();
+    });
+</script>
+
+<script>
+    (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script>
+
+<script>
+    localStorage.clear();
+</script>
 {% endblock %}
