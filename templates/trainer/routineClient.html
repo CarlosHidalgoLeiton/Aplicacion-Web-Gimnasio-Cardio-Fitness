@@ -85,106 +85,107 @@
     </div>
 </div>
 
-<script>
-    window.onload = function () {
-        const sessionsContainer = document.getElementById('sessionsContainer');
-        const storedSessions = JSON.parse(localStorage.getItem('exerciseSessions')) || [];
-        const clientId = document.getElementById('clientId').getAttribute('data-client');
 
-        function renderSessions() {
-            sessionsContainer.innerHTML = '';
-            storedSessions.forEach((session, index) => {
-                const sessionDiv = document.createElement('div');
-                sessionDiv.className = 'd-flex border-bottom flex-wrap pt-3 list-row align-items-center mb-2 px-3';
-                sessionDiv.innerHTML = `
-                    <div class="col-xl-8 col-xxl-9 col-lg-10 col-sm-12 d-flex align-items-center">
-                        <div class="list-icon bgl-primary me-3 mb-3">
-                            <p class="fs-24 text-primary mb-0 mt-2">${index + 1}</p>
-                            <span class="fs-14 text-primary">Sec</span>
-                        </div>
-                        <div class="info mb-3">
-                            <h4 class="fs-20 ">
-                                <a href="javascript:void(0);" class="text-black" onclick="viewSession(${index})">${session.Name}</a>
-                            </h4>
-                        </div>
-                    </div>
-                    <div class="col-xl-4 col-xxl-3 col-lg-2 col-sm-12 d-flex align-items-center">
-                        <a href="/trainer/viewNewSession/${session.Id}/${clientId}" class="btn mb-3 play-button rounded me-3" onclick="viewSession(${index})">
-                            <i class="las la-caret-right scale-2 me-3"></i>Visualizar
-                        </a>
-                        <button class="btn btn-danger btn-circle btn-sm" onclick="deleteSession(${index})" style="width: 25px; height: 25px; padding: 0;">
-                            <i class="fa fa-minus" style="font-size: 14px;"></i>
-                        </button>
-                    </div>
-                `;
-                sessionsContainer.appendChild(sessionDiv);
-            });
-        }
+<!--**********************************
+Content body end
+***********************************-->
+{% endblock %}
 
-
-        window.viewSession = function (index) {
-            localStorage.setItem('currentSession', JSON.stringify(storedSessions[index]));
-            window.location.href = "viewNewSession.html";
-        };
-
-        // Eliminar sesión
-        window.deleteSession = function (index) {
-            storedSessions.splice(index, 1); // Eliminar sesión
-            localStorage.setItem('exerciseSessions', JSON.stringify(storedSessions));
-            renderSessions();
-        };
-
-
-        renderSessions();
-    };
-
-    // Función para manejar el agregar las sesiones del localeStorage al form
-    document.querySelector('form').onsubmit = function () {
-        const storedSessions = JSON.parse(localStorage.getItem('exerciseSessions')) || [];
-        const sessionsInput = document.createElement('input');
-        sessionsInput.type = 'hidden';
-        sessionsInput.name = 'sessions';
-        sessionsInput.value = JSON.stringify(storedSessions);
-        this.appendChild(sessionsInput);
-    };
-
-    // Validacion para borrar el local cuando se realiza la insercion o se cancela (no funciona aun)
-    // if (localStorage.getItem('sessions')) {
-    //     localStorage.removeItem('sessions');
-    //     console.log('Sesiones eliminadas del local storage.');
-    // }
-
-</script>
-
-<script>
-    (function () {
-        'use strict'
-
-        // Fetch all the forms we want to apply custom Bootstrap validation styles to
-        var forms = document.querySelectorAll('.needs-validation')
-
-        // Loop over them and prevent submission
-        Array.prototype.slice.call(forms)
-            .forEach(function (form) {
-                form.addEventListener('submit', function (event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                    }
-
-                    form.classList.add('was-validated')
-                }, false)
-            })
-    })()
-</script>
 
 {% block scripts %}
     <script src="../../../static/js/handleIndication.js"></script>
 
-{% endblock %}
 
-<!--**********************************
-        Content body end
-    ***********************************-->
-
+    <script>
+        window.onload = function () {
+            const sessionsContainer = document.getElementById('sessionsContainer');
+            const storedSessions = JSON.parse(localStorage.getItem('exerciseSessions')) || [];
+            const clientId = document.getElementById('clientId').getAttribute('data-client');
+    
+            function renderSessions() {
+                sessionsContainer.innerHTML = '';
+                storedSessions.forEach((session, index) => {
+                    const sessionDiv = document.createElement('div');
+                    sessionDiv.className = 'd-flex border-bottom flex-wrap pt-3 list-row align-items-center mb-2 px-3';
+                    sessionDiv.innerHTML = `
+                        <div class="col-xl-8 col-xxl-9 col-lg-10 col-sm-12 d-flex align-items-center">
+                            <div class="list-icon bgl-primary me-3 mb-3">
+                                <p class="fs-24 text-primary mb-0 mt-2">${index + 1}</p>
+                                <span class="fs-14 text-primary">Sec</span>
+                            </div>
+                            <div class="info mb-3">
+                                <h4 class="fs-20 ">
+                                    <a href="javascript:void(0);" class="text-black" onclick="viewSession(${index})">${session.Name}</a>
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-xxl-3 col-lg-2 col-sm-12 d-flex align-items-center">
+                            <a href="/trainer/viewNewSession/${session.Id}/${clientId}" class="btn mb-3 play-button rounded me-3" onclick="viewSession(${index})">
+                                <i class="las la-caret-right scale-2 me-3"></i>Visualizar
+                            </a>
+                            <button class="btn btn-danger btn-circle btn-sm" onclick="deleteSession(${index})" style="width: 25px; height: 25px; padding: 0;">
+                                <i class="fa fa-minus" style="font-size: 14px;"></i>
+                            </button>
+                        </div>
+                    `;
+                    sessionsContainer.appendChild(sessionDiv);
+                });
+            }
+    
+    
+            window.viewSession = function (index) {
+                localStorage.setItem('currentSession', JSON.stringify(storedSessions[index]));
+                window.location.href = "viewNewSession.html";
+            };
+    
+            // Eliminar sesión
+            window.deleteSession = function (index) {
+                storedSessions.splice(index, 1); // Eliminar sesión
+                localStorage.setItem('exerciseSessions', JSON.stringify(storedSessions));
+                renderSessions();
+            };
+    
+    
+            renderSessions();
+        };
+    
+        // Función para manejar el agregar las sesiones del localeStorage al form
+        document.querySelector('form').onsubmit = function () {
+            const storedSessions = JSON.parse(localStorage.getItem('exerciseSessions')) || [];
+            const sessionsInput = document.createElement('input');
+            sessionsInput.type = 'hidden';
+            sessionsInput.name = 'sessions';
+            sessionsInput.value = JSON.stringify(storedSessions);
+            this.appendChild(sessionsInput);
+        };
+    
+        // Validacion para borrar el local cuando se realiza la insercion o se cancela (no funciona aun)
+        // if (localStorage.getItem('sessions')) {
+        //     localStorage.removeItem('sessions');
+        //     console.log('Sesiones eliminadas del local storage.');
+        // }
+    
+    </script>
+    
+    <script>
+        (function () {
+            'use strict'
+    
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.querySelectorAll('.needs-validation')
+    
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+    
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
 {% endblock %}

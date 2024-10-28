@@ -1,21 +1,33 @@
-$(document).ready( () => {
+const removeExerciseField = (button) => {
+    const exerciseDiv = button.closest('.exercise');
+    exerciseDiv.remove();
+}
+
+$(document).ready(() => {
+
+    let count = 1;
+
     const id = document.getElementById('sessionId').getAttribute('data-sessionId');
+    const clientId = document.getElementById('clientId').getAttribute('data-clientId');
     const sessions = JSON.parse(localStorage.getItem('exerciseSessions'));
+    const exercisesContainer = document.getElementById('exercisesContainer');
 
-    const intId = parseInt(id);
+    const loadData = () => {
 
-    let session = sessions.find( (s) => {
-        return s.Id == intId
-    } )
+        const intId = parseInt(id);
 
-    if (session != undefined){
-        document.getElementById('name').value = session.Name;
-        document.getElementById('indications').value = session.Indications;
+        let session = sessions.find((s) => {
+            return s.Id == intId
+        })
 
-        session.Exercises.forEach((excercise, count) => {
-            const newExerciseDiv = document.createElement('div');
-            newExerciseDiv.className = 'mb-4 exercise';
-            newExerciseDiv.innerHTML = `
+        if (session != undefined) {
+            document.getElementById('name').value = session.Name;
+            document.getElementById('indications').value = session.Indications;
+
+            session.Exercises.forEach((excercise) => {
+                const newExerciseDiv = document.createElement('div');
+                newExerciseDiv.className = 'mb-4 exercise';
+                newExerciseDiv.innerHTML = `
                 <div class="d-flex justify-content-between align-items-center">
                     <label for="exercises${count}" class="form-label">Ejercicio
                         <span class="text-danger">*</span>
@@ -24,74 +36,187 @@ $(document).ready( () => {
                         <i class="fa fa-minus"></i>
                     </button>` : ''}
                 </div>
-                <input type="text" class="form-control mb-2" id="exercises${count}"  name="Exercises[]" placeholder="Nombre del Ejercicio" required>
-
+                <input type="text" class="form-control mb-2" id="exercises${count}" value="${excercise.nombre}"  name="Exercises[]" placeholder="Nombre del Ejercicio" required>
+                <div class="invalid-feedback">
+                    Por favor ingresar el nombre del ejercicio
+                </div>
                 <div class="d-flex align-items-end mb-2">
                     <div class="me-2">
                         <label for="reps${count}" class="form-label">Repeticiones
                             <span class="text-danger">*</span>
                         </label>
-                        <input type="number" class="form-control" id="reps${count}" name="Repetitions[]" placeholder="Reps" required>
-                    </div>
+                        <input type="number" class="form-control" id="reps${count}" value="${excercise.repeticiones}" name="Repetitions[]" placeholder="Reps" required>
+                        <div class="invalid-feedback">
+                            Por favor ingresar las repeticiones
+                        </div>
+                        </div>
                     <div>
                         <label for="sets${count}" class="form-label">Series
                             <span class="text-danger">*</span>
                         </label>
-                        <input type="number" class="form-control" id="sets${count}" name="Sets[]" placeholder="Sets" required>
+                        <input type="number" class="form-control" id="sets${count}" value="${excercise.series}" name="Sets[]" placeholder="Sets" required>
+                        <div class="invalid-feedback">
+                            Por favor ingresar las series
+                        </div>
                     </div>
                 </div>
 
                 <label for="video${count}" class="form-label">Enlace de Video
-                    <span class="text-danger">*</span>
                 </label>
-                <input type="url" class="form-control mb-3" id="video${count}" name="VideoLinks[]" placeholder="Enlace del Video" required>
+                <input type="url" class="form-control mb-3" id="video${count}" value="${excercise.Link}" name="VideoLinks[]" placeholder="Enlace del Video">
             `;
-            container.appendChild(newExerciseDiv);
-        });
+                exercisesContainer.appendChild(newExerciseDiv);
+
+                count++;
+            });
+        }
+
     }
 
-    console.log(session);
-    
-    
+    document.getElementById('addEjercicioBtn').addEventListener('click', function () {
+        count++;
+        addExerciseField(count);
+    });
+
+    document.getElementById('exerciseForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const form = event.target;
+        let allValid = true; // Variable para rastrear si todos son válidos
+
+        // Obtener todos los campos requeridos
+        const nameField = form.querySelectorAll('input[name="name"]');
+        const exerciseFields = form.querySelectorAll('input[name="Exercises[]"]');
+        const repsFields = form.querySelectorAll('input[name="Repetitions[]"]');
+        const setsFields = form.querySelectorAll('input[name="Sets[]"]');
+
+        nameField.forEach(field => {
+            if (!field.checkValidity()) {
+                allValid = false; // Si al menos uno no es válido, cambiar la variable
+            } else {
+                field.classList.remove('was-validated'); // Remover la clase si es válido
+            }
+        });
+
+        // Validar los campos de ejercicio
+        exerciseFields.forEach(field => {
+            if (!field.checkValidity()) {
+                field.classList.add('was-validated');
+                allValid = false; // Si al menos uno no es válido, cambiar la variable
+            } else {
+                field.classList.remove('was-validated'); // Remover la clase si es válido
+            }
+        });
+
+        // Validar los campos de repeticiones
+        repsFields.forEach(field => {
+            if (!field.checkValidity()) {
+                field.classList.add('was-validated');
+                allValid = false;
+            } else {
+                field.classList.remove('was-validated');
+            }
+        });
+
+        // Validar los campos de series
+        setsFields.forEach(field => {
+            if (!field.checkValidity()) {
+                field.classList.add('was-validated');
+                allValid = false;
+            } else {
+                field.classList.remove('was-validated');
+            }
+        });
+
+        // Si algún campo no es válido, no se guarda la sesión
+        if (!allValid) {
+            return;
+        }
 
 
-    // let exercisesCount = 1;
+        const name = document.getElementById('name').value;
+        const indications = document.getElementById('indications').value;
 
-    // function addExerciseField(container, value = '', count) {
-    //     const newExerciseDiv = document.createElement('div');
-    //     newExerciseDiv.className = 'mb-4 exercise';
-    //     newExerciseDiv.innerHTML = `
-    //         <div class="d-flex justify-content-between align-items-center">
-    //             <label for="exercises${count}" class="form-label">Ejercicio
-    //                 <span class="text-danger">*</span>
-    //             </label>
-    //             ${count > 1 ? `<button type="button" class="btn btn-danger btn-circle btn-sm" onclick="removeExerciseField(this)">
-    //                 <i class="fa fa-minus"></i>
-    //             </button>` : ''}
-    //         </div>
-    //         <input type="text" class="form-control mb-2" id="exercises${count}" name="Exercises[]" placeholder="Nombre del Ejercicio" value="${value}" required>
+        // Crear un array de objetos para los ejercicios
+        const exercises = Array.from(document.querySelectorAll('.exercise')).map((exerciseDiv, index) => {
+            const exerciseName = exerciseDiv.querySelector(`input[name="Exercises[]"]`).value;
+            const reps = exerciseDiv.querySelector(`input[name="Repetitions[]"]`).value;
+            const sets = exerciseDiv.querySelector(`input[name="Sets[]"]`).value;
+            const videoLink = exerciseDiv.querySelector(`input[name="VideoLinks[]"]`).value;
 
-    //         <div class="d-flex align-items-end mb-2">
-    //             <div class="me-2">
-    //                 <label for="reps${count}" class="form-label">Repeticiones
-    //                     <span class="text-danger">*</span>
-    //                 </label>
-    //                 <input type="number" class="form-control" id="reps${count}" name="Repetitions[]" placeholder="Reps" required>
-    //             </div>
-    //             <div>
-    //                 <label for="sets${count}" class="form-label">Series
-    //                     <span class="text-danger">*</span>
-    //                 </label>
-    //                 <input type="number" class="form-control" id="sets${count}" name="Sets[]" placeholder="Sets" required>
-    //             </div>
-    //         </div>
+            return {
+                nombre: exerciseName,
+                repeticiones: reps,
+                series: sets,
+                Link: videoLink
+            };
+        });
 
-    //         <label for="video${count}" class="form-label">Enlace de Video
-    //             <span class="text-danger">*</span>
-    //         </label>
-    //         <input type="url" class="form-control mb-3" id="video${count}" name="VideoLinks[]" placeholder="Enlace del Video" required>
-    //     `;
-    //     container.appendChild(newExerciseDiv);
-    // }
-    
-} )
+        const updatedSession = {
+            Id: parseInt(id),
+            Name: name,
+            Indications: indications,
+            Exercises: exercises
+        };
+
+        updatedSessions = sessions.map((s) => {
+            if (parseInt(s.Id) === parseInt(id)) {
+                return updatedSession; // Reemplaza con la nueva sesión
+            }
+            return s; // Devuelve la sesión original
+        });
+
+        // Guardar el nuevo arreglo en local storage
+        localStorage.setItem('exerciseSessions', JSON.stringify(updatedSessions));
+
+        // Limpiar el formulario después de guardar
+        document.getElementById('exerciseForm').reset();
+        exercisesCount = 1; // Reiniciar el contador de ejercicios
+        exercisesContainer.innerHTML = ''; // Limpiar el contenedor de ejercicios
+
+        // Redirigir a la página de rutinas del cliente después de guardar
+        window.location.href = `/trainer/client/routineClient/${clientId}`;
+    });
+
+    function addExerciseField(count) {
+        const newExerciseDiv = document.createElement('div');
+        newExerciseDiv.className = 'mb-4 exercise';
+        newExerciseDiv.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center">
+                <label for="exercises${count}" class="form-label">Ejercicio
+                    <span class="text-danger">*</span>
+                </label>
+                ${count > 1 ? `<button type="button" class="btn btn-danger btn-circle btn-sm" onclick="removeExerciseField(this)">
+                    <i class="fa fa-minus"></i>
+                </button>` : ''}
+            </div>
+            <input type="text" class="form-control mb-2" id="exercises${count}" name="Exercises[]" placeholder="Nombre del Ejercicio" required>
+
+            <div class="d-flex align-items-end mb-2">
+                <div class="me-2">
+                    <label for="reps${count}" class="form-label">Repeticiones
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="number" class="form-control" id="reps${count}" name="Repetitions[]" placeholder="Reps" required>
+                </div>
+                <div>
+                    <label for="sets${count}" class="form-label">Series
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="number" class="form-control" id="sets${count}" name="Sets[]" placeholder="Sets" required>
+                </div>
+            </div>
+
+            <label for="video${count}" class="form-label">Enlace de Video
+                <span class="text-danger">*</span>
+            </label>
+            <input type="url" class="form-control mb-3" id="video${count}" name="VideoLinks[]" placeholder="Enlace del Video" required>
+        `;
+
+        exercisesContainer.appendChild(newExerciseDiv);
+    }
+
+
+
+    loadData();
+});
