@@ -163,7 +163,7 @@ $(document).ready(() => {
             <label for="video${count}" class="form-label">Enlace de Video
                 <span class="text-danger">*</span>
             </label>
-            <input type="url" class="form-control mb-3" id="video${count}" name="VideoLinks[]" placeholder="Enlace del Video" required>
+            <input type="url" class="form-control mb-3" id="video${count}" name="VideoLinks[]" placeholder="Enlace del Video">
         `;
 
         exercisesContainer.appendChild(newExerciseDiv);
