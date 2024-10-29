@@ -48,21 +48,21 @@ class ModelSession:
 
     
     @classmethod
-    def updateSession(cls, conection, session, ID_Sesion):
-        if session != None:
+    def updateSession(cls, conection, session, routineId):
+        if session is not None:
             try:
                 cursor = conection.cursor()
-                sql = """UPDATE Sesion SET Indicaciones = %s, Ejercicios = %s, ID_Rutina = %s WHERE ID_Sesion = %s"""
-                cursor.execute(sql, (session.Indications, session.Exercises, session.Routine_ID, ID_Sesion))
+                sql = """UPDATE sesion SET Indicaciones = %s, Ejercicios = %s, ID_Rutina = %s, Nombre = %s WHERE ID_Sesion = %s"""
+                cursor.execute(sql, (session.get('Indications'), json.dumps(session.get('Exercises')), routineId , session.get('Name'), session.get('Session_ID')))
                 conection.commit()
 
                 if cursor.rowcount > 0:
-                    print(f"Sesion {session.Name} actualizada exitosamente.")
+                    print(f"Sesión {session.get('Name')} actualizada exitosamente.")
                     return True
                 else:
-                    print("No se pudo actualizar la sesion.")
+                    print("No se pudo actualizar la sesión.")
                     return "Error"
-                
+                    
             except IntegrityError as ex:
                 print(f"Error en ModelSession updateSession: {ex}")
                 conection.rollback()
@@ -77,6 +77,7 @@ class ModelSession:
                 return "Error"
         else:
             return "Error"
+
 
     @classmethod
     def get_all(cls, conexion):
@@ -173,3 +174,19 @@ class ModelSession:
     def validateDataForm(cls, session):
         # Validar que datos
         True
+
+
+    @classmethod
+    def deleteSessions(cls, conexion, routineId, deleteIds):
+        try:
+            cursor = conexion.cursor()
+            for deleteId in deleteIds:
+                sql = "DELETE FROM sesion WHERE ID_Rutina = %s AND ID_Sesion = %s"
+                cursor.execute(sql, (routineId, deleteId))
+            conexion.commit() 
+            return True
+            
+        except Exception as ex:
+            print(f"Error in deleteSessions: {ex}")
+            conexion.rollback() 
+            return False

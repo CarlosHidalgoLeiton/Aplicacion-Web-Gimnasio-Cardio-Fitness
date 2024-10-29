@@ -210,7 +210,7 @@
         let id = 1;
         if (arraySession && arraySession.length > 0) {
             const session = arraySession[arraySession.length - 1];
-            id = session['Id'];;
+            id = parseInt(session['Id'])+1;
         }
 
 

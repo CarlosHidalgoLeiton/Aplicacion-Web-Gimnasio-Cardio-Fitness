@@ -5,7 +5,7 @@
 <!--**********************************
         Content body start
     ***********************************-->
-<div id="data" data-routine="{{routine.RoutineId}}" data-client="{{client.DocumentId}}"></div>
+<div id="data" data-routine="{{routine.RoutineId}}" data-client="{{client.DocumentId}}" data-indications="{{routine.Indications}}"></div>
 <div class="content-body default-height">
     <div class="container-fluid">
         <div class="page-titles">
@@ -62,8 +62,7 @@
                                 <div class="my-3 row">
                                     <div class="col ms-2">
                                         <button type="submit" class="btn btn-primary ms-2">Actualizar</button>
-                                        <a type="button" class="btn btn-danger me-2"
-                                            href="{{ url_for('trainer_app.routinesClient', ID_Cliente=client.DocumentId) }}">Cancelar</a>
+                                        <a type="button" class="btn btn-danger me-2" href="{{ url_for('trainer_app.routinesClient', ID_Cliente=client.DocumentId) }}" onclick="clearLocalStorage()">Cancelar</a>
                                     </div>
                                 </div>
 

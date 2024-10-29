@@ -34,31 +34,31 @@ class ModelRoutine:
             return "Error",
 
     @classmethod
-    def updateRoutine(cls, conection, routine, id):
-        if routine != None:
+    def updateRoutine(cls, conection, indications, routineId):
+        if indications is not None:
             try:
                 cursor = conection.cursor()
-                sql = """UPDATE Routine SET ID_Rutina = %s, ID_Cliente = %s, ID_Entrenador = %s, Indicaciones = %s, Fecha = %s, Estado = %s WHERE ID_Rutina = %s"""
-                cursor.execute(sql, (routine.RoutineId, routine.ClientId, routine.TrainerId, routine.Indications, routine.Date, routine.State, id))
+                sql = """UPDATE rutina SET Indicaciones = %s WHERE ID_Rutina = %s"""
+                cursor.execute(sql, (indications, routineId))
                 conection.commit()
 
                 if cursor.rowcount > 0:
-                    print(f"Rutina {routine.RoutineId} actualizada exitosamente.")
+                    print(f"Rutina {routineId} actualizada exitosamente.")
                     return True
                 else:
                     print("No se pudo actualizar la rutina.")
                     return "Error"
 
             except IntegrityError as ex:
-                print(f"Error en ModelCLiente updateRoutin: {ex}")
+                print(f"Error en ModelRoutine updateRoutine: {ex}")
                 conection.rollback()
                 return "Primary"
             except BaseException as ex:
-                print(f"Error en ModelRoutin updateRoutin: {ex}")
+                print(f"Error en ModelRoutine updateRoutine: {ex}")
                 conection.rollback()
                 return "DataBase"
             except Exception as ex:
-                print(f"Error en ModelRoutin updateRoutin: {ex}")
+                print(f"Error en ModelRoutine updateRoutine: {ex}")
                 conection.rollback()
                 return "Error"
         else:

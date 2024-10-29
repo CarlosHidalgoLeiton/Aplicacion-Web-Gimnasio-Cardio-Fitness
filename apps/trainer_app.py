@@ -129,7 +129,7 @@ def routinesClient(ID_Cliente):
 def viewRoutine(routineId, DocumentId):
     conexion = Conection.conectar()
     routine = ModelRoutine.get_routine(conexion, routineId)
-    sessions = ModelSession.get_sesssion_by_Routine(conexion, routineId)
+    sessions = ModelSession.get_session_by_Routine(conexion, routineId)
     client = ModelClient.getClient(conexion, DocumentId)
     Conection.desconectar()
 
@@ -147,7 +147,6 @@ def UpdateRoutine(ID_Cliente, routineId):
     conection = Conection.conectar()
     client = ModelClient.getClient(conection, ID_Cliente)
     routine = ModelRoutine.get_routine(conection, routineId)
-    
     Conection.desconectar()
 
     if request.method == 'POST':
@@ -163,20 +162,37 @@ def UpdateRoutine(ID_Cliente, routineId):
 
         try:
             conection.begin()
-            success = ModelRoutine.updateRoutine(conection, routineId, updated_routine)
-            if not success:
-                raise Exception("Error al actualizar la rutina.")
 
+            # Actualizar la rutina principal
+            trainer_id = request.form.get('TrainerId')
+            indications = request.form.get('Indications')
+            ModelRoutine.updateRoutine(conection, indications, routineId)
+
+            # Procesar sesiones
             sessions_data = request.form.get('sessions')
+            delete_ids_str = request.form.getlist('delete')  # Lista de IDs para eliminar
+
+            delete_ids = []
+            if delete_ids_str:
+                # Convertir la cadena JSON en lista de IDs
+                delete_ids = json.loads(delete_ids_str[0]) if delete_ids_str else []
+
+            if delete_ids:
+                ModelSession.deleteSessions(conection, routineId, delete_ids)
+
             if sessions_data:
-                ModelSession.deleteSessionsByRoutineID(conection, routineId)  # Borrar sesiones existentes
                 sessions_data = json.loads(sessions_data)
 
                 for session in sessions_data:
-                    session['Routine_ID'] = routineId
-                    session_result = ModelSession.insertSession(conection, session)
-                    if session_result != True:
-                        raise Exception(f"Error al insertar la sesión: {session['Name']}")
+                    if session.get('insert', False):  
+                        session['Routine_ID'] = routineId
+                        session_result = ModelSession.insertSession(conection, session)
+                        if not session_result:
+                            raise Exception(f"Error al insertar la sesión: {session['Name']}")
+                    else:  # Sesión existente, se actualiza
+                        session_result = ModelSession.updateSession(conection, session,routineId )
+                        if not session_result:
+                            raise Exception(f"Error al actualizar la sesión: {session['Name']}")
 
             conection.commit()
             Conection.desconectar()
@@ -190,6 +206,7 @@ def UpdateRoutine(ID_Cliente, routineId):
             return render_template("trainer/updateRoutineClient.html", client=client, error="Error al actualizar la rutina o sesiones.", routine=updated_routine)
 
     return render_template("trainer/updateRoutineClient.html", routine=routine, client=client)
+
 
 @trainer_app.route("/getSession/<ID_Routine>", methods=['GET'])
 @login_required
