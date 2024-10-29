@@ -581,7 +581,8 @@ def inventory():
         if insert and type(insert) == bool:
             products = ModelProduct.get_all(conection)
             Conection.desconectar()
-            return render_template("admin/inventory.html", products=products, done = "Producto creado correctamente.", product = None)
+            # return render_template("admin/inventory.html", products=products, done = "Producto creado correctamente.", product = None)
+            return redirect(url_for('admin_app.inventory', done = "Producto creado correctamente."))
         elif insert == "Unique":
             Conection.desconectar()
             return render_template("admin/inventory.html", products=products, error= "El nombre del producto ingresado ya esta registrado.", product = product)
