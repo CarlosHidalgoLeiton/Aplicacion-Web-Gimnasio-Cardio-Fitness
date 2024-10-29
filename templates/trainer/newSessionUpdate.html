@@ -1,50 +1,98 @@
 {% extends "./layout/Layout_Trainer.html" %}
 
 {% block content %}
+
+<!--**********************************
+        Content body start
+***********************************-->
 <div class="content-body default-height">
+    <!-- row -->
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title mb-4">Actualizar Sesión</h4>
-                        <form id="sessionUpdateForm" class="needs-validation" novalidate>
-                            <input type="hidden" id="sessionIndex" name="sessionIndex"
-                                value="{{ session_data.index if session_data else '' }}">
+                        <h4 class="card-title mb-4">Nueva Sesión</h4>
+                        <form id="exerciseForm" class="needs-validation" novalidate>
                             <div class="row">
                                 <div class="col-xl-12">
                                     <div class="mb-3">
-                                        <label for="name" class="form-label">Nombre Sesión <span
-                                                class="text-danger">*</span></label>
+                                        <label for="name" class="form-label" style="font-size: 1.25rem;">Nombre Sesión
+                                            <span class="text-danger">*</span>
+                                        </label>
                                         <input type="text" class="form-control" id="name" name="name"
-                                            placeholder="Nombre Sesión"
-                                            value="{{ session_data.Name if session_data else '' }}" required>
+                                            placeholder="Nombre Sesión" required>
+                                        <div class="invalid-feedback">
+                                            Por favor ingresar el nombre de la sesión
+                                        </div>
                                     </div>
 
                                     <div id="exercisesContainer">
-                                        <!-- Los ejercicios se cargarán aquí -->
+                                        <div class="mb-4 exercise">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <label for="exercises1" class="form-label">Ejercicio
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                            </div>
+                                            <input type="text" class="form-control mb-2" id="exercises1"
+                                                name="Exercises[]" placeholder="Nombre del Ejercicio" required>
+                                            <div class="invalid-feedback">
+                                                Por favor ingresar el nombre del ejercicio
+                                            </div>
+
+                                            <div class="d-flex align-items-end mb-2">
+                                                <div class="me-2">
+                                                    <label for="reps1" class="form-label">Repeticiones
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="number" class="form-control" id="reps1"
+                                                        name="Repetitions[]" placeholder="Reps" required>
+                                                    <div class="invalid-feedback">
+                                                        Por favor ingresar las repeticiones
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label for="sets1" class="form-label">Series
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="number" class="form-control" id="sets1" name="Sets[]"
+                                                        placeholder="Sets" required="False">
+                                                    <div class="invalid-feedback">
+                                                        Por favor ingresar las series
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <label for="video1" class="form-label">Enlace de Video
+                                                
+                                            </label>
+                                            <input type="url" class="form-control mb-3" id="video1" name="VideoLinks[]"
+                                                placeholder="Enlace del Video">
+                                            <div class="invalid-feedback">
+                                                Por favor ingresar el enlace
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="d-flex justify-content-end">
-                                        <button type="button" class="btn btn-primary btn-sm" id="addExerciseBtn">
+                                        <button type="button" class="btn btn-primary btn-sm" id="addEjercicioBtn">
                                             <i class="flaticon-381-plus"></i> Agregar Ejercicio
                                         </button>
                                     </div>
 
-                                    <label for="indications" class="col-lg-12 col-form-label mt-4">Indicaciones <span
-                                            class="text-danger">*</span></label>
+                                    <label class="col-lg-12 col-form-label mt-4" for="indications">Indicaciones
+                                    </label>
                                     <div class="col-lg-12">
                                         <textarea class="form-control" id="indications" name="indications" rows="5"
-                                            required>{{ session_data.Indications if session_data else '' }}</textarea>
+                                            ></textarea>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="my-5">
-                                <button type="submit" class="btn btn-primary ms-2">Actualizar</button>
+                                <button type="submit" class="btn btn-primary ms-2">Guardar</button>
                                 <a class="btn btn-danger ms-2"
-                                href="{{ url_for('trainer_app.UpdateRoutine', ID_Cliente=client.DocumentId, routineId = routine.RoutineId) }}">Cancelar</a>
-
+                                    href="{{ url_for('trainer_app.UpdateRoutine', ID_Cliente=client.DocumentId, routineId = routine.RoutineId) }}">Cancelar</a>
                             </div>
                         </form>
                     </div>
@@ -53,80 +101,143 @@
         </div>
     </div>
 </div>
+<!--**********************************
+        Content body end
+***********************************-->
+
+<!--estilo para el circulo de eliminar ejercicio-->
+<style>
+    .btn-circle {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+    }
+</style>
+
 
 {% endblock %}
 
 {% block scripts %}
 <script>
-    window.onload = function () {
-        const sessionIndex = document.getElementById('sessionIndex').value;
-        if (sessionIndex) {
-            const storedSessions = JSON.parse(localStorage.getItem('exerciseSessions')) || [];
-            const sessionData = storedSessions[sessionIndex];
+    let exercisesCount = 1;
 
-            if (sessionData && sessionData.Exercises) {
-                sessionData.Exercises.forEach((exercise, index) => {
-                    addExerciseField(document.getElementById('exercisesContainer'), exercise, index + 1);
-                });
-            }
-        }
-    };
-
-    function addExerciseField(container, exercise = {}, count = 1) {
+    function addExerciseField(container, value = '', count) {
         const newExerciseDiv = document.createElement('div');
         newExerciseDiv.className = 'mb-4 exercise';
         newExerciseDiv.innerHTML = `
             <div class="d-flex justify-content-between align-items-center">
-                <label for="exercises${count}" class="form-label">Ejercicio <span class="text-danger">*</span></label>
-                <button type="button" class="btn btn-danger btn-circle btn-sm" onclick="removeExerciseField(this)">
+                <label for="exercises${count}" class="form-label">Ejercicio
+                    <span class="text-danger">*</span>
+                </label>
+                ${count > 1 ? `<button type="button" class="btn btn-danger btn-circle btn-sm" onclick="removeExerciseField(this)">
                     <i class="fa fa-minus"></i>
-                </button>
+                </button>` : ''}
             </div>
-            <input type="text" class="form-control mb-2" id="exercises${count}" name="Exercises[]" placeholder="Nombre del Ejercicio" value="${exercise.nombre || ''}" required>
-            <input type="number" class="form-control mb-2" id="reps${count}" name="Repetitions[]" placeholder="Reps" value="${exercise.repeticiones || ''}" required>
-            <input type="number" class="form-control mb-2" id="sets${count}" name="Sets[]" placeholder="Sets" value="${exercise.series || ''}" required>
-            <input type="url" class="form-control mb-3" id="video${count}" name="VideoLinks[]" placeholder="Enlace del Video" value="${exercise.Link || ''}" required>
+            <input type="text" class="form-control mb-2" id="exercises${count}" name="Exercises[]" placeholder="Nombre del Ejercicio" value="${value}" required>
+
+            <div class="d-flex align-items-end mb-2">
+                <div class="me-2">
+                    <label for="reps${count}" class="form-label">Repeticiones
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="number" class="form-control" id="reps${count}" name="Repetitions[]" placeholder="Reps" required>
+                </div>
+                <div>
+                    <label for="sets${count}" class="form-label">Series
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="number" class="form-control" id="sets${count}" name="Sets[]" placeholder="Sets" required>
+                </div>
+            </div>
+
+            <label for="video${count}" class="form-label">Enlace de Video
+                
+            </label>
+            <input type="url" class="form-control mb-3" id="video${count}" name="VideoLinks[]" placeholder="Enlace del Video">
         `;
         container.appendChild(newExerciseDiv);
     }
 
+    // Función para eliminar el campo de ejercicio
     function removeExerciseField(button) {
         const exerciseDiv = button.closest('.exercise');
         exerciseDiv.remove();
     }
 
-    document.getElementById('addExerciseBtn').addEventListener('click', function () {
+    // Agregar nuevo ejercicio
+    document.getElementById('addEjercicioBtn').addEventListener('click', function () {
+        exercisesCount++;
         const exercisesContainer = document.getElementById('exercisesContainer');
-        addExerciseField(exercisesContainer);
+        addExerciseField(exercisesContainer, '', exercisesCount);
     });
 
-    document.getElementById('sessionUpdateForm').addEventListener('submit', function (event) {
+    document.getElementById('exerciseForm').addEventListener('submit', function (event) {
         event.preventDefault();
+
+        // Validar que todos los campos requeridos estén llenos
+        const form = event.target;
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated'); // Añade estilos de validación de Bootstrap
+            return; // Si algún campo no es válido, no se guarda la sesión
+        }
 
         const name = document.getElementById('name').value;
         const indications = document.getElementById('indications').value;
 
-        const exercises = Array.from(document.querySelectorAll('.exercise')).map((exerciseDiv) => {
+        // Crear un array de objetos para los ejercicios
+        const exercises = Array.from(document.querySelectorAll('.exercise')).map((exerciseDiv, index) => {
+            const exerciseName = exerciseDiv.querySelector(`input[name="Exercises[]"]`).value;
+            const reps = exerciseDiv.querySelector(`input[name="Repetitions[]"]`).value;
+            const sets = exerciseDiv.querySelector(`input[name="Sets[]"]`).value;
+            const videoLink = exerciseDiv.querySelector(`input[name="VideoLinks[]"]`).value;
+
             return {
-                nombre: exerciseDiv.querySelector(`input[name="Exercises[]"]`).value,
-                repeticiones: exerciseDiv.querySelector(`input[name="Repetitions[]"]`).value,
-                series: exerciseDiv.querySelector(`input[name="Sets[]"]`).value,
-                Link: exerciseDiv.querySelector(`input[name="VideoLinks[]"]`).value
+                nombre: exerciseName,
+                repeticiones: reps,
+                series: sets,
+                Link: videoLink
             };
         });
 
-        const updatedSessionData = {
+
+
+        const arraySession = JSON.parse(localStorage.getItem('sessions'));
+        let id = 1;
+        if (arraySession && arraySession.length > 0) {
+            const session = arraySession[arraySession.length - 1];
+            id = parseInt(session['Session_ID']) + 1;
+        }
+
+        const newSessionData = {
+            Session_ID: id,
             Name: name,
             Indications: indications,
-            Exercises: exercises
+            Exercises: exercises, // Almacenar los ejercicios como un array de objetos
+            insert: true
         };
 
-        const sessions = JSON.parse(localStorage.getItem('exerciseSessions')) || [];
-        sessions[document.getElementById('sessionIndex').value] = updatedSessionData;
-        localStorage.setItem('exerciseSessions', JSON.stringify(sessions));
+        // Cargar sesiones anteriores
+        const storedSessions = JSON.parse(localStorage.getItem('sessions')) || [];
+        storedSessions.push(newSessionData); // Añadir nueva sesión al arreglo
 
-        alert('Datos de sesión actualizados en local storage');
-        window.location.href = "{{ url_for('trainer_app.routineClient', ID_Cliente=client.DocumentId) }}";
+        // Guardar el nuevo arreglo en local storage
+        localStorage.setItem('sessions', JSON.stringify(storedSessions));
+
+        // Limpiar el formulario después de guardar
+        document.getElementById('exerciseForm').reset();
+        exercisesCount = 1; // Reiniciar el contador de ejercicios
+        const exercisesContainer = document.getElementById('exercisesContainer');
+        exercisesContainer.innerHTML = ''; // Limpiar el contenedor de ejercicios
+        addExerciseField(exercisesContainer, '', exercisesCount); // Agregar el primer ejercicio de nuevo
+
+        // Redirigir a la página de rutinas del cliente después de guardar
+        window.location.href = "{{ url_for('trainer_app.UpdateRoutine', ID_Cliente=client.DocumentId, routineId = routine.RoutineId) }}";
     });
 </script>
+
 {% endblock %}

@@ -38,16 +38,22 @@ const deleteSession = (event, index) => {
     sessions = JSON.parse(localStorage.getItem('sessions'));
     sessionsToDelete = JSON.parse(localStorage.getItem('sessionsToDelete')) || [];
 
-    const idsessionDelete = sessions[index].Session_ID;
+    const session = sessions[index];
 
-    if (!sessionsToDelete.includes(idsessionDelete)) {
-        sessionsToDelete.push(idsessionDelete);
+    if (!session.hasOwnProperty('insert')) {
+        const idsessionDelete = session.Session_ID;
+
+        if (!sessionsToDelete.includes(idsessionDelete)) {
+            sessionsToDelete.push(idsessionDelete);
+        }
+
+        localStorage.setItem('sessionsToDelete', JSON.stringify(sessionsToDelete));
     }
 
-    localStorage.setItem('sessionsToDelete', sessionsToDelete);
-
-    sessions.splice(index, 1); // Eliminar sesión
+    sessions.splice(index, 1);
+    
     localStorage.setItem('sessions', JSON.stringify(sessions));
+    
     renderSessions(sessions);
 };
 
@@ -98,5 +104,23 @@ $(document).ready(() => {
         renderSessions(sessions, sessionsContainer, clientId);
     }
 
+
+    document.querySelector('form').onsubmit = function () {
+        const sessionsToSend = JSON.parse(localStorage.getItem('sessions'));
+        const deleteToSend = JSON.parse(localStorage.getItem('sessionsToDelete'));
+
+
+        const sessionsInput = document.createElement('input');
+        sessionsInput.type = 'hidden';
+        sessionsInput.name = 'sessions';
+        sessionsInput.value = JSON.stringify(sessionsToSend);
+        this.appendChild(sessionsInput);
+
+        const deleteInput = document.createElement('input');
+        deleteInput.type = 'hidden';
+        deleteInput.name = 'delete';
+        deleteInput.value = JSON.stringify(deleteToSend);
+        this.appendChild(deleteInput);
+    };
 });
 

@@ -200,7 +200,6 @@ def getSessions(ID_Routine):
     Conection.desconectar()
     sessions = [session.to_dict() for session in getSessions]
 
-
     if sessions:
         return jsonify(sessions)
     else:

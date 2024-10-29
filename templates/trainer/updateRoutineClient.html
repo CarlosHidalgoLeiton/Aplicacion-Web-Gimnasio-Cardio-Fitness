@@ -27,7 +27,7 @@
                         </div>
 
                         <div class="card-body tab-content pt-2">
-                            <form class="needs-validation" action="/trainer/client/routineClient/{{client.DocumentId}}"
+                            <form class="needs-validation" action="/trainer/UpdateRoutine/{{client.DocumentId}}/{{routine.RoutineId}}"
                                 novalidate method="POST">
 
                                 <input type="hidden" class="form-control" value="{{ current_user.DocumentId }}"
@@ -88,11 +88,10 @@
 <script src="../../../static/js/handleUpdateIndication.js"></script>
 <script src="../../../static/js/handleUpdateRoutine.js"></script>
 
-
 <!-- <script>
     window.onload = function () {
         const sessionsContainer = document.getElementById('sessionsContainer');
-        const storedSessions = JSON.parse(localStorage.getItem('exerciseSessions')) || [];
+        const storedSessions = JSON.parse(localStorage.getItem('sessions')) || [];
 
         // Esta función debe ser llamada con las sesiones obtenidas de la base de datos
         function renderSessions(dbSessions) {
@@ -171,6 +170,6 @@
             });
         })();
     };
-</script> -->
+</script>  -->
 
 {% endblock %}
