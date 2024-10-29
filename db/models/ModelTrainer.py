@@ -86,7 +86,7 @@ class ModelTrainer:
     def get_all(cls, conexion):
         try:
             cursor = conexion.cursor()
-            sql = "SELECT Cedula, Nombre, Primer_Apellido, Segundo_Apellido, Estado FROM Entrenador"
+            sql = "SELECT Cedula, Nombre, Primer_Apellido, Segundo_Apellido, Estado, Edad FROM Entrenador"
             cursor.execute(sql)
             rows = cursor.fetchall()
             trainers = []
@@ -96,7 +96,8 @@ class ModelTrainer:
                     'Name': row[1],
                     'First_LastName': row[2],
                     'Second_LastName':row[3],
-                    'State': row[4]
+                    'State': row[4],
+                    'Age': row[5]
                 }
                 trainers.append(trainer)
             return trainers
