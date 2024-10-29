@@ -24,24 +24,24 @@ class Client():
     
     def to_dict(self):
         return {
-        "DocumentId": self.DocumentId,
-        "Name": self.Name,
-        "First_LastName": self.First_LastName,
-        "Second_LastName": self.Second_LastName,
-        "Date_Birth": self.Date_Birth,
-        "Age": self.Age,
-        "Mail": self.Mail,
-        "Phone": self.Phone,
-        "Registration_Date": self.Registration_Date,
-        "Occupation": self.Occupation,
-        "TelephoneEmergency": self.TelephoneEmergency,
-        "Address": self.Address,
-        "Entry_Date": self.Entry_Date,
-        "Ailments": self.Ailments,
-        "Limitation": self.Limitation,
-        "ExpirationMembership": self.ExpirationMembership,
-        "State": self.State,
-        "Membership_ID": self.Membership_ID
-    }
+            "DocumentId": self.DocumentId,
+            "Name": self.Name,
+            "First_LastName": self.First_LastName,
+            "Second_LastName": self.Second_LastName,
+            "Date_Birth": self.Date_Birth,
+            "Age": self.Age,
+            "Mail": self.Mail,
+            "Phone": self.Phone,
+            "Registration_Date": self.Registration_Date,
+            "Occupation": self.Occupation,
+            "TelephoneEmergency": self.TelephoneEmergency,
+            "Address": self.Address,
+            "Entry_Date": self.Entry_Date,
+            "Ailments": self.Ailments,
+            "Limitation": self.Limitation,
+            "ExpirationMembership": self.ExpirationMembership,
+            "State": self.State,
+            "Membership_ID": self.Membership_ID
+        }
 
 

@@ -43,7 +43,8 @@
                             <div class="my-5">
                                 <button type="submit" class="btn btn-primary ms-2">Actualizar</button>
                                 <a class="btn btn-danger ms-2"
-                                    href="{{ url_for('trainer_app.routineClient', ID_Cliente=client.DocumentId) }}">Cancelar</a>
+                                href="{{ url_for('trainer_app.UpdateRoutine', ID_Cliente=client.DocumentId, routineId = routine.RoutineId) }}">Cancelar</a>
+
                             </div>
                         </form>
                     </div>

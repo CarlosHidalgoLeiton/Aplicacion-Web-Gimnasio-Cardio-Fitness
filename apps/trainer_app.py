@@ -142,16 +142,12 @@ def viewRoutine(routineId, DocumentId):
     
 @trainer_app.route("/UpdateRoutine/<ID_Cliente>/<routineId>", methods=['GET', 'POST'])
 @login_required
+@trainer_permission.require(http_exception=403)
 def UpdateRoutine(ID_Cliente, routineId):
     conection = Conection.conectar()
-    getClient = ModelClient.getClient(conection, ID_Cliente)
-    getRoutine = ModelRoutine.get_routine(conection, routineId)
-    getSessions = ModelSession.get_session_by_Routine(conection, routineId)
+    client = ModelClient.getClient(conection, ID_Cliente)
+    routine = ModelRoutine.get_routine(conection, routineId)
     
-    routine = getRoutine.to_dict() if getRoutine else None
-    client = getClient.to_dict() if getClient else None
-    sessions = [session.to_dict() for session in getSessions]
-
     Conection.desconectar()
 
     if request.method == 'POST':
@@ -159,11 +155,11 @@ def UpdateRoutine(ID_Cliente, routineId):
         routineValidated = ModelRoutine.validateDataForm(updated_routine)
 
         if not isinstance(routineValidated, bool):
-            return render_template("trainer/updateRoutineClient.html", client=client, error=routineValidated, routine=updated_routine, sessions=sessions)
+            return render_template("trainer/updateRoutineClient.html", client=client, error=routineValidated, routine=updated_routine)
 
         conection = Conection.conectar()
         if conection is None:
-            return render_template("trainer/updateRoutineClient.html", client=client, error="Error en la conexión.", routine=updated_routine, sessions=sessions)
+            return render_template("trainer/updateRoutineClient.html", client=client, error="Error en la conexión.", routine=updated_routine)
 
         try:
             conection.begin()
@@ -191,9 +187,26 @@ def UpdateRoutine(ID_Cliente, routineId):
             conection.rollback()
             print(f"Error durante la actualización de la rutina y sesiones: {e}")
             Conection.desconectar()
-            return render_template("trainer/updateRoutineClient.html", client=client, error="Error al actualizar la rutina o sesiones.", routine=updated_routine, sessions=sessions)
+            return render_template("trainer/updateRoutineClient.html", client=client, error="Error al actualizar la rutina o sesiones.", routine=updated_routine)
 
-    return render_template("trainer/updateRoutineClient.html", routine=routine, sessions=sessions, client=client)
+    return render_template("trainer/updateRoutineClient.html", routine=routine, client=client)
+
+@trainer_app.route("/getSession/<ID_Routine>", methods=['GET'])
+@login_required
+@trainer_permission.require(http_exception=403)
+def getSessions(ID_Routine):
+    conection = Conection.conectar()
+    getSessions = ModelSession.get_session_by_Routine(conection, ID_Routine)
+    Conection.desconectar()
+    sessions = [session.to_dict() for session in getSessions]
+
+
+    if sessions:
+        return jsonify(sessions)
+    else:
+        return jsonify({'error': 'No se encontraron las sesiones.'})
+    
+
 
 
 
@@ -349,11 +362,22 @@ def viewSession(Session_ID):
     else:
         return redirect(url_for('trainer_app.viewRoutine', routineId=routine.RoutineId, DocumentId=routine.ClientId, error="Sesión no encontrada"))
 
+
 @trainer_app.route("/viewNewSession/<sessionId>/<clientId>", methods=['GET'])
 @login_required
 def viewSessionInsert(sessionId, clientId):
     if sessionId and clientId:
         return render_template('trainer/viewNewSession.html', sessionId = sessionId, clientId = clientId)
+    else:
+        return redirect(url_for('trainer_app.routineClient', error="Sesión no encontrada"))
+    
+
+@trainer_app.route("/viewUpdateSession/<sessionId>/<clientId>", methods=['GET'])
+@login_required
+def viewSessionUpdate(sessionId, clientId):
+    routineId = request.args.get('routineId')
+    if sessionId and clientId and routineId:
+        return render_template('trainer/viewUpdateSession.html', sessionId = sessionId, clientId = clientId, routineId = routineId)
     else:
         return redirect(url_for('trainer_app.routineClient', error="Sesión no encontrada"))
 

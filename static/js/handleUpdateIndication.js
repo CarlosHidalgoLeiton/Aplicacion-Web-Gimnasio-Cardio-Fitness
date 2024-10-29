@@ -3,13 +3,14 @@ const loadIndications = (event) => {
 
     let indications = document.getElementById('Indications').value;
 
-    localStorage.setItem('indications', indications);
+    localStorage.setItem('updateIndications', indications);
 
     window.location.href = event.currentTarget.href;
 }
+
 $(document).ready( () => {
 
-    const indications = localStorage.getItem('indications') || '';
+    const indications = localStorage.getItem('updateIndications') || '';
 
     document.getElementById('Indications').value = indications;
 
