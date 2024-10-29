@@ -8,5 +8,16 @@ class Routine():
         self.TrainerId = TrainerId
         self.Indications = Indications
         self.Date = Date
-        self.State = State    
+        self.State = State  
+
+
+    def to_dict(self):
+        return {
+            "RoutineId": self.RoutineId,
+            "ClientId": self.ClientId,
+            "TrainerId": self.TrainerId,
+            "Indications": self.Indications,
+            "Date": self.Date,
+            "State": self.State,
+        }  
 

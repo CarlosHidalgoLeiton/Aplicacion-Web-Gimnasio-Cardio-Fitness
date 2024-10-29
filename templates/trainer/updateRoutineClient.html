@@ -5,6 +5,7 @@
 <!--**********************************
         Content body start
     ***********************************-->
+<div id="data" data-routine="{{routine}}" data-sessions="{{sessions}}" data-client="{{client}}"></div>
 <div class="content-body default-height">
     <div class="container-fluid">
         <div class="page-titles">
@@ -85,7 +86,26 @@
 {% endblock %}
 
 {% block scripts %}
+
 <script>
+    let routineLoad = '{{routine|tojson}}';
+    let sessionLoad = '{{sessions|tojson}}';
+
+    
+    console.log(sessionLoad);
+    let sessions = JSON.parse(sessionLoad);
+    console.log(sessions);
+    
+
+    localStorage.setItem('routine', routineLoad);
+    localStorage.setItem('sessions', sessions);
+    
+</script>
+
+<!-- <script src="../../../static/js/handleUpdateRoutine.js"></script> -->
+
+
+<!-- <script>
     window.onload = function () {
         const sessionsContainer = document.getElementById('sessionsContainer');
         const storedSessions = JSON.parse(localStorage.getItem('exerciseSessions')) || [];
@@ -167,6 +187,6 @@
             });
         })();
     };
-</script>
+</script> -->
 
 {% endblock %}

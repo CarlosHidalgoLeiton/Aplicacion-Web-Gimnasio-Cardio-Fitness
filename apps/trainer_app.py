@@ -144,9 +144,13 @@ def viewRoutine(routineId, DocumentId):
 @login_required
 def UpdateRoutine(ID_Cliente, routineId):
     conection = Conection.conectar()
-    client = ModelClient.getClient(conection, ID_Cliente)
-    routine = ModelRoutine.get_routine(conection, routineId)
-    sessions = ModelSession.get_sesssion_by_Routine(conection, routineId)
+    getClient = ModelClient.getClient(conection, ID_Cliente)
+    getRoutine = ModelRoutine.get_routine(conection, routineId)
+    getSessions = ModelSession.get_session_by_Routine(conection, routineId)
+    
+    routine = getRoutine.to_dict() if getRoutine else None
+    client = getClient.to_dict() if getClient else None
+    sessions = [session.to_dict() for session in getSessions]
 
     Conection.desconectar()
 

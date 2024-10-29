@@ -102,7 +102,7 @@ class ModelSession:
             return None
         
     @classmethod
-    def get_sesssion_by_Routine(cls, conexion, routineId):
+    def get_session_by_Routine(cls, conexion, routineId):
         try:
             cursor = conexion.cursor()
             sql = "SELECT ID_Sesion, Indicaciones, Ejercicios, ID_Rutina, Nombre FROM Sesion WHERE ID_Rutina = %s "

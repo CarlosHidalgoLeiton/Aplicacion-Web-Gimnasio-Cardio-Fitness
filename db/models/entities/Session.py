@@ -8,3 +8,12 @@ class Session():
         self.Exercises = Exercises
         self.Routine_ID = Routine_ID
         self.Name = Name
+
+    def to_dict(self):
+        return {
+            "Session_ID": self.Session_ID,
+            "Indications": self.Indications,
+            "Exercises": self.Exercises,
+            "Routine_ID": self.Routine_ID,
+            "Name": self.Name
+        }
