@@ -287,6 +287,48 @@ def routineClient(ID_Cliente):
     else:
         return render_template("trainer/routineClient.html", routine=None, client=client, done=doneMessage, error=errorMessage, clear_local_storage=clear_local_storage)
 
+
+@trainer_app.route("/client/routineClient/disable", methods = ['POST'])
+@login_required
+@trainer_permission.require(http_exception=403)
+def disableRoutine():
+    data = request.get_json()
+    DocumentId = data.get('routineID')
+    conexion = Conection.conectar()
+    disable = ModelRoutine.disableRoutine(conexion, DocumentId)
+    Conection.desconectar()
+
+    if disable:
+        return jsonify({"message": "Hecho"})
+    else:
+        
+        return jsonify({"error": "No se pudo deshabilitar"})
+    
+@trainer_app.route("/client/routineClient/able", methods = ['POST'])
+@login_required
+@trainer_permission.require(http_exception=403)
+def ableRoutine():
+    data = request.get_json()
+    DocumentId = data.get('routineID')
+    conection = Conection.conectar()
+    able = ModelRoutine.ableRoutine(conection, DocumentId)
+    Conection.desconectar()
+
+    if able:
+        return jsonify({"message": "Hecho"})
+    else:
+        return jsonify({"error": "No se pudo habilitar"})
+
+
+
+
+
+
+
+
+
+
+
 @trainer_app.route("/statisticsClient/disable", methods = ['POST'])
 @login_required
 @trainer_permission.require(http_exception=403)

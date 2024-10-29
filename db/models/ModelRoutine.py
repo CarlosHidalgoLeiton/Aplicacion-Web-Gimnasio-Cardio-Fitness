@@ -150,3 +150,47 @@ class ModelRoutine:
         except Exception as e:
             print(f"Error al eliminar la rutina {routine_id}: {e}")
             conection.rollback()
+    @classmethod
+    def disableRoutine(cls, conection, RoutineId):
+        if RoutineId != None:
+            try:
+                cursor = conection.cursor()
+                sql = """UPDATE Rutina SET Estado = 0  WHERE ID_Rutina = %s"""
+                cursor.execute(sql, (RoutineId))
+                if cursor.rowcount > 0:
+                    conection.commit()
+                    
+                    return True
+                else:
+                    print("No se pudo actualizar la rutina.")
+                    conection.rollback()
+                    return False
+
+            except Exception as ex:
+                print(f"Ocurrió un error en actualizar la rutina {ex}")
+                conection.rollback()
+                return False
+        else:
+            return False
+        
+    @classmethod
+    def ableRoutine(cls, conection, RoutineId):
+        if RoutineId != None:
+            try:
+                cursor = conection.cursor()
+                sql = """UPDATE Rutina SET Estado = 1  WHERE ID_Rutina = %s"""
+                cursor.execute(sql, (RoutineId))
+                if cursor.rowcount > 0:
+                    conection.commit()
+                    return True
+                else:
+                    print("No se pudo actualizar la rutina.")
+                    conection.rollback()
+                    return False
+
+            except Exception as ex:
+                print(f"Ocurrió un error en actualizar la rutina {ex}")
+                conection.rollback()
+                return False
+        else:
+            return False
