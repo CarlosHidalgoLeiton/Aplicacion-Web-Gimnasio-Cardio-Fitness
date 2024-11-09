@@ -1,0 +1,92 @@
+{% extends "./layout/Layout_Admin.html" %}
+
+{% block content %}
+
+<!--**********************************
+    Content body start
+***********************************-->
+
+<div class="page-titles">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for ('admin_app.clients') }}">Clientes</a></li>
+        <li class="breadcrumb-item"><a
+                href="{{ url_for ('admin_app.routinesClient', ID_Cliente=client.DocumentId) }}">Rutinas</a>
+        </li>
+        <li class="breadcrumb-item active"><a href="javascript:void(0)">Ver Rutina</a></li>
+    </ol>
+</div>
+
+<div class="row">
+    <div class="col-xl-12 col-xxl-12">
+        <div class="row">
+            <div class="card plan-list">
+                <div class="card-header d-sm-flex flex-wrap d-block pb-0 border-0">
+                    <div class="me-auto pe-3 mb-2">
+                        <h4 class="text-black fs-20">Rutina</h4>
+                    </div>
+                </div>
+
+                <div class="card-body tab-content pt-2">
+                    <form class="needs-validation" novalidate>
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="mb-3 row">
+                                    <label class="col-lg-12 col-form-label" for="Indications">Indicaciones
+                                        <div class="col-lg-12">
+                                            <input class="form-control" id="Indications" rows="5" name="Indications"
+                                                value="{{ routine.Indications }}" />
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+
+
+                    {% for session in sessions %}
+                    <div class="d-flex border-bottom flex-wrap pt-3 list-row align-items-center mb-2 px-3">
+                        <div class="col-xl-8 col-xxl-9 col-lg-10 col-sm-12 d-flex align-items-center">
+                            <div class="list-icon bgl-primary me-3 mb-3">
+                                <p class="fs-24 text-primary mb-0 mt-2">{{ loop.index }}</p>
+                                <span class="fs-14 text-primary">Sec</span>
+                            </div>
+                            <div class="info mb-3">
+                                <h4 class="fs-20 ">
+                                    <a href="{{ url_for('admin_app.viewSession', Session_ID=session.Session_ID) }}"
+                                        class="text-black">
+                                        {{ session.Name }}
+                                    </a>
+                                </h4>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4 col-xxl-3 col-lg-2 col-sm-12 d-flex align-items-center">
+                            <a href="{{ url_for('admin_app.viewSession', Session_ID=session.Session_ID) }}"
+                                class="btn mb-3 play-button rounded me-3">
+                                <i class="las la-caret-right scale-2 me-3"></i>Visualizar
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <div class="my-3 row">
+                        <div class="col ms-2">
+                            <a class="btn btn-danger me-2"
+                                href="{{ url_for('admin_app.routinesClient', ID_Cliente=client.DocumentId) }}">Volver</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--**********************************
+    Content body end
+***********************************-->
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

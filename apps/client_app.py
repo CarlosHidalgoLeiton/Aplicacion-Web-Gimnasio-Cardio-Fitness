@@ -5,6 +5,11 @@ from apps.permissions import client_permission
 from db.conection import Conection
 from db.models.ModelClient import ModelClient
 from db.models.ModelProduct import ModelProduct
+from db.models.ModelSesion import ModelSession
+from db.models.ModelRoutine import ModelRoutine
+import json  
+
+
 #Creación de los blueprint para usar en app.py
 client_app = Blueprint('client_app', __name__)
 
@@ -94,18 +99,64 @@ def viewProduct():
         return redirect(url_for('client_app.inventory', error="Producto no encontrado"))
     
 #-------------Rutas de rutinas-------------#
-@client_app.route("/rutinaCliente")
-def rutina():
-    return render_template("client/rutinaCliente.html")
+
+## VER RUTINAS
+@client_app.route("/routinesClient", methods=['GET', 'POST'])
+@login_required
+@client_permission.require(http_exception=403)
+def routinesClient():
+    conection = Conection.conectar()
+    routines = ModelRoutine.get_all(conection, current_user.DocumentId)  
+    errorMessage = request.args.get('error')
+    Conection.desconectar()
+    return render_template("client/routinesClient.html", routines=routines, error=errorMessage)
+
+@client_app.route("/viewRoutine/<routineId>", methods=['GET'])
+@login_required
+@client_permission.require(http_exception=403)
+def viewRoutine(routineId):
+    conexion = Conection.conectar()
+    routine = ModelRoutine.get_routine(conexion, routineId)
+    sessions = ModelSession.get_session_by_Routine(conexion, routineId)
+    Conection.desconectar()
+
+    if routine:
+        return render_template("client/viewRoutine.html", routine=routine, sessions=sessions)
+    else:
+        return redirect(url_for('client_app.clients', error="Rutina no encontrada"))
+
+@client_app.route("/getSession/<ID_Routine>", methods=['GET'])
+@login_required
+@client_permission.require(http_exception=403)
+def getSessions(ID_Routine):
+    conection = Conection.conectar()
+    getSessions = ModelSession.get_session_by_Routine(conection, ID_Routine)
+    Conection.desconectar()
+    sessions = [session.to_dict() for session in getSessions]
+
+    if sessions:
+        return jsonify(sessions)
+    else:
+        return jsonify({'error': 'No se encontraron las sesiones.'})
+    
+
+@client_app.route("/viewRoutine/viewSession/<Session_ID>", methods=['GET'])
+@login_required
+@client_permission.require(http_exception=403)
+def viewSession(Session_ID):
+    conexion = Conection.conectar()
+    session = ModelSession.get_sesssion_by_id(conexion, Session_ID)
+    routine = ModelRoutine.get_routine(conexion, session.Routine_ID)
+    Conection.desconectar()
+    
+    if session:
+        # Deserializa el JSON a un objeto Python
+        session.Exercises = json.loads(session.Exercises)
+        return render_template("client/viewSession.html", session=session, routine=routine)
+    else:
+        return redirect(url_for('client_app.viewRoutine', routineId=routine.RoutineId, DocumentId=routine.ClientId, error="Sesión no encontrada"))
 
 
-@client_app.route("/verRutina")
-def verRutina():
-    return render_template("client/verRutinaCliente.html")
-
-@client_app.route("/verSesion")
-def verSesion():
-    return render_template("client/verSesionClient.html")
 
 #-------------Rutas de estadisticas-------------#
 @client_app.route("/estadisticas")

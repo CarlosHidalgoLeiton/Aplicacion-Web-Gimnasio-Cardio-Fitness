@@ -12,14 +12,15 @@
 			</ol>
 		</div>
 		
+		{% for routine in routines %}
 		<div class="row">
 			<div class="col-12">
 				<div class="card form-container">
 					<div class="card-body ">
 						<div class="d-flex justify-content-between align-items-center mb-4">
-							<h4 class="card-title">Rutina 1</h4>
-							<span>12/06/2024</span> 
-							<a class="btn btn-primary" href="{{ url_for('client_app.verRutina') }}">
+							<h4 class="card-title">{{ routine['Indications'] }}</h4>
+							<span>{{ routine['Date'] }}</span> 
+							<a href="{{ url_for('client_app.viewRoutine', routineId = routine['RoutineId']) }}">
 								<i class="fas fa-eye me-3"></i>Ver Rutina 
 							</a>
 							
@@ -28,23 +29,8 @@
 				</div>
 			</div>
 		</div>
+		{% endfor %}
 
-		<div class="row">
-			<div class="col-12">
-				<div class="card form-container">
-					<div class="card-body ">
-						<div class="d-flex justify-content-between align-items-center mb-4">
-							<h4 class="card-title">Rutina 2</h4>
-							<span>12/08/2024</span> 
-							<a class="btn btn-primary" href="{{ url_for('client_app.verRutina') }}">
-								<i class="fas fa-eye me-3"></i>Ver Rutina 
-							</a>
-							
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
 	</div>
 </div>
 {% endblock %}
