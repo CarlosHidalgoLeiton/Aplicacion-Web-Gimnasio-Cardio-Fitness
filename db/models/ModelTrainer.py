@@ -39,6 +39,60 @@ class ModelTrainer:
             return "Error"
 
     @classmethod
+    def updateTrainer(cls, conection, trainer, id):
+        """
+            It updates a trainer in the data base.
+
+            This method receives a `Trainer` object and updates it in the database table `Trainer`. 
+            It assumes that the `Trainer` object has attributes corresponding to the fields in the table. 
+            If the update is successful, it commits the transaction and returns True. If an error occurs 
+            during the process, it performs a rollback and returns an error message.
+            
+            Parameters:
+            conection(obj): conection object to the database
+            trainer(Trainer): trainer object that contains the data to update
+            id(str) -- trainer's identification to update
+
+            Return: 
+                `bool`:   `True` if the client was inserted successfuly,
+                `string`: `Error Message` an error message.
+
+            Exceptions:
+                - IntegrityError: If an integrity error occurs (e.g. duplicate primary key).
+                - BaseException: For any other database related errors.
+                - Exception: For other general errors that may occur during execution.
+        """
+
+        if trainer != None:
+            try:
+                cursor = conection.cursor()
+                
+                sql = """UPDATE Entrenador SET Cedula = %s, Nombre = %s, Primer_Apellido = %s, Segundo_Apellido = %s, Fecha_Nacimiento = %s, Edad = %s, Correo = %s, Telefono = %s WHERE Cedula = %s"""
+                cursor.execute(sql, (trainer.DocumentId, trainer.Name, trainer.First_LastName, trainer.Second_LastName, trainer.Date_Birth, trainer.Age, trainer.Mail, trainer.Phone, id))
+                conection.commit()
+
+                if cursor.rowcount > 0:
+                    print(f"Entrenador {trainer.DocumentId} actualizado exitosamente.")
+                    return True
+                else:
+                    print("No se pudo actualizar el entrenador.")
+                    return "Error"
+
+            except IntegrityError as ex:
+                print(f"Error en ModelTrainer updateTrainer: {ex}")
+                conection.rollback()
+                return "Primary"
+            except BaseException as ex:
+                print(f"Error en ModelTrainer updateTrainer: {ex}")
+                return "DataBase"
+            except Exception as ex:
+                print(f"Error en ModelTrainer updateTrainer: {ex}")
+                conection.rollback()
+                return "Error"
+        else:
+            return "Error"
+
+    @classmethod
     def getTrainer(cls, conection, DocumentId):
         try:
             cursor = conection.cursor()

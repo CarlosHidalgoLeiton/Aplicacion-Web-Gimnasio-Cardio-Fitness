@@ -157,17 +157,6 @@ def ableClient():
 
 
 
-
-@admin_app.route("/clientes/estadísticas")
-@login_required
-def estadisticas():
-    return render_template("admin/estadisticas.html")
-
-@admin_app.route("/cliente/estadistica/ver")
-@login_required
-def verEstadistica():
-    return render_template("admin/verEstadistica.html")
-
 ## VER RUTINAS
 @admin_app.route("/clients/routinesClient/<ID_Cliente>", methods=['GET', 'POST'])
 @login_required
@@ -211,7 +200,6 @@ def getSessions(ID_Routine):
         return jsonify({'error': 'No se encontraron las sesiones.'})
     
 
-
 @admin_app.route("/viewRoutine/viewSession/<Session_ID>", methods=['GET'])
 @login_required
 @admin_permission.require(http_exception=403)
@@ -227,8 +215,6 @@ def viewSession(Session_ID):
         return render_template("admin/viewSession.html", session=session, routine=routine)
     else:
         return redirect(url_for('admin_app.viewRoutine', routineId=routine.RoutineId, DocumentId=routine.ClientId, error="Sesión no encontrada"))
-
-    
 
 #-------------Rutas de Entrenadores-------------#
 
@@ -264,16 +250,42 @@ def trainers():
     else:
         return render_template("admin/trainers.html", trainers=trainers, trainer = None, done = doneMessage, error = errorMessage)
 
+@admin_app.route("/trainer/update/<documentId>", methods = ['POST', 'GET'])
+@login_required
+@admin_permission.require(http_exception=403)
+def updateTrainer(documentId):
+    conection = Conection.conectar()
+    trainer = ModelTrainer.getTrainer(conection, documentId)
+    Conection.desconectar()
+
+    if trainer:
+        if request.method == 'POST':
+            trainerUpdated = ModelTrainer.getDataTrainer(request)
+            trainerValidated = ModelTrainer.validateDataForm(trainerUpdated)
+
+            if not type(trainerValidated) == bool:
+                return render_template("admin/updateTrainer.html", error=trainerValidated, trainer = trainer)
+            conection = Conection.conectar()
+            update = ModelTrainer.updateTrainer(conection, trainerUpdated, trainer.DocumentId)
+            Conection.desconectar()
+            if update and type(update) == bool:
+                return redirect(url_for('admin_app.trainers', done = "Entrenador actualizado correctamente."))
+            elif update == "Primary":
+                return render_template("admin/updateTrainer.html", error= "El número de cédula ingresado ya esta registrado con otro entrenador.", trainer = trainer)
+            elif update == "DataBase":
+                return render_template("admin/updateTrainer.html", error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", trainer = trainer)
+            else:
+                return render_template("admin/updateTrainer.html", error= "No se pudo actualizar el entrenador.", trainer = trainer)
+    else:
+        return redirect(url_for("admin_app.trainer", error = "Entrenador no encontrado."))
+
+    return render_template("admin/updateTrainer.html", trainer = trainer)
+
 
 @admin_app.route("/entrenadores/ver")
 @login_required
 def verEntrenador():
     return render_template("admin/verEntrenador.html")
-
-@admin_app.route("/entrenadores/actualizar")
-@login_required
-def actualizarEntrenador():
-    return render_template("admin/actualizarEntrenador")
 
 @admin_app.route("/trainer/disable", methods = ['POST'])
 @login_required
@@ -305,6 +317,8 @@ def ableTrainer():
         return jsonify({"message": "Hecho"})
     else:
         return jsonify({"error": "No se pudo habilitar"})
+    
+
 #-------------Rutas de user-------------#
 @admin_app.route("/users", methods = ['GET', 'POST'])
 @login_required
@@ -328,7 +342,7 @@ def users():
         if insert:
             users = ModelUser.get_Users(conection)
             Conection.desconectar()
-            return render_template("admin/users.html", users=users,  clients=clients, trainers=trainers, done = "Usuario creado correctamente.")
+            return redirect(url_for("admin_app.users", done = "Usuario creado correctamente."))
         else:
             Conection.desconectar()
             return render_template("admin/users.html", users=users,  clients=clients, trainers=trainers, error= "No se pudo ingresar el cliente.")
