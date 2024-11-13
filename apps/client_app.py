@@ -8,6 +8,7 @@ from db.models.ModelProduct import ModelProduct
 from db.models.ModelSesion import ModelSession
 from db.models.ModelRoutine import ModelRoutine
 import json  
+from apps.chatbot import get_response 
 
 
 #Creación de los blueprint para usar en app.py
@@ -23,6 +24,32 @@ def inicio():
     notifications = ModelClient.get_Notifications(conection)
     return render_template("client/index.html" , notifications=notifications)
 
+@client_app.route("/get_bot", methods=["POST"])
+@login_required
+@client_permission.require(http_exception=403)
+def get_bot_response():
+    """
+    Ruta que recibe el mensaje del usuario y devuelve la respuesta del chatbot
+    junto con las opciones a seguir.
+    """
+    data = request.get_json()  # Obtener los datos del cuerpo de la solicitud JSON
+    userText = data.get('msg')  # Obtener el mensaje del usuario
+
+    if userText:
+        # Generar la respuesta del bot (basado en el texto del usuario)
+        bot_response = get_response(userText)
+
+        # Las opciones siempre serán las mismas, sin importar la entrada del usuario
+        options = [
+            {"text": "Ver horarios", "value": "horarios"},
+            {"text": "Ver precios", "value": "precios"},
+            {"text": "Ver ubicación", "value": "ubicación"},
+            {"text": "Ver contacto", "value": "contacto"}
+        ]
+
+        return jsonify({"response": bot_response, "options": options})
+    
+    return jsonify({"response": "Lo siento, no pude entender tu pregunta."})
 
 @client_app.errorhandler(403)
 def forbidden(error):
