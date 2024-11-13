@@ -1,0 +1,70 @@
+{% extends "./layout/Layout_Admin.html" %}
+
+{% block content %}
+<!--**********************************
+    Content body start
+***********************************-->
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Ver Sesión</h4>
+                <div class="form-validation">
+                    <form class="needs-validation" novalidate>
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="mb-3">
+                                    <label for="Name" class="form-label">Nombre</label>
+                                    <input type="text" class="form-control" id="Name" value="{{ session.Name }}"
+                                        readonly>
+                                </div>
+
+                                <!-- Mostrar ejercicios -->
+                                {% for ejercicio in session.Exercises %}
+                                <div class="mb-3 d-flex justify-content-between align-items-center">
+                                    <div class="me-3">
+                                        <label for="ejercicio{{ loop.index }}" class="form-label">Ejercicio {{
+                                            loop.index }}</label>
+                                        <input type="text" class="form-control" id="ejercicio{{ loop.index }}"
+                                            value="{{ ejercicio.nombre }}" readonly>
+                                        <small>Repeticiones: {{ ejercicio.repeticiones }}</small><br>
+                                        <small>Series: {{ ejercicio.series }}</small>
+                                    </div>
+                                    <a href="{{ ejercicio.Link }}" class="btn btn-danger ms-2" target="_blank"
+                                        title="Ver video">
+                                        <i class="fas fa-play"></i>
+                                    </a>
+                                </div>
+                                {% endfor %}
+
+                                <label class="col-lg-12 col-form-label" for="Indications">Indicaciones</label>
+                                <div class="col-lg-12">
+                                    <textarea class="form-control" id="Indications" rows="5"
+                                        readonly>{{ session.Indications }}</textarea>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="my-5">
+                    <a type="button" class="btn btn-danger ms-2"
+                        href="{{ url_for('admin_app.viewRoutine', routineId=routine.RoutineId, DocumentId=routine.ClientId) }}">
+
+                        Volver
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--**********************************
+    Content body end
+***********************************-->
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

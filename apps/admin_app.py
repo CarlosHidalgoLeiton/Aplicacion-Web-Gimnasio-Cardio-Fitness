@@ -5,12 +5,15 @@ from db.conection import Conection
 from db.models.ModelUser import ModelUser
 from db.models.ModelTrainer import ModelTrainer
 from db.models.ModelClient import ModelClient
+from db.models.ModelRoutine import ModelRoutine
+from db.models.ModelSesion import ModelSession
 from db.models.ModelProduct import ModelProduct
 from db.models.ModelMembership import ModelMembership
 from db.models.ModelBill import ModelBill
 from db.models.ModelCancelledBill import ModelCancelledBill
 from db.models.entities.User import User
 from apps.permissions import admin_permission
+import json  
 
 #Creación de los blueprint para usar en app.py
 admin_app = Blueprint('admin_app', __name__)
@@ -152,6 +155,67 @@ def ableClient():
     else:
         # Manejar el caso en que no se encuentre el cliente
         return jsonify({"error": "No se pudo habilitar"})
+
+
+
+## VER RUTINAS
+@admin_app.route("/clients/routinesClient/<ID_Cliente>", methods=['GET', 'POST'])
+@login_required
+@admin_permission.require(http_exception=403)
+def routinesClient(ID_Cliente):
+    conection = Conection.conectar()
+    client = ModelClient.getClient(conection,ID_Cliente)
+    routines = ModelRoutine.get_all(conection, ID_Cliente)  
+    errorMessage = request.args.get('error')
+    Conection.desconectar()
+    return render_template("admin/routinesClient.html", routines=routines, client=client, error=errorMessage)
+
+
+@admin_app.route("/viewRoutine/<routineId>/<DocumentId>", methods=['GET'])
+@login_required
+@admin_permission.require(http_exception=403)
+def viewRoutine(routineId, DocumentId):
+    conexion = Conection.conectar()
+    routine = ModelRoutine.get_routine(conexion, routineId)
+    sessions = ModelSession.get_session_by_Routine(conexion, routineId)
+    client = ModelClient.getClient(conexion, DocumentId)
+    Conection.desconectar()
+
+    if routine:
+        return render_template("admin/viewRoutine.html", routine=routine, sessions=sessions, client=client)
+    else:
+        return redirect(url_for('admin_app.clients', error="Rutina no encontrada"))
+
+@admin_app.route("/getSession/<ID_Routine>", methods=['GET'])
+@login_required
+@admin_permission.require(http_exception=403)
+def getSessions(ID_Routine):
+    conection = Conection.conectar()
+    getSessions = ModelSession.get_session_by_Routine(conection, ID_Routine)
+    Conection.desconectar()
+    sessions = [session.to_dict() for session in getSessions]
+
+    if sessions:
+        return jsonify(sessions)
+    else:
+        return jsonify({'error': 'No se encontraron las sesiones.'})
+    
+
+@admin_app.route("/viewRoutine/viewSession/<Session_ID>", methods=['GET'])
+@login_required
+@admin_permission.require(http_exception=403)
+def viewSession(Session_ID):
+    conexion = Conection.conectar()
+    session = ModelSession.get_sesssion_by_id(conexion, Session_ID)
+    routine = ModelRoutine.get_routine(conexion, session.Routine_ID)
+    Conection.desconectar()
+    
+    if session:
+        # Deserializa el JSON a un objeto Python
+        session.Exercises = json.loads(session.Exercises)
+        return render_template("admin/viewSession.html", session=session, routine=routine)
+    else:
+        return redirect(url_for('admin_app.viewRoutine', routineId=routine.RoutineId, DocumentId=routine.ClientId, error="Sesión no encontrada"))
 
 #-------------Rutas de Entrenadores-------------#
 

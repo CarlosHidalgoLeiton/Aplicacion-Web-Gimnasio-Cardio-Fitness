@@ -54,6 +54,9 @@
 
     <script src="../../../static/js/toastrConfig.js"></script>
 
+    <script src="../../../static/js/stateRoutine.js"></script>
+
+
     {% block upScripts %}
 
     {% endblock %}
@@ -286,45 +289,46 @@
 
 
 
-    <script src="../../../static/vendor/bootstrap-select/js/bootstrap-select.min.js"></script>
-    <!--select plugins-file-->
-    <script src="../../../static/vendor/select2/js/select2.full.min.js"></script>
-    <!-- Toastr -->
-    <script src="../../../static/vendor/toastr/js/toastr.min.js"></script>
-    <!-- Pasos -->
-    <script src="../../../static/vendor/jquery-steps/js/jquery.steps.min.js"></script>
-    <script src="../../../static/vendor/jquery-smartwizard/dist/js/jquery.smartWizard.js"></script>
-    <!-- Datatable -->
-    <script src="../../../static/vendor/datatables/js/jquery.dataTables.min.js"></script>
-    <!-- ck-editor -->
-    <!-- <script src="../../../static/vendor/ckeditor/ckeditor.js"></script> -->
-    <!-- Apex Chart -->
-    <!-- <script src="../../../static/vendor/apexchart/apexchart.js"></script> -->
-    <!-- Chart piety plugin files -->
-    <script src="../../../static/vendor/peity/jquery.peity.min.js"></script>
+    <!--**********************************
+        Scripts
+    ***********************************-->
+	{% block scripts %}
+		
+	{% endblock %}
+	<script src="../../../static/vendor/bootstrap-select/js/bootstrap-select.min.js"></script>
+	<!--select plugins-file-->
+	<script src="../../../static/vendor/select2/js/select2.full.min.js"></script>
+	<!-- Toastr -->
+	<!-- <script src="../../../static/vendor/toastr/js/toastr.min.js"></script> -->
+	<!-- Pasos -->
+	<script src="../../../static/vendor/jquery-steps/js/jquery.steps.min.js"></script>
+	<script src="../../../static/vendor/jquery-smartwizard/dist/js/jquery.smartWizard.js"></script>
+	<!-- Datatable -->
+	<script src="../../../static/vendor/datatables/js/jquery.dataTables.min.js"></script>
+	<!-- ck-editor -->
+	<!-- <script src="../../../static/vendor/ckeditor/ckeditor.js"></script> -->
+	<!-- Apex Chart -->
+	<!-- <script src="../../../static/vendor/apexchart/apexchart.js"></script> -->
+	<!-- Chart piety plugin files -->
+	<script src="../../../static/vendor/peity/jquery.peity.min.js"></script>
 
-    <!-- All init script -->
-    <script src="../../../static/js/plugins-init/select2-init.js"></script>
-    <script src="../../../static/js/plugins-init/toastr-init.js"></script>
-    <script src="../../../static/js/plugins-init/datatables.init.js"></script>
+	<!-- All init script -->
+	<script src="../../../static/js/plugins-init/select2-init.js"></script>
+	<script src="../../../static/js/plugins-init/toastr-init.js"></script>
+	<script src="../../../static/js/plugins-init/datatables.init.js"></script>
 
-    <!-- CUSTOM SCRIPT -->
-    <!-- <script src="../../../static/js/dashboard/dashboard-1.js"></script> -->
-    <script src="../../../static/js/custom.min.js"></script>
-    <script src="../../../static/js/deznav-init.js"></script>
+	<!-- CUSTOM SCRIPT -->
+	<!-- <script src="../../../static/js/dashboard/dashboard-1.js"></script> -->
+	<script src="../../../static/js/custom.min.js"></script>
+	<script src="../../../static/js/deznav-init.js"></script>
 
-    <script>
-        $(document).ready(function () {
-            // SmartWizard initialize
-            $('#smartwizard').smartWizard();
-        });
-    </script>
+	<script>
+		$(document).ready(function () {
+			// SmartWizard initialize
+			$('#smartwizard').smartWizard();
+		});
+	</script>
 
-    <script>
-        localStorage.clear();
-    </script>
-    {% block scripts %}
-    {% endblock %}
 </body>
 
 </html>

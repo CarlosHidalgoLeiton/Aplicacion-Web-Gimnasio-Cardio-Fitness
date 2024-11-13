@@ -2,18 +2,25 @@
 
 
 {% block content %}
+
 <!--**********************************
-            Content body start
-        ***********************************-->
+		Content body start
+	***********************************-->
+
 <div class="page-titles">
 	<ol class="breadcrumb">
-		<li class="breadcrumb-item"><a href="{{ url_for('admin_app.clientes') }}">Clientes</a></li>
+		<li class="breadcrumb-item"><a href="{{ url_for ('admin_app.clients') }}">Clientes</a></li>
 		<li class="breadcrumb-item active"><a href="javascript:void(0)">Rutinas</a></li>
 	</ol>
 </div>
 <div class="row">
 	<div class="col-xl-12 col-xxl-12">
 		<div class="row">
+			<div class="col-xl-12">
+				<div class="card-header d-sm-flex flex-wrap d-block pb-0 border-0">
+					<div class="me-auto pe-3 mb-3"></div>
+				</div>
+			</div>
 
 			<div class="card">
 				<div class="card-header">
@@ -24,24 +31,28 @@
 						<table id="example2" class="display min-w850">
 							<thead>
 								<tr>
+									<th>Indicaciones</th>
 									<th>Fecha</th>
-									<th>Entrenador</th>
-									<th>Acciones</th>
+									<th>Estado</th>
+									<th></th>
 								</tr>
 							</thead>
 							<tbody>
+								{% for routine in routines %}
 								<tr>
-									<td>09/08/2024</td>
-									<td>Carlos Hidalgo</td>
+									<td>{{ routine['Indications'] }}</td>
+									<td>{{ routine['Date'] }}</td>
+									<td>{{ routine['State'] }}</td>
 									<td>
 										<div class="d-flex">
-											<a href="{{ url_for('admin_app.sesionesCliente') }}"
-												class="btn btn-primary shadow btn-xs sharp me-1"><i
-													class="fa fa-eye"></i></a>
+											<a href="{{ url_for('admin_app.viewRoutine', routineId = routine['RoutineId'], DocumentId= client['DocumentId']) }}"
+												class="btn btn-primary shadow btn-xs sharp me-1">
+												<i class="fa fa-eye"></i>
+											</a>
 										</div>
 									</td>
 								</tr>
-
+								{% endfor %}
 							</tbody>
 						</table>
 					</div>
@@ -51,12 +62,10 @@
 		</div>
 	</div>
 </div>
-</div>
-
 
 <!--**********************************
-            Content body end
-        ***********************************-->
+		Content body end
+	***********************************-->
 {% endblock %}
 
 {% block scripts %}
