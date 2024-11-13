@@ -788,10 +788,88 @@ def notificationsDesable(id):
 def reportesFacturacion():
     return render_template("admin/reportesFacturacion.html")
 
-@admin_app.route("/reportesInventario")
+@admin_app.route("/inventoryReports", methods=['GET'])
 @login_required
-def reportesInventario():
-    return render_template("admin/reporteInventario.html")
+@admin_permission.require(http_exception=403)
+def inventoryReports():
+    conection = Conection.conectar()
+    doneMessage = request.args.get('done')
+    errorMessage = request.args.get('error')
+    reports = ModelBill.get_ProductBills(conection)  
+    Conection.desconectar()
+    return render_template("admin/inventoryReports.html", reports=reports, done=doneMessage, error=errorMessage)
+
+
+@admin_app.route("/generate_report_pdf", methods=['GET'])
+@login_required
+@admin_permission.require(http_exception=403)
+def generate_report_pdf():
+    month = request.args.get('month')
+    conection = Conection.conectar()
+
+    reports = ModelBill.get_ProductBills(conection).get(month, [])
+    Conection.desconectar()
+
+    if not reports:
+        return "No hay facturas para este mes", 404
+
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=letter)
+
+    logo_path = "static/images/icono.jpg"
+    try:
+        c.drawImage(logo_path, 450, 700, width=1.5 * inch, height=0.8 * inch, preserveAspectRatio=True)
+    except Exception as ex:
+        print(f"Error al cargar el logo: {ex}")
+
+    c.setFont("Helvetica-Bold", 18)
+    c.setFillColor(HexColor("#c0392b"))  
+    c.drawString(50, 750, f"Reporte de Inventario - {month}")
+
+    c.setFont("Helvetica", 12)
+    c.setFillColor(HexColor("#7f8c8d"))
+    c.drawString(50, 730, f"Reporte de ventas de productos para el mes de {month}")
+
+    c.setFont("Helvetica", 10)
+
+    data = [["Código", "Producto", "Precio", "Cantidad Vendida", "Total Vendido"]]
+    for report in reports:
+        row = [
+            str(report['ProductCode']),
+            report['ProductName'],
+            f"{report['Price']:.2f}",
+            str(report['QuantitySold']),
+            f"{report['TotalSold']:.2f}"
+        ]
+        data.append(row)
+
+    table = Table(data, colWidths=[70, 150, 90, 90, 90])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), HexColor("#e74c3c")),  
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.white),  
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey), 
+        ('LINEABOVE', (0, 0), (-1, 0), 1, HexColor("#c0392b")), 
+        ('LINEBELOW', (0, -1), (-1, -1), 1, HexColor("#c0392b")),  
+        ('LINEBEFORE', (0, 0), (0, -1), 1, HexColor("#c0392b")),  
+        ('LINEAFTER', (-1, 0), (-1, -1), 1, HexColor("#c0392b")),  
+    ]))
+
+    table.wrapOn(c, 50, 600)
+    table.drawOn(c, 50, 500)  
+
+    c.setStrokeColor(HexColor("#c0392b"))
+    c.setLineWidth(1)
+    c.line(50, 490, 550, 490)  
+
+    c.showPage()
+    c.save()
+    buffer.seek(0)
+    return send_file(buffer, as_attachment=True, download_name=f"reporte_inventario_{month}.pdf", mimetype="application/pdf")
 
 
     #-------------Perfil------------#
