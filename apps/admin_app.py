@@ -106,12 +106,13 @@ def UpdateClient(documentId):
 @login_required
 @admin_permission.require(http_exception=403)
 def viewClient(documentId):
-    conexion = Conection.conectar()
-    client = ModelClient.getClient(conexion, documentId)
+    conection = Conection.conectar()
+    client = ModelClient.getClient(conection, documentId)
+    membership = ModelMembership.getMembership(conection, client.Membership_ID)
     Conection.desconectar()
 
     if client:
-        return render_template("admin/viewClient.html", client=client)
+        return render_template("admin/viewClient.html", client=client, membership = membership)
     else:
         # Manejar el caso en que no se encuentre el cliente
         return redirect(url_for('admin_app.clients', error="Cliente no encontrado"))
@@ -539,11 +540,6 @@ def viewcancelBill(ID_Bill):
     return redirect(url_for('admin_app.bills', error = "No se pudo obtener la información de la factura anulada."))
 
 
-
-
-
-    return render_template('admin/viewCancel.html', ID_Bill = ID_Bill)
-
 @admin_app.route('/getClients', methods = ['GET'])
 @login_required
 @admin_permission.require(http_exception=403)
@@ -751,7 +747,7 @@ def memberships():
     doneMessage = request.args.get('done')
     errorMessage = request.args.get('error')
     if request.method == 'POST':
-        membership = ModelMembership.getDataClient(request)
+        membership = ModelMembership.getDataMembership(request)
         membershipValidated = ModelMembership.validateDataForm(membership)
         if not type(membershipValidated) == bool:
             return render_template("admin/membership.html", memberships=memberships, error=membershipValidated, membership = membership)
@@ -773,17 +769,39 @@ def memberships():
     else:
         return render_template("admin/membership.html", memberships=memberships, membership = None, done = doneMessage, error = errorMessage)
 
-
+@admin_app.route("/membership/updateMembership/<id>", methods=['POST', 'GET'])
+@login_required
+@admin_permission.require(http_exception=403)
+def updateMembership(id):
+    conexion = Conection.conectar()
+    membership = ModelMembership.getMembership(conexion, id)
+    Conection.desconectar()
+    if membership:
+        if request.method == 'POST':
+            membershipUpdate = ModelMembership.getDataMembership(request)
+            membershipValidated = ModelMembership.validateDataForm(membershipUpdate)
+            if not type(membershipValidated) == bool:
+                return render_template("admin/updateMembership.html", error=membershipValidated, membership = membership)
+            conection = Conection.conectar()
+            if conection == None:
+                return render_template("admin/updateMembership.html", error= "Error en la conexión.", membership = membership)
+            update = ModelMembership.updateMembership(conection, membershipUpdate, id)
+            Conection.desconectar()
+            if update and type(update) == bool:
+                return redirect(url_for('admin_app.memberships', done = "Membresia actualizada correctamente."))
+            elif update == "DataBase":
+                return render_template("admin/updateMembership.html", error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", membership = membership)
+            else:
+                return render_template("admin/updateMembership.html", error= "No se pudo actualizar la membresia.", membership = membership)
+        else:
+            return render_template("admin/updateMembership.html", membership = membership)
+    else:
+        return redirect(url_for("admin_app.memberships", error = "Membresia no encontrada."))
 
 @admin_app.route("/menbresias/ver")
 @login_required
 def viewMembership():
     return render_template("admin/verMembresia.html")
-
-@admin_app.route("/menbresias/actualizar")
-@login_required
-def updateMembership():
-    return render_template("admin/actualizarMembresia.html")
 
 @admin_app.route("/membresias/deshabilitar", methods = ['POST'])
 @login_required
