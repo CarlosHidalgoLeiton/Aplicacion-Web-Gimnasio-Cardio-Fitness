@@ -22,7 +22,7 @@
                                         <div class="mb-3 row">
                                             <label class="col-lg-4 col-form-label" for="validationCustom01">Cédula</label>
                                             <div class="col-lg-8">
-                                                <input type="text" class="form-control" id="validationCustom01" value="{{ current_user.DocumentId }}">
+                                                <input type="text" class="form-control" id="validationCustom01" value="{{ current_user.DocumentId }}" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -30,7 +30,7 @@
                                         <div class="mb-3 row">
                                             <label class="col-lg-4 col-form-label" for="validationCustom02">Rol</label>
                                             <div class="col-lg-8">
-                                                <input type="text" class="form-control" id="validationCustom02" value="{{ current_user.role }}">
+                                                <input type="text" class="form-control" id="validationCustom02" value="{% if current_user.role == 'Admin' %} Administrador {% endif %}" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -38,7 +38,7 @@
                                         <div class="mb-3 row">
                                             <label class="col-lg-4 col-form-label" for="validationCustom11">Correo</label>
                                             <div class="col-lg-8">
-                                                <input type="text" class="form-control" id="validationCustom11" value="{{ current_user.Email }}">
+                                                <input type="text" class="form-control" id="validationCustom11" value="{{ current_user.Email }}" readonly>
                                             </div>
                                         </div>
                                     </div>
