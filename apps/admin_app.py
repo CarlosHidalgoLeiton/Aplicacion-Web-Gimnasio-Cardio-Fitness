@@ -14,6 +14,14 @@ from db.models.ModelCancelledBill import ModelCancelledBill
 from db.models.entities.User import User
 from apps.permissions import admin_permission
 import json  
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.colors import HexColor
+from reportlab.lib.units import inch
+from reportlab.platypus import Table, TableStyle
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from flask import send_file
+from reportlab.lib import colors
 
 #Creación de los blueprint para usar en app.py
 admin_app = Blueprint('admin_app', __name__)
