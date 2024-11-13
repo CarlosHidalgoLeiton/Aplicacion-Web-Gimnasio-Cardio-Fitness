@@ -2,6 +2,7 @@ from .entities.Trainer import Trainer
 from pymysql import IntegrityError
 import re
 from datetime import datetime
+from db.models.ModelUser import ModelUser
 
 class ModelTrainer:
 
@@ -69,10 +70,22 @@ class ModelTrainer:
                 
                 sql = """UPDATE Entrenador SET Cedula = %s, Nombre = %s, Primer_Apellido = %s, Segundo_Apellido = %s, Fecha_Nacimiento = %s, Edad = %s, Correo = %s, Telefono = %s WHERE Cedula = %s"""
                 cursor.execute(sql, (trainer.DocumentId, trainer.Name, trainer.First_LastName, trainer.Second_LastName, trainer.Date_Birth, trainer.Age, trainer.Mail, trainer.Phone, id))
-                conection.commit()
+                
 
                 if cursor.rowcount > 0:
                     print(f"Entrenador {trainer.DocumentId} actualizado exitosamente.")
+
+                    user = ModelUser.get_User(conection, id)
+
+                    if user:
+                        sql2 = "UPDATE Usuario SET Cedula = %s WHERE Cedula = %s"
+                        cursor.execute(sql2, ( trainer.DocumentId ,id))
+
+                        if cursor.rowcount < 0:
+                            print("No se pudo actualizar el usuario en updateTrainer.")
+                            return "Error"
+                        
+                    conection.commit()
                     return True
                 else:
                     print("No se pudo actualizar el entrenador.")

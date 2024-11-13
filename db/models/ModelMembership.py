@@ -39,6 +39,64 @@ class ModelMembership:
             return "Error"
     
     @classmethod
+    def updateMembership(cls, conection, membership, id):
+        if membership != None:
+            try:
+                cursor = conection.cursor()
+                
+                sql = """UPDATE Membresia SET Nombre = %s, Descripcion = %s, Precio = %s, Duracion_Dias = %s WHERE ID_Membresia = %s"""
+                cursor.execute(sql, (membership.Name, membership.Description, membership.Price, membership.Time, id))
+
+                if cursor.rowcount > 0:
+                    print(f"Membresia {id} actualizada exitosamente.")
+                    conection.commit()
+                    return True
+
+                else:   
+                    print("No se pudo actualizar la membresia.")
+                    return "Error"
+
+            except IntegrityError as ex:
+                print(f"Error en ModelMembership updateMembership: {ex}")
+                conection.rollback()
+                return "Primary"
+            except BaseException as ex:
+                print(f"Error en ModelMembership updateMembership: {ex}")
+                conection.rollback()
+                return "DataBase"
+            except Exception as ex:
+                print(f"Error en ModelMembership updateMembership: {ex}")
+                conection.rollback()
+                return "Error"
+        else:
+            return "Error"
+
+    @classmethod
+    def getMembership(cls, conexion, id):
+        try:
+            cursor = conexion.cursor()
+            sql = """SELECT ID_Membresia, Nombre, Descripcion, Precio, Duracion_Dias 
+                    FROM Membresia WHERE ID_Membresia = %s"""
+            cursor.execute(sql, (id))
+            row = cursor.fetchone()
+
+            if row:
+                # Crear y devolver un objeto cliente
+                return Membership(
+                    id=row[0],
+                    Name=row[1],
+                    Description=row[2],
+                    Price=row[3],
+                    Time=row[4],
+                    State=None
+                )
+            else:
+                return None
+        except Exception as ex:
+            print(f"Error al obtener la membresia: {ex}")
+            return None
+
+    @classmethod
     def get_all(cls, conexion):
         try:
             cursor = conexion.cursor()
@@ -85,7 +143,7 @@ class ModelMembership:
             return None
 
     @classmethod
-    def getDataClient(cls, request):
+    def getDataMembership(cls, request):
         name = request.form['Nombre']
         description = request.form['Descripcion']
         price = request.form['Precio']
