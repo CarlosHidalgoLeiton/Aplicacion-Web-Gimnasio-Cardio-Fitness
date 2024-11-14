@@ -1,15 +1,10 @@
 {% extends "./layout/Layout_Admin.html" %}
 
-
 {% block content %}
-
-<!--**********************************
-            Content body start
-        ***********************************-->
 
 <div class="page-titles">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ url_for('admin_app.entrenadores') }}">Entrenadores</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('admin_app.trainers') }}">Entrenadores</a></li>
         <li class="breadcrumb-item active"><a href="javascript:void(0)">Ver Entrenador</a></li>
     </ol>
 </div>
@@ -17,7 +12,7 @@
     <div class="col-lg-12">
         <div class="card form-container">
             <div class="card-body">
-                <h4 class="card-title mb-4">Entrenador Nombre Apellido</h4>
+                <h4 class="card-title mb-4">{{ trainer.Name }} {{ trainer.First_LastName }} {{ trainer.Second_LastName }}</h4>
                 <div class="form-validation">
                     <form class="needs-validation" novalidate>
                         <div class="row">
@@ -28,7 +23,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustom01"
-                                            value="Información" readonly>
+                                            value="{{ trainer.DocumentId }}" readonly>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -36,8 +31,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustom02"
-                                            value="Información" readonly>
-
+                                            value="{{ trainer.Name }}" readonly>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -45,7 +39,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustom03"
-                                            value="Información" readonly>
+                                            value="{{ trainer.First_LastName }}" readonly>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -53,7 +47,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustom03"
-                                            value="Información" readonly>
+                                            value="{{ trainer.Second_LastName }}" readonly>
                                     </div>
                                 </div>
 
@@ -64,7 +58,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustom07"
-                                            value="Información" readonly>
+                                            value="{{ trainer.Age }}" readonly>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -72,7 +66,7 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustom07"
-                                            value="Información" readonly>
+                                            value="{{ trainer.Date_Birth }}" readonly>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -80,24 +74,23 @@
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustom06"
-                                            value="Información" readonly>
+                                            value="{{ trainer.Mail }}" readonly>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label" for="validationCustom07">Telefono
+                                    <label class="col-lg-4 col-form-label" for="validationCustom07">Teléfono
                                     </label>
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="validationCustom07"
-                                            value="Información" readonly>
+                                            value="{{ trainer.Phone }}" readonly>
                                     </div>
                                 </div>
-
 
                             </div>
                         </div>
                         <div class="my-5">
                             <a type="button" class="btn btn-danger me-2"
-                                href="{{ url_for('admin_app.entrenadores') }}">Volver</a>
+                                href="{{ url_for('admin_app.trainers') }}">Volver</a>
                         </div>
                     </form>
                 </div>
@@ -106,11 +99,7 @@
     </div>
 </div>
 
-
 {% endblock %}
 
-
 {% block scripts %}
-
-
 {% endblock %}

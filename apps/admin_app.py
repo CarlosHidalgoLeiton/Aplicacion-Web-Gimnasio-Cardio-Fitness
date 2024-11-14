@@ -291,10 +291,18 @@ def updateTrainer(documentId):
     return render_template("admin/updateTrainer.html", trainer = trainer)
 
 
-@admin_app.route("/entrenadores/ver")
+@admin_app.route("/trainers/view/<documentId>", methods = ['GET'])
 @login_required
-def verEntrenador():
-    return render_template("admin/verEntrenador.html")
+@admin_permission.require(http_exception=403)
+def viewTrainer(documentId):
+    conection = Conection.conectar()
+    trainer = ModelTrainer.getTrainer(conection, documentId)
+    Conection.desconectar()
+
+    if trainer:
+        return render_template("admin/viewTrainer.html", trainer=trainer)
+    else:
+        return redirect(url_for("admin_app.trainer", error = "Entrenador no encontrado."))
 
 @admin_app.route("/trainer/disable", methods = ['POST'])
 @login_required
