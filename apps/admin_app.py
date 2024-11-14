@@ -9,6 +9,7 @@ from db.models.ModelProduct import ModelProduct
 from db.models.ModelMembership import ModelMembership
 from db.models.ModelBill import ModelBill
 from db.models.ModelCancelledBill import ModelCancelledBill
+from db.models.ModelStatistics import ModelStatistics
 from db.models.entities.User import User
 from apps.permissions import admin_permission
 
@@ -155,10 +156,45 @@ def ableClient():
 
 
 
-@admin_app.route("/clientes/estadísticas")
+@admin_app.route("/client/statisticsClient/<documentId>", methods=['GET'])
 @login_required
-def estadisticas():
-    return render_template("admin/estadisticas.html")
+def statisticsClient(documentId):
+    conection = Conection.conectar()
+
+    # Obtener las estadísticas del cliente por su ID
+    statistics = ModelStatistics.getStatisticsByClientId(conection, documentId)
+    client = ModelStatistics.getClientById(conection, documentId)
+    Conection.desconectar()
+    if client is None:
+        return redirect(url_for('admin_app.clients', error="Cliente no encontrado"))
+    
+    doneMessage = request.args.get('done')
+    errorMessage = request.args.get('error')
+    
+    return render_template("admin/statistics.html", client = client, statistics=statistics, done=doneMessage, error=errorMessage, documentId = documentId)
+
+
+@admin_app.route("/viewStatistics/<documentId>/<clientId>", methods = ['GET'])
+@login_required
+def viewStatistics(documentId,clientId):
+    try:
+        conection = Conection.conectar()
+        statistics = ModelStatistics.getStatisticsId(conection, documentId)
+
+        client = ModelStatistics.getClientById(conection, clientId)
+        Conection.desconectar()
+        if client is None:
+         return redirect(url_for('admin_app.statistics', error="Cliente no encontrado"))
+    
+
+    except Exception as ex:
+        print(f"Error al obtener las estadísticas del cliente: {ex}")
+        statistics = None
+    finally:
+        Conection.desconectar()
+    
+    return render_template("admin/viewStatistics.html", statistics=statistics, clientId = clientId,client=client)
+
 
 @admin_app.route("/cliente/estadistica/ver")
 @login_required

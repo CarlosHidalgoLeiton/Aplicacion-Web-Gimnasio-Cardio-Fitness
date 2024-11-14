@@ -7,7 +7,7 @@
         ***********************************-->
 <div class="page-titles">
 	<ol class="breadcrumb">
-		<li class="breadcrumb-item"><a href="{{ url_for('admin_app.clientes') }}">Clientes</a></li>
+		<li class="breadcrumb-item"><a href="{{ url_for('admin_app.clients') }}">Clientes</a></li>
 		<li class="breadcrumb-item active"><a href="">Estadísticas</a></li>
 	</ol>
 </div>
@@ -32,17 +32,36 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>09/08/2024</td>
-						<td>Carlos Hidalgo</td>
-						<td>
-							<div class="d-flex">
-								<a href="{{ url_for('admin_app.verEstadistica') }}" class="btn btn-primary shadow btn-xs sharp me-1"><i
-										class="fa fa-eye"></i></a>
-							</div>
-						</td>
-					</tr>
+					{% if statistics %}
+						{% for stat in statistics %}
+						<tr>
+							<td>{{ stat[1].strftime('%d/%m/%Y') }}</td>
+							<td>{{ stat[3] }} {{stat[4]}}</td>
+							<td>
+								<div class="d-flex">
+									{% if stat[2] == 1 %}
 
+									<!-- Ver estadística -->
+									<a href="{{ url_for('admin_app.viewStatistics', documentId=stat[0], clientId= documentId) }}"
+										class="btn btn-primary shadow btn-xs sharp me-1">
+										<i class="fa fa-eye"></i>
+									</a>
+								
+									{% else %}
+
+								
+									{% endif %}
+								</div>
+							</td>
+						</tr>
+						{% endfor %}
+					{% else %}
+						<tr>
+							<td colspan="3">No hay estadísticas registradas para este cliente.</td>
+							<td ></td>
+							<td ></td>
+						</tr>
+					{% endif %}
 				</tbody>
 			</table>
 		</div>

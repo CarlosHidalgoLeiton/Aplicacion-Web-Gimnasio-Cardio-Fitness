@@ -111,6 +111,69 @@ def statisticsClient(documentId):
         return render_template("trainer/statisticsClient.html", client = client, statistics=statistics, statistics_data=None, done=doneMessage, error=errorMessage, documentId = documentId)
 
 
+
+
+
+@trainer_app.route("/statisticsUpdate/<statisticsId>/<documentId>", methods=["POST", 'GET'])
+@login_required
+@trainer_permission.require(http_exception=403)
+def updateStatistics(statisticsId,documentId):
+    conection = Conection.conectar()
+    statistics = ModelStatistics.getStatisticsId(conection, statisticsId)
+    Conection.desconectar()
+    if statistics:
+        if request.method == 'POST':
+            statistics_data = ModelStatistics.getDataStatisticsUpdate(request)
+            statisticsValidated = ModelStatistics.validateDataFormUpdate(statistics_data)
+
+           
+            if not isinstance(statisticsValidated, bool):
+                return render_template("trainer/updateStatistics.html", statistics=statistics, error=statisticsValidated, statistics_data=statistics_data, statisticsId=statisticsId,documentId=documentId)
+            conection = Conection.conectar()
+            if conection == None:
+                return render_template("trainer/updateStatistics.html", statistics=statistics, error="Error en la conexión.", statistics_data=statistics_data)
+            update_result = ModelStatistics.updateStatistics(conection, statistics_data,statisticsId)
+            Conection.desconectar()
+            if update_result is True:
+                return redirect(url_for('trainer_app.statisticsClient', documentId=documentId, done="Estadística actualizada correctamente"))
+            else:
+                return render_template("/trainer/updateStatistics.html", statistics=statistics, error="No se pudo actualizar la estadística.", statistics_data=statistics_data,statisticsId = statisticsId,documentId=documentId)
+
+        else:
+            return render_template('trainer/updateStatistics.html', statistics = statistics,statisticsId = statisticsId,documentId=documentId)
+    else:
+        return redirect(url_for("trainer_app.statisticsClient", error = "Estadística no encontrado",documentId=documentId))
+
+
+
+
+@trainer_app.route("/viewStatistics/<documentId>/<clientId>", methods = ['GET'])
+@login_required
+def viewStatistics(documentId,clientId):
+    try:
+        conection = Conection.conectar()
+        statistics = ModelStatistics.getStatisticsId(conection, documentId)
+        client = ModelStatistics.getClientById(conection, clientId)
+        Conection.desconectar()
+        if client is None:
+         return redirect(url_for('trainer_app.statisticsClient', error="Cliente no encontrado"))
+    
+
+    except Exception as ex:
+        print(f"Error al obtener las estadísticas del cliente: {ex}")
+        statistics = None
+    finally:
+        Conection.desconectar()
+    
+    return render_template("admin/viewStatistics.html", statistics=statistics, clientId = clientId,client=client)
+
+
+
+
+
+
+
+
 ## VER RUTINAS
 @trainer_app.route("/client/routinesClient/<ID_Cliente>", methods=['GET', 'POST'])
 @login_required
@@ -394,10 +457,38 @@ def viewClient(documentId):
         # Manejar el caso en que no se encuentre el cliente
         return redirect(url_for('trainer_app.clients', error="Cliente no encontrado"))
 
-@trainer_app.route("/verEstadistica" )
-@login_required
-def verEstadistica():
-    return render_template("trainer/verEstadistica.html")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @trainer_app.route("/verSesion" )
 @login_required

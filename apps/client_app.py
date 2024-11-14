@@ -5,6 +5,7 @@ from apps.permissions import client_permission
 from db.conection import Conection
 from db.models.ModelClient import ModelClient
 from db.models.ModelProduct import ModelProduct
+from db.models.ModelStatistics import ModelStatistics
 #Creación de los blueprint para usar en app.py
 client_app = Blueprint('client_app', __name__)
 
@@ -108,12 +109,53 @@ def verSesion():
     return render_template("client/verSesionClient.html")
 
 #-------------Rutas de estadisticas-------------#
-@client_app.route("/estadisticas")
-def estadisticas():
-    return render_template("client/Estadisticas.html")
 
-@client_app.route("/verEstadisticas")
-def verEstadisticas():
-    return render_template("client/verEstadistica.html")
+
+@client_app.route("/statisticsClient", methods=['GET'])
+@login_required
+def statisticsClient():
+    # Conectar a la base de datos
+    conection = Conection.conectar()
+    documentId = current_user.DocumentId
+    # Obtener las estadísticas del cliente por su ID
+    statistics = ModelStatistics.getStatisticsByClientId(conection, documentId)
+    client = ModelStatistics.getClientById(conection, documentId)
+    Conection.desconectar()
+
+    # Verificar si el cliente existe
+    if client is None:
+        return redirect(url_for('client_app.dashboard', error="Cliente no encontrado"))
+
+    # Mensajes opcionales de éxito o error
+    doneMessage = request.args.get('done')
+    errorMessage = request.args.get('error')
+
+    # Renderizar la plantilla de estadísticas del cliente
+    return render_template("client/statisticsClient.html", client=client, statistics=statistics,documentId = documentId, done=doneMessage, error=errorMessage)
+
+@client_app.route("/viewStatistics/<documentId>/<clientId>", methods = ['GET'])
+@login_required
+def viewStatistics(documentId,clientId):
+    try:
+        conection = Conection.conectar()
+        statistics = ModelStatistics.getStatisticsId(conection, documentId)
+
+        client = ModelStatistics.getClientById(conection, clientId)
+        Conection.desconectar()
+        if client is None:
+         return redirect(url_for('client_app.statisticsClient', error="Cliente no encontrado"))
+    
+
+    except Exception as ex:
+        print(f"Error al obtener las estadísticas del cliente: {ex}")
+        statistics = None
+    finally:
+        Conection.desconectar()
+    
+    return render_template("client/viewStatistics.html", statistics=statistics, clientId = clientId,client=client)
+
+
+
+
 
 #-------------Rutas de notificaciones-------------#

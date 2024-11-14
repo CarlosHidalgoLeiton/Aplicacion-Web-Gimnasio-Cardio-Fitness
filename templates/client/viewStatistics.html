@@ -1,0 +1,280 @@
+
+{% extends "./layout/Layout_Client.html" %}
+
+
+{% block content %}
+<div class="content-body default-height">
+    <!-- row -->
+    <div class="container-fluid">
+        <div class="page-titles">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../client/statisticsClient.html">Mis Estadísticas</a></li>
+                <li class="breadcrumb-item active"><a href="">Ver Estadísticas</a></li>
+            </ol>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card form-container">
+                    <div class="card-body">
+                        <div class="form-validation">
+                            <form class="needs-validation" novalidate>
+                                <h4>Escaneo</h4>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-xl-6">
+        
+                                        
+                                                    <div class="mb-3 row">
+                                                        <label class="col-lg-4 col-form-label">Nombre completo</label>
+                                                        <div class="col-lg-6">
+                                                            <input type="text" class="form-control"  value="{{ client[0] }} {{ client[1] }} {{ client[2] }}" readonly>
+                                                        </div>
+                                                    </div>
+                                            
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom01">Fecha de Medición</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="validationCustom01" name="Measurement_Date" value="{{statistics.Measurement_Date}}" readonly>
+                                            </div>
+                                        </div>
+        
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Estatura </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name ="Stature"  value="{{statistics.Stature}}"readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Peso </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name ="Weight" value="{{statistics.Weight}}" readonly>
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >IMC </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="IMC" value="{{statistics.IMC}}" readonly>
+                                            </div>
+                                        </div>
+        
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >FC Reposo</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="FC_Repose" value="{{statistics.FC_Repose}}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >FC Max </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="FC_MAX" value="{{statistics.FC_MAX}}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Presión Arterial </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="Blood_pressure" value="{{statistics.Blood_pressure}}" readonly>
+                                            </div>
+                                        </div>
+        
+                                    </div>
+                                    <div class="col-xl-6">
+                                    
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Edad</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" value="{{client[3]}}" readonly>
+                                            </div>
+                                        </div>
+                                    
+        
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >BMR </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="BMR" value="{{statistics.BMR}}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Grasa Corporal </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="Body_Fat" value="{{statistics.Body_Fat}}" readonly>
+                                            </div>
+                                        </div>
+        
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Porcentaje Agua </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="Percent_Water" value="{{statistics.Percent_Water}}"readonly>
+                                            </div>
+                                        </div>
+        
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Masa Muscular </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="Muscle_Mass" value="{{statistics.Muscle_Mass}}"readonly>
+                                            </div>
+                                        </div>
+        
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Edad Metabólica </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="Metabolic_Age" value="{{statistics.Metabolic_Age}}"readonly>
+                                            </div>
+                                        </div>
+        
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Masa Ósea</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="Bone_Mass" value="{{statistics.Bone_Mass}}"readonly>
+                                            </div>
+                                        </div>
+        
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Grasa Visceral</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name = "Visceral_Fat" value="{{statistics.Visceral_Fat}}" readonly>
+                                            </div>
+                                        </div>
+        
+        
+                                    </div>
+                                </div>
+            
+                                
+                        
+                                
+                                <h4>Circunferencias</h4>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-xl-6">
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Pecho </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="Chest_Circum" value="{{statistics.Chest_Circum}}"readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Brazo Derecho </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="Right_Arm_Circum" value="{{statistics.Right_Arm_Circum}}"readonly >
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Brazo Izquierdo </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="Left_Arm_Circum" value="{{statistics.Left_Arm_Circum}}"readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Cintura </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="Circum_Waist" value="{{statistics.Circum_Waist}}"readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label">Abdomen </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="Circum_Abdomen" value="{{statistics.Circum_Abdomen}}" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6">
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Cadera </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="Hip_Circum" value="{{statistics.Hip_Circum}}"readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Muslo Derecho </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="Circum_Thigh_Right" value="{{statistics.Circum_Thigh_Right}}"readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Muslo Izquierdo </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="Circum_Thigh_Left" value="{{statistics.Circum_Thigh_Left}}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Pantorrilla Derecha </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="Circum_Calf_Right" value="{{statistics.Circum_Calf_Right}}" readonly >
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Pantorrilla Izquierda </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="Circum_Calf_Left" value="{{statistics.Circum_Calf_Left}}" readonly >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                
+                                <h4>Sección Especial</h4>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-xl-6">
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Consideraciones Especiales </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="Special_Considerations" value="{{statistics.Special_Considerations}}"readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >¿Es deportista? </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="sportsman" value="{{statistics.sportsman}}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Disponibilidad de Tiempo </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="Disponibilidad" value="{{statistics.Disponibilidad}}"readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6">
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Objetivo</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="Training_Goal" value="{{statistics.Training_Goal}}" readonly>
+                                            </div>
+                                        </div>
+        
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Énfasis</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name="Emphasis_Training" value="{{statistics.Emphasis_Training}}"readonly >
+                                            </div>
+                                        </div>
+        
+                                        
+                                    </div>
+                                </div>
+        
+                                
+                                <div class="my-5">
+                                    <a type="button" class="btn btn-danger me-2" href="{{ url_for ('client_app.statisticsClient') }}">Volver</a>
+                                </div>
+                            </form>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+
+
+
+{% endblock %}
+

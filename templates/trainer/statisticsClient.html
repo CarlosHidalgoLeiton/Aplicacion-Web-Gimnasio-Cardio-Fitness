@@ -321,12 +321,12 @@
 													{% if stat[2] == 1 %}
 
 													<!-- Ver estadística -->
-													<a href="{{ url_for('trainer_app.verEstadistica', statistic_id=stat.ID_Statistics) }}"
+													<a href="{{ url_for('trainer_app.viewStatistics', documentId=stat[0], clientId= documentId) }}"
 														class="btn btn-primary shadow btn-xs sharp me-1">
 														<i class="fa fa-eye"></i>
 													</a>
 													<!-- Editar estadística -->
-													<a href="{{ url_for('trainer_app.editarEstadistica') }}"
+													<a href="{{ url_for('trainer_app.updateStatistics', statisticsId=stat[0], documentId=documentId) }}"
 														class="btn btn-primary shadow btn-xs sharp me-1">
 														<i class="fa fa-pencil"></i>
 													</a>
