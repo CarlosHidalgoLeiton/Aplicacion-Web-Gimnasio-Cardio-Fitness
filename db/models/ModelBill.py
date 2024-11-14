@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
+from collections import defaultdict
 import re
+from db.models.ModelProduct import ModelProduct
 from .entities.Bill import Bill
 from .entities.Client import Client
 class ModelBill:
@@ -43,10 +45,12 @@ class ModelBill:
                 bill.Type = 'Pago General'
                 date = datetime.now()
                 bill.State = 1
+                bill.EntityType='General'
+                bill.ID_Entity=0
                 cursor = conection.cursor()
-                sql = """INSERT INTO Factura (Monto, Tipo, Descripcion, Fecha, Estado)
-                VALUES (%s, %s, %s, %s, %s)"""
-                cursor.execute(sql, (bill.Amount, bill.Type, bill.Description, date, bill.State))
+                sql = """INSERT INTO Factura (Monto, Tipo, TipoEntidad, ID_Entidad, Descripcion, Fecha, Estado)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)"""
+                cursor.execute(sql, (bill.Amount, bill.Type, bill.EntityType, bill.ID_Entity, bill.Description, date, bill.State))
                 conection.commit()
 
                 if cursor.rowcount > 0:
@@ -174,9 +178,9 @@ class ModelBill:
                 date = datetime.now()
                 bill.State = 1
                 cursor = conection.cursor()
-                sql = """INSERT INTO Factura (Monto, Tipo, Descripcion, Fecha, TipoEntidad, ID_Entidad, Estado)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)"""
-                cursor.execute(sql, (bill.Amount, bill.Type, bill.Description, date, bill.EntityType, bill.ID_Entity, bill.State))
+                sql = """INSERT INTO Factura (Monto, Tipo, Descripcion, Fecha, TipoEntidad, ID_Entidad, Estado, Cantidad)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+                cursor.execute(sql, (bill.Amount, bill.Type, bill.Description, date, bill.EntityType, bill.ID_Entity, bill.State, bill.Lot))
 
                 if cursor.rowcount > 0:
                     print(f"Factura creada exitosamente.")
@@ -449,3 +453,46 @@ class ModelBill:
         except Exception as ex:
             print(ex)
             return False
+
+# ---------------Reportes----------------------
+
+
+
+    @classmethod
+    def get_ProductBills(cls, conection):
+        try:
+            cursor = conection.cursor()
+            sql = "SELECT ID_Factura, Monto, Fecha, Tipo, Descripcion, TipoEntidad, ID_Entidad, Estado, Cantidad FROM Factura WHERE TipoEntidad = 'Producto'"
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+            bills_by_month = defaultdict(list)
+
+            for row in rows:
+                product_id = row[6]
+                product = ModelProduct.get_product_by_id(conection, product_id)
+
+               
+                if product:
+                    price = product.Price if product.Price is not None else 0  
+                    bill = {
+                        'ID_Bill': row[0],
+                        'Amount': row[1],
+                        'Date': row[2],
+                        'Type': row[3],
+                        'Description': row[4],
+                        'EntityType': row[5],
+                        'ID_Entity': product_id,
+                        'ProductCode': product.ID_Product,
+                        'Price': product.Price,
+                        'ProductName': product.Name,
+                        'QuantitySold': row[8],
+                        'TotalSold': row[8] * price,  
+                    }
+                    month_year = row[2].strftime('%Y-%m')
+                    bills_by_month[month_year].append(bill)
+
+            cursor.close()
+            return bills_by_month
+        except Exception as ex:
+            print(f"Error en get_ProductBills: {ex}") 
+            return None

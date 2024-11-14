@@ -192,7 +192,15 @@
                             {% for user in users %}
                             <tr>
                                 <td>{{ user.DocumentId }}</td>
-                                <td>{{ user.role }}</td>
+                                <td> 
+                                    {% if user.role == "Admin" %}
+                                        Administrador
+                                    {% elif user.role == "Trainer" %}
+                                        Entrenador
+                                    {% else %}
+                                        Cliente
+                                    {% endif %}
+                                </td>
                                 <td>{{ user.State }}</td>
                                 <td>
                                     <div class="d-flex">

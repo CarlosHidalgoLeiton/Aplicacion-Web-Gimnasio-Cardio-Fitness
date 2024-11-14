@@ -208,7 +208,7 @@
                     <table id="example2" class="display min-w850">
                         <thead>
                             <tr>
-                                <th>Cedula</th>
+                                <th>Cédula</th>
                                 <th>Nombre</th>
                                 <th>Apellidos</th> <!-- Columna unificada de apellidos -->
                                 <th>Ocupación</th>
@@ -226,14 +226,15 @@
                                 <td>
                                     <div class="d-flex">
                                         {% if client['State'] == 1 %}
-                                        <a href="{{ url_for('admin_app.rutinasCliente') }}"
-                                            class="btn btn-primary shadow btn-xs sharp me-1">
+                                        <a href="" class="btn btn-primary shadow btn-xs sharp me-1">
                                             <i class="flaticon-381-notepad"></i>
                                         </a>
+
                                         <a href="{{ url_for('admin_app.statisticsClient', documentId=client['DocumentId']) }}"
                                             class="btn btn-primary shadow btn-xs sharp me-1">
                                             <i class="fas fa-chart-bar"></i>
                                         </a>
+
                                         <a href="{{ url_for('admin_app.viewClient', documentId=client['DocumentId']) }}"
                                             class="btn btn-primary shadow btn-xs sharp me-1">
                                             <i class="fa fa-eye"></i>

@@ -5,6 +5,7 @@ from datetime import datetime
 from .entities.Notification import Notification
 import re
 from pymysql import IntegrityError
+from db.models.ModelUser import ModelUser
 
 class ModelClient:
     """It has the methods over Client."""
@@ -98,12 +99,24 @@ class ModelClient:
                 
                 sql = """UPDATE Cliente SET Cedula = %s, Nombre = %s, Primer_Apellido = %s, Segundo_Apellido = %s, Fecha_Nacimiento = %s, Edad = %s, Correo = %s, Telefono = %s, Ocupacion = %s, TelefonoEmergencia = %s, Direccion = %s, Padecimientos = %s, Limitacion = %s WHERE Cedula = %s"""
                 cursor.execute(sql, (client.DocumentId, client.Name, client.First_LastName, client.Second_LastName, client.Date_Birth, client.Age, client.Mail, client.Phone, client.Occupation, client.TelephoneEmergency, client.Address, client.Ailments, client.Limitation, id))
-                conection.commit()
 
                 if cursor.rowcount > 0:
                     print(f"Cliente {client.DocumentId} actualizado exitosamente.")
+
+                    user = ModelUser.get_User(conection, id)
+
+                    if user:
+                        sql2 = "UPDATE Usuario SET Cedula = %s WHERE Cedula = %s"
+                        cursor.execute(sql2, ( client.DocumentId ,id))
+
+                        if cursor.rowcount < 0:
+                            print("No se pudo actualizar el usuario en updateClient.")
+                            return "Error"
+                        
+                    conection.commit()
                     return True
-                else:
+
+                else:   
                     print("No se pudo actualizar el cliente.")
                     return "Error"
 

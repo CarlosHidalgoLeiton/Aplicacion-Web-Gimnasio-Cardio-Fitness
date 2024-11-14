@@ -5,6 +5,8 @@ from db.conection import Conection
 from db.models.ModelUser import ModelUser
 from db.models.ModelTrainer import ModelTrainer
 from db.models.ModelClient import ModelClient
+from db.models.ModelRoutine import ModelRoutine
+from db.models.ModelSesion import ModelSession
 from db.models.ModelProduct import ModelProduct
 from db.models.ModelMembership import ModelMembership
 from db.models.ModelBill import ModelBill
@@ -12,6 +14,15 @@ from db.models.ModelCancelledBill import ModelCancelledBill
 from db.models.ModelStatistics import ModelStatistics
 from db.models.entities.User import User
 from apps.permissions import admin_permission
+import json  
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.colors import HexColor
+from reportlab.lib.units import inch
+from reportlab.platypus import Table, TableStyle
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from flask import send_file
+from reportlab.lib import colors
 
 #Creación de los blueprint para usar en app.py
 admin_app = Blueprint('admin_app', __name__)
@@ -107,12 +118,13 @@ def UpdateClient(documentId):
 @login_required
 @admin_permission.require(http_exception=403)
 def viewClient(documentId):
-    conexion = Conection.conectar()
-    client = ModelClient.getClient(conexion, documentId)
+    conection = Conection.conectar()
+    client = ModelClient.getClient(conection, documentId)
+    membership = ModelMembership.getMembership(conection, client.Membership_ID)
     Conection.desconectar()
 
     if client:
-        return render_template("admin/viewClient.html", client=client)
+        return render_template("admin/viewClient.html", client=client, membership = membership)
     else:
         # Manejar el caso en que no se encuentre el cliente
         return redirect(url_for('admin_app.clients', error="Cliente no encontrado"))
@@ -152,8 +164,6 @@ def ableClient():
     else:
         # Manejar el caso en que no se encuentre el cliente
         return jsonify({"error": "No se pudo habilitar"})
-
-
 
 
 @admin_app.route("/client/statisticsClient/<documentId>", methods=['GET'])
@@ -196,25 +206,65 @@ def viewStatistics(documentId,clientId):
     return render_template("admin/viewStatistics.html", statistics=statistics, clientId = clientId,client=client)
 
 
-@admin_app.route("/cliente/estadistica/ver")
+## VER RUTINAS
+@admin_app.route("/clients/routinesClient/<ID_Cliente>", methods=['GET', 'POST'])
 @login_required
-def verEstadistica():
-    return render_template("admin/verEstadistica.html")
+@admin_permission.require(http_exception=403)
+def routinesClient(ID_Cliente):
+    conection = Conection.conectar()
+    client = ModelClient.getClient(conection,ID_Cliente)
+    routines = ModelRoutine.get_all(conection, ID_Cliente)  
+    errorMessage = request.args.get('error')
+    Conection.desconectar()
+    return render_template("admin/routinesClient.html", routines=routines, client=client, error=errorMessage)
 
-@admin_app.route("/clientes/rutinas")
-@login_required
-def rutinasCliente():
-    return render_template("admin/rutinaCliente.html")
 
-@admin_app.route("/clientes/rutinas/sesiones")
-@login_required
-def sesionesCliente():
-    return render_template("admin/verSesionesRutinaCliente.html")
 
-@admin_app.route("/cliente/sesiones/ver")
+@admin_app.route("/viewRoutine/<routineId>/<DocumentId>", methods=['GET'])
 @login_required
-def verSesionCliente():
-    return render_template("admin/verSesion.html")
+@admin_permission.require(http_exception=403)
+def viewRoutine(routineId, DocumentId):
+    conexion = Conection.conectar()
+    routine = ModelRoutine.get_routine(conexion, routineId)
+    sessions = ModelSession.get_session_by_Routine(conexion, routineId)
+    client = ModelClient.getClient(conexion, DocumentId)
+    Conection.desconectar()
+
+    if routine:
+        return render_template("admin/viewRoutine.html", routine=routine, sessions=sessions, client=client)
+    else:
+        return redirect(url_for('admin_app.clients', error="Rutina no encontrada"))
+
+@admin_app.route("/getSession/<ID_Routine>", methods=['GET'])
+@login_required
+@admin_permission.require(http_exception=403)
+def getSessions(ID_Routine):
+    conection = Conection.conectar()
+    getSessions = ModelSession.get_session_by_Routine(conection, ID_Routine)
+    Conection.desconectar()
+    sessions = [session.to_dict() for session in getSessions]
+
+    if sessions:
+        return jsonify(sessions)
+    else:
+        return jsonify({'error': 'No se encontraron las sesiones.'})
+    
+
+@admin_app.route("/viewRoutine/viewSession/<Session_ID>", methods=['GET'])
+@login_required
+@admin_permission.require(http_exception=403)
+def viewSession(Session_ID):
+    conexion = Conection.conectar()
+    session = ModelSession.get_sesssion_by_id(conexion, Session_ID)
+    routine = ModelRoutine.get_routine(conexion, session.Routine_ID)
+    Conection.desconectar()
+    
+    if session:
+        # Deserializa el JSON a un objeto Python
+        session.Exercises = json.loads(session.Exercises)
+        return render_template("admin/viewSession.html", session=session, routine=routine)
+    else:
+        return redirect(url_for('admin_app.viewRoutine', routineId=routine.RoutineId, DocumentId=routine.ClientId, error="Sesión no encontrada"))
 
 #-------------Rutas de Entrenadores-------------#
 
@@ -250,16 +300,50 @@ def trainers():
     else:
         return render_template("admin/trainers.html", trainers=trainers, trainer = None, done = doneMessage, error = errorMessage)
 
-
-@admin_app.route("/entrenadores/ver")
+@admin_app.route("/trainer/update/<documentId>", methods = ['POST', 'GET'])
 @login_required
-def verEntrenador():
-    return render_template("admin/verEntrenador.html")
+@admin_permission.require(http_exception=403)
+def updateTrainer(documentId):
+    conection = Conection.conectar()
+    trainer = ModelTrainer.getTrainer(conection, documentId)
+    Conection.desconectar()
 
-@admin_app.route("/entrenadores/actualizar")
+    if trainer:
+        if request.method == 'POST':
+            trainerUpdated = ModelTrainer.getDataTrainer(request)
+            trainerValidated = ModelTrainer.validateDataForm(trainerUpdated)
+
+            if not type(trainerValidated) == bool:
+                return render_template("admin/updateTrainer.html", error=trainerValidated, trainer = trainer)
+            conection = Conection.conectar()
+            update = ModelTrainer.updateTrainer(conection, trainerUpdated, trainer.DocumentId)
+            Conection.desconectar()
+            if update and type(update) == bool:
+                return redirect(url_for('admin_app.trainers', done = "Entrenador actualizado correctamente."))
+            elif update == "Primary":
+                return render_template("admin/updateTrainer.html", error= "El número de cédula ingresado ya esta registrado con otro entrenador.", trainer = trainer)
+            elif update == "DataBase":
+                return render_template("admin/updateTrainer.html", error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", trainer = trainer)
+            else:
+                return render_template("admin/updateTrainer.html", error= "No se pudo actualizar el entrenador.", trainer = trainer)
+    else:
+        return redirect(url_for("admin_app.trainer", error = "Entrenador no encontrado."))
+
+    return render_template("admin/updateTrainer.html", trainer = trainer)
+
+
+@admin_app.route("/trainers/view/<documentId>", methods = ['GET'])
 @login_required
-def actualizarEntrenador():
-    return render_template("admin/actualizarEntrenador")
+@admin_permission.require(http_exception=403)
+def viewTrainer(documentId):
+    conection = Conection.conectar()
+    trainer = ModelTrainer.getTrainer(conection, documentId)
+    Conection.desconectar()
+
+    if trainer:
+        return render_template("admin/viewTrainer.html", trainer=trainer)
+    else:
+        return redirect(url_for("admin_app.trainer", error = "Entrenador no encontrado."))
 
 @admin_app.route("/trainer/disable", methods = ['POST'])
 @login_required
@@ -291,6 +375,8 @@ def ableTrainer():
         return jsonify({"message": "Hecho"})
     else:
         return jsonify({"error": "No se pudo habilitar"})
+    
+
 #-------------Rutas de user-------------#
 @admin_app.route("/users", methods = ['GET', 'POST'])
 @login_required
@@ -314,7 +400,7 @@ def users():
         if insert:
             users = ModelUser.get_Users(conection)
             Conection.desconectar()
-            return render_template("admin/users.html", users=users,  clients=clients, trainers=trainers, done = "Usuario creado correctamente.")
+            return redirect(url_for("admin_app.users", done = "Usuario creado correctamente."))
         else:
             Conection.desconectar()
             return render_template("admin/users.html", users=users,  clients=clients, trainers=trainers, error= "No se pudo ingresar el cliente.")
@@ -575,11 +661,6 @@ def viewcancelBill(ID_Bill):
     return redirect(url_for('admin_app.bills', error = "No se pudo obtener la información de la factura anulada."))
 
 
-
-
-
-    return render_template('admin/viewCancel.html', ID_Bill = ID_Bill)
-
 @admin_app.route('/getClients', methods = ['GET'])
 @login_required
 @admin_permission.require(http_exception=403)
@@ -764,10 +845,88 @@ def notificationsDesable(id):
 def reportesFacturacion():
     return render_template("admin/reportesFacturacion.html")
 
-@admin_app.route("/reportesInventario")
+@admin_app.route("/inventoryReports", methods=['GET'])
 @login_required
-def reportesInventario():
-    return render_template("admin/reporteInventario.html")
+@admin_permission.require(http_exception=403)
+def inventoryReports():
+    conection = Conection.conectar()
+    doneMessage = request.args.get('done')
+    errorMessage = request.args.get('error')
+    reports = ModelBill.get_ProductBills(conection)  
+    Conection.desconectar()
+    return render_template("admin/inventoryReports.html", reports=reports, done=doneMessage, error=errorMessage)
+
+
+@admin_app.route("/generate_report_pdf", methods=['GET'])
+@login_required
+@admin_permission.require(http_exception=403)
+def generate_report_pdf():
+    month = request.args.get('month')
+    conection = Conection.conectar()
+
+    reports = ModelBill.get_ProductBills(conection).get(month, [])
+    Conection.desconectar()
+
+    if not reports:
+        return "No hay facturas para este mes", 404
+
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=letter)
+
+    logo_path = "static/images/icono.jpg"
+    try:
+        c.drawImage(logo_path, 450, 700, width=1.5 * inch, height=0.8 * inch, preserveAspectRatio=True)
+    except Exception as ex:
+        print(f"Error al cargar el logo: {ex}")
+
+    c.setFont("Helvetica-Bold", 18)
+    c.setFillColor(HexColor("#c0392b"))  
+    c.drawString(50, 750, f"Reporte de Inventario - {month}")
+
+    c.setFont("Helvetica", 12)
+    c.setFillColor(HexColor("#7f8c8d"))
+    c.drawString(50, 730, f"Reporte de ventas de productos para el mes de {month}")
+
+    c.setFont("Helvetica", 10)
+
+    data = [["Código", "Producto", "Precio", "Cantidad Vendida", "Total Vendido"]]
+    for report in reports:
+        row = [
+            str(report['ProductCode']),
+            report['ProductName'],
+            f"{report['Price']:.2f}",
+            str(report['QuantitySold']),
+            f"{report['TotalSold']:.2f}"
+        ]
+        data.append(row)
+
+    table = Table(data, colWidths=[70, 150, 90, 90, 90])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), HexColor("#e74c3c")),  
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.white),  
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey), 
+        ('LINEABOVE', (0, 0), (-1, 0), 1, HexColor("#c0392b")), 
+        ('LINEBELOW', (0, -1), (-1, -1), 1, HexColor("#c0392b")),  
+        ('LINEBEFORE', (0, 0), (0, -1), 1, HexColor("#c0392b")),  
+        ('LINEAFTER', (-1, 0), (-1, -1), 1, HexColor("#c0392b")),  
+    ]))
+
+    table.wrapOn(c, 50, 600)
+    table.drawOn(c, 50, 500)  
+
+    c.setStrokeColor(HexColor("#c0392b"))
+    c.setLineWidth(1)
+    c.line(50, 490, 550, 490)  
+
+    c.showPage()
+    c.save()
+    buffer.seek(0)
+    return send_file(buffer, as_attachment=True, download_name=f"reporte_inventario_{month}.pdf", mimetype="application/pdf")
 
 
     #-------------Perfil------------#
@@ -787,7 +946,7 @@ def memberships():
     doneMessage = request.args.get('done')
     errorMessage = request.args.get('error')
     if request.method == 'POST':
-        membership = ModelMembership.getDataClient(request)
+        membership = ModelMembership.getDataMembership(request)
         membershipValidated = ModelMembership.validateDataForm(membership)
         if not type(membershipValidated) == bool:
             return render_template("admin/membership.html", memberships=memberships, error=membershipValidated, membership = membership)
@@ -809,17 +968,39 @@ def memberships():
     else:
         return render_template("admin/membership.html", memberships=memberships, membership = None, done = doneMessage, error = errorMessage)
 
-
+@admin_app.route("/membership/updateMembership/<id>", methods=['POST', 'GET'])
+@login_required
+@admin_permission.require(http_exception=403)
+def updateMembership(id):
+    conexion = Conection.conectar()
+    membership = ModelMembership.getMembership(conexion, id)
+    Conection.desconectar()
+    if membership:
+        if request.method == 'POST':
+            membershipUpdate = ModelMembership.getDataMembership(request)
+            membershipValidated = ModelMembership.validateDataForm(membershipUpdate)
+            if not type(membershipValidated) == bool:
+                return render_template("admin/updateMembership.html", error=membershipValidated, membership = membership)
+            conection = Conection.conectar()
+            if conection == None:
+                return render_template("admin/updateMembership.html", error= "Error en la conexión.", membership = membership)
+            update = ModelMembership.updateMembership(conection, membershipUpdate, id)
+            Conection.desconectar()
+            if update and type(update) == bool:
+                return redirect(url_for('admin_app.memberships', done = "Membresia actualizada correctamente."))
+            elif update == "DataBase":
+                return render_template("admin/updateMembership.html", error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", membership = membership)
+            else:
+                return render_template("admin/updateMembership.html", error= "No se pudo actualizar la membresia.", membership = membership)
+        else:
+            return render_template("admin/updateMembership.html", membership = membership)
+    else:
+        return redirect(url_for("admin_app.memberships", error = "Membresia no encontrada."))
 
 @admin_app.route("/menbresias/ver")
 @login_required
 def viewMembership():
     return render_template("admin/verMembresia.html")
-
-@admin_app.route("/menbresias/actualizar")
-@login_required
-def updateMembership():
-    return render_template("admin/actualizarMembresia.html")
 
 @admin_app.route("/membresias/deshabilitar", methods = ['POST'])
 @login_required
