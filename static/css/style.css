@@ -19139,18 +19139,8 @@ svg.pulse-svg .third-circle {
     background: #111217
 }
 
-.chatbox .chatbox-close {
-    position: absolute;
-    -webkit-transition: all 0.2s;
-    -ms-transition: all 0.2s;
-    transition: all 0.2s;
-    width: 0;
-    height: 100%;
-    right: 340px;
-    background: #000;
-    z-index: 1;
-    opacity: 0.1;
-    cursor: pointer
+.chatbox .chatbox-close:focus{
+    border: none;
 }
 
 .chatbox .card-fotter {
@@ -19165,9 +19155,7 @@ svg.pulse-svg .third-circle {
     right: 0
 }
 
-.chatbox.active .chatbox-close {
-    width: 100vw
-}
+
 
 .chatbox .type_msg {
     padding-top: 10px
@@ -19346,7 +19334,7 @@ svg.pulse-svg .third-circle {
 }
 
 .chatbox .msg_card_body {
-    height: calc(100vh - 195px)
+    height: calc(95vh - 195px)
 }
 
 .chatbox .contacts_body {

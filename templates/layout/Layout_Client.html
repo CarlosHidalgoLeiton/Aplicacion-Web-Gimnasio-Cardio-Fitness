@@ -195,13 +195,23 @@
 			Chat box start
 		***********************************-->
 		<div class="chatbox">
-			<div class="chatbox-close"></div>
-			<div class="custom-tab-1">
-				<ul class="nav nav-tabs d-flex justify-content-center">
-					<li class="nav-item">
-						<a class="nav-link active" data-bs-toggle="tab" href="#chat">Chat</a>
-					</li>
-				</ul>
+			<div class="custom-tab-1 ">
+				<div class="nav nav-tabs">
+					<div class="col">
+						<div class="row">
+							<div class="d-flex justify-content-end">
+								<button type="button" class="btn chatbox-close" >
+									<i class="fa-regular fa-circle-xmark fa-lg" style="color:#E9F5FF;"></i>
+								</button>
+							</div>
+						</div>
+						<div class="row text-center">
+							<span class="text-white p-2">Chat</span>
+						</div>
+					</div>
+
+				</div>
+
 				<div class="card-body msg_card_body dz-scroll" id="DZ_W_Contacts_Body3">
 					<div id="chat-box">
 						<!-- Los mensajes del chat aparecerán aquí -->
@@ -218,6 +228,8 @@
 		***********************************-->
 
 		<script>
+			
+
 			// Función para mostrar los botones de opciones
 			function showOptions(options) {
 				const optionsContainer = document.getElementById("options-container");
@@ -251,8 +263,8 @@
 						`;
 
 				$.ajax({
-					url: '/client/get_bot', 
-					type: 'POST', 
+					url: '/client/get_bot',
+					type: 'POST',
 					contentType: 'application/json',
 					data: JSON.stringify({ msg: option }),  // Enviar la opción seleccionada
 					success: function (response) {
@@ -392,7 +404,6 @@
 				background-color: rgba(42, 106, 193, 1);
 				color: rgba(255, 255, 255, 1);
 			}
-
 		</style>
 
 		<!--**********************************
