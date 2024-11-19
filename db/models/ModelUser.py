@@ -52,7 +52,7 @@ class ModelUser:
     @classmethod
     def document_exists(cls, conexion, document_id):
         cursor = conexion.cursor()
-        cursor.execute("SELECT COUNT(*) FROM USUARIO WHERE Cedula = %s", (document_id,))
+        cursor.execute("SELECT COUNT(*) FROM Usuario WHERE Cedula = %s", (document_id,))
         count = cursor.fetchone()[0]
         cursor.close()
         return count > 0
@@ -62,7 +62,7 @@ class ModelUser:
         try:
             cursor = conexion.cursor()
 
-            sql = """INSERT INTO USUARIO 
+            sql = """INSERT INTO Usuario
                     (`Cedula`, `Contrasena`, `Estado`, `Rol`, `FechaCreacion`, `Correo`) 
                     VALUES (%s, %s, %s, %s, %s, %s)"""
             
@@ -104,7 +104,7 @@ class ModelUser:
     def get_Clients(cls, conexion):
         try:
             cursor = conexion.cursor()
-            sql = "SELECT * FROM Cliente WHERE NOT EXISTS (SELECT 1 FROM usuario WHERE usuario.Cedula = Cliente.Cedula) "
+            sql = "SELECT * FROM Cliente WHERE NOT EXISTS (SELECT 1 FROM Usuario WHERE Usuario.Cedula = Cliente.Cedula) "
             cursor.execute(sql)
             rows = cursor.fetchall()
             clients = []
@@ -140,7 +140,7 @@ class ModelUser:
     def get_Trainers(cls, conexion):
         try:
             cursor = conexion.cursor()
-            sql = "SELECT * FROM Entrenador WHERE NOT EXISTS (SELECT 1 FROM usuario WHERE usuario.Cedula = Entrenador.Cedula) "
+            sql = "SELECT * FROM Entrenador WHERE NOT EXISTS (SELECT 1 FROM Usuario WHERE Usuario.Cedula = Entrenador.Cedula) "
             cursor.execute(sql)
             rows = cursor.fetchall()
             trainers = []
@@ -337,7 +337,7 @@ class ModelUser:
         if DocumentId != None:
             try:
                 cursor = conection.cursor()
-                sql = """UPDATE usuario SET Estado = 0  WHERE Cedula = %s"""
+                sql = """UPDATE Usuario SET Estado = 0  WHERE Cedula = %s"""
                 cursor.execute(sql, (DocumentId))
                 if cursor.rowcount > 0:
                     conection.commit()
@@ -359,7 +359,7 @@ class ModelUser:
         if DocumentId != None:
             try:
                 cursor = conection.cursor()
-                sql = """UPDATE usuario SET Estado = 1  WHERE Cedula = %s"""
+                sql = """UPDATE Usuario SET Estado = 1  WHERE Cedula = %s"""
                 cursor.execute(sql, (DocumentId))
                 if cursor.rowcount > 0:
                     conection.commit()
@@ -381,7 +381,7 @@ class ModelUser:
     def get_Notifications(cls, conexion):
         try:
             cursor = conexion.cursor()
-            sql = "SELECT ID_Notificacion, Asunto, Fecha, Hora, Estado FROM notificacion"
+            sql = "SELECT ID_Notificacion, Asunto, Fecha, Hora, Estado FROM Notificacion"
             cursor.execute(sql)
             rows = cursor.fetchall()
             notifications = []
@@ -406,7 +406,7 @@ class ModelUser:
             cursor = conexion.cursor()
             Notification.State = 1
             
-            sql = """INSERT INTO `notificacion` (`Asunto`, `Fecha`, `Hora`, `Estado`)  
+            sql = """INSERT INTO `Notificacion` (`Asunto`, `Fecha`, `Hora`, `Estado`)  
                     VALUES (%s, %s, %s, %s)"""
             
             cursor.execute(sql, (Notification.Subject, Notification.Date, Notification.Hour, Notification.State))
