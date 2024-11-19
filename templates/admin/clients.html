@@ -226,7 +226,7 @@
                                 <td>
                                     <div class="d-flex">
                                         {% if client['State'] == 1 %}
-                                        <a href="" class="btn btn-primary shadow btn-xs sharp me-1">
+                                        <a href="{{url_for('admin_app.routinesClient', ID_Cliente=client['DocumentId'])}}" class="btn btn-primary shadow btn-xs sharp me-1">
                                             <i class="flaticon-381-notepad"></i>
                                         </a>
 
