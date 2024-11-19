@@ -165,7 +165,7 @@ def viewStatistics(documentId,clientId):
     finally:
         Conection.desconectar()
     
-    return render_template("admin/viewStatistics.html", statistics=statistics, clientId = clientId,client=client)
+    return render_template("trainer/viewStatistics.html", statistics=statistics, clientId = clientId,client=client)
 
 
 

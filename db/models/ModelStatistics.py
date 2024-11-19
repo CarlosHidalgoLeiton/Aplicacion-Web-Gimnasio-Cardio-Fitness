@@ -9,7 +9,7 @@ class ModelStatistics:
         if statistics is not None:
             try:
                 cursor = connection.cursor()
-                sql = """INSERT INTO estadistica (FechaMedicion, Estatura, Peso, IMC, FC_REPOSO, FC_MAX, Presion_Arterial, BMR, Grasa_Corporal, Porcentaje_Agua, Masa_Muscular, Edad_Metabolica, Masa_Osea, Grasa_Visceral, Circun_Pecho, Circun_Brazo_Der, Circun_Brazo_Izq, Circun_Cintura, Circun_Abdomen, Circun_Cadera, Circun_Muslo_Der, Circun_Muslo_Izq, Circun_Pantorilla_Der, Circun_Pantorilla_Izq, Consideraciones_Especiales, Deportista, Objetivo_Entrenamiento, Enfasis_Entrenamiento, Disponibilidad, Estado, ID_Cliente , ID_Entrenador)
+                sql = """INSERT INTO Estadistica (FechaMedicion, Estatura, Peso, IMC, FC_REPOSO, FC_MAX, Presion_Arterial, BMR, Grasa_Corporal, Porcentaje_Agua, Masa_Muscular, Edad_Metabolica, Masa_Osea, Grasa_Visceral, Circun_Pecho, Circun_Brazo_Der, Circun_Brazo_Izq, Circun_Cintura, Circun_Abdomen, Circun_Cadera, Circun_Muslo_Der, Circun_Muslo_Izq, Circun_Pantorilla_Der, Circun_Pantorilla_Izq, Consideraciones_Especiales, Deportista, Objetivo_Entrenamiento, Enfasis_Entrenamiento, Disponibilidad, Estado, ID_Cliente , ID_Entrenador)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)"""
                 cursor.execute(sql, (
                     statistics.Measurement_Date, statistics.Stature, statistics.Weight, statistics.IMC, statistics.FC_Repose, statistics.FC_MAX, statistics.Blood_pressure, statistics.BMR, statistics.Body_Fat, statistics.Percent_Water, statistics.Muscle_Mass, statistics.Metabolic_Age, statistics.Bone_Mass, statistics.Visceral_Fat, statistics.Chest_Circum, statistics.Right_Arm_Circum, statistics.Left_Arm_Circum, statistics.Circum_Waist, statistics.Circum_Abdomen, statistics.Hip_Circum, statistics.Circum_Thigh_Right, statistics.Circum_Thigh_Left, statistics.Circum_Calf_Right, statistics.Circum_Calf_Left, statistics.Special_Considerations, statistics.sportsman, statistics.Training_Goal, statistics.Emphasis_Training, statistics.Disponibilidad, statistics.State, statistics.Client_ID, statistics.Trainer_ID
@@ -61,9 +61,9 @@ class ModelStatistics:
                     t.Nombre,
                     t.Primer_Apellido
                 FROM 
-                    estadistica e
+                    Estadistica e
                 JOIN 
-                    entrenador t 
+                    Entrenador t 
                 ON 
                     e.ID_Entrenador = t.Cedula
                 WHERE 
@@ -103,7 +103,7 @@ class ModelStatistics:
                             Circun_Muslo_Der, Circun_Muslo_Izq, Circun_Pantorilla_Der, Circun_Pantorilla_Izq,
                             Consideraciones_Especiales, Deportista, Objetivo_Entrenamiento, Enfasis_Entrenamiento,
                             Disponibilidad, Estado, ID_Cliente, ID_Entrenador
-                    FROM estadistica
+                    FROM Estadistica
                     WHERE ID_Estadistica = %s"""
             cursor.execute(sql, (documentId,))
             row = cursor.fetchone()
@@ -163,7 +163,7 @@ class ModelStatistics:
     def updateStatistics(cls, connection, statistics,documentId):
         try:
             cursor = connection.cursor()
-            sql = """UPDATE estadistica
+            sql = """UPDATE Estadistica
                      SET FechaMedicion = %s, Estatura = %s, Peso = %s, IMC = %s, FC_REPOSO = %s, FC_MAX = %s,
                          Presion_Arterial = %s, BMR = %s, Grasa_Corporal = %s, Porcentaje_Agua = %s, 
                          Masa_Muscular = %s, Edad_Metabolica = %s, Masa_Osea = %s, Grasa_Visceral = %s,
@@ -223,7 +223,7 @@ class ModelStatistics:
                     c.Segundo_Apellido,
                     c.Edad
                 FROM 
-                    cliente c
+                    Cliente c
                 WHERE 
                     c.Cedula = %s;
                 """
@@ -412,7 +412,7 @@ class ModelStatistics:
         if statistics.Trainer_ID == None:
             return "No se logro enlazar con el cliente, por favor inténtalo más tarde."
         if statistics.sportsman not in ["si", "Si", "SI", "No", "no", "NO", None, ""]:
-            return "Error: El valor de ¿Es deportista? debe ser 'si', 'No' o estar vacío."
+            return "Error: El valor de ¿Es deportista? debe ser 'Si', 'No' o estar vacío."
 
         return True
         

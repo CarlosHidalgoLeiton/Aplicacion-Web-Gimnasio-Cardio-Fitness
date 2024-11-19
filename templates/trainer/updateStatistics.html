@@ -11,8 +11,8 @@
 	<div class="container-fluid">
 		<div class="page-titles">
 			<ol class="breadcrumb">
-				<li class="breadcrumb-item"><a href="../trainer/clients.html">Clientes</a></li>
-				<li class="breadcrumb-item "><a href="../trainer/statisticsClient.html">Estadísticas</a></li>
+				<li class="breadcrumb-item"><a href="{{ url_for ('trainer_app.clients') }}">Clientes</a></li>
+				<li class="breadcrumb-item "><a href="{{ url_for ('trainer_app.statisticsClient',documentId= documentId) }}">Estadísticas</a></li>
 				<li class="breadcrumb-item active"><a href="">Editar Estadistica</a></li>
 			</ol>
 		</div>

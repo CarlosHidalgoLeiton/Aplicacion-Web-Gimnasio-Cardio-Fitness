@@ -8,8 +8,8 @@
 
 <div class="page-titles">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="../admin/clients.html">Clientes</a></li>
-        <li class="breadcrumb-item "><a href="../admin/statistics.html?documentId={{ clientId }}">Estadísticas</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for ('admin_app.clients') }}">Clientes</a></li>
+        <li class="breadcrumb-item "><a href="{{ url_for ('admin_app.statisticsClient',documentId= clientId) }}">Estadísticas</a></li>
         <li class="breadcrumb-item active"><a href="">Ver Estadística</a></li>
     </ol>
 </div>
