@@ -834,6 +834,42 @@ def notifications():
 def notificationsView(id):
     return render_template("admin/verNotificacion.html")
 
+
+@admin_app.route("/notifications/disable", methods = ['POST'])
+@login_required
+@admin_permission.require(http_exception=403)
+def disableNotification():
+    data = request.get_json()
+    ID_Notification = data.get('DocumentId')
+    conexion = Conection.conectar()
+    disable = ModelClient.disableNotification(conexion, ID_Notification)
+    Conection.desconectar()
+    if disable:
+        return jsonify({"message": "Hecho"})
+    else:
+        return jsonify({"error": "No se pudo deshabilitar"})
+    
+@admin_app.route("/notifications/able", methods = ['POST'])
+@login_required
+@admin_permission.require(http_exception=403)
+def ableNotification():
+    data = request.get_json()
+    ID_Product = data.get('DocumentId')
+    conexion = Conection.conectar()
+    able = ModelClient.ableNotification(conexion, ID_Product)
+    Conection.desconectar()
+    if able:
+        return jsonify({"message": "Hecho"})
+    else:
+        return jsonify({"error": "No se pudo habilitar"})
+
+
+
+
+
+
+
+
 @admin_app.route("/notifications/delete")
 @login_required
 def notificationsDesable(id):
