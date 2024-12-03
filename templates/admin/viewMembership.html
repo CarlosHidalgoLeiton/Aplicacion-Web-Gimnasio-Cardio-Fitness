@@ -1,0 +1,105 @@
+{% extends "./layout/Layout_Admin.html" %}
+
+
+{% block content %}
+<!--**********************************
+            Content body start
+        ***********************************-->
+<div class="page-titles">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('admin_app.memberships') }}">Membresias</a></li>
+        <li class="breadcrumb-item active"><a href="javascript:void(0)">Ver Membresia</a></li>
+    </ol>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card form-container">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Membresia</h4>
+                <div class="form-validation">
+                    <form class="needs-validation" action="/admin/membership/viewMembership/{{membership.id}}" novalidate method="POST">
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom01">Nombre
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="validationCustom01" name="Nombre" value="{{ membership.Name }}"
+                                        readonly>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom02">Descripción <span
+                                            class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" name="Descripcion" class="form-control" id="validationCustom02" value="{{ membership.Description }}"
+                                            readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-6">
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom03">Precio
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="number" name="Precio" class="form-control" id="validationCustom03" value="{{ membership.Price }}"
+                                        readonly>
+                                      
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label" for="validationCustom04">Duración en días
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" name="Duracion" class="form-control" id="validationCustom04" value="{{ membership.Time }}"
+                                        readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="my-5">
+                            <a type="button" class="btn btn-danger me-2" href="{{ url_for('admin_app.memberships') }}">Volver</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!--**********************************
+            Content body end
+        ***********************************-->
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script>
+{% endblock %}

@@ -997,10 +997,17 @@ def updateMembership(id):
     else:
         return redirect(url_for("admin_app.memberships", error = "Membresia no encontrada."))
 
-@admin_app.route("/menbresias/ver")
+@admin_app.route("/membership/view/<id>")
 @login_required
-def viewMembership():
-    return render_template("admin/verMembresia.html")
+def viewMembership(id):
+    conection = Conection.conectar()
+    membership = ModelMembership.getMembership(conection, id)
+    Conection.desconectar()
+    if membership:
+        return render_template("admin/viewMembership.html", membership=membership)
+    else:
+        return redirect(url_for("admin_app.memberships", error = "Membresia no encontrada."))
+    
 
 @admin_app.route("/membresias/deshabilitar", methods = ['POST'])
 @login_required
