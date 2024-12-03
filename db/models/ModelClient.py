@@ -589,7 +589,7 @@ class ModelClient:
 
         try:
             cursor = conexion.cursor()
-            sql = "SELECT ID_Notificacion, Asunto, Fecha, Hora, Estado FROM notificacion"
+            sql = "SELECT ID_Notificacion, Asunto, Fecha, Hora, Estado FROM Notificacion"
             cursor.execute(sql)
             rows = cursor.fetchall()
             notifications = []
@@ -600,3 +600,49 @@ class ModelClient:
         except Exception as ex:
             print(f"Error en get_notifications: {ex}")
             return []
+        
+
+    @classmethod
+    def disableNotification(cls, conection, DocumentId):
+        if DocumentId != None:
+            try:
+                cursor = conection.cursor()
+                sql = """UPDATE Notificacion SET Estado = 0  WHERE ID_Notificacion = %s"""
+                cursor.execute(sql, (DocumentId))
+                if cursor.rowcount > 0:
+                    conection.commit()
+                    
+                    return True
+                else:
+                    print("No se pudo actualizar la notificacion.")
+                    conection.rollback()
+                    return False
+
+            except Exception as ex:
+                print(f"Ocurrió un error en actualizar la notificacion {ex}")
+                conection.rollback()
+                return False
+        else:
+            return False
+        
+    @classmethod
+    def ableNotification(cls, conection, DocumentId):
+        if DocumentId != None:
+            try:
+                cursor = conection.cursor()
+                sql = """UPDATE Notificacion SET Estado = 1  WHERE ID_Notificacion = %s"""
+                cursor.execute(sql, (DocumentId))
+                if cursor.rowcount > 0:
+                    conection.commit()
+                    return True
+                else:
+                    print("No se pudo actualizar la Notificacion.")
+                    conection.rollback()
+                    return False
+
+            except Exception as ex:
+                print(f"Ocurrió un error en actualizar la Notificacion {ex}")
+                conection.rollback()
+                return False
+        else:
+            return False

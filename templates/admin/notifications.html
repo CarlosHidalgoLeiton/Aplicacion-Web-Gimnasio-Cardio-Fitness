@@ -1,5 +1,9 @@
 {% extends "./layout/Layout_Admin.html" %}
 
+{% block upScripts %}
+<script src="../../../static/js/stateNotification.js"></script>
+{% endblock %}
+
 {% block content %}
 <!--**********************************
         Content body start
@@ -107,13 +111,27 @@
 								<td>{{ notification['Hour'] }}</td>
 								<td>{{ notification['Subject'] }}</td>
 								<td>
-									<div class="d-flex">
-										<a href="" class="btn btn-primary shadow btn-xs sharp me-1"><i
-												class="fa fa-eye"></i></a>
-										<a href="" class="btn btn-danger shadow btn-xs sharp"><i
-												class="fa fa-trash"></i></a>
-									</div>
-								</td>
+                                    <div class="d-flex">
+                                        {% if notification['State'] == 1 %}
+                                        <a href=""
+                                            class="btn btn-primary shadow btn-xs sharp me-1">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        <button onclick="disableNotification(event)" data-id="{{ notification['NotificationId'] }}"
+                                            id="deshabilitar-{{ notification['NotificationId'] }}"
+                                            class="btn btn-danger shadow btn-xs sharp">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+
+                                        {% else %}
+                                        <button onclick="ableNotification(event)" data-id="{{ notification['NotificationId'] }}"
+                                            id="habilitar-{{ notification['NotificationId'] }}"
+                                            class="btn btn-success shadow btn-xs sharp">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </td>
 							</tr>
 							{% endfor %}
 							{% else %}
