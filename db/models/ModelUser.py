@@ -5,6 +5,8 @@ from .entities.Trainer import Trainer
 from db.conection import Conection
 from datetime import datetime
 import re
+import secrets
+import datetime
 
 class ModelUser:
 
@@ -427,3 +429,101 @@ class ModelUser:
         finally:
             if cursor:
                 cursor.close()
+
+    
+    @classmethod
+    def getEmail(cls, conection, DocumentId):
+        if DocumentId:
+            try:
+                cursor = conection.cursor()
+                sql = "SELECT Correo FROM Usuario WHERE Cedula = %s"
+                cursor.execute(sql, (DocumentId))
+                row = cursor.fetchone()
+
+                if row:
+                    email = row[0]
+                    return email
+                else:
+                    return None
+            except Exception as ex:
+                print(f"Error en get_notifications: {ex}")
+                return None
+    
+    @classmethod
+    def generateToken(cls):
+        token = secrets.token_urlsafe(32)
+
+        return token
+    
+    @classmethod
+    def tokenExist(cls, conection, DocumentId):
+        try:
+            cursor = conection.cursor()
+            sql = "SELECT CedulaUser FROM TokenUsuario WHERE CedulaUser = %s"
+            cursor.execute(sql, (DocumentId))
+            row = cursor.fetchone()
+
+            if row:
+                return True
+            else:
+                return False
+        except Exception as ex:
+            print(f"Error en tokenExist: {ex}")
+            return False
+
+    @classmethod
+    def saveToken(cls, conection, DocumentId, token, action):
+        if DocumentId:
+            if action == "save":
+                currentTime = datetime.datetime.now()
+
+                expiration = currentTime + datetime.timedelta(minutes=30)
+
+                try:
+                    cursor = conection.cursor()
+
+                    sql = """INSERT INTO TokenUsuario
+                            (`CedulaUser`, `Token`, `Expiration`) 
+                            VALUES (%s, %s, %s)"""
+                    
+                    cursor.execute(sql, (DocumentId, token, expiration))
+
+                    conection.commit()
+                    if cursor.rowcount > 0:
+                        print(f"Token {token} almacenado exitosamente.")
+                        return True
+                    else:
+                        print("No se pudo guardar el token.")
+                        return False  
+
+                except Exception as ex:
+                    print(f"Error al almacenar el token: {ex}")
+                    return False  
+                finally:
+                    cursor.close()
+
+            if action == "update":
+                currentTime = datetime.datetime.now()
+
+                expiration = currentTime + datetime.timedelta(minutes=30)
+
+                try:
+                    cursor = conection.cursor()
+
+                    sql = """Update TokenUsuario SET `CedulaUser` = %s, `Token` = %s, `Expiration` =%s WHERE CedulaUser = %s"""
+                    
+                    cursor.execute(sql, (DocumentId, token, expiration, DocumentId))
+
+                    conection.commit()
+                    if cursor.rowcount > 0:
+                        print(f"Token {token} actualizado exitosamente.")
+                        return True
+                    else:
+                        print("No se pudo actualizar el token.")
+                        return False  
+
+                except Exception as ex:
+                    print(f"Error al actualizar el token: {ex}")
+                    return False  
+                finally:
+                    cursor.close()
