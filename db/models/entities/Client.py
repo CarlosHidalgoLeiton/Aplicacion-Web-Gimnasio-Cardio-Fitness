@@ -1,5 +1,5 @@
 
-
+from datetime import datetime
 class Client():
 
     def __init__(self, DocumentId = None, Name = None, First_LastName = None, Second_LastName = None, Date_Birth =  None, Age = None, Mail = None, Phone = None, Registration_Date = None, Occupation = None, TelephoneEmergency= None, Address = None, Entry_Date = None, Ailments = None, Limitation = None, ExpirationMembership = None, State = None, Membership_ID = None) -> None:
@@ -44,4 +44,15 @@ class Client():
             "Membership_ID": self.Membership_ID
         }
 
+    def is_member_active(self):
+        """
+        Verifica si la membresía está activa, comparando la fecha de vencimiento
+        """
+        if self.ExpirationMembership is not None:
+            current_date = datetime.now().date()  
+            expiration_date = self.ExpirationMembership
+          
+            return current_date <= expiration_date 
+        
+        return False 
 

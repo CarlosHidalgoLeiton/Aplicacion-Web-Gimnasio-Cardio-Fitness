@@ -3,8 +3,10 @@ from flask_login import login_user, logout_user,current_user
 from flask_principal import identity_changed, Identity, AnonymousIdentity
 from db.conection import Conection
 from db.models.ModelUser import ModelUser
+from db.models.ModelClient import ModelClient
 from db.models.entities.User import User
 from emailTest import manageEmail
+from db.models.entities.Client import Client
 
 
 login_app = Blueprint('login_app', __name__)
@@ -28,6 +30,37 @@ def notAutorized():
 @login_app.route("/")
 def inicio():
     return render_template("login/login.html")
+
+@login_app.route("/entryInstallation", methods=["GET", "POST"])
+def entryInstallation():
+    if request.method == "POST":
+        user_document_id = request.form['DocumentId']
+        try:
+            conexion = Conection.conectar()
+            client = ModelClient.getClient(conexion, user_document_id)
+            if client is not None:
+                if client.is_member_active():
+                    success_message = f"Acceso Permitido. Bienvenido {client.Name}. Su membresía finaliza el {client.ExpirationMembership}."
+                    return render_template("login/entryInstallationStatus.html", success_message=success_message)
+                else:
+                    error_message = "Acceso Denegado. Su membresía ha expirado."
+                    return render_template("login/entryInstallationStatus.html", error=error_message)
+            else:
+                error_message = "Cliente no encontrado."
+                return render_template("login/entryInstallationStatus.html", error=error_message)
+        
+        except Exception as e:
+            print(e)
+            error_message = "Hubo un error en el sistema. Inténtelo más tarde."
+            return render_template("login/entryInstallationStatus.html", error=error_message)
+        finally:
+            Conection().desconectar()
+
+    return render_template("login/entryInstallation.html")
+
+@login_app.route("/entryInstallationStatus")
+def entryInstallationStatus():
+    return render_template("login/entryInstallationStatus.html")
 
 @login_app.route("/restartPassword")
 def restartPassword():
