@@ -29,7 +29,8 @@ def notAutorized():
 
 @login_app.route("/")
 def inicio():
-    return render_template("login/login.html")
+    doneMessage = request.args.get('done')
+    return render_template("login/login.html",done = doneMessage)
 
 @login_app.route("/entryInstallation", methods=["GET", "POST"])
 def entryInstallation():
@@ -95,13 +96,20 @@ def sendEmail():
     else:
         return redirect( url_for("login_app.restartPassword", error="Debe de ingresar el correo.") )
 
-@login_app.route("/changePassword/<documentId>/<token>", methods=["GET"])
+@login_app.route("/changePassword/<documentId>/<token>", methods=["GET","POST"])
 def changePassword(documentId, token):
-
-    print(documentId)
-    print(token)
-
-    return render_template("login/changePassword.html")
+    doneMessage = request.args.get('done')
+    errorMessage = request.args.get('error')
+    if request.method == "POST":
+        conection = Conection.conectar()
+        data = ModelUser.getDataPasswords(request)
+        Validator = ModelUser.changePassword(conection,documentId, token,data)
+        if (Validator != "El cambio de contraseña fue exitosa"):
+            return redirect(url_for("login_app.changePassword",documentId = documentId,token = token, error=Validator))
+        
+        else: return redirect(url_for("login_app.inicio", done = Validator))
+    else:
+        return render_template("login/changePassword.html",documentId = documentId, token = token,error = errorMessage, done = doneMessage)
 
 @login_app.route("/login", methods=["GET", "POST"])
 def login():
@@ -149,4 +157,3 @@ def logout():
     identity_changed.send(current_app._get_current_object(),
     identity=AnonymousIdentity())
     return redirect(url_for('login_app.login'))
-

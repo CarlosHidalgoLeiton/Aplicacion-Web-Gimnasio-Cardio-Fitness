@@ -527,3 +527,86 @@ class ModelUser:
                     return False  
                 finally:
                     cursor.close()
+
+
+    @classmethod
+    def getDataPasswords(cls,request):
+        password1 = request.form['password1']
+        password2 = request.form['password2']
+        return {"password1": password1, "password2": password2}
+
+
+    @classmethod
+    def update_Password(cls, conexion, password, DocumentId):
+        try:
+            cursor = conexion.cursor()
+            sql = "UPDATE Usuario SET Contrasena = %s  WHERE Cedula = %s"
+            
+            cursor.execute(sql, (password,DocumentId))
+            conexion.commit()
+            return True
+        except Exception as ex:
+            print(f"Error en update_Password: {ex}")
+            return False
+
+
+    @classmethod               
+    def changePassword(cls, conection,DocumentId, Token, passwords):
+        try:
+            if(DocumentId is None or DocumentId == ""):
+
+                return "No se pudo recuperar la información del cliente. Por favor, inténtelo de nuevo más tarde.";
+            else:
+
+                cursor = conection.cursor()
+                sql = "SELECT Token FROM TokenUsuario WHERE CedulaUser = %s"
+                cursor.execute(sql, (DocumentId))
+                row = cursor.fetchone()
+
+                    
+                if row:
+                    if (Token == row[0]):
+                        sqlDate ="SELECT Expiration FROM TokenUsuario WHERE CedulaUser = %s"
+                        cursor.execute(sqlDate, (DocumentId))
+                        rowDate = cursor.fetchone()
+                        current_time = datetime.datetime.now()
+                        if rowDate[0] > current_time:
+
+                            if passwords["password1"] == "" or passwords["password2"] == "":
+                                return "Por favor, asegúrate de ingresar ambos campos de contraseña."
+
+                            if passwords["password1"] != passwords["password2"]:
+                                return "Las contraseñas no coinciden."
+
+                            if len(passwords["password1"]) < 8:
+                                return "La contraseña debe tener al menos 8 caracteres."
+
+                            if not re.search(r"[A-Z]", passwords["password1"]):
+                                return "La contraseña debe contener al menos una letra mayúscula."
+
+                            if not re.search(r"[a-z]", passwords["password1"]):
+                                return "La contraseña debe contener al menos una letra minúscula."
+
+                            if not re.search(r"[0-9]", passwords["password1"]):
+                                return "La contraseña debe contener al menos un número."
+
+                            if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", passwords["password1"]):
+                                return "La contraseña debe contener al menos un carácter especial."
+                            
+                            hashPassword = User.generate_password_hash(passwords["password1"])
+
+                            update = cls.update_Password(conection, hashPassword,DocumentId)
+                            if update is not True:
+                                return "No se pudo actualizar la contraseña. Por favor, inténtelo de nuevo más tarde."
+                            elif (update == True):
+                                return"El cambio de contraseña fue exitosa"
+                    else:
+                        return "El tiempo ha expirado. Por favor, intente nuevamente."
+                else:
+                    return "No se pudo obtener la información del cliente. Por favor, intente nuevamente."
+
+        except Exception as ex:
+            return "Ocurrió un error en el sistema. Por favor, intenta nuevamente más tarde."
+
+            
+

@@ -44,6 +44,11 @@
                 errorMessage("{{ error|escape }}");
             </script>
         {% endif %}
+        {% if done %}
+        <script>
+            successMessage("{{ done|escape }}");
+        </script>
+        {% endif %}
     </div>
 
 
