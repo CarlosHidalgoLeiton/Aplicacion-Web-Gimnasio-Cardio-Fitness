@@ -8,6 +8,7 @@ from db.models.ModelProduct import ModelProduct
 from db.models.ModelStatistics import ModelStatistics
 from db.models.ModelSesion import ModelSession
 from db.models.ModelRoutine import ModelRoutine
+from db.models.ModelMembership import ModelMembership
 import json  
 from apps.chatbot import get_response 
 
@@ -220,7 +221,7 @@ def viewStatistics(documentId,clientId):
         client = ModelStatistics.getClientById(conection, clientId)
         Conection.desconectar()
         if client is None:
-         return redirect(url_for('client_app.statisticsClient', error="Cliente no encontrado"))
+            return redirect(url_for('client_app.statisticsClient', error="Cliente no encontrado"))
     
 
     except Exception as ex:
@@ -232,7 +233,26 @@ def viewStatistics(documentId,clientId):
     return render_template("client/viewStatistics.html", statistics=statistics, clientId = clientId,client=client)
 
 
+@client_app.route("/viewMemberships", methods = ['GET'])
+@login_required
+def viewMemberships():
+    errorMessage = request.args.get('error')
 
+    conection = Conection.conectar()
 
+    memberships = ModelMembership.get_allAble(conection)
 
-#-------------Rutas de notificaciones-------------#
+    return render_template("client/membershipClient.html", memberships = memberships, error = errorMessage)
+
+@client_app.route("/viewMemberships/<membershipId>", methods = ['GET'])
+@login_required
+def viewMembership(membershipId):
+
+    conection = Conection.conectar()
+
+    membership = ModelMembership.getMembership(conection, membershipId)
+
+    if(membership):
+        return render_template("client/viewMembership.html", membership = membership)
+    else:
+        return redirect(url_for("client_app.viewMemberships", error = "No se pudo encontrar la membresia."))

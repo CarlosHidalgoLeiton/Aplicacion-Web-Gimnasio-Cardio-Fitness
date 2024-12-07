@@ -15931,7 +15931,6 @@ svg.pulse-svg .third-circle {
 
 .header-right .notification_dropdown .nav-link {
     position: relative;
-    color: var(--azul) !important   ;
     background: var(--grisClaro);
     border-radius: .625rem;
     padding: 12px;
@@ -22803,11 +22802,11 @@ svg.pulse-svg .third-circle {
 
 [data-sibebarbg="color_15"][data-theme-version="dark"] .deznav .metismenu>li:hover>a svg,
 [data-sibebarbg="color_15"][data-theme-version="dark"] .deznav .metismenu>li:focus>a svg,
-[data-sibebarbg="color_15"][data-theme-version="dark"] .deznav .metismenu>li.mm-active>a svg,
+[data-sibebarbg="color_15"][data-theme-version="dark"] .deznav .metismenu>li.mm-active>a i,
 [data-sibebarbg="color_15"] .deznav .metismenu>li:hover>a svg,
 [data-sibebarbg="color_15"] .deznav .metismenu>li:focus>a svg,
 [data-sibebarbg="color_15"] .deznav .metismenu>li.mm-active>a svg {
-    color: #fff
+    color: #b3b3b3 
 }
 
 [data-layout="horizontal"][data-sibebarbg="color_15"][data-theme-version="dark"] .deznav .metismenu>li,
@@ -31040,7 +31039,7 @@ svg.pulse-svg .third-circle {
 [data-primary="color_15"] .profile-tab .nav-item .nav-link:hover,
 [data-primary="color_15"] .profile-tab .nav-item .nav-link.active {
     border-bottom: 0.2px solid #ed0b4c;
-    color: #ed0b4c
+    color: #ed0b4c !important;
 }
 
 [data-primary="color_15"] .amChartsInputField {
@@ -31467,13 +31466,13 @@ svg.pulse-svg .third-circle {
 }
 
 [data-primary="color_15"] .deznav .metismenu>li.mm-active>a {
-    color: #ed0b4c
+    color: white
 }
 
 [data-primary="color_15"] .deznav .metismenu ul a:hover,
 [data-primary="color_15"] .deznav .metismenu ul a:focus,
 [data-primary="color_15"] .deznav .metismenu ul a.mm-active {
-    color: #ed0b4c
+    color: #fff
 }
 
 @media (min-width: 767px) {
@@ -32251,7 +32250,7 @@ svg.pulse-svg .third-circle {
 }
 
 [data-theme-version="dark"] .header-right .dropdown .nav-link {
-    color: #fff
+    color: #b3b3b3 !important
 }
 
 [data-theme-version="dark"] .header-right .dropdown .nav-link:hover {
@@ -32259,7 +32258,7 @@ svg.pulse-svg .third-circle {
 }
 
 [data-theme-version="dark"] .header-right .notification_dropdown .dropdown-item a {
-    color: #fff
+    color: #fff;
 }
 
 [data-theme-version="dark"] .nav-header,
@@ -45710,7 +45709,7 @@ a:hover {
 }
 
 [data-theme-version="dark"] .deznav .metismenu>li>a {
-    color: #b3b3b3
+    color: #b3b3b3 !important;
 }
 
 [data-theme-version="dark"] .deznav .metismenu>li:hover>a,
@@ -45776,5 +45775,6 @@ a:hover {
     color: rgba(255, 255, 255, 0.7)
 }
 
-
-
+[data-theme-version="dark"][data-sidebar-style="full"][data-layout="vertical"] .deznav .metismenu>li.mm-active>a i {
+    color: #b3b3b3;
+}

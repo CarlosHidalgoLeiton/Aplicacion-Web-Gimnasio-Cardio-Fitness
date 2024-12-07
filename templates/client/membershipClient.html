@@ -1,0 +1,37 @@
+{% extends "./layout/Layout_Client.html" %}
+
+{% block content %}
+<div class="content-body default-height">
+    <div class="container-fluid">
+        <div class="page-titles">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active"><a href="">Membresias</a></li>
+            </ol>
+        </div>
+
+        <div class="row">
+            {% if memberships %}
+                {% for membership in memberships %}
+                    <div class="col-12">
+                        <div class="card form-container">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h4 class="card-title">{{ membership.Name }}</h4>
+                                    <span>₡{{ membership.Precio }}</span>
+                                    <a class="btn btn-primary" href="{{ url_for('client_app.viewMembership', membershipId = membership.id) }}">
+                                        Ver Membresia <i class="fas fa-eye"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <p>No hay membresias disponibles.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

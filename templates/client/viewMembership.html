@@ -1,0 +1,79 @@
+
+{% extends "./layout/Layout_Client.html" %}
+
+
+{% block content %}
+<div class="content-body default-height">
+    <!-- row -->
+    <div class="container-fluid">
+        <div class="page-titles">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for ('client_app.viewMemberships') }}">Membresias</a></li>
+                <li class="breadcrumb-item active"><a href="">Ver Membresia</a></li>
+            </ol>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card form-container">
+                    <div class="card-body">
+                        <div class="form-validation">
+                            <form class="needs-validation" novalidate>
+                                <h4>Información de la membresia</h4>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-xl-6">
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label">Nombre</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name ="Nombre"  value="{{ membership.Name }}" readonly>
+                                            </div>
+                                        </div>
+                                            
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom01">Descripción</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name ="Descripcion" value="{{membership.Description}}" readonly>
+                                            </div>
+                                        </div>
+        
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Precio </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name ="Precio"  value="{{membership.Price}}"readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" >Duración en días</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" name ="Tiempo" value="{{membership.Time}}" readonly>
+                                                
+                                            </div>
+                                        </div>
+                                        
+        
+                                    </div>
+                                    
+                                </div>
+            
+                                <div class="my-5">
+                                    <a type="button" class="btn btn-danger me-2" href="{{ url_for ('client_app.viewMemberships') }}">Volver</a>
+                                </div>
+                            </form>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+
+
+
+{% endblock %}
+
