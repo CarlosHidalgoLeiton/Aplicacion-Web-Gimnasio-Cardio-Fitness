@@ -1,0 +1,58 @@
+{% extends "./layout/Layout_Admin.html" %}
+
+{% block content %}
+<!--**********************************
+    Content body start
+***********************************-->
+<div class="row page-titles">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Facturación</a></li>
+        <li class="breadcrumb-item active"><a href="javascript:void(0)">Reporte</a></li>
+    </ol>
+</div>
+
+<div class="row">
+    <div class="col-lg-4 col-md-6">
+        <div class="form-group">
+            <label for="invoiceType" class="form-label">Generar nuevo reporte:</label>
+            <select class="form-control custom-select" id="invoiceType">
+                <option value="" selected disabled>Seleccione el Tipo de Reporte a Generar</option>
+                <option value="mensual">Mensual</option>
+                <option value="semanal">Semanal</option>
+                <option value="diaria">Diaria</option>
+            </select>        
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12">
+        <div id="reportContainer" class="rep-container">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="card-title mb-0">Lista de Reportes</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="reportTable" class="display min-w850 table table-bordered table-striped table-hover example2">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Total</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--**********************************
+    Content body end
+***********************************-->
+{% endblock %}

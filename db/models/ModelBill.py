@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from collections import defaultdict
 import re
 from db.models.ModelProduct import ModelProduct
@@ -496,3 +496,81 @@ class ModelBill:
         except Exception as ex:
             print(f"Error en get_ProductBills: {ex}") 
             return None
+
+
+    @classmethod
+    def get_reports(cls, connection, group_by):
+        try:
+            cursor = connection.cursor()
+            
+            group_sql = {
+                'diaria': "DATE(Fecha) AS group_key",  
+                'semanal': "YEARWEEK(Fecha, 1) AS group_key",  
+                'mensual': "DATE_FORMAT(Fecha, '%Y-%m') AS group_key"  
+            }
+            
+            if group_by not in group_sql:
+                raise ValueError("Tipo de reporte no válido.")
+            
+            sql = f"""
+                SELECT {group_sql[group_by]}, ID_Factura, Monto, Tipo, Descripcion, TipoEntidad, ID_Entidad, Estado, Fecha
+                FROM Factura
+                ORDER BY group_key
+            """
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+
+            reports = {}
+            for row in rows:
+                group_key = row[0]
+
+                
+                if isinstance(group_key, (date, datetime)): 
+                    group_key = group_key.strftime('%Y-%m-%d')  
+                
+                if group_key not in reports:
+                    reports[group_key] = []
+
+                report = {
+                'ID_Factura': row[1],
+                'Monto': row[2],
+                'Tipo': row[3],
+                'Descripcion': row[4],
+                'TipoEntidad': row[5] if row[5] else 'Desconocido',  
+                'ID_Entidad': row[6],
+                'Estado': row[7],
+                'Fecha': row[8]  
+                }
+
+                if row[5] == 'Cliente' or row[5] == 'Entrenador':
+                    entity_sql = f"SELECT Cedula, Nombre FROM {row[5]} WHERE Cedula = %s"
+                    cursor.execute(entity_sql, (row[6],))
+                    entity_row = cursor.fetchone()
+                    if entity_row:
+                        report['Cedula'] = entity_row[0]
+                        report['Nombre'] = entity_row[1]
+                elif row[5] == 'Producto':
+                    product_sql = "SELECT Nombre FROM Producto WHERE ID_Producto = %s"
+                    cursor.execute(product_sql, (row[6],))
+                    product_row = cursor.fetchone()
+                    if product_row:
+                        report['Producto'] = product_row[0]
+
+                reports[group_key].append(report)
+
+            return reports
+
+        except Exception as ex:
+            print(f"Error en get_reports: {ex}")
+            return None
+
+
+
+
+
+
+
+
+
+
+
