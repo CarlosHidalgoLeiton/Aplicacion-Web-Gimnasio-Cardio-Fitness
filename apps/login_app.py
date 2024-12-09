@@ -8,6 +8,8 @@ from db.models.entities.User import User
 from emailTest import manageEmail
 from db.models.entities.Client import Client
 import serial
+import requests
+
 
 
 login_app = Blueprint('login_app', __name__)
@@ -43,31 +45,29 @@ def inicio():
 
 
 
-ALLOWED_IP = " 172.16.1.127"  # Reemplaza con la IP de la laptop con el USB
+LAPTOP_IP = "172.16.1.127"  # Esto ya no es necesario, pero lo mantengo para referencia.
+CONTROLLER_URL = f"http://{LAPTOP_IP}:5001/open_gate"
 
-def abrir_porton():
+def abrir_porton_remoto():
     """
-    Envía una señal al hardware para abrir el portón.
+    Enviar solicitud para abrir el portón a la laptop con el USB.
     """
     try:
-        with serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1) as ser:
-            ser.write(b'ABRIR\n')  # Comando que activa el portón
-            print("Se envió el comando 'ABRIR' al portón.")
+        response = requests.post(CONTROLLER_URL)
+        if response.status_code == 200:
+            print("Portón abierto exitosamente.")
             return True
-    except Exception as e:
-        print(f"Error al intentar abrir el portón: {e}")
+        else:
+            print(f"Error al abrir el portón: {response.text}")
+            return False
+    except requests.exceptions.RequestException as e:
+        print(f"Error al enviar la solicitud: {e}")
         return False
 
 
 @login_app.route("/entryInstallation", methods=["GET", "POST"])
 def entryInstallation():
     if request.method == "POST":
-        # Verificar si la solicitud proviene de la computadora autorizada
-        client_ip = request.remote_addr
-        if client_ip != ALLOWED_IP:
-            error_message = "Acceso denegado. Esta operación solo puede realizarse desde el dispositivo autorizado."
-            return render_template("login/entryInstallationStatus.html", error=error_message)
-
         user_document_id = request.form['DocumentId']
         conexion = None
         try:
@@ -77,7 +77,7 @@ def entryInstallation():
             if client is not None:
                 if client.is_member_active():
                     # Lógica para abrir el portón
-                    if abrir_porton():
+                    if abrir_porton_remoto():
                         success_message = f"Acceso Permitido. Bienvenido {client.Name}. Su membresía finaliza el {client.ExpirationMembership}."
                     else:
                         success_message = "Acceso Permitido, pero hubo un problema al abrir el portón."
@@ -101,6 +101,7 @@ def entryInstallation():
             if conexion:
                 Conection().desconectar()
     return render_template("login/entryInstallation.html")
+
 
 @login_app.route("/entryInstallationStatus")
 def entryInstallationStatus():
