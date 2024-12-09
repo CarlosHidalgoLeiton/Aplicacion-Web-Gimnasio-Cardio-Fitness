@@ -43,7 +43,7 @@ def inicio():
 
 
 
-sALLOWED_IP = " 172.16.1.127"  # Reemplaza con la IP de la laptop con el USB
+ALLOWED_IP = " 172.16.1.127"  # Reemplaza con la IP de la laptop con el USB
 
 def abrir_porton():
     """
