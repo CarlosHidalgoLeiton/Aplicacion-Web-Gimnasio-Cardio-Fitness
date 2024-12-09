@@ -7,9 +7,17 @@ from db.models.ModelClient import ModelClient
 from db.models.entities.User import User
 from emailTest import manageEmail
 from db.models.entities.Client import Client
+import serial
 
 
 login_app = Blueprint('login_app', __name__)
+
+
+
+
+SERIAL_PORT = 'COM3'  # Cambia esto al puerto correcto en tu sistema
+BAUD_RATE = 9600
+
 
 
 #Routes redirectioned, we have to past this to other unique file, and then we call it as an import
@@ -32,32 +40,63 @@ def inicio():
     doneMessage = request.args.get('done')
     return render_template("login/login.html",done = doneMessage)
 
+
+
+
+def abrir_porton():
+    """
+    Envía una señal al hardware para abrir el portón.
+    """
+    try:
+        with serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1) as ser:
+            ser.write(b'ABRIR\n')  # Comando que activa el portón
+            print("Se envió el comando 'ABRIR' al portón.")
+            return True
+    except Exception as e:
+        print(f"Error al intentar abrir el portón: {e}")
+        return False
+
+
+
+
+
 @login_app.route("/entryInstallation", methods=["GET", "POST"])
 def entryInstallation():
     if request.method == "POST":
         user_document_id = request.form['DocumentId']
+        conexion = None
         try:
             conexion = Conection.conectar()
             client = ModelClient.getClient(conexion, user_document_id)
+
             if client is not None:
                 if client.is_member_active():
-                    success_message = f"Acceso Permitido. Bienvenido {client.Name}. Su membresía finaliza el {client.ExpirationMembership}."
+                    # Lógica para abrir el portón
+                    if abrir_porton():
+                        success_message = f"Acceso Permitido. Bienvenido {client.Name}. Su membresía finaliza el {client.ExpirationMembership}."
+                    else:
+                        success_message = "Acceso Permitido, pero hubo un problema al abrir el portón."
+                    
+                    Conection().desconectar()  # Desconectar antes de retornar
                     return render_template("login/entryInstallationStatus.html", success_message=success_message)
                 else:
-                    error_message = "Acceso Denegado. Su membresía ha expirado."
+                    error_message = "Acceso Denegado. Su membresía no se encuentra activa."
+                    Conection().desconectar()  # Desconectar antes de retornar
                     return render_template("login/entryInstallationStatus.html", error=error_message)
             else:
                 error_message = "Cliente no encontrado."
                 return render_template("login/entryInstallationStatus.html", error=error_message)
-        
+
         except Exception as e:
             print(e)
             error_message = "Hubo un error en el sistema. Inténtelo más tarde."
             return render_template("login/entryInstallationStatus.html", error=error_message)
-        finally:
-            Conection().desconectar()
 
+        finally:
+            if conexion:
+                Conection().desconectar()
     return render_template("login/entryInstallation.html")
+
 
 @login_app.route("/entryInstallationStatus")
 def entryInstallationStatus():
