@@ -44,25 +44,22 @@ def inicio():
 
 
 
-
-LAPTOP_IP = "172.16.1.127"  # Esto ya no es necesario, pero lo mantengo para referencia.
-CONTROLLER_URL = f"http://{LAPTOP_IP}:5001/open_gate"
-
-def abrir_porton_remoto():
+# IP de la laptop autorizada (la que tiene el USB)
+def abrir_porton():
     """
-    Enviar solicitud para abrir el portón a la laptop con el USB.
+    Envía una señal al hardware para abrir el portón.
     """
     try:
-        response = requests.post(CONTROLLER_URL)
-        if response.status_code == 200:
-            print("Portón abierto exitosamente.")
+        with serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1) as ser:
+            ser.write(b'ABRIR\n')  # Comando que activa el portón
+            print("Se envió el comando 'ABRIR' al portón.")
             return True
-        else:
-            print(f"Error al abrir el portón: {response.text}")
-            return False
-    except requests.exceptions.RequestException as e:
-        print(f"Error al enviar la solicitud: {e}")
+    except Exception as e:
+        print(f"Error al intentar abrir el portón: {e}")
         return False
+
+
+
 
 
 @login_app.route("/entryInstallation", methods=["GET", "POST"])
@@ -77,7 +74,7 @@ def entryInstallation():
             if client is not None:
                 if client.is_member_active():
                     # Lógica para abrir el portón
-                    if abrir_porton_remoto():
+                    if abrir_porton():
                         success_message = f"Acceso Permitido. Bienvenido {client.Name}. Su membresía finaliza el {client.ExpirationMembership}."
                     else:
                         success_message = "Acceso Permitido, pero hubo un problema al abrir el portón."
@@ -101,7 +98,6 @@ def entryInstallation():
             if conexion:
                 Conection().desconectar()
     return render_template("login/entryInstallation.html")
-
 
 @login_app.route("/entryInstallationStatus")
 def entryInstallationStatus():
