@@ -49,4 +49,4 @@ app.register_blueprint(trainer_app, url_prefix='/trainer')
 app.register_blueprint(login_app)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000) 
