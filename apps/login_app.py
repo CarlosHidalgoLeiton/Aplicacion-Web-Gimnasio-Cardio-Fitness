@@ -43,6 +43,8 @@ def inicio():
 
 
 
+sALLOWED_IP = " 172.16.1.127"  # Reemplaza con la IP de la laptop con el USB
+
 def abrir_porton():
     """
     Envía una señal al hardware para abrir el portón.
@@ -57,12 +59,15 @@ def abrir_porton():
         return False
 
 
-
-
-
 @login_app.route("/entryInstallation", methods=["GET", "POST"])
 def entryInstallation():
     if request.method == "POST":
+        # Verificar si la solicitud proviene de la computadora autorizada
+        client_ip = request.remote_addr
+        if client_ip != ALLOWED_IP:
+            error_message = "Acceso denegado. Esta operación solo puede realizarse desde el dispositivo autorizado."
+            return render_template("login/entryInstallationStatus.html", error=error_message)
+
         user_document_id = request.form['DocumentId']
         conexion = None
         try:
@@ -96,7 +101,6 @@ def entryInstallation():
             if conexion:
                 Conection().desconectar()
     return render_template("login/entryInstallation.html")
-
 
 @login_app.route("/entryInstallationStatus")
 def entryInstallationStatus():
