@@ -377,6 +377,20 @@ class ModelUser:
         else:
             return False
 
+    @classmethod
+    def get_Notification(cls, conexion, ID_Notication):
+        try:
+            cursor = conexion.cursor()
+            sql = "SELECT ID_Notificacion, Asunto, Fecha, Hora, Estado FROM Notificacion WHERE ID_Notificacion = %s"
+            cursor.execute(sql, (ID_Notication,))
+            row = cursor.fetchone()
+            if row:
+                return Notification(row[0], row[1], row[2], row[3], row[4])
+            return None
+        except Exception as ex:
+            print(f"Error en get_Notification: {ex}")
+            return None
+            
 
     @classmethod
     def get_Notifications(cls, conexion):

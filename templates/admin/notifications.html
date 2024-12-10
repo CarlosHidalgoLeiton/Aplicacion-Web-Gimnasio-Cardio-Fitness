@@ -113,10 +113,10 @@
 								<td>
                                     <div class="d-flex">
                                         {% if notification['State'] == 1 %}
-                                        <a href=""
-                                            class="btn btn-primary shadow btn-xs sharp me-1">
-                                            <i class="fa fa-eye"></i>
-                                        </a>
+										<a href="{{ url_for('admin_app.viewNotification', ID_Notication = notification['NotificationId'] ) }}"
+                                        class="btn btn-primary shadow btn-xs sharp me-1"><i class="fa fa-eye"></i>
+										</a>
+
                                         <button onclick="disableNotification(event)" data-id="{{ notification['NotificationId'] }}"
                                             id="deshabilitar-{{ notification['NotificationId'] }}"
                                             class="btn btn-danger shadow btn-xs sharp">

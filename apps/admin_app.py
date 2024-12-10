@@ -843,10 +843,21 @@ def notifications():
         return render_template("admin/notifications.html", notifications=notifications, notification = None, done = doneMessage, error = errorMessage)
 
 
-@admin_app.route("/notifications/ver")
+@admin_app.route("/notifications/view/<ID_Notication>")
 @login_required
-def notificationsView(id):
-    return render_template("admin/verNotificacion.html")
+@admin_permission.require(http_exception=403)
+def viewNotification(ID_Notication):
+    notification = None
+    try:
+        conection = Conection.conectar()
+        notification = ModelUser.get_Notification(conection, ID_Notication)
+    except Exception as e:
+        print(f"Error al obtener la notificación: {e}")
+    finally:
+        Conection().desconectar()
+
+    return render_template("/admin/viewNotification.html", notification=notification)
+
 
 
 @admin_app.route("/notifications/disable", methods = ['POST'])

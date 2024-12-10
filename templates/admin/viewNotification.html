@@ -1,0 +1,92 @@
+{% extends "./layout/Layout_Admin.html" %}
+
+
+{% block content %}
+<!--**********************************
+            Content body start
+        ***********************************-->
+
+        <div class="page-titles">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('admin_app.notifications') }}">Notificaciones</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">Ver Notificación</a></li>
+            </ol>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card form-container">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Notificación</h4>
+                        <div class="form-validation">
+                            <form class="needs-validation" novalidate>
+                                <div class="row">
+                                    <div class="col-xl-6">
+        
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom01">Asunto
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="validationCustom01"
+                                                    value="{{ notification.Subject }}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom02">Fecha
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="validationCustom02"
+                                                    value="{{ notification.Date }}" readonly>
+                                            </div>
+                                        </div>
+        
+                                    </div>
+                                    <div class="col-xl-6">
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom11">Hora
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="validationCustom11"
+                                                    value="{{ notification.Hour }}" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="my-5">
+                                    <a type="button" class="btn btn-danger me-2" href="{{ url_for('admin_app.notifications') }}">Volver</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+<!--**********************************
+            Content body end
+        ***********************************-->
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script>
+{% endblock %}
