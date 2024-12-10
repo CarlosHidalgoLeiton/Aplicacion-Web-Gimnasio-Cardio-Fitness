@@ -423,7 +423,7 @@ class ModelStatistics:
             return "La fecha de medición no debe estar vacía."    
 
 
-        if statistics.sportsman not in ["si", "Si", "SI", "No", "no", "NO"]:
+        if statistics.sportsman not in ["si", "Si", "SI", "No", "no", "NO",None,""]:
             return "Error: El valor de ¿Es deportista? debe ser 'si' o 'No'."
 
         return True
