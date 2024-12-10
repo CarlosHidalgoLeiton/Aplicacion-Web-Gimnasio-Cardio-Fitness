@@ -6,7 +6,6 @@ from db.conection import Conection
 from datetime import datetime
 import re
 import secrets
-import datetime
 
 class ModelUser:
 

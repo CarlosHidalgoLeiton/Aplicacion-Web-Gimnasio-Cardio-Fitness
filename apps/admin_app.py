@@ -842,6 +842,7 @@ def notifications():
     else:
         return render_template("admin/notifications.html", notifications=notifications, notification = None, done = doneMessage, error = errorMessage)
 
+
 @admin_app.route("/notifications/ver")
 @login_required
 def notificationsView(id):
