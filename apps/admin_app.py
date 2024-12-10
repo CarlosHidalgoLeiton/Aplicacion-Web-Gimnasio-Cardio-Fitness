@@ -605,10 +605,22 @@ def bills():
     else:
         return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, trainerValidated = None, generalValidated = None, productValidated = None, membershipValidated = None , done = doneMessage, error = errorMessage)
 
-@admin_app.route("/facturas/ver")
+@admin_app.route("/bills/view/<ID_Bill>")
 @login_required
-def verFactura():
-    return render_template("admin/verFactura.html")
+@admin_permission.require(http_exception=403)
+def viewBill(ID_Bill):
+    try:
+        conection = Conection.conectar()
+        bill = ModelBill.getBill(conection, ID_Bill)  
+    except Exception as e:
+        print(f"Error al obtener la factura: {e}")
+        user = None
+    finally:
+        Conection().desconectar()
+
+    return render_template("/admin/viewBill.html", bill=bill)
+
+
 
 @admin_app.route("/bills/cancel/<ID_Bill>", methods = ['GET', 'POST'])
 @login_required

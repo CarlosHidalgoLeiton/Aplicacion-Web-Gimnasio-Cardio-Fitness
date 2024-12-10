@@ -385,7 +385,7 @@
                             <td>
                                 <div class="d-flex">
                                     {% if bill['State'] == 1 %}
-                                    <a href="{{ url_for('admin_app.verFactura') }}"
+                                    <a href="{{ url_for('admin_app.viewBill', ID_Bill = bill['ID_Bill'] ) }}"
                                         class="btn btn-primary shadow btn-xs sharp me-1"><i class="fa fa-eye"></i></a>
 
                                     <a href="{{ url_for('admin_app.cancelBill', ID_Bill = bill['ID_Bill'] ) }}"

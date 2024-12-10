@@ -4,7 +4,7 @@
 
 <div class="page-titles">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ url_for('admin_app.facturas') }}">Facturas</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('admin_app.bills') }}">Facturas</a></li>
         <li class="breadcrumb-item active"><a href="javascript:void(0)">Ver Factura</a></li>
     </ol>
 </div>
@@ -12,54 +12,45 @@
     <div class="col-lg-12">
         <div class="card form-container">
             <div class="card-body">
-                <h4 class="card-title mb-4">Factura Anulada</h4>
+                <h4 class="card-title mb-4">Detalles de la Factura</h4>
                 <div class="form-validation">
                     <form class="needs-validation" novalidate>
                         <div class="row">
                             <div class="col-xl-6">
-
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label" for="validationCustom01">Tipo de Factura
-                                    </label>
+                                    <label class="col-lg-4 col-form-label" for="billType">Tipo de Factura</label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom01"
-                                            value="Información" readonly>
+                                        <input type="text" class="form-control" id="billType"
+                                            value="{{ bill.Type }}" readonly>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label" for="validationCustom02">Monto
-                                    </label>
+                                    <label class="col-lg-4 col-form-label" for="billAmount">Monto</label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom02"
-                                            value="Información" readonly>
-
+                                        <input type="text" class="form-control" id="billAmount"
+                                            value="{{ bill.Amount }}" readonly>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="col-xl-6">
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label" for="validationCustom11">Descripción
-                                    </label>
+                                    <label class="col-lg-4 col-form-label" for="billDescription">Descripción</label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom11"
-                                            value="Información" readonly>
-
+                                        <input type="text" class="form-control" id="billDescription"
+                                            value="{{ bill.Description }}" readonly>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label" for="validationCustom12">Fecha
-                                    </label>
+                                    <label class="col-lg-4 col-form-label" for="billDate">Fecha</label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" id="validationCustom11"
-                                            value="Información" readonly>
+                                        <input type="text" class="form-control" id="billDate"
+                                            value="{{ bill.Date }}" readonly>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                         <div class="my-5">
-                            <a type="button" class="btn btn-danger me-2" href="factura.html">Volver</a>
+                            <a type="button" class="btn btn-danger me-2" href="{{ url_for('admin_app.bills') }}">Volver</a>
                         </div>
                     </form>
                 </div>
@@ -68,11 +59,7 @@
     </div>
 </div>
 
-
 {% endblock %}
 
-
 {% block scripts %}
-
-
 {% endblock %}
