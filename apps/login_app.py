@@ -143,6 +143,7 @@ def changePassword(documentId, token):
     if request.method == "POST":
         conection = Conection.conectar()
         data = ModelUser.getDataPasswords(request)
+
         Validator = ModelUser.changePassword(conection,documentId, token,data)
         if (Validator != "El cambio de contraseña fue exitosa"):
             return redirect(url_for("login_app.changePassword",documentId = documentId,token = token, error=Validator))

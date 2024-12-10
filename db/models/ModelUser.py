@@ -3,7 +3,7 @@ from .entities.Client import Client
 from .entities.Notification import Notification
 from .entities.Trainer import Trainer
 from db.conection import Conection
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
 import secrets
 
@@ -474,9 +474,9 @@ class ModelUser:
     def saveToken(cls, conection, DocumentId, token, action):
         if DocumentId:
             if action == "save":
-                currentTime = datetime.datetime.now()
+                currentTime = datetime.now()
 
-                expiration = currentTime + datetime.timedelta(minutes=30)
+                expiration = currentTime + timedelta(minutes=30)
 
                 try:
                     cursor = conection.cursor()
@@ -502,9 +502,9 @@ class ModelUser:
                     cursor.close()
 
             if action == "update":
-                currentTime = datetime.datetime.now()
+                currentTime = datetime.now()
 
-                expiration = currentTime + datetime.timedelta(minutes=30)
+                expiration = currentTime + timedelta(minutes=30)
 
                 try:
                     cursor = conection.cursor()
@@ -568,7 +568,7 @@ class ModelUser:
                         sqlDate ="SELECT Expiration FROM TokenUsuario WHERE CedulaUser = %s"
                         cursor.execute(sqlDate, (DocumentId))
                         rowDate = cursor.fetchone()
-                        current_time = datetime.datetime.now()
+                        current_time = datetime.now()
                         if rowDate[0] > current_time:
 
                             if passwords["password1"] == "" or passwords["password2"] == "":
