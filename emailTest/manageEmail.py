@@ -32,7 +32,7 @@ def sendEmail(documentId, destinyEmail, token):
             <table role="presentation" style="width: 100%; height: 100%; border: 0; cellpadding: 0; cellspacing: 0;">
                 <tr>
                     <td style="text-align: center; vertical-align: middle;">
-                        <a style="text-align: center; text-decoration: none; background-color: #f21D2F; color: white; border-radius: 10px; width: 170px; padding: 8px; display: inline-block;" href="http://127.0.0.1:5000/changePassword/{documentId}/{token}">
+                        <a style="text-align: center; text-decoration: none; background-color: #f21D2F; color: white; border-radius: 10px; width: 170px; padding: 8px; display: inline-block;" href="http://gymcardiofitness.com/changePassword/{documentId}/{token}">
                             <b>Cambiar contraseña</b>
                         </a>
                     </td>
