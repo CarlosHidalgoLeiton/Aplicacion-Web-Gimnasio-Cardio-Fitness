@@ -195,7 +195,7 @@ def viewStatistics(documentId,clientId):
         client = ModelStatistics.getClientById(conection, clientId)
         Conection.desconectar()
         if client is None:
-         return redirect(url_for('admin_app.statistics', error="Cliente no encontrado"))
+            return redirect(url_for('admin_app.statistics', error="Cliente no encontrado"))
     
 
     except Exception as ex:

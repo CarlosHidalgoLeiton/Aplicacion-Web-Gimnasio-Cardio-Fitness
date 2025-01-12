@@ -11,6 +11,8 @@ from db.models.ModelUser import ModelUser
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Establece una clave secreta para la gestión de sesiones
 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://username:password@localhost/database_name'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #Configuración para los roles
 principal = Principal(app)
