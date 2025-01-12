@@ -1,19 +1,19 @@
 # Importaciones
 from flask import Blueprint, render_template, request, session, redirect, url_for, jsonify, Response
 from flask_login import login_required, current_user
-from db.conection import Conection
-from db.models.ModelUser import ModelUser
-from db.models.ModelTrainer import ModelTrainer
-from db.models.ModelClient import ModelClient
-from db.models.ModelRoutine import ModelRoutine
-from db.models.ModelSesion import ModelSession
-from db.models.ModelProduct import ModelProduct
-from db.models.ModelMembership import ModelMembership
-from db.models.ModelBill import ModelBill
-from db.models.ModelCancelledBill import ModelCancelledBill
-from db.models.ModelStatistics import ModelStatistics
-from db.models.entities.User import User
-from apps.permissions import admin_permission
+from apps.db.conection import Conection
+from apps.db.repositories.UserRepository import UserRepository
+from apps.db.repositories.ModelTrainer import ModelTrainer
+from apps.db.repositories.ModelClient import ModelClient
+from apps.db.repositories.ModelRoutine import ModelRoutine
+from apps.db.repositories.ModelSesion import ModelSession
+from apps.db.repositories.ModelProduct import ModelProduct
+from apps.db.repositories.ModelMembership import ModelMembership
+from apps.db.repositories.ModelBill import ModelBill
+from apps.db.repositories.ModelCancelledBill import ModelCancelledBill
+from apps.db.repositories.ModelStatistics import ModelStatistics
+from apps.db.models.User import User
+from apps.routes.permissions import admin_permission
 import json  
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.colors import HexColor
@@ -384,22 +384,22 @@ def ableTrainer():
 @admin_permission.require(http_exception=403)
 def users():
     conection = Conection.conectar()
-    users = ModelUser.get_Users(conection)
-    clients = ModelUser.get_Clients(conection) 
-    trainers = ModelUser.get_Trainers(conection) 
+    users = UserRepository.get_Users(conection)
+    clients = UserRepository.get_Clients(conection) 
+    trainers = UserRepository.get_Trainers(conection) 
     Conection.desconectar()
     doneMessage = request.args.get('done')
     errorMessage = request.args.get('error')
     if request.method == 'POST':
-        user = ModelUser.validateDataForm(request)
+        user = UserRepository.validateDataForm(request)
         if type(user) != User:
             return render_template("admin/users.html", users=users, clients=clients, trainers=trainers,  error=user)
         conection = Conection.conectar()
         if conection == None:
             return render_template("admin/users.html", users=users, clients=clients, trainers=trainers,  error= "Error en la conexión.")
-        insert = ModelUser.insertUser(conection, user)
+        insert = UserRepository.insertUser(conection, user)
         if insert:
-            users = ModelUser.get_Users(conection)
+            users = UserRepository.get_Users(conection)
             Conection.desconectar()
             return redirect(url_for("admin_app.users", done = "Usuario creado correctamente."))
         else:
@@ -415,7 +415,7 @@ def users():
 def viewUser(DocumentId):
     try:
         conection = Conection.conectar()
-        user = ModelUser.get_User(conection, DocumentId)  
+        user = UserRepository.get_User(conection, DocumentId)  
     except Exception as e:
         print(f"Error al obtener el usuario: {e}")
         user = None
@@ -429,17 +429,17 @@ def viewUser(DocumentId):
 @admin_permission.require(http_exception=403)
 def updateUser(DocumentId):
     conection = Conection.conectar()
-    user = ModelUser.get_UserU(conection, DocumentId)
+    user = UserRepository.get_UserU(conection, DocumentId)
     Conection.desconectar()
     if user:
         if request.method == 'POST':
-            validatedUser = ModelUser.validateDataFormUpdate(request, user)
+            validatedUser = UserRepository.validateDataFormUpdate(request, user)
             if type(validatedUser) == str:  
                 return render_template("/admin/updateUser.html", user=user, error=validatedUser)
             conection = Conection.conectar()
             if conection == None:
                 return render_template("/admin/updateUser.html", user=user, error="Error en la conexión.")
-            update_result = ModelUser.update_User(conection, validatedUser, user.id)
+            update_result = UserRepository.update_User(conection, validatedUser, user.id)
             Conection.desconectar()
             if update_result:
                 return redirect(url_for('admin_app.users', done = "Usuario actualizado correctamente"))
@@ -460,7 +460,7 @@ def disableUser():
     data = request.get_json()
     DocumentId = data.get('DocumentId')
     conexion = Conection.conectar()
-    disable = ModelUser.disableUser(conexion, DocumentId)
+    disable = UserRepository.disableUser(conexion, DocumentId)
     Conection.desconectar()
 
     if disable:
@@ -476,7 +476,7 @@ def ableUser():
     data = request.get_json()
     DocumentId = data.get('DocumentId')
     conection = Conection.conectar()
-    able = ModelUser.ableUser(conection, DocumentId)
+    able = UserRepository.ableUser(conection, DocumentId)
     Conection.desconectar()
 
     if able:
@@ -822,18 +822,18 @@ def ableProduct():
 @login_required
 def notifications():
     conection = Conection.conectar()
-    notifications = ModelUser.get_Notifications(conection)
+    notifications = UserRepository.get_Notifications(conection)
     Conection.desconectar()
     doneMessage = request.args.get('done')
     errorMessage = request.args.get('error')
     if request.method == 'POST':
-        notification = ModelUser.getDataNotification(request)
+        notification = UserRepository.getDataNotification(request)
         conection = Conection.conectar()
         if conection == None:
             return render_template("admin/notifications.html", notifications=notifications, error= "Error en la conexión.", notification=notification)
-        insert = ModelUser.insertNotification(conection, notification)
+        insert = UserRepository.insertNotification(conection, notification)
         if insert and type(insert) == bool:
-            notifications = ModelUser.get_Notifications(conection)
+            notifications = UserRepository.get_Notifications(conection)
             Conection.desconectar()
             return render_template("admin/notifications.html", notifications=notifications, done = "Notificación creada correctamente.", notification = None)
         else:
@@ -850,7 +850,7 @@ def viewNotification(ID_Notication):
     notification = None
     try:
         conection = Conection.conectar()
-        notification = ModelUser.get_Notification(conection, ID_Notication)
+        notification = UserRepository.get_Notification(conection, ID_Notication)
     except Exception as e:
         print(f"Error al obtener la notificación: {e}")
     finally:

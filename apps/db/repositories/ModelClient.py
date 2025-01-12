@@ -1,11 +1,11 @@
 """Client Module"""
 
-from .entities.Client import Client
+from apps.db.models.Client import Client
 from datetime import datetime
-from .entities.Notification import Notification
+from apps.db.models.Notification import Notification
 import re
 from pymysql import IntegrityError
-from db.models.ModelUser import ModelUser
+from apps.db.repositories.UserRepository import UserRepository
 
 class ModelClient:
     """It has the methods over Client."""
@@ -103,7 +103,7 @@ class ModelClient:
                 if cursor.rowcount > 0:
                     print(f"Cliente {client.DocumentId} actualizado exitosamente.")
 
-                    user = ModelUser.get_User(conection, id)
+                    user = UserRepository.get_User(conection, id)
 
                     if user:
                         sql2 = "UPDATE Usuario SET Cedula = %s WHERE Cedula = %s"

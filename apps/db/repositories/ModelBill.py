@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta, date
 from collections import defaultdict
 import re
-from db.models.ModelProduct import ModelProduct
-from .entities.Bill import Bill
-from .entities.Client import Client
+from apps.db.repositories.ModelProduct import ModelProduct
+from apps.db.models.Bill import Bill
+from apps.db.models.Client import Client
 class ModelBill:
 
     @classmethod

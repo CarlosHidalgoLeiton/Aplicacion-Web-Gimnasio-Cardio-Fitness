@@ -1,16 +1,16 @@
 #Importaciones
 from flask import Blueprint, render_template, session, jsonify, request, redirect, url_for
 from flask_login import login_required, current_user
-from apps.permissions import client_permission
-from db.conection import Conection
-from db.models.ModelClient import ModelClient
-from db.models.ModelProduct import ModelProduct
-from db.models.ModelStatistics import ModelStatistics
-from db.models.ModelSesion import ModelSession
-from db.models.ModelRoutine import ModelRoutine
-from db.models.ModelMembership import ModelMembership
+from apps.routes.permissions import client_permission
+from apps.db.conection import Conection
+from apps.db.repositories.ModelClient import ModelClient
+from apps.db.repositories.ModelProduct import ModelProduct
+from apps.db.repositories.ModelStatistics import ModelStatistics
+from apps.db.repositories.ModelSesion import ModelSession
+from apps.db.repositories.ModelRoutine import ModelRoutine
+from apps.db.repositories.ModelMembership import ModelMembership
 import json  
-from apps.chatbot import get_response 
+from apps.routes.chatbot import get_response 
 
 #Creación de los blueprint para usar en app.py
 client_app = Blueprint('client_app', __name__)

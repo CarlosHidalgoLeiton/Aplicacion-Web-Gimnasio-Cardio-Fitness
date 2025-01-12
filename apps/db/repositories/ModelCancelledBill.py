@@ -1,7 +1,6 @@
-from .entities.CancelledBill import CancelledBill
+from apps.db.models.CancelledBill import CancelledBill
 from datetime import datetime
 from pymysql import IntegrityError
-
 
 class ModelCancelledBill():
 

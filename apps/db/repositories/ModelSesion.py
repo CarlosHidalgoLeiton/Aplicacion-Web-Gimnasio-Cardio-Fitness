@@ -1,10 +1,8 @@
-from .entities.Session import Session
+from apps.db.models.Session import Session
 from datetime import datetime
 from pymysql import IntegrityError
 import json
 class ModelSession:
-
-   
 
     @classmethod
     def insertSession(cls, conection, session):

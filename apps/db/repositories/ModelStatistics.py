@@ -1,4 +1,4 @@
-from .entities.Statistics import Statistics
+from apps.db.models.Statistics import Statistics
 from datetime import datetime
 import re
 from pymysql import IntegrityError

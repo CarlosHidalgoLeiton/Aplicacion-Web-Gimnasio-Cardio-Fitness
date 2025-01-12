@@ -1,4 +1,4 @@
-from .entities.Product import Product
+from apps.db.models.Product import Product
 from datetime import datetime
 import re
 from pymysql import IntegrityError

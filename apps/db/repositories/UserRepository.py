@@ -1,13 +1,17 @@
-from .entities.User import User
-from .entities.Client import Client
-from .entities.Notification import Notification
-from .entities.Trainer import Trainer
-from db.conection import Conection
+from apps.db.models.User import User
+from apps.db.models.Client import Client
+from apps.db.models.Notification import Notification
+from apps.db.models.Trainer import Trainer
+from apps.db.conection import Conection
 from datetime import datetime, timedelta
 import re
 import secrets
 
-class ModelUser:
+from apps.db.repositories.RepositoryBase import RepositoryBase
+
+class UserRepository(RepositoryBase):
+    def __init__(self):
+        super().__init__(User)
 
     @classmethod
     def login(cls, user, conexion):
@@ -32,22 +36,21 @@ class ModelUser:
         except Exception as ex:
             print(f"Error en ModelUser login: {ex}")
             return None
-
-
-    @classmethod
-    def get_by_id(cls, conexion, id):
-        try:
-            cursor = conexion.cursor()
-            sql = "SELECT ID_Usuario, Cedula, Rol, Correo FROM Usuario WHERE ID_Usuario = %s"
-            cursor.execute(sql, (id))
-            row = cursor.fetchone()
-            print(row)
-            if row is not None:
-                return User(row[0], row[1], None, None, row[2],None,row[3])
-            return None
-        except Exception as ex:
-            print(f"Error en ModelUser en get_by_id: {ex}")
-            return None
+        
+    # @classmethod
+    # def get_by_id(id):
+    #     try:
+    #         cursor = conexion.cursor()
+    #         sql = "SELECT ID_Usuario, Cedula, Rol, Correo FROM Usuario WHERE ID_Usuario = %s"
+    #         cursor.execute(sql, (id))
+    #         row = cursor.fetchone()
+    #         print(row)
+    #         if row is not None:
+    #             return User(row[0], row[1], None, None, row[2],None,row[3])
+    #         return None
+    #     except Exception as ex:
+    #         print(f"Error en ModelUser en get_by_id: {ex}")
+    #         return None
 
     #VERIFICAR SI EXISTE LA CEDULA DE ADMIN EN USUARIO
     @classmethod

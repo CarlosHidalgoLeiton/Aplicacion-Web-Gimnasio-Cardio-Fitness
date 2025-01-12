@@ -1,4 +1,4 @@
-from .entities.Routine import Routine
+from apps.db.models.Routine import Routine
 from datetime import datetime
 from pymysql import IntegrityError
 

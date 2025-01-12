@@ -1,4 +1,4 @@
-from .entities.Membership import Membership
+from apps.db.models.Membership import Membership
 from pymysql import IntegrityError
 
 class ModelMembership:

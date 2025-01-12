@@ -1,17 +1,23 @@
 from flask import Flask, current_app
-from apps.admin_app import admin_app
-from apps.client_app import client_app
-from apps.trainer_app import trainer_app
-from apps.login_app import login_app
-from db.conection import Conection
+from apps.routes.admin_app import admin_app
+from apps.routes.client_app import client_app
+from apps.routes.trainer_app import trainer_app
+from apps.routes.login_app import login_app
+from apps.db.conection import Conection
 from flask_login import LoginManager, current_user
 from flask_principal import Principal, Identity, RoleNeed, identity_changed
-from db.models.ModelUser import ModelUser
+from apps.db.repositories.UserRepository import UserRepository
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+
+#Instance of sql alchemy
+db = SQLAlchemy()
+
 app.secret_key = 'your_secret_key'  # Establece una clave secreta para la gestión de sesiones
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://username:password@localhost/database_name'
+# Database data
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root@localhost/gimnasio'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #Configuración para los roles
@@ -30,7 +36,7 @@ def load_user(user_id):
     if user_id in user_cache:
         return user_cache[user_id]
     
-    user = ModelUser.get_by_id(Conection.conectar(), user_id)
+    user = UserRepository.get_one(user_id)
     if user:
         user_cache[user_id] = user  # Almacenar en caché
     return user
@@ -45,9 +51,9 @@ def load_identity():
         return identity
 
 # Registra los blueprints
-app.register_blueprint(admin_app, url_prefix='/admin')
-app.register_blueprint(client_app, url_prefix='/client')
-app.register_blueprint(trainer_app, url_prefix='/trainer')
+# app.register_blueprint(admin_app, url_prefix='/admin')
+# app.register_blueprint(client_app, url_prefix='/client')
+# app.register_blueprint(trainer_app, url_prefix='/trainer')
 app.register_blueprint(login_app)
 
 

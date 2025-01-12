@@ -1,12 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session,jsonify
 from flask_login import login_user, logout_user, login_required, current_user
-from db.conection import Conection
-from db.models.ModelClient import ModelClient
-from db.models.ModelTrainer import ModelTrainer
-from db.models.ModelRoutine import ModelRoutine
-from db.models.ModelStatistics import ModelStatistics
-from db.models.ModelSesion import ModelSession
-from apps.permissions import trainer_permission
+from apps.db.conection import Conection
+from apps.db.repositories.ModelClient import ModelClient
+from apps.db.repositories.ModelTrainer import ModelTrainer
+from apps.db.repositories.ModelRoutine import ModelRoutine
+from apps.db.repositories.ModelStatistics import ModelStatistics
+from apps.db.repositories.ModelSesion import ModelSession
+from apps.routes.permissions import trainer_permission
 import json  
 
 

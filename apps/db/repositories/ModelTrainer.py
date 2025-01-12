@@ -1,8 +1,8 @@
-from .entities.Trainer import Trainer
+from apps.db.models.Trainer import Trainer
 from pymysql import IntegrityError
 import re
 from datetime import datetime
-from db.models.ModelUser import ModelUser
+from apps.db.repositories.UserRepository import UserRepository
 
 class ModelTrainer:
 
@@ -75,7 +75,7 @@ class ModelTrainer:
                 if cursor.rowcount > 0:
                     print(f"Entrenador {trainer.DocumentId} actualizado exitosamente.")
 
-                    user = ModelUser.get_User(conection, id)
+                    user = UserRepository.get_User(conection, id)
 
                     if user:
                         sql2 = "UPDATE Usuario SET Cedula = %s WHERE Cedula = %s"
