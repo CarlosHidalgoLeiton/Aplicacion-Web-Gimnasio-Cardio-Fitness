@@ -10,6 +10,7 @@ import secrets
 from apps.db.repositories.RepositoryBase import RepositoryBase
 
 class UserRepository(RepositoryBase):
+
     def __init__(self):
         super().__init__(User)
 

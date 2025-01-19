@@ -1,8 +1,7 @@
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
+from apps.db.db import db
 
 class RepositoryBase:
+
     def __init__(self, model):
         self.model = model
 
@@ -18,6 +17,11 @@ class RepositoryBase:
         except:
             raise Exception(f'Error get_one para {self.model}')
 
+    def get_one_by_parameter(self, parameter, id):
+        try:
+            return self.model.query.filter(getattr(self.model, parameter) == id).first()
+        except Exception as ex:
+            raise Exception(f'Error get_one_by_parameter para {self.model}')
 
     def create(self, **kwargs):
         try:
@@ -28,7 +32,6 @@ class RepositoryBase:
             db.session.rollback()
             raise Exception(f'Error create para {self.model}')
         
-
     def update(self, id, **kwargs):
         try:
             instance = self.model.get(id)

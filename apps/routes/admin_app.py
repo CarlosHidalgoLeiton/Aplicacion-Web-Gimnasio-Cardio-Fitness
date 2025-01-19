@@ -46,7 +46,6 @@ def notAutorized():
 @login_required
 @admin_permission.require(http_exception=403)
 def inicio():
-    print(current_user.role)
     return render_template("admin/index.html")
 
 #-------------Rutas de Clientes-------------#

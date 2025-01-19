@@ -9,6 +9,7 @@ from notifications.emailTest import manageEmail
 from apps.db.models.Client import Client
 import serial
 
+from apps.controllers.user_controller import userController
 
 
 login_app = Blueprint('login_app', __name__)
@@ -154,35 +155,37 @@ def changePassword(documentId, token):
 @login_app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        user = User( 0 ,request.form['DocumentId'], request.form['Password'])
-        # Establecer una conexión a la base de datos
         try:
-            conexion = Conection.conectar()  # Cambiado para crear una instancia
-            logged_user = UserRepository.login(user, conexion)
-            if logged_user != "Invalid User":
-                if logged_user != "Inactive":
-                    if logged_user != "Password":
-                        if logged_user != "DataBase":
-                            if type(logged_user) == User:
-                                login_user(logged_user)
-                                if logged_user.role == "Admin":
-                                    return redirect(url_for('admin_app.inicio'))
-                                elif logged_user.role == "Client":
-                                    return redirect(url_for('client_app.inicio'))
-                                elif logged_user.role == 'Trainer':
-                                    return redirect(url_for('trainer_app.inicio'))
-                                else:
-                                    return render_template("login/login.html")
-                            else:
-                                return render_template("login/login.html", error="Ha ocurrido un error. Intentelo más tarde.")
-                        else:
-                            return render_template("login/login.html", error="No se pudo obtener la información. Contáctese con el desarrollador.")
-                    else:
-                        return render_template("login/login.html", error="Contraseña no válida.")
-                else:
-                    return render_template("login/login.html", error="Su usuario esta inactivo. Inténtalo de nuevo más tarde o comuniquese con el administrador")
-            else:
-                return render_template("login/login.html", error="Usuario ingresado no es válido.")
+            logged_user = userController.login(request)
+
+            if logged_user:
+                login_user(logged_user)
+                return redirect(url_for('admin_app.inicio'))
+
+            # if logged_user != "Invalid User":
+            #     if logged_user != "Inactive":
+            #         if logged_user != "Password":
+            #             if logged_user != "DataBase":
+            #                 if type(logged_user) == User:
+            #                     login_user(logged_user)
+            #                     if logged_user.role == "Admin":
+            #                         return redirect(url_for('admin_app.inicio'))
+            #                     elif logged_user.role == "Client":
+            #                         return redirect(url_for('client_app.inicio'))
+            #                     elif logged_user.role == 'Trainer':
+            #                         return redirect(url_for('trainer_app.inicio'))
+            #                     else:
+            #                         return render_template("login/login.html")
+            #                 else:
+            #                     return render_template("login/login.html", error="Ha ocurrido un error. Intentelo más tarde.")
+            #             else:
+            #                 return render_template("login/login.html", error="No se pudo obtener la información. Contáctese con el desarrollador.")
+            #         else:
+            #             return render_template("login/login.html", error="Contraseña no válida.")
+            #     else:
+            #         return render_template("login/login.html", error="Su usuario esta inactivo. Inténtalo de nuevo más tarde o comuniquese con el administrador")
+            # else:
+            #     return render_template("login/login.html", error="Usuario ingresado no es válido.")
         except Exception as e:
             print(e)
         finally:

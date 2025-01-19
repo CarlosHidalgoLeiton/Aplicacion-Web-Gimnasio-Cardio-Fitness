@@ -1,28 +1,14 @@
-from flask import Flask, current_app
-from apps.routes.admin_app import admin_app
-from apps.routes.client_app import client_app
-from apps.routes.trainer_app import trainer_app
-from apps.routes.login_app import login_app
-from apps.db.conection import Conection
+from apps import create_app
+from flask_principal import Principal
 from flask_login import LoginManager, current_user
-from flask_principal import Principal, Identity, RoleNeed, identity_changed
 from apps.db.repositories.UserRepository import UserRepository
-from flask_sqlalchemy import SQLAlchemy
+from flask_principal import Principal, Identity, RoleNeed, identity_changed
+from flask import current_app
 
-app = Flask(__name__)
+app = create_app()
 
-#Instance of sql alchemy
-db = SQLAlchemy()
-
-app.secret_key = 'your_secret_key'  # Establece una clave secreta para la gestión de sesiones
-
-# Database data
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root@localhost/gimnasio'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-#Configuración para los roles
+# Configuración de roles
 principal = Principal(app)
-
 
 # Inicializa el gestor de inicio de sesión
 login_manager_app = LoginManager(app)
@@ -33,10 +19,11 @@ user_cache = {}
 
 @login_manager_app.user_loader
 def load_user(user_id):
+    userRepository = UserRepository()
     if user_id in user_cache:
         return user_cache[user_id]
     
-    user = UserRepository.get_one(user_id)
+    user = userRepository.get_one(user_id)
     if user:
         user_cache[user_id] = user  # Almacenar en caché
     return user
@@ -44,19 +31,11 @@ def load_user(user_id):
 @principal.identity_loader
 def load_identity():
     if current_user.is_authenticated:
-        identity = Identity(current_user.id)
-        identity.provides.add(RoleNeed(current_user.role))
+        identity = Identity(current_user.ID_Usuario)
+        identity.provides.add(RoleNeed(current_user.Rol))
         print(f"Identidad cargada: {identity}")
         identity_changed.send(current_app._get_current_object(), identity=identity)
         return identity
 
-# Registra los blueprints
-# app.register_blueprint(admin_app, url_prefix='/admin')
-# app.register_blueprint(client_app, url_prefix='/client')
-# app.register_blueprint(trainer_app, url_prefix='/trainer')
-app.register_blueprint(login_app)
-
-
-
 if __name__ == '__main__':
-    app.run(debug=True) 
+    app.run(debug=True)

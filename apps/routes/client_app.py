@@ -10,7 +10,7 @@ from apps.db.repositories.ModelSesion import ModelSession
 from apps.db.repositories.ModelRoutine import ModelRoutine
 from apps.db.repositories.ModelMembership import ModelMembership
 import json  
-from apps.routes.chatbot import get_response 
+# from apps.routes.chatbot import get_response 
 
 #Creación de los blueprint para usar en app.py
 client_app = Blueprint('client_app', __name__)
@@ -25,32 +25,32 @@ def inicio():
     notifications = ModelClient.get_Notifications(conection)
     return render_template("client/index.html" , notifications=notifications)
 
-@client_app.route("/get_bot", methods=["POST"])
-@login_required
-@client_permission.require(http_exception=403)
-def get_bot_response():
-    """
-    Ruta que recibe el mensaje del usuario y devuelve la respuesta del chatbot
-    junto con las opciones a seguir.
-    """
-    data = request.get_json()  # Obtener los datos del cuerpo de la solicitud JSON
-    userText = data.get('msg')  # Obtener el mensaje del usuario
+# @client_app.route("/get_bot", methods=["POST"])
+# @login_required
+# @client_permission.require(http_exception=403)
+# def get_bot_response():
+#     """
+#     Ruta que recibe el mensaje del usuario y devuelve la respuesta del chatbot
+#     junto con las opciones a seguir.
+#     """
+#     data = request.get_json()  # Obtener los datos del cuerpo de la solicitud JSON
+#     userText = data.get('msg')  # Obtener el mensaje del usuario
 
-    if userText:
-        # Generar la respuesta del bot (basado en el texto del usuario)
-        bot_response = get_response(userText)
+#     if userText:
+#         # Generar la respuesta del bot (basado en el texto del usuario)
+#         bot_response = get_response(userText)
 
-        # Las opciones siempre serán las mismas, sin importar la entrada del usuario
-        options = [
-            {"text": "Ver horarios", "value": "horarios"},
-            {"text": "Ver precios", "value": "precios"},
-            {"text": "Ver ubicación", "value": "ubicación"},
-            {"text": "Ver contacto", "value": "contacto"}
-        ]
+#         # Las opciones siempre serán las mismas, sin importar la entrada del usuario
+#         options = [
+#             {"text": "Ver horarios", "value": "horarios"},
+#             {"text": "Ver precios", "value": "precios"},
+#             {"text": "Ver ubicación", "value": "ubicación"},
+#             {"text": "Ver contacto", "value": "contacto"}
+#         ]
 
-        return jsonify({"response": bot_response, "options": options})
+#         return jsonify({"response": bot_response, "options": options})
     
-    return jsonify({"response": "Lo siento, no pude entender tu pregunta."})
+#     return jsonify({"response": "Lo siento, no pude entender tu pregunta."})
 
 @client_app.errorhandler(403)
 def forbidden(error):
