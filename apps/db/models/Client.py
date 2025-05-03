@@ -3,14 +3,14 @@ from datetime import datetime
 from apps.db.db import db  # Importa la instancia de SQLAlchemy
 
 class Client(db.Model):
-    __tablename__ = 'Client'
+    __tablename__ = 'cliente'
 
     Cedula = db.Column(db.String(16), primary_key=True)
     Nombre = db.Column(db.String(30), nullable=False)
     Primer_Apellido = db.Column(db.String(30), nullable=False)
     Segundo_Apellido = db.Column(db.String(30), nullable=False)
     Fecha_Nacimiento = db.Column(db.Date, nullable=False)
-    Edad = db.Column(db.Integer(11), nullable=False)
+    Edad = db.Column(db.Integer, nullable=False)
     Correo = db.Column(db.String(150), nullable=False)
     Telefono = db.Column(db.String(8), nullable=False)
     FechaInscripcion = db.Column(db.Date, nullable=False)

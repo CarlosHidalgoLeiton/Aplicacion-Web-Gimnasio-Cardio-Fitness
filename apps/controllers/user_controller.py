@@ -17,7 +17,7 @@ class userController:
         if not password: 
             raise Exception('La contraseña es requerida')
 
-        user = cls.userRepository.get_one_by_parameter('Cedula', id)
+        user = cls.userRepository.get_columns_filtered(filters={'Cedula', id})
 
         if user:
             if User.verifyPassword(user.Contrasena, password):
@@ -27,6 +27,20 @@ class userController:
 
         else:
             raise Exception('Usuario o contraseña incorrectos')
+
+    @classmethod
+    def sendEmail(cls, request):
+        documentId = request.form['documentId']
+
+        if not documentId:
+            raise Exception('La cédula es requerida')
+        
+        email = cls.userRepository.get_columns_filtered(column_names=['Correo'], filters={'Cedula': documentId})
+
+        if not email:
+            raise Exception('No se ha encontrado ningún correo relacionado con el número de cédula ingresado')
+
+        return email
 
     def get_by_id(id):
         try:

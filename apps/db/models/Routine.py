@@ -4,7 +4,7 @@ from apps.db.db import db  # Importa la instancia de SQLAlchemy
 class Routine(db.Model):
     __tablename__ = 'rutina'
 
-    ID_Rutina = db.Column(db.Integer(11), primary_key=True)
+    ID_Rutina = db.Column(db.Integer, primary_key=True)
     ID_Cliente = db.Column(db.String, db.ForeignKey('cliente.Cedula'), nullable=False)
     ID_Entrenador = db.Column(db.String, db.ForeignKey('entrenador.Cedula'), nullable=False)
     Indicaciones = db.Column(db.String(255), nullable=True)

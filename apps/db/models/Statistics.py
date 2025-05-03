@@ -3,7 +3,7 @@ from apps.db.db import db  # Importa la instancia de SQLAlchemy
 class Statistics(db.Model):
     __tablename__ = 'estadistica'
 
-    ID_Estadistica  = db.Column(db.Integer(11), primary_key=True,nullable=False)
+    ID_Estadistica  = db.Column(db.Integer, primary_key=True,nullable=False)
     FechaMedicion = db.Column(db.Date, nullable=False)
     Estatura = db.Column(db.String(20), nullable=True)
     Peso = db.Column(db.String(10), nullable=True)

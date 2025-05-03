@@ -13,30 +13,6 @@ class UserRepository(RepositoryBase):
 
     def __init__(self):
         super().__init__(User)
-
-    @classmethod
-    def login(cls, user, conexion):
-        try:
-            cursor = conexion.cursor()
-            sql = "SELECT ID_Usuario, Cedula, Contrasena, Estado, Rol FROM Usuario WHERE Cedula = %s"
-            cursor.execute(sql, (user.DocumentId))
-            row = cursor.fetchone()
-            if row is not None:
-                if row[3] != 0:
-                    if User.verifyPassword(row[2], user.Password):
-                        return User(row[0], row[1], row[2], None, row[4])
-                    else:
-                        return "Password"
-                else:
-                    return 'Inactive'
-            else:
-                return "Invalid User"
-        except BaseException as ex:
-            print(f"Error en ModelUser login: {ex}")
-            return "DataBase"
-        except Exception as ex:
-            print(f"Error en ModelUser login: {ex}")
-            return None
         
     # @classmethod
     # def get_by_id(id):

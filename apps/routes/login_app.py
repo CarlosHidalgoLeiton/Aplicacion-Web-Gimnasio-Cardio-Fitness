@@ -14,13 +14,8 @@ from apps.controllers.user_controller import userController
 
 login_app = Blueprint('login_app', __name__)
 
-
-
-
 SERIAL_PORT = 'COM3'  # Cambia esto al puerto correcto en tu sistema
 BAUD_RATE = 9600
-
-
 
 #Routes redirectioned, we have to past this to other unique file, and then we call it as an import
 @login_app.errorhandler(403)
@@ -36,12 +31,10 @@ def forbidden(error):
 def notAutorized():
     return "No tienes permisos para ingresar"
 
-
 @login_app.route("/")
 def inicio():
     doneMessage = request.args.get('done')
     return render_template("login/login.html",done = doneMessage)
-
 
 
 # IP de la laptop autorizada (la que tiene el USB)
@@ -57,10 +50,6 @@ def abrir_porton():
     except Exception as e:
         print(f"Error al intentar abrir el portón: {e}")
         return False
-
-
-
-
 
 @login_app.route("/entryInstallation", methods=["GET", "POST"])
 def entryInstallation():
@@ -111,30 +100,40 @@ def restartPassword():
 
 @login_app.route("/sendEmail", methods = ['POST'])
 def sendEmail():
-    conection = Conection.conectar()
-    documentId = request.form['documentId']
-    if documentId:
-        email = UserRepository.getEmail(conection, documentId)
-        token = UserRepository.generateToken()
-        exist = UserRepository.tokenExist(conection, documentId)
+    try:
+        userController.sendEmail(request)
 
-        if exist:
-            save = UserRepository.saveToken(conection, documentId, token, action="update")
-        else:
-            save = UserRepository.saveToken(conection, documentId, token, action="save")
+        return redirect( url_for("login_app.restartPassword") )
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('login_app.restartPassword'))
+
+    # conection = Conection.conectar()
+    # documentId = request.form['documentId']
+    # if documentId:
+    #     email = UserRepository.getEmail(conection, documentId)
+
+    # Todo: Quede aquí generando el token
+    #     token = UserRepository.generateToken()
+    #     exist = UserRepository.tokenExist(conection, documentId)
+
+    #     if exist:
+    #         save = UserRepository.saveToken(conection, documentId, token, action="update")
+    #     else:
+    #         save = UserRepository.saveToken(conection, documentId, token, action="save")
         
-        if save:
-            if email:
-                if(manageEmail.sendEmail(documentId, email, token)):
-                    return redirect( url_for("login_app.restartPassword", done="Correo enviado correctamente.") )
-                else:
-                    return redirect( url_for("login_app.restartPassword", error="No se pudo enviar el correo.") )
-            else:
-                return redirect( url_for("login_app.restartPassword", error="El usuario no esta registrado.") )
-        else:
-            return redirect( url_for("login_app.restartPassword", error="No se puedo enviar el correo.") )
-    else:
-        return redirect( url_for("login_app.restartPassword", error="Debe de ingresar el correo.") )
+    #     if save:
+    #         if email:
+    #             if(manageEmail.sendEmail(documentId, email, token)):
+    #                 return redirect( url_for("login_app.restartPassword", done="Correo enviado correctamente.") )
+    #             else:
+    #                 return redirect( url_for("login_app.restartPassword", error="No se pudo enviar el correo.") )
+    #         else:
+    #             return redirect( url_for("login_app.restartPassword", error="El usuario no esta registrado.") )
+    #     else:
+    #         return redirect( url_for("login_app.restartPassword", error="No se puedo enviar el correo.") )
+    # else:
+    #     return redirect( url_for("login_app.restartPassword", error="Debe de ingresar el correo.") )
 
 @login_app.route("/changePassword/<documentId>/<token>", methods=["GET","POST"])
 def changePassword(documentId, token):
@@ -159,37 +158,19 @@ def login():
             logged_user = userController.login(request)
 
             login_user(logged_user)
-            return redirect(url_for('admin_app.inicio'))
+            flash('Se ha iniciado sesión exitosamente', 'success')
 
-            # if logged_user != "Invalid User":
-            #     if logged_user != "Inactive":
-            #         if logged_user != "Password":
-            #             if logged_user != "DataBase":
-            #                 if type(logged_user) == User:
-            #                     login_user(logged_user)
-            #                     if logged_user.role == "Admin":
-            #                         return redirect(url_for('admin_app.inicio'))
-            #                     elif logged_user.role == "Client":
-            #                         return redirect(url_for('client_app.inicio'))
-            #                     elif logged_user.role == 'Trainer':
-            #                         return redirect(url_for('trainer_app.inicio'))
-            #                     else:
-            #                         return render_template("login/login.html")
-            #                 else:
-            #                     return render_template("login/login.html", error="Ha ocurrido un error. Intentelo más tarde.")
-            #             else:
-            #                 return render_template("login/login.html", error="No se pudo obtener la información. Contáctese con el desarrollador.")
-            #         else:
-            #             return render_template("login/login.html", error="Contraseña no válida.")
-            #     else:
-            #         return render_template("login/login.html", error="Su usuario esta inactivo. Inténtalo de nuevo más tarde o comuniquese con el administrador")
-            # else:
-            #     return render_template("login/login.html", error="Usuario ingresado no es válido.")
+            if logged_user.Rol == "Admin":
+                return redirect(url_for('admin_app.inicio'))
+            elif logged_user.Rol == "Client":
+                return redirect(url_for('client_app.inicio'))
+            elif logged_user.Rol == 'Trainer':
+                return redirect(url_for('trainer_app.inicio'))
+            else:
+                return render_template("login/login.html")
         except Exception as ex:
             flash(ex.args[0], 'danger')
             return redirect(url_for('login_app.login'))
-        finally:
-            Conection().desconectar()  # Cambiado para crear una nueva instancia
 
     return render_template("login/login.html")
 

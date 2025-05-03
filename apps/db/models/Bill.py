@@ -4,7 +4,7 @@ from apps.db.db import db  # Importa la instancia de SQLAlchemy
 class Bill(db.Model):
     __tablename__ = 'factura'
 
-    ID_Factura = db.Column(db.Integer(11), primary_key=True)
+    ID_Factura = db.Column(db.Integer, primary_key=True)
     Monto = db.Column(db.Numeric(10,2), nullable=False)
     Tipo = db.Column(db.String(60), nullable=False)
     Descripcion = db.Column(db.String(255), nullable=False)

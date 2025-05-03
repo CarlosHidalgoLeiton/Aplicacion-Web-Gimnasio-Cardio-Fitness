@@ -64,16 +64,24 @@
     {% endblock %}
 
     <!-- Alerts toastr -->
-    {% if error %}
-    <script>
-        errorMessage("{{ error|escape }}");
-    </script>
-    {% endif %}
-    {% if done %}
-    <script>
-        successMessage("{{ done|escape }}");
-    </script>
-    {% endif %}
+    <div style="display: flex; justify-content: center;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <script type="text/javascript">
+                        var message = "{{ message|escape }}";
+                        var category = "{{ category }}";
+    
+                        if (category == 'danger') {
+                            errorMessage(message);
+                        } else if (category == 'success') {
+                            successMessage(message); 
+                        }
+                    </script>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
 
     <!--*******************
         Preloader start
