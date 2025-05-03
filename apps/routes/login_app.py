@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, current_app
-from flask_login import login_user, logout_user,current_user
+from flask_login import login_user, logout_user, current_user
 from flask_principal import identity_changed, Identity, AnonymousIdentity
 from apps.db.conection import Conection
 from apps.db.repositories.UserRepository import UserRepository

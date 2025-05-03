@@ -3,19 +3,17 @@ from apps.db.models.User import User
 
 class userController:
 
-    def __init__(self):
-        self.userRepository = UserRepository()
+    userRepository = UserRepository()
 
     @classmethod
-    def login(self, request):
+    def login(cls, request):
 
         try:
 
             # TODO: Validar que vengan los datos y ver como hacemos las exepciones
             id = request.form['DocumentId']
             password = request.form['Password']
-
-            user = self.userRepository.get_one_by_parameter('Cedula', id)
+            user = cls.userRepository.get_one_by_parameter('Cedula', id)
 
             if user:
                 if User.verifyPassword(user.Contrasena, password):

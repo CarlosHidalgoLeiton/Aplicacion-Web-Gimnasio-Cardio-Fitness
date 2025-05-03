@@ -13,15 +13,6 @@ class User(db.Model, UserMixin):
     FechaCreacion = db.Column(db.Date, nullable=False)
     Correo = db.Column(db.String(150), nullable=False)
 
-    # def __init__(self, id = None, DocumentId = None, Password = None, State = None, role = None, CreationDate = None, Email = None) -> None:
-    #     self.id = id
-    #     self.DocumentId = DocumentId
-    #     self.Password = Password
-    #     self.State = State
-    #     self.role = role
-    #     self.CreationDate = CreationDate
-    #     self.Email = Email
-
     def get_id(self):
         return str(self.ID_Usuario)
 
