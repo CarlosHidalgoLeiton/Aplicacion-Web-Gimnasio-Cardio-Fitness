@@ -1,14 +1,15 @@
 
+from apps.db.db import db  # Importa la instancia de SQLAlchemy
 
-class Routine():
+class Routine(db.Model):
+    __tablename__ = 'rutina'
 
-    def __init__(self, RoutineId= None, ClientId = None, TrainerId = None, Indications = None, Date =  None, State = None) -> None:
-        self.RoutineId = RoutineId
-        self.ClientId = ClientId
-        self.TrainerId = TrainerId
-        self.Indications = Indications
-        self.Date = Date
-        self.State = State  
+    ID_Rutina = db.Column(db.Integer(11), primary_key=True)
+    ID_Cliente = db.Column(db.String, db.ForeignKey('cliente.Cedula'), nullable=False)
+    ID_Entrenador = db.Column(db.String, db.ForeignKey('entrenador.Cedula'), nullable=False)
+    Indicaciones = db.Column(db.String(255), nullable=True)
+    Fecha = db.Column(db.Date, nullable=False)
+    Estado = db.Column(db.Boolean, nullable=False)
 
 
     def to_dict(self):

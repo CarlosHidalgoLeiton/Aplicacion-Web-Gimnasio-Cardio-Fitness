@@ -1,17 +1,16 @@
+from apps.db.db import db  # Importa la instancia de SQLAlchemy
+class Trainer(db.Model):
+    __tablename__ = 'entrenador'
 
-
-class Trainer():
-
-    def __init__(self, DocumentId = None, Name = None, First_LastName = None, Second_LastName = None, Date_Birth =  None, Age = None, Mail = None, Phone = None, State = None) -> None:
-        self.DocumentId = DocumentId
-        self.Name = Name
-        self.First_LastName = First_LastName
-        self.Second_LastName = Second_LastName
-        self.Date_Birth = Date_Birth
-        self.Age = Age
-        self.Mail = Mail
-        self.Phone = Phone
-        self.State = State
+    Cedula = db.Column(db.String(16), primary_key=True)
+    Nombre = db.Column(db.String(30), nullable=False)
+    Primer_Apellido = db.Column(db.String(30), nullable=False)
+    Segundo_Apellido = db.Column(db.String(30), nullable=False)
+    Fecha_Nacimiento = db.Column(db.Date, nullable=False)
+    Edad = db.Column(db.Integer(11), nullable=False)
+    Correo = db.Column(db.String(150), nullable=False)
+    Telefono = db.Column(db.String(8), nullable=False)
+    Estado = db.Column(db.Boolean, nullable=False, default=1)
 
     # def __str__(self):
     #     return (f"Trainer(DocumentId={self.DocumentId}, Name={self.Name}, "
