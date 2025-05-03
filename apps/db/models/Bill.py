@@ -1,14 +1,15 @@
+from apps.db.db import db  # Importa la instancia de SQLAlchemy
 
 
-class Bill():
+class Bill(db.Model):
+    __tablename__ = 'factura'
 
-    def __init__(self, ID_Bill = None, Amount = None, Type = None, Description = None, Date =  None, EntityType = None, ID_Entity = None, State = None, Lot = None) -> None:
-        self.ID_Bill = ID_Bill
-        self.Amount = Amount
-        self.Type = Type
-        self.Description = Description
-        self.Date = Date
-        self.EntityType = EntityType
-        self.ID_Entity = ID_Entity
-        self.State = State
-        self.Lot = Lot
+    ID_Factura = db.Column(db.Integer(11), primary_key=True)
+    Monto = db.Column(db.Numeric(10,2), nullable=False)
+    Tipo = db.Column(db.String(60), nullable=False)
+    Descripcion = db.Column(db.String(255), nullable=False)
+    Fecha = db.Column(db.Date, nullable=False)
+    TipoEntidad = db.Column(db.String(50), nullable=False)
+    ID_Entidad = db.Column(db.String(255), nullable=False)
+    Estado = db.Column(db.Boolean, nullable=False)
+    Lot = db.Column(db.String(50), nullable=False)

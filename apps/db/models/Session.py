@@ -1,13 +1,15 @@
 
+from apps.db.db import db  # Importa la instancia de SQLAlchemy
 
-class Session():
+class Session(db.Model):
+    __tablename__ = 'sesion'
 
-    def __init__(self, Session_ID = None, Indications = None, Exercises = None, Routine_ID  = None, Name = None) -> None:
-        self.Session_ID = Session_ID
-        self.Indications = Indications
-        self.Exercises = Exercises
-        self.Routine_ID = Routine_ID
-        self.Name = Name
+    ID_Sesion = db.Column(db.Integer(11), primary_key=True)
+    Nombre = db.Column(db.String(100), nullable=False)
+    Indicaciones = db.Column(db.String(255), nullable=True)
+    Ejercicios = db.Column(db.LONGTEXT, nullable=True)
+    ID_Rutina = db.Column(db.String, db.ForeignKey('rutina.ID_Rutina'), nullable=False)
+
 
     def to_dict(self):
         return {

@@ -1,26 +1,30 @@
 
 from datetime import datetime
-class Client():
+from apps.db.db import db  # Importa la instancia de SQLAlchemy
 
-    def __init__(self, DocumentId = None, Name = None, First_LastName = None, Second_LastName = None, Date_Birth =  None, Age = None, Mail = None, Phone = None, Registration_Date = None, Occupation = None, TelephoneEmergency= None, Address = None, Entry_Date = None, Ailments = None, Limitation = None, ExpirationMembership = None, State = None, Membership_ID = None) -> None:
-        self.DocumentId = DocumentId
-        self.Name = Name
-        self.First_LastName = First_LastName
-        self.Second_LastName = Second_LastName
-        self.Date_Birth = Date_Birth
-        self.Age = Age
-        self.Mail = Mail
-        self.Phone = Phone
-        self.Registration_Date = Registration_Date
-        self.Occupation = Occupation
-        self.TelephoneEmergency = TelephoneEmergency
-        self.Address = Address 
-        self.Entry_Date = Entry_Date
-        self.Ailments = Ailments
-        self.Limitation = Limitation
-        self.ExpirationMembership = ExpirationMembership
-        self.State = State
-        self.Membership_ID = Membership_ID
+class Client(db.Model):
+    __tablename__ = 'Client'
+
+    Cedula = db.Column(db.String(16), primary_key=True)
+    Nombre = db.Column(db.String(30), nullable=False)
+    Primer_Apellido = db.Column(db.String(30), nullable=False)
+    Segundo_Apellido = db.Column(db.String(30), nullable=False)
+    Fecha_Nacimiento = db.Column(db.Date, nullable=False)
+    Edad = db.Column(db.Integer(11), nullable=False)
+    Correo = db.Column(db.String(150), nullable=False)
+    Telefono = db.Column(db.String(8), nullable=False)
+    FechaInscripcion = db.Column(db.Date, nullable=False)
+    Ocupacion = db.Column(db.String(150), nullable=False)
+    TelefonoEmergencia = db.Column(db.String(8), nullable=False)
+    Direccion = db.Column(db.String(255), nullable=False)
+    FechaIngreso = db.Column(db.Date, nullable=False)
+    Padecimientos = db.Column(db.String(255), nullable=False)
+    Limitacion = db.Column(db.String(255), nullable=False)
+    VencimientoMembresia = db.Column(db.Date, nullable=True)
+    Estado = db.Column(db.Boolean, nullable=False)
+    ID_Membresia =  db.Column(db.Integer, db.ForeignKey('membresia.ID_Membresia'), nullable=False)
+    
+
     
     def to_dict(self):
         return {
