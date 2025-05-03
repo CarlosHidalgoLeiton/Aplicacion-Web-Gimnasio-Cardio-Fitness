@@ -1,42 +1,41 @@
-from flask_login import UserMixin
+from apps.db.db import db  # Importa la instancia de SQLAlchemy
 
+class Statistics(db.Model):
+    __tablename__ = 'estadistica'
 
-class Statistics(UserMixin):
-
-    def __init__(self, ID_Statistics  = None, Measurement_Date = None, Stature = None, Weight = None, IMC =  None, FC_Repose = None, FC_MAX = None, Blood_pressure = None, BMR = None, Body_Fat = None, Percent_Water= None, Muscle_Mass = None, Metabolic_Age = None, Bone_Mass = None, Visceral_Fat = None, Chest_Circum = None, Right_Arm_Circum = None, Left_Arm_Circum = None,Circum_Waist = None,Circum_Abdomen = None,Hip_Circum = None,Circum_Thigh_Right = None,Circum_Thigh_Left = None,Circum_Calf_Right = None, Circum_Calf_Left = None,Special_Considerations = None, sportsman = None, Training_Goal = None, Emphasis_Training = None, Disponibilidad = None,State = None, Client_ID = None, Trainer_ID = None ) -> None:
-        self.ID_Statistics = ID_Statistics
-        self.Measurement_Date = Measurement_Date
-        self.Stature = Stature
-        self.Weight = Weight
-        self.IMC = IMC
-        self.FC_Repose = FC_Repose
-        self.FC_MAX = FC_MAX
-        self.Blood_pressure = Blood_pressure
-        self.BMR = BMR
-        self.Body_Fat = Body_Fat
-        self.Percent_Water = Percent_Water
-        self.Muscle_Mass = Muscle_Mass
-        self.Metabolic_Age = Metabolic_Age
-        self.Bone_Mass = Bone_Mass
-        self.Visceral_Fat = Visceral_Fat
-        self.Chest_Circum = Chest_Circum
-        self.Right_Arm_Circum = Right_Arm_Circum
-        self.Left_Arm_Circum = Left_Arm_Circum
-        self.Circum_Waist = Circum_Waist
-        self.Circum_Abdomen = Circum_Abdomen
-        self.Hip_Circum = Hip_Circum
-        self.Circum_Thigh_Right = Circum_Thigh_Right
-        self.Circum_Thigh_Left = Circum_Thigh_Left
-        self.Circum_Calf_Right = Circum_Calf_Right
-        self.Circum_Calf_Left = Circum_Calf_Left
-        self.Special_Considerations = Special_Considerations
-        self.sportsman = sportsman
-        self.Training_Goal = Training_Goal
-        self.Emphasis_Training = Emphasis_Training
-        self.Disponibilidad = Disponibilidad
-        self.State = State
-        self.Client_ID = Client_ID
-        self.Trainer_ID = Trainer_ID
+    ID_Estadistica  = db.Column(db.Integer(11), primary_key=True,nullable=False)
+    FechaMedicion = db.Column(db.Date, nullable=False)
+    Estatura = db.Column(db.String(20), nullable=True)
+    Peso = db.Column(db.String(10), nullable=True)
+    IMC = db.Column(db.String(10), nullable=True)
+    FC_REPOSO = db.Column(db.String(20), nullable=True)
+    FC_MAX = db.Column(db.String(20), nullable=True)
+    Presion_Arterial = db.Column(db.String(20), nullable=True)
+    BMR = db.Column(db.String(10), nullable=True)
+    Grasa_Corporal = db.Column(db.String(10), nullable=True)
+    Porcentaje_Agua = db.Column(db.String(10), nullable=True)
+    Masa_Muscular = db.Column(db.String(10), nullable=True)
+    Edad_Metabolica = db.Column(db.String(10), nullable=True)
+    Masa_Osea = db.Column(db.String(10), nullable=True)
+    Grasa_Visceral = db.Column(db.String(10), nullable=True)
+    Circun_Pecho = db.Column(db.String(10), nullable=True)
+    Circun_Brazo_Der = db.Column(db.String(10), nullable=True)
+    Circun_Brazo_Izq = db.Column(db.String(10), nullable=True)
+    Circun_Cintura = db.Column(db.String(10), nullable=True)
+    Circun_Abdomen = db.Column(db.String(10), nullable=True)
+    Circun_Cadera = db.Column(db.String(10), nullable=True)
+    Circun_Muslo_Der = db.Column(db.String(10), nullable=True)
+    Circun_Muslo_Izq = db.Column(db.String(10), nullable=True)
+    Circun_Pantorilla_Der = db.Column(db.String(10), nullable=True)
+    Circun_Pantorilla_Izq = db.Column(db.String(10), nullable=True)
+    Consideraciones_Especiales = db.Column(db.String(255), nullable=True)
+    Deportista = db.Column(db.Boolean, nullable=True)
+    Objetivo_Entrenamiento = db.Column(db.String(10), nullable=True)
+    Enfasis_Entrenamiento = db.Column(db.String(10), nullable=True)
+    Disponibilidad = db.Column(db.String(10), nullable=True)
+    Estado = db.Column(db.Boolean, nullable=False, default=1)
+    ID_Cliente  = db.Column(db.String(16),db.ForeignKey('cliente.Cedula'), nullable=False)
+    ID_Entrenador  = db.Column(db.String(16),db.ForeignKey('entrenador.Cedula'), nullable=False)
 
             
 

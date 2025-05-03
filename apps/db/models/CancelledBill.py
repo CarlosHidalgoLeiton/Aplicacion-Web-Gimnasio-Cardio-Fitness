@@ -1,8 +1,13 @@
+from apps.db.db import db  # Importa la instancia de SQLAlchemy
 
-class CancelledBill():
+class CancelledBill(db.Model):
+    __tablename__ = 'facturaanulada'
 
-    def __init__(self, ID_CancelledBill = None, Motive = None, CancelledDate = None, ID_Bill = None):
-        self.ID_CancelledBill = ID_CancelledBill
-        self.Motive = Motive
-        self.CancelledDate = CancelledDate
-        self.ID_Bill = ID_Bill
+    ID_FacturaAnulada = db.Column(db.Integer(11), primary_key=True)
+    Motivo = db.Column(db.String(255), nullable=False)
+    FechaAnulacion = db.Column(db.Date, nullable=False)
+    ID_Factura = db.Column(db.Integer, db.ForeignKey('factura.ID_Factura'), nullable=False)
+
+
+
+
