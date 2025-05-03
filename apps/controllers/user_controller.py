@@ -8,21 +8,25 @@ class userController:
     @classmethod
     def login(cls, request):
 
-        try:
+        id = request.form['DocumentId']
+        password = request.form['Password']
 
-            # TODO: Validar que vengan los datos y ver como hacemos las exepciones
-            id = request.form['DocumentId']
-            password = request.form['Password']
-            user = cls.userRepository.get_one_by_parameter('Cedula', id)
+        if not id:
+            raise Exception('El número de cédula es requerido')
 
-            if user:
-                if User.verifyPassword(user.Contrasena, password):
-                    return user
-                else:
-                    return "Password"
-        except Exception as ex:
-            return None
+        if not password: 
+            raise Exception('La contraseña es requerida')
 
+        user = cls.userRepository.get_one_by_parameter('Cedula', id)
+
+        if user:
+            if User.verifyPassword(user.Contrasena, password):
+                return user
+            else:
+                raise Exception('Usuario o contraseña incorrectos')
+
+        else:
+            raise Exception('Usuario o contraseña incorrectos')
 
     def get_by_id(id):
         try:

@@ -39,16 +39,23 @@
 
 <body class="auth-fluid-pages pb-0">
     <div style="display: flex; justify-content: center;">
-        {% if error %}
-            <script>
-                errorMessage("{{ error|escape }}");
-            </script>
-        {% endif %}
-        {% if done %}
-        <script>
-            successMessage("{{ done|escape }}");
-        </script>
-        {% endif %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <script type="text/javascript">
+                        var message = "{{ message|escape }}";  // Usamos 'escape' en lugar de 'escapejs'
+                        var category = "{{ category }}";  // Usamos la categoría (danger, success)
+    
+                        // Verificamos la categoría en JavaScript y ejecutamos la función correspondiente
+                        if (category == 'danger') {
+                            errorMessage(message);  // Si la categoría es 'danger', mostramos un mensaje de error
+                        } else if (category == 'success') {
+                            successMessage(message);  // Si la categoría es 'success', mostramos un mensaje de éxito
+                        }
+                    </script>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
     </div>
 
 
@@ -82,7 +89,7 @@
                         <div class="mb-3">
                             <label for="cedula" class="form-label">Cédula </label>
                             <input class="form-control" name="DocumentId" type="text" id="DocumentId" required=""
-                                placeholder="Ingrese su cedula">
+                                placeholder="Ingrese su cédula">
                         </div>
                         <div class="mb-3">
                             <a href="{{ url_for('login_app.restartPassword') }}"

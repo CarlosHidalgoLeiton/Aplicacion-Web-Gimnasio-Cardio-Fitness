@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, current_app, flash
 from flask_login import login_user, logout_user, current_user
 from flask_principal import identity_changed, Identity, AnonymousIdentity
 from apps.db.conection import Conection
@@ -158,9 +158,8 @@ def login():
         try:
             logged_user = userController.login(request)
 
-            if logged_user:
-                login_user(logged_user)
-                return redirect(url_for('admin_app.inicio'))
+            login_user(logged_user)
+            return redirect(url_for('admin_app.inicio'))
 
             # if logged_user != "Invalid User":
             #     if logged_user != "Inactive":
@@ -186,8 +185,9 @@ def login():
             #         return render_template("login/login.html", error="Su usuario esta inactivo. Inténtalo de nuevo más tarde o comuniquese con el administrador")
             # else:
             #     return render_template("login/login.html", error="Usuario ingresado no es válido.")
-        except Exception as e:
-            print(e)
+        except Exception as ex:
+            flash(ex.args[0], 'danger')
+            return redirect(url_for('login_app.login'))
         finally:
             Conection().desconectar()  # Cambiado para crear una nueva instancia
 
