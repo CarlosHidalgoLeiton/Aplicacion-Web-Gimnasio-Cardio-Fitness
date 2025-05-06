@@ -4,27 +4,34 @@ class RepositoryBase:
 
     def __init__(self, model):
         self.model = model
-
-    def get_all(self):
-        try:
-            return self.model.query.all()
-        except Exception as ex:
-            raise Exception(f'Error en get_all para {self.model}: {ex}')
-
+    
     def get_one(self, id):
         try: 
             return self.model.query.get(id)
         except Exception as ex:
             raise Exception(f'Error en get_one para {self.model}: {ex}')
 
-    def get_columns_filtered(self, column_names, filters=None):
+    def findAll(self, filters=None):
         try:
-            # Obtener columnas del modelo
+            query = db.session.query(self.model) 
+
+            if filters:
+                for key, value in filters.items():
+                    column = getattr(self.model, key, None)
+                    if column is None:
+                        raise Exception(f"Columna '{key}' no existe en {self.model}")
+                    query = query.filter(column == value)
+
+            return query.all() 
+        except Exception as ex:
+            raise Exception(f'Error en findAll para {self.model}: {ex}')
+
+    def findAllFiltered(self, column_names, filters=None):
+        try:
             columns = [getattr(self.model, name) for name in column_names]
 
             query = db.session.query(*columns)
 
-            # Agregar filtros si hay
             if filters:
                 for key, value in filters.items():
                     column = getattr(self.model, key, None)
@@ -35,7 +42,40 @@ class RepositoryBase:
             return query.all()
 
         except Exception as ex:
-            raise Exception(f'Error en get_columns_filtered para {self.model}: {ex}')
+            raise Exception(f'Error en findAllFiltered para {self.model}: {ex}')
+    
+    def findOne(self, filters=None):
+        try:
+            query = db.session.query(self.model)
+
+            if filters:
+                for key, value in filters.items():
+                    column = getattr(self.model, key, None)
+                    if column is None:
+                        raise Exception(f"Columna '{key}' no existe en {self.model}")
+                    query = query.filter(column == value)
+
+            return query.first()
+        except Exception as ex:
+            raise Exception(f'Error en findOne para {self.model}: {ex}')
+    
+    def findOneFiltered(self, column_names, filters=None):
+        try:
+            columns = [getattr(self.model, name) for name in column_names]
+
+            query = db.session.query(*columns)
+
+            if filters:
+                for key, value in filters.items():
+                    column = getattr(self.model, key, None)
+                    if column is None:
+                        raise Exception(f"Columna '{key}' no existe en {self.model}")
+                    query = query.filter(column == value)
+
+            result = query.first()
+            return dict(zip(column_names, result)) if result else None
+        except Exception as ex:
+            raise Exception(f'Error en findOneFiltered para {self.model}: {ex}')
 
     def create(self, **kwargs):
         try:

@@ -108,11 +108,6 @@ def sendEmail():
         flash(ex.args[0], 'danger')
         return redirect(url_for('login_app.restartPassword'))
 
-    # conection = Conection.conectar()
-    # documentId = request.form['documentId']
-    # if documentId:
-    #     email = UserRepository.getEmail(conection, documentId)
-
     # Todo: Quede aquí generando el token
     #     token = UserRepository.generateToken()
     #     exist = UserRepository.tokenExist(conection, documentId)
