@@ -7,20 +7,14 @@ class Conection:
     def conectar(cls):
         if cls._conexion is None:  # Solo conecta si no hay una conexión existente
             try:
-                # cls._conexion = pymysql.connect(
-                #     host='85.31.62.30',
-                #     user='gym',
-                #     passwd='CardioGrecia04%',
-                #     db='gimnasio',
-                #     port=3306
-                # )
                 cls._conexion = pymysql.connect(
-                    host='localhost',
-                    user='root',
-                    passwd='',
-                    db='gimnasio',
-                    port=3306
-                )
+                host='168.231.68.243',
+                user='admin',
+                passwd='CardioFit2025#',
+                db='gimnasio',
+                port=3306
+)   
+               
                 print("Conexión exitosa a la base de datos")
             except pymysql.MySQLError as e:
                 print(f"Error al conectar a la base de datos: {e}")
