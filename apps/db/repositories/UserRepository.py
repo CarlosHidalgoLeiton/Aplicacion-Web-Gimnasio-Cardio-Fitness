@@ -5,7 +5,6 @@ from apps.db.models.Trainer import Trainer
 from apps.db.conection import Conection
 from datetime import datetime, timedelta
 import re
-import secrets
 
 from apps.db.repositories.RepositoryBase import RepositoryBase
 
@@ -443,13 +442,9 @@ class UserRepository(RepositoryBase):
                 return None
     
     @classmethod
-    def generateToken(cls):
-        token = secrets.token_urlsafe(32)
-
-        return token
-    
-    @classmethod
     def tokenExist(cls, conection, DocumentId):
+        
+
         try:
             cursor = conection.cursor()
             sql = "SELECT CedulaUser FROM TokenUsuario WHERE CedulaUser = %s"

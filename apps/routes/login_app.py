@@ -5,7 +5,6 @@ from apps.db.conection import Conection
 from apps.db.repositories.UserRepository import UserRepository
 from apps.db.repositories.ModelClient import ModelClient
 from apps.db.models.User import User
-from notifications.emailTest import manageEmail
 from apps.db.models.Client import Client
 import serial
 
@@ -103,6 +102,7 @@ def sendEmail():
     try:
         userController.sendEmail(request)
 
+        flash('Se ha enviado el correo correctamente', 'success')
         return redirect( url_for("login_app.restartPassword") )
     except Exception as ex:
         flash(ex.args[0], 'danger')

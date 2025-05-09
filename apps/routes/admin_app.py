@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 from apps.db.conection import Conection
 from apps.db.repositories.UserRepository import UserRepository
 from apps.db.repositories.ModelTrainer import ModelTrainer
-from apps.db.repositories.ModelClient import ModelClient
+from apps.db.repositories.ClientRepository import ClientRepository
 from apps.db.repositories.ModelRoutine import ModelRoutine
 from apps.db.repositories.ModelSesion import ModelSession
 from apps.db.repositories.ModelProduct import ModelProduct
@@ -54,21 +54,21 @@ def inicio():
 @admin_permission.require(http_exception=403)
 def clients():
     conection = Conection.conectar()
-    clients = ModelClient.get_all(conection)
+    clients = ClientRepository.get_all(conection)
     Conection.desconectar()
     doneMessage = request.args.get('done')
     errorMessage = request.args.get('error')
     if request.method == 'POST':
-        client = ModelClient.getDataClient(request)
-        clientValidated = ModelClient.validateDataForm(client)
+        client = ClientRepository.getDataClient(request)
+        clientValidated = ClientRepository.validateDataForm(client)
         if not type(clientValidated) == bool:
             return render_template("admin/clients.html", clients=clients, error=clientValidated, client = client)
         conection = Conection.conectar()
         if conection == None:
             return render_template("admin/clients.html", clients=clients, error= "Error en la conexión.", client = client)
-        insert = ModelClient.insertClient(conection, client)
+        insert = ClientRepository.insertClient(conection, client)
         if insert and type(insert) == bool:
-            clients = ModelClient.get_all(conection)
+            clients = ClientRepository.get_all(conection)
             Conection.desconectar()
             return render_template("admin/clients.html", clients=clients, done = "Cliente creado correctamente.", client = None)
         elif insert == "Primary":
@@ -88,18 +88,18 @@ def clients():
 @admin_permission.require(http_exception=403)
 def UpdateClient(documentId):
     conexion = Conection.conectar()
-    client = ModelClient.getClient(conexion, documentId)
+    client = ClientRepository.getClient(conexion, documentId)
     Conection.desconectar()
     if client:
         if request.method == 'POST':
-            clientupdated = ModelClient.getDataClient(request)
-            clientValidated = ModelClient.validateDataForm(clientupdated)
+            clientupdated = ClientRepository.getDataClient(request)
+            clientValidated = ClientRepository.validateDataForm(clientupdated)
             if not type(clientValidated) == bool:
                 return render_template("admin/updateClient.html", error=clientValidated, client = client)
             conection = Conection.conectar()
             if conection == None:
                 return render_template("admin/updateClient.html", error= "Error en la conexión.", client = client)
-            update = ModelClient.updateClient(conection, clientupdated, client.DocumentId)
+            update = ClientRepository.updateClient(conection, clientupdated, client.DocumentId)
             Conection.desconectar()
             if update and type(update) == bool:
                 return redirect(url_for('admin_app.clients', done = "Cliente actualizado correctamente."))
@@ -119,7 +119,7 @@ def UpdateClient(documentId):
 @admin_permission.require(http_exception=403)
 def viewClient(documentId):
     conection = Conection.conectar()
-    client = ModelClient.getClient(conection, documentId)
+    client = ClientRepository.getClient(conection, documentId)
     membership = ModelMembership.getMembership(conection, client.Membership_ID)
     Conection.desconectar()
 
@@ -138,7 +138,7 @@ def disableClient():
     conection = Conection.conectar()
     if conection == None:
         return redirect(url_for('admin_app.client', error = "No se pudo conectar con la base de datos"))
-    disable = ModelClient.disableClient(conection, clientId)
+    disable = ClientRepository.disableClient(conection, clientId)
     Conection.desconectar()
 
     if disable:
@@ -156,7 +156,7 @@ def ableClient():
     conection = Conection.conectar()
     if conection == None:
         return redirect(url_for('admin_app.client', error = "No se pudo conectar con la base de datos"))
-    able = ModelClient.ableClient(conection, clientId)
+    able = ClientRepository.ableClient(conection, clientId)
     Conection.desconectar()
 
     if able:
@@ -212,7 +212,7 @@ def viewStatistics(documentId,clientId):
 @admin_permission.require(http_exception=403)
 def routinesClient(ID_Cliente):
     conection = Conection.conectar()
-    client = ModelClient.getClient(conection,ID_Cliente)
+    client = ClientRepository.getClient(conection,ID_Cliente)
     routines = ModelRoutine.get_all(conection, ID_Cliente)  
     errorMessage = request.args.get('error')
     Conection.desconectar()
@@ -227,7 +227,7 @@ def viewRoutine(routineId, DocumentId):
     conexion = Conection.conectar()
     routine = ModelRoutine.get_routine(conexion, routineId)
     sessions = ModelSession.get_session_by_Routine(conexion, routineId)
-    client = ModelClient.getClient(conexion, DocumentId)
+    client = ClientRepository.getClient(conexion, DocumentId)
     Conection.desconectar()
 
     if routine:
@@ -495,7 +495,7 @@ def bills():
         return render_template("admin/bill.html", error = "No se pudo conectar con la base de datos.", clients = None, trainers = None, memberships = None, products = None)
 
     bills = ModelBill.get_all(conection)
-    clients = ModelClient.get_allAble(conection)
+    clients = ClientRepository.get_allAble(conection)
     trainers = ModelTrainer.get_allAble(conection)
     memberships = ModelMembership.get_allAble(conection)
     products = ModelProduct.get_allAble(conection)
@@ -662,7 +662,7 @@ def viewcancelBill(ID_Bill):
             return render_template('admin/viewCancel.html', trainer = trainer, ID_Bill = ID_Bill, bill = bill, cancelBill = cancelBill)
                 
         elif bill.EntityType == 'Cliente': 
-            client = ModelClient.getClientBill(conection, bill.ID_Entity)
+            client = ClientRepository.getClientBill(conection, bill.ID_Entity)
             
             return render_template('admin/viewCancel.html', client = client, ID_Bill = ID_Bill, bill = bill, cancelBill = cancelBill)
         
@@ -678,7 +678,7 @@ def viewcancelBill(ID_Bill):
 @admin_permission.require(http_exception=403)
 def getClientsPay():
     conection = Conection.conectar()
-    clients = ModelClient.get_all(conection)
+    clients = ClientRepository.get_all(conection)
     Conection.desconectar()
 
     if clients != None:
@@ -866,7 +866,7 @@ def disableNotification():
     data = request.get_json()
     ID_Notification = data.get('DocumentId')
     conexion = Conection.conectar()
-    disable = ModelClient.disableNotification(conexion, ID_Notification)
+    disable = ClientRepository.disableNotification(conexion, ID_Notification)
     Conection.desconectar()
     if disable:
         return jsonify({"message": "Hecho"})
@@ -880,7 +880,7 @@ def ableNotification():
     data = request.get_json()
     ID_Product = data.get('DocumentId')
     conexion = Conection.conectar()
-    able = ModelClient.ableNotification(conexion, ID_Product)
+    able = ClientRepository.ableNotification(conexion, ID_Product)
     Conection.desconectar()
     if able:
         return jsonify({"message": "Hecho"})

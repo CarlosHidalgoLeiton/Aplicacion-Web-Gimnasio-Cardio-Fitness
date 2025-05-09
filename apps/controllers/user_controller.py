@@ -1,9 +1,14 @@
 from apps.db.repositories.UserRepository import UserRepository
+from apps.db.repositories.TokenRepository import TokenRepository
 from apps.db.models.User import User
+from apps.utils.utils import generateToken
+from datetime import datetime, timedelta
+from notifications.emailTest import manageEmail
 
 class userController:
 
     userRepository = UserRepository()
+    tokenRepository = TokenRepository()
 
     @classmethod
     def login(cls, request):
@@ -34,13 +39,26 @@ class userController:
 
         if not documentId:
             raise Exception('La cédula es requerida')
-        
-        email = cls.userRepository.findAll(column_names=['Correo'], filters={'Cedula': documentId})
+
+        email = cls.userRepository.findOneFiltered(column_names=['Correo'], filters={'Cedula': documentId})
 
         if not email:
             raise Exception('No se ha encontrado ningún correo relacionado con el número de cédula ingresado')
 
-        return email
+        existToken = cls.tokenRepository.findOne(filters = {'CedulaUser': documentId})
+        token = generateToken()
+
+        currentTime = datetime.now()
+
+        expiration = currentTime + timedelta(minutes=30)
+        manageEmail.sendEmail(documentId, email['Correo'], token)
+
+        if existToken:
+            save = cls.tokenRepository.update(existToken['IdToken'], Token = token, Expiration = expiration)
+        else:
+            save = cls.tokenRepository.create(CedulaUser = documentId, Token = token, Expiration = expiration)
+
+        return save
 
     # def get_by_id(id):
     #     try:

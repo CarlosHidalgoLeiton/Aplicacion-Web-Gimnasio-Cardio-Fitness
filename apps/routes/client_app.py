@@ -1,9 +1,9 @@
 #Importaciones
-from flask import Blueprint, render_template, session, jsonify, request, redirect, url_for
+from flask import Blueprint, render_template, session, jsonify, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from apps.routes.permissions import client_permission
 from apps.db.conection import Conection
-from apps.db.repositories.ModelClient import ModelClient
+from apps.controllers.client_controller import clientController
 from apps.db.repositories.ModelProduct import ModelProduct
 from apps.db.repositories.ModelStatistics import ModelStatistics
 from apps.db.repositories.ModelSesion import ModelSession
@@ -21,9 +21,28 @@ client_app = Blueprint('client_app', __name__)
 @client_permission.require(http_exception=403)
 #-------------Rutas de notificaciones-------------#
 def inicio():
-    conection = Conection.conectar()
-    notifications = ModelClient.get_Notifications(conection)
-    return render_template("client/index.html" , notifications=notifications)
+    try:
+        notifications = clientController.getNotifications()
+        return render_template("client/index.html" , notifications=notifications)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return render_template("client/index.html")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # @client_app.route("/get_bot", methods=["POST"])
 # @login_required
@@ -73,7 +92,7 @@ def notAutorized():
 def profile():
     try:
         conexion = Conection.conectar()
-        client = ModelClient.getClient(conexion, current_user.DocumentId)
+        client = ClientRepository.getClient(conexion, current_user.DocumentId)
         print(client)
     except Exception as ex:
         print(f"Error al obtener el perfil del cliente: {ex}")

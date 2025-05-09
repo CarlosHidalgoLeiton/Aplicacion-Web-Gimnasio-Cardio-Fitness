@@ -4,16 +4,21 @@ class RepositoryBase:
 
     def __init__(self, model):
         self.model = model
-    
+
+    def _instance_to_dict(self, instance):
+        """Convierte una instancia del modelo a diccionario."""
+        return {column.name: getattr(instance, column.name) for column in instance.__table__.columns}
+
     def get_one(self, id):
         try: 
-            return self.model.query.get(id)
+            instance = self.model.query.get(id)
+            return self._instance_to_dict(instance) if instance else None
         except Exception as ex:
             raise Exception(f'Error en get_one para {self.model}: {ex}')
 
     def findAll(self, filters=None):
         try:
-            query = db.session.query(self.model) 
+            query = db.session.query(self.model)
 
             if filters:
                 for key, value in filters.items():
@@ -22,7 +27,11 @@ class RepositoryBase:
                         raise Exception(f"Columna '{key}' no existe en {self.model}")
                     query = query.filter(column == value)
 
-            return query.all() 
+            results = query.all()
+
+            # Convertimos todas las instancias a diccionarios
+            return [self._instance_to_dict(result) for result in results]
+
         except Exception as ex:
             raise Exception(f'Error en findAll para {self.model}: {ex}')
 
@@ -39,11 +48,19 @@ class RepositoryBase:
                         raise Exception(f"Columna '{key}' no existe en {self.model}")
                     query = query.filter(column == value)
 
-            return query.all()
+            results = query.all()
+
+            # Convertimos cada fila en un diccionario
+            json_result = []
+            for result in results:
+                result_dict = {column.name: value for column, value in zip(columns, result)}
+                json_result.append(result_dict)
+
+            return json_result
 
         except Exception as ex:
             raise Exception(f'Error en findAllFiltered para {self.model}: {ex}')
-    
+
     def findOne(self, filters=None):
         try:
             query = db.session.query(self.model)
@@ -55,10 +72,12 @@ class RepositoryBase:
                         raise Exception(f"Columna '{key}' no existe en {self.model}")
                     query = query.filter(column == value)
 
-            return query.first()
+            result = query.first()
+            return self._instance_to_dict(result) if result else None
+
         except Exception as ex:
             raise Exception(f'Error en findOne para {self.model}: {ex}')
-    
+
     def findOneFiltered(self, column_names, filters=None):
         try:
             columns = [getattr(self.model, name) for name in column_names]
@@ -74,6 +93,7 @@ class RepositoryBase:
 
             result = query.first()
             return dict(zip(column_names, result)) if result else None
+
         except Exception as ex:
             raise Exception(f'Error en findOneFiltered para {self.model}: {ex}')
 
@@ -86,7 +106,7 @@ class RepositoryBase:
         except Exception as ex:
             db.session.rollback()
             raise Exception(f'Error en create para {self.model}: {ex}')
-        
+
     def update(self, id, **kwargs):
         try:
             instance = self.get_one(id)

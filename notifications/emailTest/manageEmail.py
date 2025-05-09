@@ -4,7 +4,7 @@ from email.mime.text import MIMEText
 
 # Configuración de la cuenta de correo
 remitente = 'cardiofitnessgr@gmail.com'
-contraseña = 'ifjqdysbyknxpmuf'  
+contraseña = 'lfpuwnzwjrumvnca'  
 
 def sendEmail(documentId, destinyEmail, token):
     mensaje = MIMEMultipart()
@@ -58,11 +58,9 @@ def sendEmail(documentId, destinyEmail, token):
         # Enviar el correo
         texto = mensaje.as_string()
         servidor.sendmail(remitente, destinyEmail, texto)
-        return True
 
     except Exception as e:
-        print(f"Error al enviar el correo: {e}")
-        return False
+        raise Exception('No se ha podido enviar el correo')
 
     finally:
         servidor.quit()  # Cerrar la conexión al servidor
