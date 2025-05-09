@@ -11,7 +11,7 @@ from apps.db.repositories.ModelProduct import ModelProduct
 from apps.db.repositories.ModelMembership import ModelMembership
 from apps.db.repositories.ModelBill import ModelBill
 from apps.db.repositories.ModelCancelledBill import ModelCancelledBill
-from apps.db.repositories.ModelStatistics import ModelStatistics
+from apps.db.repositories.StatisticsRepository import StatisticsRepository
 from apps.db.models.User import User
 from apps.routes.permissions import admin_permission
 import json  
@@ -24,6 +24,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from io import BytesIO
 from flask import send_file
+from apps.controllers.client_controller import ClientController
 
 #Creación de los blueprint para usar en app.py
 admin_app = Blueprint('admin_app', __name__)
@@ -53,22 +54,24 @@ def inicio():
 @login_required
 @admin_permission.require(http_exception=403)
 def clients():
-    conection = Conection.conectar()
-    clients = ClientRepository.get_all(conection)
+
+
+    clients = ClientController.get_all(request)
+
     Conection.desconectar()
     doneMessage = request.args.get('done')
     errorMessage = request.args.get('error')
     if request.method == 'POST':
-        client = ClientRepository.getDataClient(request)
-        clientValidated = ClientRepository.validateDataForm(client)
+        client = client_controller.getDataClient(request)
+        clientValidated = client_controller.validateDataForm(client)
         if not type(clientValidated) == bool:
             return render_template("admin/clients.html", clients=clients, error=clientValidated, client = client)
         conection = Conection.conectar()
         if conection == None:
             return render_template("admin/clients.html", clients=clients, error= "Error en la conexión.", client = client)
-        insert = ClientRepository.insertClient(conection, client)
+        insert = client_controller.insertClient(conection, client)
         if insert and type(insert) == bool:
-            clients = ClientRepository.get_all(conection)
+            clients = client_controller.get_all(conection)
             Conection.desconectar()
             return render_template("admin/clients.html", clients=clients, done = "Cliente creado correctamente.", client = None)
         elif insert == "Primary":
@@ -81,6 +84,38 @@ def clients():
             return render_template("admin/clients.html", clients=clients, error= "No se pudo ingresar el cliente, por favor inténtalo más tarde.", client = client)
     else:
         return render_template("admin/clients.html", clients=clients, client = None, done = doneMessage, error = errorMessage)
+
+
+
+
+    # conection = Conection.conectar()
+    # clients = ModelClient.get_all(conection)
+    # Conection.desconectar()
+    # doneMessage = request.args.get('done')
+    # errorMessage = request.args.get('error')
+    # if request.method == 'POST':
+    #     client = ModelClient.getDataClient(request)
+    #     clientValidated = ModelClient.validateDataForm(client)
+    #     if not type(clientValidated) == bool:
+    #         return render_template("admin/clients.html", clients=clients, error=clientValidated, client = client)
+    #     conection = Conection.conectar()
+    #     if conection == None:
+    #         return render_template("admin/clients.html", clients=clients, error= "Error en la conexión.", client = client)
+    #     insert = ModelClient.insertClient(conection, client)
+    #     if insert and type(insert) == bool:
+    #         clients = ModelClient.get_all(conection)
+    #         Conection.desconectar()
+    #         return render_template("admin/clients.html", clients=clients, done = "Cliente creado correctamente.", client = None)
+    #     elif insert == "Primary":
+    #         Conection.desconectar()
+    #         return render_template("admin/clients.html", clients=clients, error= "El número de cédula ingresado ya esta registrado con otro cliente.", client = client)
+    #     elif insert == "DataBase":
+    #         return render_template("admin/clients.html", clients=clients, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", client = client)
+    #     else:
+    #         Conection.desconectar()
+    #         return render_template("admin/clients.html", clients=clients, error= "No se pudo ingresar el cliente, por favor inténtalo más tarde.", client = client)
+    # else:
+    #     return render_template("admin/clients.html", clients=clients, client = None, done = doneMessage, error = errorMessage)
 
     
 @admin_app.route("/client/update/<documentId>", methods=['POST', 'GET'])

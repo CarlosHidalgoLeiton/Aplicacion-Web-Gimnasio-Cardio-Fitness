@@ -5,7 +5,7 @@ from apps.routes.permissions import client_permission
 from apps.db.conection import Conection
 from apps.controllers.client_controller import clientController
 from apps.db.repositories.ModelProduct import ModelProduct
-from apps.db.repositories.ModelStatistics import ModelStatistics
+from apps.db.repositories.StatisticsRepository import StatisticsRepository
 from apps.db.repositories.ModelSesion import ModelSession
 from apps.db.repositories.ModelRoutine import ModelRoutine
 from apps.db.repositories.ModelMembership import ModelMembership
