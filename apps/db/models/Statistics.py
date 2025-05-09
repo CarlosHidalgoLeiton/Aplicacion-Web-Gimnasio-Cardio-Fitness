@@ -37,6 +37,11 @@ class Statistics(db.Model):
     ID_Cliente  = db.Column(db.String(16),db.ForeignKey('cliente.Cedula'), nullable=False)
     ID_Entrenador  = db.Column(db.String(16),db.ForeignKey('entrenador.Cedula'), nullable=False)
 
+    entrenador = db.relationship('Trainer', backref='estadisticas', lazy='joined')
+    cliente = db.relationship('Client', backref='estadisticas', lazy='joined')
+
+
+
             
 
 

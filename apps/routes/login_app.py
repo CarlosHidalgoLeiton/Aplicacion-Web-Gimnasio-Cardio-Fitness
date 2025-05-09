@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, current_user
 from flask_principal import identity_changed, Identity, AnonymousIdentity
 from apps.db.conection import Conection
 from apps.db.repositories.UserRepository import UserRepository
-from apps.db.repositories.ModelClient import ModelClient
+from apps.db.repositories.ClientRepository import ClientRepository
 from apps.db.models.User import User
 from apps.db.models.Client import Client
 import serial
@@ -57,7 +57,7 @@ def entryInstallation():
         conexion = None
         try:
             conexion = Conection.conectar()
-            client = ModelClient.getClient(conexion, user_document_id)
+            client = ClientRepository.getClient(conexion, user_document_id)
 
             if client is not None:
                 if client.is_member_active():
