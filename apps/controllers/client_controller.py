@@ -3,7 +3,7 @@ from apps.db.repositories.NotificationRepository import NotificationRepository
 
 class clientController:
 
-    ClientRepository = ClientRepository()
+    clientRepository = ClientRepository()
 
     NotificationRepository = NotificationRepository()
 
