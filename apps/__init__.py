@@ -46,8 +46,8 @@ def load_user(user_id):
 @principal.identity_loader
 def load_identity():
     if current_user.is_authenticated:
-        identity = Identity(current_user.ID_Usuario)
-        identity.provides.add(RoleNeed(current_user.Rol))
+        identity = Identity(current_user.id)
+        identity.provides.add(RoleNeed(current_user.role))
         print(f"Identidad cargada: {identity}")
         identity_changed.send(current_app._get_current_object(), identity=identity)
         return identity

@@ -155,11 +155,11 @@ def login():
             login_user(logged_user)
             flash('Se ha iniciado sesión exitosamente', 'success')
 
-            if logged_user.Rol == "Admin":
+            if logged_user.role == "Admin":
                 return redirect(url_for('admin_app.inicio'))
-            elif logged_user.Rol == "Client":
+            elif logged_user.role == "Client":
                 return redirect(url_for('client_app.inicio'))
-            elif logged_user.Rol == 'Trainer':
+            elif logged_user.role == 'Trainer':
                 return redirect(url_for('trainer_app.inicio'))
             else:
                 return render_template("login/login.html")

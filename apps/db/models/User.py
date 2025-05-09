@@ -5,16 +5,16 @@ from flask_login import UserMixin
 
 class User(db.Model, UserMixin):
     __tablename__ = 'Usuario'
-    ID_Usuario = db.Column(db.Integer, primary_key=True)
-    Cedula = db.Column(db.String(60), nullable=False)
-    Contrasena = db.Column(db.String(102), nullable=False)
-    Estado = db.Column(db.SmallInteger, nullable=False, default=1)
-    Rol = db.Column(db.String(50), nullable=False)
-    FechaCreacion = db.Column(db.Date, nullable=False)
-    Correo = db.Column(db.String(150), nullable=False)
+    id = db.Column("ID_Usuario", db.Integer, primary_key=True)
+    DocumentId = db.Column("Cedula", db.String(60), nullable=False)
+    Password = db.Column("Contrasena", db.String(102), nullable=False)
+    State = db.Column("Estado", db.SmallInteger, nullable=False, default=1)
+    role = db.Column("Rol", db.String(50), nullable=False)
+    CreationDate = db.Column("FechaCreacion", db.Date, nullable=False)
+    Email = db.Column("Correo", db.String(150), nullable=False)
 
     def get_id(self):
-        return str(self.ID_Usuario)
+        return str(self.id)
 
     @classmethod
     def verifyPassword(self, hash_password, password):

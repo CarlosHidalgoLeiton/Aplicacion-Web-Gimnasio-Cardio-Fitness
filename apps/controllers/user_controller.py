@@ -22,10 +22,10 @@ class userController:
         if not password: 
             raise Exception('La contraseña es requerida')
 
-        user = cls.userRepository.findOne(filters={'Cedula': id})
+        user = cls.userRepository.findOne(filters={'DocumentId': id})
 
         if user:
-            if User.verifyPassword(user.Contrasena, password):
+            if User.verifyPassword(user.Password, password):
                 return user
             else:
                 raise Exception('Usuario o contraseña incorrectos')

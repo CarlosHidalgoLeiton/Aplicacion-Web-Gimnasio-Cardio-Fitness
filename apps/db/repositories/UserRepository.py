@@ -17,7 +17,7 @@ class UserRepository(RepositoryBase):
     # def get_by_id(id):
     #     try:
     #         cursor = conexion.cursor()
-    #         sql = "SELECT ID_Usuario, Cedula, Rol, Correo FROM Usuario WHERE ID_Usuario = %s"
+    #         sql = "SELECT id, Cedula, role, Correo FROM Usuario WHERE id = %s"
     #         cursor.execute(sql, (id))
     #         row = cursor.fetchone()
     #         print(row)
@@ -43,7 +43,7 @@ class UserRepository(RepositoryBase):
             cursor = conexion.cursor()
 
             sql = """INSERT INTO Usuario
-                    (`Cedula`, `Contrasena`, `Estado`, `Rol`, `FechaCreacion`, `Correo`) 
+                    (`Cedula`, `Contrasena`, `Estado`, `role`, `FechaCreacion`, `Correo`) 
                     VALUES (%s, %s, %s, %s, %s, %s)"""
             
             cursor.execute(sql, (user.DocumentId, user.Password, user.State, user.role, user.CreationDate, user.Email))
@@ -67,7 +67,7 @@ class UserRepository(RepositoryBase):
     def get_Users(cls, conexion):
         try:
             cursor = conexion.cursor()
-            sql = "SELECT ID_Usuario, Cedula, Estado, Rol FROM Usuario"
+            sql = "SELECT id, Cedula, Estado, role FROM Usuario"
             cursor.execute(sql)
             rows = cursor.fetchall()
             users = []
@@ -146,7 +146,7 @@ class UserRepository(RepositoryBase):
     def get_User(cls, conexion, documentId):
         try:
             cursor = conexion.cursor()
-            sql = "SELECT ID_Usuario, Cedula, Estado, Rol, Correo FROM Usuario WHERE Cedula = %s"
+            sql = "SELECT id, Cedula, Estado, role, Correo FROM Usuario WHERE Cedula = %s"
             cursor.execute(sql, (documentId,))
             row = cursor.fetchone()
             if row is not None:
@@ -160,7 +160,7 @@ class UserRepository(RepositoryBase):
     def get_UserU(cls, conexion, documentId):
         try:
             with conexion.cursor() as cursor:
-                sql = "SELECT ID_Usuario, Cedula, Contrasena, Estado, Rol, FechaCreacion, Correo FROM Usuario WHERE Cedula = %s"
+                sql = "SELECT id, Cedula, Contrasena, Estado, role, FechaCreacion, Correo FROM Usuario WHERE Cedula = %s"
                 cursor.execute(sql, (documentId,))
                 row = cursor.fetchone()
                 if row is not None:
@@ -301,8 +301,8 @@ class UserRepository(RepositoryBase):
         try:
             cursor = conexion.cursor()
             sql = """UPDATE Usuario 
-                    SET Cedula = %s, Contrasena = %s, Estado = %s, Rol = %s, FechaCreacion = %s, Correo = %s
-                    WHERE ID_Usuario  = %s"""
+                    SET Cedula = %s, Contrasena = %s, Estado = %s, role = %s, FechaCreacion = %s, Correo = %s
+                    WHERE id  = %s"""
             
             cursor.execute(sql, (user.DocumentId, user.Password, user.State, user.role, user.CreationDate, user.Email, id))
             conexion.commit()
