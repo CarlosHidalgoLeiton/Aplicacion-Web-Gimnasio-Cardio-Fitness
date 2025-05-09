@@ -29,3 +29,7 @@ env/
 coverage.xml
 .pytest_cache/
 .mypy_cache/
+
+# Archivo especifico
+
+apps\db\conection.py

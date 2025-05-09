@@ -24,7 +24,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from io import BytesIO
 from flask import send_file
-from apps.controllers.Client_controller import clientController
+from apps.controllers.client_controller import clientController
 
 #Creación de los blueprint para usar en app.py
 admin_app = Blueprint('admin_app', __name__)
@@ -56,7 +56,7 @@ def inicio():
 def clients():
 
 
-    clients = ClientController.get_all(request)
+    clients = clientController.get_all(request)
 
     Conection.desconectar()
     doneMessage = request.args.get('done')
