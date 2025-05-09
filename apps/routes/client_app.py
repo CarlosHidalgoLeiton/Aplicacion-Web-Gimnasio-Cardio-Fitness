@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, session, jsonify, request, redirec
 from flask_login import login_required, current_user
 from apps.routes.permissions import client_permission
 from apps.db.conection import Conection
-from apps.controllers.client_controller import clientController
+from apps.controllers.Client_controller import clientController
 from apps.db.repositories.ModelProduct import ModelProduct
 from apps.db.repositories.StatisticsRepository import StatisticsRepository
 from apps.db.repositories.ModelSesion import ModelSession
