@@ -1,6 +1,4 @@
 from apps.db.db import db
-from sqlalchemy.orm import joinedload
-
 
 class RepositoryBase:
 
@@ -11,29 +9,15 @@ class RepositoryBase:
         """Convierte una instancia del modelo a diccionario."""
         return {column.name: getattr(instance, column.name) for column in instance.__table__.columns}
 
-    def _load_relations(self, query, relations):
-        """
-        Carga las relaciones (joins) necesarias si se proporcionan en 'relations'.
-        """
-        if relations:
-            for relation in relations:
-                query = query.options(joinedload(relation))
-        return query
-
-    def get_one(self, id, relations=None):
+    def get_one(self, id):
         try: 
-            instance = self.model.query.get(id)
-            return self._instance_to_dict(instance) if instance else None
+            return self.model.query.get(id)
         except Exception as ex:
             raise Exception(f'Error en get_one para {self.model}: {ex}')
 
-
-    def findAll(self, filters=None, relations=None):
+    def findAll(self, filters=None):
         try:
             query = db.session.query(self.model)
-
-            # Cargar relaciones si existen
-            query = self._load_relations(query, relations)
 
             if filters:
                 for key, value in filters.items():
@@ -50,15 +34,11 @@ class RepositoryBase:
         except Exception as ex:
             raise Exception(f'Error en findAll para {self.model}: {ex}')
 
-
-    def findAllFiltered(self, column_names, filters=None, relations=None):
+    def findAllFiltered(self, column_names, filters=None):
         try:
             columns = [getattr(self.model, name) for name in column_names]
 
             query = db.session.query(*columns)
-
-            # Cargar relaciones si existen
-            query = self._load_relations(query, relations)
 
             if filters:
                 for key, value in filters.items():
@@ -79,14 +59,11 @@ class RepositoryBase:
 
         except Exception as ex:
             raise Exception(f'Error en findAllFiltered para {self.model}: {ex}')
-
     
-    def findOne(self, filters=None, relations=None):
+
+    def findOne(self, filters=None):
         try:
             query = db.session.query(self.model)
-
-            # Cargar relaciones si existen
-            query = self._load_relations(query, relations)
 
             if filters:
                 for key, value in filters.items():
@@ -95,22 +72,18 @@ class RepositoryBase:
                         raise Exception(f"Columna '{key}' no existe en {self.model}")
                     query = query.filter(column == value)
 
-            result = query.first()
-            return self._instance_to_dict(result) if result else None
+            return query.first()
 
         except Exception as ex:
             raise Exception(f'Error en findOne para {self.model}: {ex}')
-
     
-    def findOneFiltered(self, column_names, filters=None, relations=None):
+
+    def findOneFiltered(self, column_names, filters=None):
         try:
             columns = [getattr(self.model, name) for name in column_names]
 
             query = db.session.query(*columns)
 
-            # Cargar relaciones si existen
-            query = self._load_relations(query, relations)
-
             if filters:
                 for key, value in filters.items():
                     column = getattr(self.model, key, None)
@@ -118,12 +91,10 @@ class RepositoryBase:
                         raise Exception(f"Columna '{key}' no existe en {self.model}")
                     query = query.filter(column == value)
 
-            result = query.first()
-            return dict(zip(column_names, result)) if result else None
+            return query.first()
 
         except Exception as ex:
             raise Exception(f'Error en findOneFiltered para {self.model}: {ex}')
-
 
     def create(self, **kwargs):
         try:
@@ -134,6 +105,7 @@ class RepositoryBase:
         except Exception as ex:
             db.session.rollback()
             raise Exception(f'Error en create para {self.model}: {ex}')
+        
 
     def update(self, id, **kwargs):
         try:

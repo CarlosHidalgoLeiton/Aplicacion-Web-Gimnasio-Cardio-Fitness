@@ -33,3 +33,4 @@ coverage.xml
 # Archivo especifico
 
 apps\db\conection.py
+config.py
