@@ -5,24 +5,25 @@ from apps.db.db import db  # Importa la instancia de SQLAlchemy
 class Client(db.Model):
     __tablename__ = 'cliente'
 
-    Cedula = db.Column(db.String(16), primary_key=True)
-    Nombre = db.Column(db.String(30), nullable=False)
-    Primer_Apellido = db.Column(db.String(30), nullable=False)
-    Segundo_Apellido = db.Column(db.String(30), nullable=False)
-    Fecha_Nacimiento = db.Column(db.Date, nullable=False)
-    Edad = db.Column(db.Integer, nullable=False)
-    Correo = db.Column(db.String(150), nullable=False)
-    Telefono = db.Column(db.String(8), nullable=False)
-    FechaInscripcion = db.Column(db.Date, nullable=False)
-    Ocupacion = db.Column(db.String(150), nullable=False)
-    TelefonoEmergencia = db.Column(db.String(8), nullable=False)
-    Direccion = db.Column(db.String(255), nullable=False)
-    FechaIngreso = db.Column(db.Date, nullable=False)
-    Padecimientos = db.Column(db.String(255), nullable=False)
-    Limitacion = db.Column(db.String(255), nullable=False)
-    VencimientoMembresia = db.Column(db.Date, nullable=True)
-    Estado = db.Column(db.Boolean, nullable=False)
-    ID_Membresia =  db.Column(db.Integer, db.ForeignKey('membresia.ID_Membresia'), nullable=False)
+    DocumentId = db.Column(db.String(16), primary_key=True, key="DocumentId", name="Cedula")
+    Name = db.Column(db.String(30), nullable=False, key="Name", name="Nombre")
+    First_LastName = db.Column(db.String(30), nullable=False, key="First_LastName", name="Primer_Apellido")
+    Second_LastName = db.Column(db.String(30), nullable=False, key="Second_LastName", name="Segundo_Apellido")
+    Date_Birth = db.Column(db.Date, nullable=False, key="Date_Birth", name="Fecha_Nacimiento")
+    Age = db.Column(db.Integer, nullable=False, key="Age", name="Edad")
+    Mail = db.Column(db.String(150), nullable=False, key="Mail", name="Correo")
+    Phone = db.Column(db.String(8), nullable=False, key="Phone", name="Telefono")
+    Registration_Date = db.Column(db.Date, nullable=False, key="Registration_Date", name="FechaInscripcion")
+    Occupation = db.Column(db.String(150), nullable=False, key="Occupation", name="Ocupacion")
+    TelephoneEmergency = db.Column(db.String(8), nullable=False, key="TelephoneEmergency", name="TelefonoEmergencia")
+    Address = db.Column(db.String(255), nullable=False, key="Address", name="Direccion")
+    Entry_Date = db.Column(db.Date, nullable=False, key="Entry_Date", name="FechaIngreso")
+    Ailments = db.Column(db.String(255), nullable=False, key="Ailments", name="Padecimientos")
+    Limitation = db.Column(db.String(255), nullable=False, key="Limitation", name="Limitacion")
+    ExpirationMembership = db.Column(db.Date, nullable=True, key="ExpirationMembership", name="VencimientoMembresia")
+    State = db.Column(db.Boolean, nullable=False, key="State", name="Estado")
+    Membership_ID = db.Column(db.Integer, db.ForeignKey('membresia.ID_Membresia'), nullable=False, key="Membership_ID", name="ID_Membresia")
+
     
 
     

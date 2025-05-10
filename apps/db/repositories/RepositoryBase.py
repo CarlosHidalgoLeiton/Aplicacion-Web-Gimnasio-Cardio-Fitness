@@ -7,7 +7,7 @@ class RepositoryBase:
 
     def _instance_to_dict(self, instance):
         """Convierte una instancia del modelo a diccionario."""
-        return {column.name: getattr(instance, column.name) for column in instance.__table__.columns}
+        return {column.key: getattr(instance, column.key) for column in instance.__table__.columns}
 
     def get_one(self, id):
         try: 

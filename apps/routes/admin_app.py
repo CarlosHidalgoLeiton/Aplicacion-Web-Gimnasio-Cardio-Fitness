@@ -55,8 +55,7 @@ def inicio():
 @admin_permission.require(http_exception=403)
 def clients():
 
-
-    clients = clientController.get_all(request)
+    clients = clientController.get_all()
 
     Conection.desconectar()
     doneMessage = request.args.get('done')
