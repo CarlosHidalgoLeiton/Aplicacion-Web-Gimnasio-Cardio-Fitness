@@ -108,28 +108,6 @@ def sendEmail():
         flash(ex.args[0], 'danger')
         return redirect(url_for('login_app.restartPassword'))
 
-    # Todo: Quede aquí generando el token
-    #     token = UserRepository.generateToken()
-    #     exist = UserRepository.tokenExist(conection, documentId)
-
-    #     if exist:
-    #         save = UserRepository.saveToken(conection, documentId, token, action="update")
-    #     else:
-    #         save = UserRepository.saveToken(conection, documentId, token, action="save")
-        
-    #     if save:
-    #         if email:
-    #             if(manageEmail.sendEmail(documentId, email, token)):
-    #                 return redirect( url_for("login_app.restartPassword", done="Correo enviado correctamente.") )
-    #             else:
-    #                 return redirect( url_for("login_app.restartPassword", error="No se pudo enviar el correo.") )
-    #         else:
-    #             return redirect( url_for("login_app.restartPassword", error="El usuario no esta registrado.") )
-    #     else:
-    #         return redirect( url_for("login_app.restartPassword", error="No se puedo enviar el correo.") )
-    # else:
-    #     return redirect( url_for("login_app.restartPassword", error="Debe de ingresar el correo.") )
-
 @login_app.route("/changePassword/<documentId>/<token>", methods=["GET","POST"])
 def changePassword(documentId, token):
     doneMessage = request.args.get('done')

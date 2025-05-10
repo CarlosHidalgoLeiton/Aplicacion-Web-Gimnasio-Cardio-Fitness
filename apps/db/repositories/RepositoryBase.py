@@ -91,7 +91,12 @@ class RepositoryBase:
                         raise Exception(f"Columna '{key}' no existe en {self.model}")
                     query = query.filter(column == value)
 
-            return query.first()
+            result = query.first()
+            
+            if result:
+                return {column.key: value for column, value in zip(columns, result)}
+
+            return None
 
         except Exception as ex:
             raise Exception(f'Error en findOneFiltered para {self.model}: {ex}')

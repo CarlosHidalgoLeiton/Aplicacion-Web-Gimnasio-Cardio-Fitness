@@ -40,7 +40,7 @@ class userController:
         if not documentId:
             raise Exception('La cédula es requerida')
 
-        email = cls.userRepository.findOneFiltered(column_names=['Correo'], filters={'Cedula': documentId})
+        email = cls.userRepository.findOneFiltered(column_names=['Email'], filters={'DocumentId': documentId})
 
         if not email:
             raise Exception('No se ha encontrado ningún correo relacionado con el número de cédula ingresado')
@@ -51,15 +51,21 @@ class userController:
         currentTime = datetime.now()
 
         expiration = currentTime + timedelta(minutes=30)
-        manageEmail.sendEmail(documentId, email['Correo'], token)
+        manageEmail.sendEmail(documentId, email['Email'], token)
 
         if existToken:
-            save = cls.tokenRepository.update(existToken['IdToken'], Token = token, Expiration = expiration)
+            save = cls.tokenRepository.update(existToken.IdToken, Token = token, Expiration = expiration)
         else:
             save = cls.tokenRepository.create(CedulaUser = documentId, Token = token, Expiration = expiration)
 
         return save
 
+    @classmethod               
+    def changePassword(cls, request):
+        try:
+            newPassword = request.form['password1']
+        except Exception as ex: 
+            raise Exception('Error')
     # def get_by_id(id):
     #     try:
     #         user = UserRepository.findOne(id)

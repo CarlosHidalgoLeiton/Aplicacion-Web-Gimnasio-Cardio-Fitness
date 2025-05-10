@@ -516,14 +516,6 @@ class UserRepository(RepositoryBase):
                 finally:
                     cursor.close()
 
-
-    @classmethod
-    def getDataPasswords(cls,request):
-        password1 = request.form['password1']
-        password2 = request.form['password2']
-        return {"password1": password1, "password2": password2}
-
-
     @classmethod
     def update_Password(cls, conexion, password, DocumentId):
         try:
