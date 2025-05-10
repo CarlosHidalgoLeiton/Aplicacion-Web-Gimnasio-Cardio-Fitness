@@ -3,7 +3,7 @@ from apps.db.repositories.NotificationRepository import NotificationRepository
 
 class clientController:
 
-    clientRepository = ClientRepository()
+    ClientRepository = ClientRepository()
 
     NotificationRepository = NotificationRepository()
 
@@ -13,3 +13,11 @@ class clientController:
         if not notifications:
             raise Exception('No se encontraron notificaciones')
         return notifications
+
+    @classmethod
+    def get_all(cls):
+        clients = cls.ClientRepository.findAll()
+        if not clients:
+            raise Exception('No se encontraron notificaciones')
+        return clients
+        
