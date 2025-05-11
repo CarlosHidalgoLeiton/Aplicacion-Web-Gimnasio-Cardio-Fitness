@@ -2,7 +2,6 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from flask_login import login_user, logout_user, login_required, current_user
 from apps.db.conection import Conection
 from apps.db.repositories.ClientRepository import ClientRepository
-from apps.db.repositories.ModelTrainer import ModelTrainer
 from apps.db.repositories.ModelRoutine import ModelRoutine
 from apps.db.repositories.StatisticsRepository import StatisticsRepository
 from apps.db.repositories.ModelSesion import ModelSession

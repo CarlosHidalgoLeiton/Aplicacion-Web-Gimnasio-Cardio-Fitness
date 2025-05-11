@@ -22,7 +22,7 @@ class Client(db.Model):
     Limitation = db.Column(db.String(255), nullable=False, key="Limitation", name="Limitacion")
     ExpirationMembership = db.Column(db.Date, nullable=True, key="ExpirationMembership", name="VencimientoMembresia")
     State = db.Column(db.Boolean, nullable=False, key="State", name="Estado")
-    Membership_ID = db.Column(db.Integer, db.ForeignKey('membresia.ID_Membresia'), nullable=False, key="Membership_ID", name="ID_Membresia")
+    Membership_ID = db.Column(db.Integer, db.ForeignKey('membresia.id'), nullable=False, key="Membership_ID", name="ID_Membresia")
 
     
 

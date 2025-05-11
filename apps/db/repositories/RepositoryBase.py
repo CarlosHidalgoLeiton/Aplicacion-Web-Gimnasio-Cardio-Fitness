@@ -1,13 +1,45 @@
 from apps.db.db import db
+from sqlalchemy.orm import joinedload
+from sqlalchemy.inspection import inspect
+
 
 class RepositoryBase:
 
     def __init__(self, model):
         self.model = model
 
-    def _instance_to_dict(self, instance):
-        """Convierte una instancia del modelo a diccionario."""
-        return {column.key: getattr(instance, column.key) for column in instance.__table__.columns}
+    def _instance_to_dict(self, instance, relations=None):
+        data = {}
+
+        # Atributos simples
+        for column in inspect(instance).mapper.column_attrs:
+            data[column.key] = getattr(instance, column.key)
+
+        # Relaciones (si se pidieron)
+        if relations:
+            for rel in relations:
+                related_obj = getattr(instance, rel)
+                if isinstance(related_obj, list):
+                    data[rel] = [self._instance_to_dict(child) for child in related_obj]
+                elif related_obj is not None:
+                    data[rel] = self._instance_to_dict(related_obj)
+                else:
+                    data[rel] = None
+
+        return data
+    def _load_relations(self, query, relations):
+        """
+        Carga las relaciones (joins) necesarias si se proporcionan en 'relations'.
+        """
+        if relations:
+            for relation in relations:
+                if hasattr(self.model, relation):
+                    attr = getattr(self.model, relation)
+                    query = query.options(joinedload(attr))
+                else:
+                    raise Exception(f"La relación '{relation}' no existe en el modelo {self.model.__name__}")
+        return query
+
 
     def get_one(self, id):
         try: 
@@ -15,9 +47,11 @@ class RepositoryBase:
         except Exception as ex:
             raise Exception(f'Error en get_one para {self.model}: {ex}')
 
-    def findAll(self, filters=None):
+    def findAll(self, filters=None, relations=None):
         try:
             query = db.session.query(self.model)
+
+            query = self._load_relations(query, relations)
 
             if filters:
                 for key, value in filters.items():
@@ -29,7 +63,9 @@ class RepositoryBase:
             results = query.all()
 
             # Convertimos todas las instancias a diccionarios
-            return [self._instance_to_dict(result) for result in results]
+            return [self._instance_to_dict(result, relations) for result in results]
+        
+        
 
         except Exception as ex:
             raise Exception(f'Error en findAll para {self.model}: {ex}')

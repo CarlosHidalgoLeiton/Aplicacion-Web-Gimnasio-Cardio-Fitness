@@ -1,9 +1,11 @@
 from apps.db.repositories.StatisticsRepository import StatisticsRepository
+from apps.db.repositories.TrainerRepository import TrainerRepository
+
 from apps.db.models.Statistics import Statistics
 
 class statisticsController:
 
-    statisticsRepository = StatisticsRepository()
+    StatisticsRepository = StatisticsRepository()
     trainerRepository = TrainerRepository()
 
     @classmethod
@@ -64,23 +66,22 @@ class statisticsController:
                 return None  # No se encontró el entrenador
         except Exception as ex:
             raise Exception(f'Error al obtener el entrenador por ID: {ex}')
+        
     @classmethod
-    def get_statistics_by_client_id(cls, client_id):
+    def getStatisticsByClientId(cls, client_id):
         try:
-            # Definir los filtros y relaciones que deseas utilizar
-            filters = {'ID_Cliente': client_id}
-            relations = ['cliente']  # Asegúrate de que 'cliente' esté en la relación
+            filters = {'Client_ID': client_id}
+            relations = ['entrenador', 'cliente'] 
 
-            # Usar el statistics_repository para llamar al método findAll (heredado de RepositoryBase)
-            statistics = cls.statistics_repository.findAll(filters=filters, relations=relations)
+            statistics = cls.StatisticsRepository.findAll(filters=filters, relations=relations)
 
-            # Si no se encuentran estadísticas, lanzar una excepción
             if not statistics:
                 raise Exception(f"No se encontraron estadísticas para el cliente con ID {client_id}.")
 
             return statistics
         except Exception as ex:
             raise Exception(f'Error en StatisticsController.get_statistics_by_client_id: {ex}')
+
 
 
     @classmethod

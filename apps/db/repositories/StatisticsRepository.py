@@ -2,7 +2,13 @@ from apps.db.models.Statistics import Statistics
 from datetime import datetime
 import re
 from pymysql import IntegrityError
-class StatisticsRepository:
+from apps.db.repositories.RepositoryBase import RepositoryBase
+
+
+class StatisticsRepository(RepositoryBase):
+
+    def __init__(self):
+        super().__init__(Statistics)
 
     # @classmethod
     # def insertStatistics(cls, connection, statistics):
