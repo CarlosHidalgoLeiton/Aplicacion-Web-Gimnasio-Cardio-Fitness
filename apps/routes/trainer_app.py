@@ -1,12 +1,12 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session,jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from apps.db.conection import Conection
-from apps.db.repositories.ClientRepository import ClientRepository
 from apps.db.repositories.ModelRoutine import ModelRoutine
-from apps.db.repositories.StatisticsRepository import StatisticsRepository
 from apps.db.repositories.ModelSesion import ModelSession
 from apps.routes.permissions import trainer_permission
 import json  
+from apps.controllers.client_controller import clientController
+from apps.controllers.trainer_controller import trainerController
 
 
 trainer_app = Blueprint('trainer_app', __name__)
@@ -23,28 +23,26 @@ def inicio():
 @trainer_permission.require(http_exception=403)
 def profile():
     try:
-        conexion = Conection.conectar()
-        trainer = ModelTrainer.getTrainer(conexion, current_user.DocumentId)
-        print(trainer)
-    except Exception as ex:
-        print(f"Error al obtener el perfil del entrenador: {ex}")
-        trainer = None
-    finally:
-        Conection.desconectar()
-    
-    return render_template("trainer/profile.html", trainer=trainer)
+        trainer = trainerController.getTrainer(current_user.DocumentId)
 
+        return render_template("trainer/profile.html", trainer=trainer)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return render_template("trainer/profile.html", trainer = None) 
 
 #-------------Rutas de Clientes-------------#
 @trainer_app.route("/clients", methods = ['GET'] )
 @login_required
 @trainer_permission.require(http_exception=403)
 def clients():
-    conexion = Conection.conectar()
-    clients = ModelClient.get_all(conexion)
-    errorMessage = request.args.get('error')
-    Conection.desconectar()
-    return render_template("trainer/clients.html", clients=clients, error = errorMessage)
+    try:
+        clients = clientController.get_all()
+
+        return render_template("trainer/clients.html", clients=clients)
+
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return render_template("trainer/clients.html", clients=[])
 
 @trainer_app.route("/editarEstadistica" )
 @login_required

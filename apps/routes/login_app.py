@@ -1,11 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, current_app, flash
-from flask_login import login_user, logout_user, current_user
-from flask_principal import identity_changed, Identity, AnonymousIdentity
+from flask_login import login_user, logout_user
+from flask_principal import identity_changed, AnonymousIdentity
 from apps.db.conection import Conection
-from apps.db.repositories.UserRepository import UserRepository
 from apps.db.repositories.ClientRepository import ClientRepository
-from apps.db.models.User import User
-from apps.db.models.Client import Client
 import serial
 
 from apps.controllers.user_controller import userController
@@ -32,8 +29,8 @@ def notAutorized():
 
 @login_app.route("/")
 def inicio():
-    doneMessage = request.args.get('done')
-    return render_template("login/login.html",done = doneMessage)
+    logout_user()
+    return render_template("login/login.html")
 
 
 # IP de la laptop autorizada (la que tiene el USB)
@@ -93,9 +90,7 @@ def entryInstallationStatus():
 
 @login_app.route("/restartPassword")
 def restartPassword():
-    doneMessage = request.args.get('done')
-    errorMessage = request.args.get('error')
-    return render_template("login/restartPassword.html", error = errorMessage, done = doneMessage)
+    return render_template("login/restartPassword.html")
 
 @login_app.route("/sendEmail", methods = ['POST'])
 def sendEmail():
@@ -110,19 +105,18 @@ def sendEmail():
 
 @login_app.route("/changePassword/<documentId>/<token>", methods=["GET","POST"])
 def changePassword(documentId, token):
-    doneMessage = request.args.get('done')
-    errorMessage = request.args.get('error')
     if request.method == "POST":
-        conection = Conection.conectar()
-        data = UserRepository.getDataPasswords(request)
+        try:
+            userController.changePassword(request, documentId, token)
 
-        Validator = UserRepository.changePassword(conection,documentId, token,data)
-        if (Validator != "El cambio de contraseña fue exitosa"):
-            return redirect(url_for("login_app.changePassword",documentId = documentId,token = token, error=Validator))
-        
-        else: return redirect(url_for("login_app.inicio", done = Validator))
-    else:
-        return render_template("login/changePassword.html",documentId = documentId, token = token,error = errorMessage, done = doneMessage)
+            flash('Se ha realizado el cambio de contraseña correctamente', 'success')
+            
+            return redirect(url_for("login_app.inicio"))
+        except Exception as ex:
+            flash(ex.args[0], 'danger')
+            return redirect(url_for("login_app.changePassword",documentId = documentId,token = token))
+
+    return render_template("login/changePassword.html",documentId = documentId, token = token)
 
 @login_app.route("/login", methods=["GET", "POST"])
 def login():

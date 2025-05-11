@@ -4,6 +4,7 @@ from apps.db.models.User import User
 from apps.utils.utils import generateToken
 from datetime import datetime, timedelta
 from notifications.emailTest import manageEmail
+from apps.utils.utils import validateBothPasswords, generate_password_hash
 
 class userController:
 
@@ -61,11 +62,47 @@ class userController:
         return save
 
     @classmethod               
-    def changePassword(cls, request):
-        try:
-            newPassword = request.form['password1']
-        except Exception as ex: 
-            raise Exception('Error')
+    def changePassword(cls, request, documentId, token):
+        newPassword = request.form['password1']
+        confirmPassword = request.form['password2']
+        
+        if not documentId:
+            raise Exception('No se pudo recuperar la información del usuario. Por favor, inténtelo de nuevo más tarde')
+
+        user = cls.userRepository.findOne(filters={'DocumentId': documentId})
+
+        if not user:
+            raise Exception('El usuario no ha sido encontrado')
+
+        if not newPassword:
+            raise Exception('La nueva contraseña es requerida')
+        
+        if not confirmPassword:
+            raise Exception('Debe confirmar la contraseña')
+        
+        if not token:
+            raise Exception('No se pudo recuperar la información del usuario. Por favor, inténtelo de nuevo más tarde')
+        
+        existToken = cls.tokenRepository.findOne(filters = {'CedulaUser': documentId})
+
+        if token != existToken.Token:
+            raise Exception('No se pudo obtener la información del usuario. Por favor, intente nuevamente')
+        
+        if existToken.Expiration < datetime.now():
+            raise Exception('Debe reenviar el correo para poder cambiar la contraseña')
+
+        validatePassword = validateBothPasswords(newPassword, confirmPassword)
+
+        if validatePassword is not True:
+            raise Exception(validatePassword)
+
+        hashedPassword = generate_password_hash(newPassword)
+
+        update = cls.userRepository.update(user.id, Password = hashedPassword)
+
+        return update
+        
+
     # def get_by_id(id):
     #     try:
     #         user = UserRepository.findOne(id)

@@ -19,7 +19,3 @@ class User(db.Model, UserMixin):
     @classmethod
     def verifyPassword(self, hash_password, password):
         return check_password_hash(hash_password, password)
-    
-    @classmethod
-    def generate_password_hash(self, password):
-        return generate_password_hash(password)
