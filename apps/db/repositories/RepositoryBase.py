@@ -41,11 +41,21 @@ class RepositoryBase:
         return query
 
 
-    def get_one(self, id):
-        try: 
-            return self.model.query.get(id)
+    def get_one(self, id, relations=None):
+        try:
+            query = db.session.query(self.model)
+
+            # Cargar relaciones si se especifican
+            query = self._load_relations(query, relations)
+
+            result = query.get(id)
+            if result is None:
+                raise Exception(f"No se encontró un registro con ID {id} en {self.model}")
+            
+            return result
         except Exception as ex:
             raise Exception(f'Error en get_one para {self.model}: {ex}')
+
 
     def findAll(self, filters=None, relations=None):
         try:

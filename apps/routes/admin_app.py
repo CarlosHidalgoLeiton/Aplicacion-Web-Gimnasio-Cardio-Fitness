@@ -228,11 +228,9 @@ def statisticsClient(documentId):
 @login_required
 def viewStatistics(documentId,clientId):
     try:
-        conection = Conection.conectar()
-        statistics = ModelStatistics.getStatisticsId(conection, documentId)
+        statistics = statisticsController.getStatisticById(documentId)
 
-        client = ModelStatistics.getClientById(conection, clientId)
-        Conection.desconectar()
+        client = statisticsController.getClientById(clientId)
         if client is None:
             return redirect(url_for('admin_app.statistics', error="Cliente no encontrado"))
     
