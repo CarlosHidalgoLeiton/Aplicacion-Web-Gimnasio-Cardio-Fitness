@@ -75,6 +75,11 @@ class statisticsController:
 
             statistics = cls.StatisticsRepository.findAll(filters=filters, relations=relations)
 
+            # Verificar si las relaciones 'entrenador' o 'cliente' son nulas o vacías
+            for stat in statistics:
+                if not stat.get('entrenador') or not stat.get('cliente'):
+                    raise Exception(f"Error: La relación de 'entrenador' o 'cliente' es nula o vacía para la estadística con ID {stat['ID_Estadistica']}.")
+
             if not statistics:
                 raise Exception(f"No se encontraron estadísticas para el cliente con ID {client_id}.")
 
@@ -85,26 +90,24 @@ class statisticsController:
 
 
     @classmethod
-    def get_statistics_by_id(cls, request):
+    def getStatisticById(cls, statistic_id):
         try:
-            # Obtener el documentId desde la solicitud (request)
-            document_id = request.form.get('documentId')  # Suponiendo que usas un formulario
+            relations = ['entrenador', 'cliente']
 
-            if not document_id:
-                raise Exception("El ID de la estadística es requerido.")
+            # Obtener la estadística con sus relaciones
+            statistic = cls.StatisticsRepository.get_one(statistic_id, relations=relations)
 
-            # Utilizar el método findOne del RepositoryBase para obtener la estadística por ID
-            filters = {'ID_Estadistica': document_id}
-            statistics = cls.statistics_repository.findOne(filters=filters)
+            if not statistic:
+                raise Exception(f"No se encontró la estadística con ID {statistic_id}.")
 
-            if not statistics:
-                raise Exception(f"No se encontraron estadísticas para el ID {document_id}.")
+            # Validar que las relaciones no sean nulas
+            if not getattr(statistic, 'entrenador', None) or not getattr(statistic, 'cliente', None):
+                raise Exception(f"La relación 'entrenador' o 'cliente' es nula para la estadística con ID {statistic_id}.")
 
-            # Retornar la estadística encontrada (esto puede ser una respuesta JSON, por ejemplo)
-            return statistics
-
+            return statistic
         except Exception as ex:
-            raise Exception(f"Error en StatisticsController.get_statistics_by_id: {ex}")
+            raise Exception(f'Error en StatisticsController.get_statistic_by_id: {ex}')
+
 
 
     @classmethod
