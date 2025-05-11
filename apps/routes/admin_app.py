@@ -3,7 +3,6 @@ from flask import Blueprint, render_template, request, session, redirect, url_fo
 from flask_login import login_required, current_user
 from apps.db.conection import Conection
 from apps.db.repositories.UserRepository import UserRepository
-from apps.db.repositories.ModelTrainer import ModelTrainer
 from apps.db.repositories.ClientRepository import ClientRepository
 from apps.db.repositories.ModelRoutine import ModelRoutine
 from apps.db.repositories.ModelSesion import ModelSession
@@ -25,6 +24,10 @@ from reportlab.pdfgen import canvas
 from io import BytesIO
 from flask import send_file
 from apps.controllers.client_controller import clientController
+from apps.controllers.trainer_controller import trainerController
+from apps.controllers.statistics_controller import statisticsController
+
+
 
 #Creación de los blueprint para usar en app.py
 admin_app = Blueprint('admin_app', __name__)
@@ -206,16 +209,19 @@ def statisticsClient(documentId):
     conection = Conection.conectar()
 
     # Obtener las estadísticas del cliente por su ID
-    statistics = ModelStatistics.getStatisticsByClientId(conection, documentId)
-    client = ModelStatistics.getClientById(conection, documentId)
+    #statistics = ModelStatistics.getStatisticsByClientId(conection, documentId)
+    #client = ModelStatistics.getClientById(conection, documentId)
+
+    statistics = statisticsController.getStatisticsByClientId(documentId)
+    #client = clientController.getClientById(documentId)
     Conection.desconectar()
-    if client is None:
-        return redirect(url_for('admin_app.clients', error="Cliente no encontrado"))
+    # if client is None:
+    #     return redirect(url_for('admin_app.clients', error="Cliente no encontrado"))
     
     doneMessage = request.args.get('done')
     errorMessage = request.args.get('error')
     
-    return render_template("admin/statistics.html", client = client, statistics=statistics, done=doneMessage, error=errorMessage, documentId = documentId)
+    return render_template("admin/statistics.html", statistics=statistics, done=doneMessage, error=errorMessage, documentId = documentId)
 
 
 @admin_app.route("/viewStatistics/<documentId>/<clientId>", methods = ['GET'])
@@ -306,8 +312,11 @@ def viewSession(Session_ID):
 @admin_app.route("/trainers", methods = ['POST', 'GET'])
 @login_required
 def trainers():
+
     conection = Conection.conectar()
-    trainers = ModelTrainer.get_all(conection)
+
+    trainers = trainerController.get_all()
+
     Conection.desconectar()
     doneMessage = request.args.get('done')
     errorMessage = request.args.get('error')

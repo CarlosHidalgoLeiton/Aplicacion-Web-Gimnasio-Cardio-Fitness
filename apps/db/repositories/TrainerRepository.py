@@ -3,8 +3,15 @@ from pymysql import IntegrityError
 import re
 from datetime import datetime
 from apps.db.repositories.UserRepository import UserRepository
+from apps.db.repositories.RepositoryBase import RepositoryBase
 
-class ModelTrainer:
+
+
+
+class TrainerRepository(RepositoryBase):
+
+    def __init__(self):
+        super().__init__(Trainer)
 
     @classmethod
     def insertTrainer(cls, conection, trainer):

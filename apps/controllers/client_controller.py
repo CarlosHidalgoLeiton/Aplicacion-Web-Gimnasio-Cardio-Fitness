@@ -18,6 +18,13 @@ class clientController:
     def get_all(cls):
         clients = cls.ClientRepository.findAll()
         if not clients:
-            raise Exception('No se encontraron notificaciones')
+            raise Exception('No se encontraron clientes')
         return clients
         
+    @classmethod
+    def getClientById(cls,id):
+
+        client = cls.ClientRepository.get_one(id)
+        if not client:
+                raise Exception('No se encontro el cliente')
+        return client
