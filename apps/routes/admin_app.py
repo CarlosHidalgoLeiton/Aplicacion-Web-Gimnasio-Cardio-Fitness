@@ -1,5 +1,5 @@
 # Importaciones
-from flask import Blueprint, render_template, request, session, redirect, url_for, jsonify, Response
+from flask import Blueprint, render_template, request, session, redirect, url_for, jsonify, Response, flash
 from flask_login import login_required, current_user
 from apps.db.conection import Conection
 from apps.db.repositories.UserRepository import UserRepository
@@ -57,35 +57,26 @@ def inicio():
 @login_required
 @admin_permission.require(http_exception=403)
 def clients():
+    try:
+        clients = clientController.get_all()
+        if request.method == 'POST':
+            client = clientController.getDataClient(request)
+            clientValidated = clientController.clientValidated(client)
+            if not type(clientValidated) == bool:
+                return render_template("admin/clients.html", clients=clients, error=clientValidated, client = client)
+            else:
+                clientController.create(client)
 
-    clients = clientController.get_all()
-
-    Conection.desconectar()
-    doneMessage = request.args.get('done')
-    errorMessage = request.args.get('error')
-    if request.method == 'POST':
-        client = client_controller.getDataClient(request)
-        clientValidated = client_controller.validateDataForm(client)
-        if not type(clientValidated) == bool:
-            return render_template("admin/clients.html", clients=clients, error=clientValidated, client = client)
-        conection = Conection.conectar()
-        if conection == None:
-            return render_template("admin/clients.html", clients=clients, error= "Error en la conexión.", client = client)
-        insert = client_controller.insertClient(conection, client)
-        if insert and type(insert) == bool:
-            clients = client_controller.get_all(conection)
-            Conection.desconectar()
-            return render_template("admin/clients.html", clients=clients, done = "Cliente creado correctamente.", client = None)
-        elif insert == "Primary":
-            Conection.desconectar()
-            return render_template("admin/clients.html", clients=clients, error= "El número de cédula ingresado ya esta registrado con otro cliente.", client = client)
-        elif insert == "DataBase":
-            return render_template("admin/clients.html", clients=clients, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", client = client)
+                clients = clientController.get_all()
+                
+                flash('Registro creado exitosamente', 'success')
+                return render_template("admin/clients.html", clients=clients, client = None)
         else:
-            Conection.desconectar()
-            return render_template("admin/clients.html", clients=clients, error= "No se pudo ingresar el cliente, por favor inténtalo más tarde.", client = client)
-    else:
-        return render_template("admin/clients.html", clients=clients, client = None, done = doneMessage, error = errorMessage)
+            return render_template("admin/clients.html", clients=clients, client = None )
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return render_template("admin/clients.html", clients=clients, client = None)
+ 
 
 
 
@@ -155,15 +146,12 @@ def UpdateClient(documentId):
 @login_required
 @admin_permission.require(http_exception=403)
 def viewClient(documentId):
-    conection = Conection.conectar()
-    client = ClientRepository.getClient(conection, documentId)
-    membership = ModelMembership.getMembership(conection, client.Membership_ID)
-    Conection.desconectar()
+    try:
+        client = clientController.getClientById(documentId)
+        return render_template("admin/viewClient.html", client=client)
 
-    if client:
-        return render_template("admin/viewClient.html", client=client, membership = membership)
-    else:
-        # Manejar el caso en que no se encuentre el cliente
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
         return redirect(url_for('admin_app.clients', error="Cliente no encontrado"))
 
 @admin_app.route("/clientes/deshabilitar", methods = ['POST'])
@@ -229,19 +217,11 @@ def statisticsClient(documentId):
 def viewStatistics(documentId,clientId):
     try:
         statistics = statisticsController.getStatisticById(documentId)
-
-        client = statisticsController.getClientById(clientId)
-        if client is None:
-            return redirect(url_for('admin_app.statistics', error="Cliente no encontrado"))
+        return render_template("admin/viewStatistics.html", statistics=statistics)
     
-
     except Exception as ex:
-        print(f"Error al obtener las estadísticas del cliente: {ex}")
-        statistics = None
-    finally:
-        Conection.desconectar()
-    
-    return render_template("admin/viewStatistics.html", statistics=statistics, clientId = clientId,client=client)
+        flash(ex.args[0], 'danger')
+        return render_template("admin/viewStatistics.html", statistics = None)
 
 
 ## VER RUTINAS

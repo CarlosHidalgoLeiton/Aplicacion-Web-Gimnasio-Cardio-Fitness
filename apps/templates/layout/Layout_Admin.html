@@ -63,6 +63,16 @@
 
     {% endblock %}
 
+    {% if error %}
+    <script>
+        errorMessage("{{ error|escape }}");
+    </script>
+    {% endif %}
+
+
+
+
+
     <!-- Alerts toastr -->
     <div style="display: flex; justify-content: center;">
         {% with messages = get_flashed_messages(with_categories=true) %}

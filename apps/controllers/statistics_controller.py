@@ -98,7 +98,7 @@ class statisticsController:
             statistic = cls.StatisticsRepository.get_one(statistic_id, relations=relations)
 
             if not statistic:
-                raise Exception(f"No se encontró la estadística con ID {statistic_id}.")
+                raise Exception(f"Error al obtener las estadísticas del cliente {statistic_id}.")
 
             # Validar que las relaciones no sean nulas
             if not getattr(statistic, 'entrenador', None) or not getattr(statistic, 'cliente', None):

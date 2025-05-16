@@ -5,6 +5,7 @@ from datetime import datetime
 from apps.db.models.Notification import Notification
 import re
 from pymysql import IntegrityError
+from datetime import date
 
 from apps.db.repositories.RepositoryBase import RepositoryBase
 
@@ -222,64 +223,64 @@ class ClientRepository(RepositoryBase):
             print(f"Error en get_all: {ex}")
             return None
 
-    @classmethod
-    def getClient(cls, conexion, DocumentId):
-        """
-            Retrieves a specific client from the database using their ID (DocumentId).
+    # @classmethod
+    # def getClient(cls, conexion, DocumentId):
+    #     """
+    #         Retrieves a specific client from the database using their ID (DocumentId).
 
-            This method executes a SQL query to fetch a client from the `Cliente` table 
-            in the database. If the client is found, it returns a `Client` object with 
-            the corresponding fields. If the client is not found or an error occurs, it returns `None`.
+    #         This method executes a SQL query to fetch a client from the `Cliente` table 
+    #         in the database. If the client is found, it returns a `Client` object with 
+    #         the corresponding fields. If the client is not found or an error occurs, it returns `None`.
 
-            Parameters:
-            conexion (obj): The database connection object.
-            DocumentId (str): The client's ID (Cedula) to search for.
+    #         Parameters:
+    #         conexion (obj): The database connection object.
+    #         DocumentId (str): The client's ID (Cedula) to search for.
 
-            Returns:
-            Client: A `Client` object containing the client's data if found.
-            None: If the client is not found or an error occurs during execution.
+    #         Returns:
+    #         Client: A `Client` object containing the client's data if found.
+    #         None: If the client is not found or an error occurs during execution.
 
-            Exceptions:
-                - Exception: Captures general errors that may occur during the execution 
-                of the query or while creating the `Client` object.
-        """
+    #         Exceptions:
+    #             - Exception: Captures general errors that may occur during the execution 
+    #             of the query or while creating the `Client` object.
+    #     """
 
-        try:
-            cursor = conexion.cursor()
-            sql = """SELECT Cedula, Nombre, Primer_Apellido, Segundo_Apellido, Fecha_Nacimiento, Edad, Correo, 
-                    Telefono, FechaInscripcion, Ocupacion, TelefonoEmergencia, Direccion, FechaIngreso, 
-                    Padecimientos, Limitacion, VencimientoMembresia, Estado, ID_Membresia 
-                    FROM Cliente WHERE Cedula = %s"""
-            cursor.execute(sql, (DocumentId))
-            row = cursor.fetchone()
+    #     try:
+    #         cursor = conexion.cursor()
+    #         sql = """SELECT Cedula, Nombre, Primer_Apellido, Segundo_Apellido, Fecha_Nacimiento, Edad, Correo, 
+    #                 Telefono, FechaInscripcion, Ocupacion, TelefonoEmergencia, Direccion, FechaIngreso, 
+    #                 Padecimientos, Limitacion, VencimientoMembresia, Estado, ID_Membresia 
+    #                 FROM Cliente WHERE Cedula = %s"""
+    #         cursor.execute(sql, (DocumentId))
+    #         row = cursor.fetchone()
 
-            if row:
-                # Crear y devolver un objeto cliente
-                return Client(
-                    DocumentId=row[0],
-                    Name=row[1],
-                    First_LastName=row[2],
-                    Second_LastName=row[3],
-                    Date_Birth=row[4],
-                    Age=row[5],
-                    Mail=row[6],
-                    Phone=row[7],
-                    Registration_Date=row[8],
-                    Occupation=row[9],
-                    TelephoneEmergency=row[10],
-                    Address=row[11],
-                    Entry_Date=row[12],
-                    Ailments=row[13],
-                    Limitation=row[14],
-                    ExpirationMembership=row[15],
-                    State=row[16],
-                    Membership_ID=row[17]
-                )
-            else:
-                return None
-        except Exception as ex:
-            print(f"Error al obtener cliente por cédula: {ex}")
-            return None
+    #         if row:
+    #             # Crear y devolver un objeto cliente
+    #             return Client(
+    #                 DocumentId=row[0],
+    #                 Name=row[1],
+    #                 First_LastName=row[2],
+    #                 Second_LastName=row[3],
+    #                 Date_Birth=row[4],
+    #                 Age=row[5],
+    #                 Mail=row[6],
+    #                 Phone=row[7],
+    #                 Registration_Date=row[8],
+    #                 Occupation=row[9],
+    #                 TelephoneEmergency=row[10],
+    #                 Address=row[11],
+    #                 Entry_Date=row[12],
+    #                 Ailments=row[13],
+    #                 Limitation=row[14],
+    #                 ExpirationMembership=row[15],
+    #                 State=row[16],
+    #                 Membership_ID=row[17]
+    #             )
+    #         else:
+    #             return None
+    #     except Exception as ex:
+    #         print(f"Error al obtener cliente por cédula: {ex}")
+    #         return None
         
     @classmethod
     def getClientBill(cls, conexion, DocumentId):
@@ -410,47 +411,75 @@ class ClientRepository(RepositoryBase):
         else:
             return False
     
+    # @classmethod
+    # def getDataClient(cls, request):
+    #     """
+    #         Extracts client data from a form request and creates a `Client` object.
+
+    #         This method retrieves client-related information from the form data in 
+    #         the provided `request` object, processes the necessary fields (e.g., 
+    #         date of birth to calculate age), and returns a `Client` object populated 
+    #         with the extracted data.
+
+    #         Parameters:
+    #         request (obj): The form request object containing the client data.
+
+    #         Returns:
+    #         Client: A `Client` object with the data extracted from the form.
+
+    #         Notes:
+    #         - The date of birth is expected to be in the format "YYYY-MM-DD", 
+    #         and the method calculates the age based on the current year and the 
+    #         client's date of birth.
+    #         - If any fields are missing or in an incorrect format, the method 
+    #         assumes the form is well-validated beforehand, or additional error handling 
+    #         can be added as needed.
+    #     """
+
+    #     documentId = request.form['documentId']
+    #     name = request.form['name']
+    #     firstLastName = request.form['firstLastName']
+    #     secondLastName = request.form['secondLastName']
+    #     Date_BirthStr = request.form['Date_Birth']
+    #     Date_Birth = datetime.strptime(Date_BirthStr, "%Y-%m-%d").date()
+    #     mail = request.form['mail']
+    #     phone = request.form['phone']
+    #     ocupation = request.form['ocupation']
+    #     emergencyPhone = request.form['emergencyPhone']
+    #     adress = request.form['adress']
+    #     ailments = request.form['ailments']
+    #     limitation = request.form['limitation']
+    #     age = datetime.now().year - Date_Birth.year
+
+    #     return Client(documentId, name, firstLastName, secondLastName, Date_Birth, age, mail, phone, None, ocupation, emergencyPhone, adress, None, ailments, limitation, None, None)
+
+
     @classmethod
     def getDataClient(cls, request):
-        """
-            Extracts client data from a form request and creates a `Client` object.
-
-            This method retrieves client-related information from the form data in 
-            the provided `request` object, processes the necessary fields (e.g., 
-            date of birth to calculate age), and returns a `Client` object populated 
-            with the extracted data.
-
-            Parameters:
-            request (obj): The form request object containing the client data.
-
-            Returns:
-            Client: A `Client` object with the data extracted from the form.
-
-            Notes:
-            - The date of birth is expected to be in the format "YYYY-MM-DD", 
-            and the method calculates the age based on the current year and the 
-            client's date of birth.
-            - If any fields are missing or in an incorrect format, the method 
-            assumes the form is well-validated beforehand, or additional error handling 
-            can be added as needed.
-        """
-
-        documentId = request.form['documentId']
-        name = request.form['name']
-        firstLastName = request.form['firstLastName']
-        secondLastName = request.form['secondLastName']
         Date_BirthStr = request.form['Date_Birth']
         Date_Birth = datetime.strptime(Date_BirthStr, "%Y-%m-%d").date()
-        mail = request.form['mail']
-        phone = request.form['phone']
-        ocupation = request.form['ocupation']
-        emergencyPhone = request.form['emergencyPhone']
-        adress = request.form['adress']
-        ailments = request.form['ailments']
-        limitation = request.form['limitation']
-        age = datetime.now().year - Date_Birth.year
+        age = datetime.now().year - Date_Birth.year - ((datetime.now().month, datetime.now().day) < (Date_Birth.month, Date_Birth.day))
 
-        return Client(documentId, name, firstLastName, secondLastName, Date_Birth, age, mail, phone, None, ocupation, emergencyPhone, adress, None, ailments, limitation, None, None)
+        return Client(
+            DocumentId=request.form['documentId'],
+            Name=request.form['name'],
+            First_LastName=request.form['firstLastName'],
+            Second_LastName=request.form['secondLastName'],
+            Date_Birth=Date_Birth,
+            Age=age,
+            Mail=request.form['mail'],
+            Phone=request.form['phone'],
+            Registration_Date=None,
+            Occupation=request.form['ocupation'],
+            TelephoneEmergency=request.form['emergencyPhone'],
+            Address=request.form['adress'],
+            Entry_Date= date.today(),
+            Ailments=request.form['ailments'],
+            Limitation=request.form['limitation'],
+            ExpirationMembership=None,
+            State=True,
+            Membership_ID=None
+        )
 
 
     @classmethod

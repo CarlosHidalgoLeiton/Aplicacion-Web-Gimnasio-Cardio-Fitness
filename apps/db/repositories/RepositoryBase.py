@@ -122,6 +122,24 @@ class RepositoryBase:
 
         except Exception as ex:
             raise Exception(f'Error en findOne para {self.model}: {ex}')
+        
+
+    def findOne_any(self, filters=None):
+        try:
+            query = db.session.query(self.model)
+
+            if filters:
+                for key, value in filters.items():
+                    column = getattr(self.model, key, None)
+                    if column is None:
+                        raise Exception(f"Columna '{key}' no existe en {self.model}")
+                    query = query.filter(column == value)
+
+            return query.first()  # Esto devuelve None si no encuentra nada, lo cual está bien
+
+        except Exception as ex:
+            raise Exception(f'Error en findOne para {self.model}: {ex}')
+
     
 
     def findOneFiltered(self, column_names, filters=None):
@@ -182,3 +200,28 @@ class RepositoryBase:
                 db.session.commit()
         except Exception as ex:
             raise Exception(f'Error en delete para {self.model}: {ex}')
+        
+
+    def to_dict(self, instance, relations=None):
+        """
+        Convierte una instancia de modelo a un diccionario.
+        Si se pasan relaciones, también las convierte recursivamente.
+        """
+        data = {}
+
+        # Atributos simples
+        for column in inspect(instance).mapper.column_attrs:
+            data[column.key] = getattr(instance, column.key)
+
+        # Relaciones (si se especifican)
+        if relations:
+            for rel in relations:
+                related_obj = getattr(instance, rel)
+                if isinstance(related_obj, list):
+                    data[rel] = [self.to_dict(child) for child in related_obj]
+                elif related_obj is not None:
+                    data[rel] = self.to_dict(related_obj)
+                else:
+                    data[rel] = None
+
+        return data

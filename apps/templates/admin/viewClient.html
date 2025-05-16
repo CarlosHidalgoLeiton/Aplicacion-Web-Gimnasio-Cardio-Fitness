@@ -141,7 +141,7 @@
                                     </div>
                                 </div>
 
-                                {% if membership %}
+                                {% if client.membresia %}
                                     <div class="mb-3 row">
                                         <label class="col-lg-4 col-form-label" for="validationCustom12">Fecha de Inscripción
                                         </label>
@@ -163,7 +163,7 @@
                                         </label>
                                         <div class="col-lg-6">
                                             <input type="text" class="form-control" id="validationCustom11"
-                                                value="{{ membership.Name }}" readonly>
+                                                value="{{client.membresia.Name}}" readonly>
                                         </div>
                                     </div>
                                 {% else %}

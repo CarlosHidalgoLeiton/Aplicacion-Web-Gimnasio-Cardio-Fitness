@@ -6,10 +6,30 @@
             Content body start
         ***********************************-->
 
+    <div style="display: flex; justify-content: center;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <script type="text/javascript">
+                        var message = "{{ message|escape }}";  // Usamos 'escape' en lugar de 'escapejs'
+                        var category = "{{ category }}";  // Usamos la categoría (danger, success)
+    
+                        // Verificamos la categoría en JavaScript y ejecutamos la función correspondiente
+                        if (category == 'danger') {
+                            errorMessage(message);  // Si la categoría es 'danger', mostramos un mensaje de error
+                        } else if (category == 'success') {
+                            successMessage(message);  // Si la categoría es 'success', mostramos un mensaje de éxito
+                        }
+                    </script>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
 <div class="page-titles">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ url_for ('admin_app.clients') }}">Clientes</a></li>
-        <li class="breadcrumb-item "><a href="{{ url_for ('admin_app.statisticsClient',documentId= clientId) }}">Estadísticas</a></li>
+        <li class="breadcrumb-item "><a href="{{ url_for ('admin_app.statisticsClient',documentId=statistics.cliente.DocumentId)}}">Estadísticas</a></li>
         <li class="breadcrumb-item active"><a href="">Ver Estadística</a></li>
     </ol>
 </div>
@@ -29,7 +49,7 @@
 											<div class="mb-3 row">
 												<label class="col-lg-4 col-form-label">Nombre completo</label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control"  value="{{ client[0] }} {{ client[1] }} {{ client[2] }}" readonly>
+													<input type="text" class="form-control"  value="{{ statistics.cliente.Name }} {{ statistics.cliente.First_LastName }} {{ statistics.cliente.Second_LastName }}" readonly>
 												</div>
 											</div>
 									
@@ -85,7 +105,7 @@
                                 <div class="mb-3 row">
                                     <label class="col-lg-4 col-form-label" >Edad</label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" value="{{client[3]}}" readonly>
+                                        <input type="text" class="form-control" value="{{statistics.cliente.Age}}" readonly>
                                     </div>
                                 </div>
                             
@@ -259,7 +279,7 @@
 
                         
                         <div class="my-5">
-                            <a type="button" class="btn btn-danger me-2" href="{{ url_for ('admin_app.statisticsClient',documentId= clientId) }}">Volver</a>
+                            <a type="button" class="btn btn-danger me-2" href="{{ url_for ('admin_app.statisticsClient',documentId= statistics.cliente.DocumentId) }}">Volver</a>
                         </div>
                     </form>
                 </div>
