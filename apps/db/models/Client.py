@@ -13,7 +13,7 @@ class Client(db.Model):
     Age = db.Column(db.Integer, nullable=False, key="Age", name="Edad")
     Mail = db.Column(db.String(150), nullable=False, key="Mail", name="Correo")
     Phone = db.Column(db.String(8), nullable=False, key="Phone", name="Telefono")
-    Registration_Date = db.Column(db.Date, nullable=False, key="Registration_Date", name="FechaInscripcion")
+    Registration_Date = db.Column(db.Date, nullable=True, key="Registration_Date", name="FechaInscripcion")
     Occupation = db.Column(db.String(150), nullable=False, key="Occupation", name="Ocupacion")
     TelephoneEmergency = db.Column(db.String(8), nullable=False, key="TelephoneEmergency", name="TelefonoEmergencia")
     Address = db.Column(db.String(255), nullable=False, key="Address", name="Direccion")
@@ -22,9 +22,10 @@ class Client(db.Model):
     Limitation = db.Column(db.String(255), nullable=False, key="Limitation", name="Limitacion")
     ExpirationMembership = db.Column(db.Date, nullable=True, key="ExpirationMembership", name="VencimientoMembresia")
     State = db.Column(db.Boolean, nullable=False, key="State", name="Estado")
-    Membership_ID = db.Column(db.Integer, db.ForeignKey('membresia.id'), nullable=False, key="Membership_ID", name="ID_Membresia")
+    Membership_ID = db.Column(db.Integer, db.ForeignKey('membresia.id'), nullable=True, key="Membership_ID", name="ID_Membresia")
 
-    
+    membresia = db.relationship('Membership', backref='membresia', lazy='joined')
+
 
     
     def to_dict(self):
