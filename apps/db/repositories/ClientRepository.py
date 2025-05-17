@@ -16,212 +16,212 @@ class ClientRepository(RepositoryBase):
 
     """It has the methods over Client."""
 
-    @classmethod
-    def insertClient(cls, conection, client):
-        """
-            It inserts a new client in the data base.
+    # @classmethod
+    # def insertClient(cls, conection, client):
+    #     """
+    #         It inserts a new client in the data base.
 
-            This method receives a `Client` object and inserts it into the database table `Cliente`. 
-            It assumes that the `Client` object has attributes corresponding to the fields in the table. 
-            If the insert is successful, it commits the transaction and returns True. If an error occurs 
-            during the process, it performs a rollback and returns an error message.
+    #         This method receives a `Client` object and inserts it into the database table `Cliente`. 
+    #         It assumes that the `Client` object has attributes corresponding to the fields in the table. 
+    #         If the insert is successful, it commits the transaction and returns True. If an error occurs 
+    #         during the process, it performs a rollback and returns an error message.
             
-            Parameters:
-            conection(obj): conection object to the database
-            client(Client): client object that contains the data to insert
+    #         Parameters:
+    #         conection(obj): conection object to the database
+    #         client(Client): client object that contains the data to insert
 
-            Return: 
-                `bool`:   `True` if the client was inserted successfuly,
-                `string`: `Error Message` an error message.
+    #         Return: 
+    #             `bool`:   `True` if the client was inserted successfuly,
+    #             `string`: `Error Message` an error message.
 
-            Exceptions:
-                - IntegrityError: If an integrity error occurs (e.g. duplicate primary key).
-                - BaseException: For any other database related errors.
-                - Exception: For other general errors that may occur during execution.
-        """
+    #         Exceptions:
+    #             - IntegrityError: If an integrity error occurs (e.g. duplicate primary key).
+    #             - BaseException: For any other database related errors.
+    #             - Exception: For other general errors that may occur during execution.
+    #     """
         
 
-        if client != None:
-            try:
-                Entry_Date = datetime.now()
-                client.Entry_Date = Entry_Date
-                client.State = 1
-                cursor = conection.cursor()
-                sql = """INSERT INTO Cliente (Cedula, Nombre, Primer_Apellido, Segundo_Apellido, Fecha_Nacimiento, Edad, Correo, Telefono, Ocupacion, TelefonoEmergencia, Direccion, FechaIngreso, Padecimientos, Limitacion, Estado)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-                cursor.execute(sql, (client.DocumentId, client.Name, client.First_LastName, client.Second_LastName, client.Date_Birth, client.Age, client.Mail, client.Phone, client.Occupation, client.TelephoneEmergency, client.Address, client.Entry_Date, client.Ailments, client.Limitation, client.State))
-                conection.commit()
+    #     if client != None:
+    #         try:
+    #             Entry_Date = datetime.now()
+    #             client.Entry_Date = Entry_Date
+    #             client.State = 1
+    #             cursor = conection.cursor()
+    #             sql = """INSERT INTO Cliente (Cedula, Nombre, Primer_Apellido, Segundo_Apellido, Fecha_Nacimiento, Edad, Correo, Telefono, Ocupacion, TelefonoEmergencia, Direccion, FechaIngreso, Padecimientos, Limitacion, Estado)
+    #             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+    #             cursor.execute(sql, (client.DocumentId, client.Name, client.First_LastName, client.Second_LastName, client.Date_Birth, client.Age, client.Mail, client.Phone, client.Occupation, client.TelephoneEmergency, client.Address, client.Entry_Date, client.Ailments, client.Limitation, client.State))
+    #             conection.commit()
 
-                if cursor.rowcount > 0:
-                    print(f"Cliente {client.DocumentId} creado exitosamente.")
-                    return True
-                else:
-                    print("No se pudo crear el cliente.")
-                    return "Error"
+    #             if cursor.rowcount > 0:
+    #                 print(f"Cliente {client.DocumentId} creado exitosamente.")
+    #                 return True
+    #             else:
+    #                 print("No se pudo crear el cliente.")
+    #                 return "Error"
                 
-            except IntegrityError as ex:
-                print(f"Error en ClientRepositorye insertClient: {ex}")
-                conection.rollback()
-                return "Primary"
-            except BaseException as ex:
-                print(f"Error en ClientRepository insertClient: {ex}")
-                conection.rollback()
-                return "DataBase"
-            except Exception as ex:
-                print(f"Error en ClientRepository insertClient: {ex}")
-                conection.rollback()
-                return "Error"
-        else:
-            return "Error"
+    #         except IntegrityError as ex:
+    #             print(f"Error en ClientRepositorye insertClient: {ex}")
+    #             conection.rollback()
+    #             return "Primary"
+    #         except BaseException as ex:
+    #             print(f"Error en ClientRepository insertClient: {ex}")
+    #             conection.rollback()
+    #             return "DataBase"
+    #         except Exception as ex:
+    #             print(f"Error en ClientRepository insertClient: {ex}")
+    #             conection.rollback()
+    #             return "Error"
+    #     else:
+    #         return "Error"
     
-    @classmethod
-    def updateClient(cls, conection, client, id):
-        """
-            It updates a client in the data base.
+    # @classmethod
+    # def updateClient(cls, conection, client, id):
+    #     """
+    #         It updates a client in the data base.
 
-            This method receives a `Client` object and updates it in the database table `Cliente`. 
-            It assumes that the `Client` object has attributes corresponding to the fields in the table. 
-            If the update is successful, it commits the transaction and returns True. If an error occurs 
-            during the process, it performs a rollback and returns an error message.
+    #         This method receives a `Client` object and updates it in the database table `Cliente`. 
+    #         It assumes that the `Client` object has attributes corresponding to the fields in the table. 
+    #         If the update is successful, it commits the transaction and returns True. If an error occurs 
+    #         during the process, it performs a rollback and returns an error message.
             
-            Parameters:
-            conection(obj): conection object to the database
-            client(Client): client object that contains the data to update
-            id(str) -- client's identification to update
+    #         Parameters:
+    #         conection(obj): conection object to the database
+    #         client(Client): client object that contains the data to update
+    #         id(str) -- client's identification to update
 
-            Return: 
-                `bool`:   `True` if the client was inserted successfuly,
-                `string`: `Error Message` an error message.
+    #         Return: 
+    #             `bool`:   `True` if the client was inserted successfuly,
+    #             `string`: `Error Message` an error message.
 
-            Exceptions:
-                - IntegrityError: If an integrity error occurs (e.g. duplicate primary key).
-                - BaseException: For any other database related errors.
-                - Exception: For other general errors that may occur during execution.
-        """
+    #         Exceptions:
+    #             - IntegrityError: If an integrity error occurs (e.g. duplicate primary key).
+    #             - BaseException: For any other database related errors.
+    #             - Exception: For other general errors that may occur during execution.
+    #     """
 
-        if client != None:
-            try:
-                cursor = conection.cursor()
+    #     if client != None:
+    #         try:
+    #             cursor = conection.cursor()
                 
-                sql = """UPDATE Cliente SET Cedula = %s, Nombre = %s, Primer_Apellido = %s, Segundo_Apellido = %s, Fecha_Nacimiento = %s, Edad = %s, Correo = %s, Telefono = %s, Ocupacion = %s, TelefonoEmergencia = %s, Direccion = %s, Padecimientos = %s, Limitacion = %s WHERE Cedula = %s"""
-                cursor.execute(sql, (client.DocumentId, client.Name, client.First_LastName, client.Second_LastName, client.Date_Birth, client.Age, client.Mail, client.Phone, client.Occupation, client.TelephoneEmergency, client.Address, client.Ailments, client.Limitation, id))
+    #             sql = """UPDATE Cliente SET Cedula = %s, Nombre = %s, Primer_Apellido = %s, Segundo_Apellido = %s, Fecha_Nacimiento = %s, Edad = %s, Correo = %s, Telefono = %s, Ocupacion = %s, TelefonoEmergencia = %s, Direccion = %s, Padecimientos = %s, Limitacion = %s WHERE Cedula = %s"""
+    #             cursor.execute(sql, (client.DocumentId, client.Name, client.First_LastName, client.Second_LastName, client.Date_Birth, client.Age, client.Mail, client.Phone, client.Occupation, client.TelephoneEmergency, client.Address, client.Ailments, client.Limitation, id))
 
-                if cursor.rowcount > 0:
-                    print(f"Cliente {client.DocumentId} actualizado exitosamente.")
+    #             if cursor.rowcount > 0:
+    #                 print(f"Cliente {client.DocumentId} actualizado exitosamente.")
 
-                    user = UserRepository.get_User(conection, id)
+    #                 user = UserRepository.get_User(conection, id)
 
-                    if user:
-                        sql2 = "UPDATE Usuario SET Cedula = %s WHERE Cedula = %s"
-                        cursor.execute(sql2, ( client.DocumentId ,id))
+    #                 if user:
+    #                     sql2 = "UPDATE Usuario SET Cedula = %s WHERE Cedula = %s"
+    #                     cursor.execute(sql2, ( client.DocumentId ,id))
 
-                        if cursor.rowcount < 0:
-                            print("No se pudo actualizar el usuario en updateClient.")
-                            return "Error"
+    #                     if cursor.rowcount < 0:
+    #                         print("No se pudo actualizar el usuario en updateClient.")
+    #                         return "Error"
                         
-                    conection.commit()
-                    return True
+    #                 conection.commit()
+    #                 return True
 
-                else:   
-                    print("No se pudo actualizar el cliente.")
-                    return "Error"
+    #             else:   
+    #                 print("No se pudo actualizar el cliente.")
+    #                 return "Error"
 
-            except IntegrityError as ex:
-                print(f"Error en ClientRepositorye updateClient: {ex}")
-                conection.rollback()
-                return "Primary"
-            except BaseException as ex:
-                print(f"Error en ClientRepository updateClient: {ex}")
-                conection.rollback()
-                return "DataBase"
-            except Exception as ex:
-                print(f"Error en ClientRepository updateClient: {ex}")
-                conection.rollback()
-                return "Error"
-        else:
-            return "Error"
+    #         except IntegrityError as ex:
+    #             print(f"Error en ClientRepositorye updateClient: {ex}")
+    #             conection.rollback()
+    #             return "Primary"
+    #         except BaseException as ex:
+    #             print(f"Error en ClientRepository updateClient: {ex}")
+    #             conection.rollback()
+    #             return "DataBase"
+    #         except Exception as ex:
+    #             print(f"Error en ClientRepository updateClient: {ex}")
+    #             conection.rollback()
+    #             return "Error"
+    #     else:
+    #         return "Error"
 
-    @classmethod
-    def get_all(cls, conexion):
-        """
-            It get all the clients.
+    # @classmethod
+    # def get_all(cls, conexion):
+    #     """
+    #         It get all the clients.
 
-            This method executes a sql query to get all the clients in the table `Cliente` and returns a dictionary list,
-            where each of dictionary represents a `Client` with the fields of `DocumentId`, `Name`, 
-            `First_LastName`, `Second_LastName`, `Occupation`, y `State`.
+    #         This method executes a sql query to get all the clients in the table `Cliente` and returns a dictionary list,
+    #         where each of dictionary represents a `Client` with the fields of `DocumentId`, `Name`, 
+    #         `First_LastName`, `Second_LastName`, `Occupation`, y `State`.
             
-            Parameters:
-            conection(obj): conection object to the database
+    #         Parameters:
+    #         conection(obj): conection object to the database
 
-            Return: 
-                `list`: an dictionary list that contains the information about the clients.
-                `None`: if occurs an error return `None`
+    #         Return: 
+    #             `list`: an dictionary list that contains the information about the clients.
+    #             `None`: if occurs an error return `None`
 
-            Exceptions:
-                - Exception: General errors that may occur during execution.
-        """
+    #         Exceptions:
+    #             - Exception: General errors that may occur during execution.
+    #     """
 
-        try:
-            cursor = conexion.cursor()
-            sql = "SELECT Cedula, Nombre, Primer_Apellido, Segundo_Apellido, Ocupacion, Estado FROM Cliente"
-            cursor.execute(sql)
-            rows = cursor.fetchall()
-            clients = []
-            for row in rows:
-                client = {
-                    'DocumentId': row[0],
-                    'Name': row[1],
-                    'First_LastName': row[2],
-                    'Second_LastName':row[3],
-                    'Occupation': row[4],
-                    'State': row[5]
-                }
-                clients.append(client)
-            return clients
-        except Exception as ex:
-            print(f"Error en get_all: {ex}")
-            return None
+    #     try:
+    #         cursor = conexion.cursor()
+    #         sql = "SELECT Cedula, Nombre, Primer_Apellido, Segundo_Apellido, Ocupacion, Estado FROM Cliente"
+    #         cursor.execute(sql)
+    #         rows = cursor.fetchall()
+    #         clients = []
+    #         for row in rows:
+    #             client = {
+    #                 'DocumentId': row[0],
+    #                 'Name': row[1],
+    #                 'First_LastName': row[2],
+    #                 'Second_LastName':row[3],
+    #                 'Occupation': row[4],
+    #                 'State': row[5]
+    #             }
+    #             clients.append(client)
+    #         return clients
+    #     except Exception as ex:
+    #         print(f"Error en get_all: {ex}")
+    #         return None
     
-    @classmethod
-    def get_allAble(cls, conexion):
-        """
-            It get all the clients that are availabe.
+    # @classmethod
+    # def get_allAble(cls, conexion):
+    #     """
+    #         It get all the clients that are availabe.
 
-            This method executes a sql query to get all the clients in the table `Cliente` and returns a dictionary list,
-            where each of dictionary represents a `Client` with the fields of `DocumentId`, `Name`, 
-            `First_LastName`, `Second_LastName`, `Occupation`, y `State`.
+    #         This method executes a sql query to get all the clients in the table `Cliente` and returns a dictionary list,
+    #         where each of dictionary represents a `Client` with the fields of `DocumentId`, `Name`, 
+    #         `First_LastName`, `Second_LastName`, `Occupation`, y `State`.
             
-            Parameters:
-            conection(obj): conection object to the database
+    #         Parameters:
+    #         conection(obj): conection object to the database
 
-            Return: 
-                `list`: an dictionary list that contains the information about the clients.
-                `None`: if occurs an error return `None`
+    #         Return: 
+    #             `list`: an dictionary list that contains the information about the clients.
+    #             `None`: if occurs an error return `None`
 
-            Exceptions:
-                - Exception: General errors that may occur during execution.
-        """
+    #         Exceptions:
+    #             - Exception: General errors that may occur during execution.
+    #     """
 
-        try:
-            cursor = conexion.cursor()
-            sql = "SELECT Cedula, Nombre, Primer_Apellido, Segundo_Apellido, Ocupacion, Estado FROM Cliente WHERE Estado = 1"
-            cursor.execute(sql)
-            rows = cursor.fetchall()
-            clients = []
-            for row in rows:
-                client = {
-                    'DocumentId': row[0],
-                    'Name': row[1],
-                    'First_LastName': row[2],
-                    'Second_LastName':row[3],
-                    'Occupation': row[4],
-                    'State': row[5]
-                }
-                clients.append(client)
-            return clients
-        except Exception as ex:
-            print(f"Error en get_all: {ex}")
-            return None
+    #     try:
+    #         cursor = conexion.cursor()
+    #         sql = "SELECT Cedula, Nombre, Primer_Apellido, Segundo_Apellido, Ocupacion, Estado FROM Cliente WHERE Estado = 1"
+    #         cursor.execute(sql)
+    #         rows = cursor.fetchall()
+    #         clients = []
+    #         for row in rows:
+    #             client = {
+    #                 'DocumentId': row[0],
+    #                 'Name': row[1],
+    #                 'First_LastName': row[2],
+    #                 'Second_LastName':row[3],
+    #                 'Occupation': row[4],
+    #                 'State': row[5]
+    #             }
+    #             clients.append(client)
+    #         return clients
+    #     except Exception as ex:
+    #         print(f"Error en get_all: {ex}")
+    #         return None
 
     # @classmethod
     # def getClient(cls, conexion, DocumentId):
@@ -282,134 +282,134 @@ class ClientRepository(RepositoryBase):
     #         print(f"Error al obtener cliente por cédula: {ex}")
     #         return None
         
-    @classmethod
-    def getClientBill(cls, conexion, DocumentId):
-        """
-            Retrieves the client's name and last names for billing purposes from the database.
+    # @classmethod
+    # def getClientBill(cls, conexion, DocumentId):
+    #     """
+    #         Retrieves the client's name and last names for billing purposes from the database.
 
-            This method executes a SQL query to fetch a client's basic information 
-            (Name, First Last Name, and Second Last Name) from the `Cliente` table using 
-            the provided `DocumentId`. It returns a `Client` object with the relevant 
-            fields if the client is found, otherwise it returns `None`.
+    #         This method executes a SQL query to fetch a client's basic information 
+    #         (Name, First Last Name, and Second Last Name) from the `Cliente` table using 
+    #         the provided `DocumentId`. It returns a `Client` object with the relevant 
+    #         fields if the client is found, otherwise it returns `None`.
 
-            Parameters:
-            conexion (obj): The database connection object.
-            DocumentId (str): The client's ID (Cedula) to search for.
+    #         Parameters:
+    #         conexion (obj): The database connection object.
+    #         DocumentId (str): The client's ID (Cedula) to search for.
 
-            Returns:
-            Client: A `Client` object containing the client's basic information if found.
-            None: If the client is not found or an error occurs during execution.
+    #         Returns:
+    #         Client: A `Client` object containing the client's basic information if found.
+    #         None: If the client is not found or an error occurs during execution.
 
-            Exceptions:
-            - Exception: Captures any general errors that may occur during the execution 
-            of the query or while creating the `Client` object.
-        """
+    #         Exceptions:
+    #         - Exception: Captures any general errors that may occur during the execution 
+    #         of the query or while creating the `Client` object.
+    #     """
         
-        try:
-            cursor = conexion.cursor()
-            sql = """SELECT Nombre, Primer_Apellido, Segundo_Apellido FROM Cliente WHERE Cedula = %s"""
-            cursor.execute(sql, (DocumentId))
-            row = cursor.fetchone()
+    #     try:
+    #         cursor = conexion.cursor()
+    #         sql = """SELECT Nombre, Primer_Apellido, Segundo_Apellido FROM Cliente WHERE Cedula = %s"""
+    #         cursor.execute(sql, (DocumentId))
+    #         row = cursor.fetchone()
 
-            if row:
-                # Crear y devolver un objeto cliente
-                return Client(
-                    Name=row[0],
-                    First_LastName=row[1],
-                    Second_LastName=row[2],
-                )
-            else:
-                return None
-        except Exception as ex:
-            print(f"Error al obtener cliente por cédula: {ex}")
-            return None
+    #         if row:
+    #             # Crear y devolver un objeto cliente
+    #             return Client(
+    #                 Name=row[0],
+    #                 First_LastName=row[1],
+    #                 Second_LastName=row[2],
+    #             )
+    #         else:
+    #             return None
+    #     except Exception as ex:
+    #         print(f"Error al obtener cliente por cédula: {ex}")
+    #         return None
     
 
-    @classmethod
-    def disableClient(cls, conection, clientId):
-        """
-            Disables a client by setting their status to 0 (inactive) in the database.
+    # @classmethod
+    # def disableClient(cls, conection, clientId):
+    #     """
+    #         Disables a client by setting their status to 0 (inactive) in the database.
 
-            This method executes an SQL query to update the `Estado` (status) of a client 
-            to 0 (inactive) in the `Cliente` table based on the provided `clientId`. 
-            If the update is successful, it commits the transaction and returns `True`. 
-            If no rows are affected or an error occurs, it rolls back the transaction and returns `False`.
+    #         This method executes an SQL query to update the `Estado` (status) of a client 
+    #         to 0 (inactive) in the `Cliente` table based on the provided `clientId`. 
+    #         If the update is successful, it commits the transaction and returns `True`. 
+    #         If no rows are affected or an error occurs, it rolls back the transaction and returns `False`.
 
-            Parameters:
-            conection (obj): The database connection object.
-            clientId (str): The client's ID (Cedula) to disable.
+    #         Parameters:
+    #         conection (obj): The database connection object.
+    #         clientId (str): The client's ID (Cedula) to disable.
 
-            Returns:
-            bool: `True` if the client was successfully disabled, 
-                `False` if no client was updated or an error occurred.
+    #         Returns:
+    #         bool: `True` if the client was successfully disabled, 
+    #             `False` if no client was updated or an error occurred.
 
-            Exceptions:
-            - Exception: Captures any general errors that may occur during the update 
-            process, such as issues with the SQL query or database connection.
-        """
+    #         Exceptions:
+    #         - Exception: Captures any general errors that may occur during the update 
+    #         process, such as issues with the SQL query or database connection.
+    #     """
 
-        if clientId != None:
-            try:
-                cursor = conection.cursor()
-                sql = """UPDATE Cliente SET Estado = 0  WHERE Cedula = %s"""
-                cursor.execute(sql, (clientId))
-                if cursor.rowcount > 0:
-                    conection.commit()
-                    return True
-                else:
-                    print("No se pudo actualizar el cliente.")
-                    conection.rollback()
-                    return False
+    #     if clientId != None:
+    #         try:
+    #             cursor = conection.cursor()
+    #             sql = """UPDATE Cliente SET Estado = 0  WHERE Cedula = %s"""
+    #             cursor.execute(sql, (clientId))
+    #             if cursor.rowcount > 0:
+    #                 conection.commit()
+    #                 return True
+    #             else:
+    #                 print("No se pudo actualizar el cliente.")
+    #                 conection.rollback()
+    #                 return False
 
-            except Exception as ex:
-                print(f"Ocurrió un error en actualizar un cliente {ex}")
-                conection.rollback()
-                return False
-        else:
-            return False
+    #         except Exception as ex:
+    #             print(f"Ocurrió un error en actualizar un cliente {ex}")
+    #             conection.rollback()
+    #             return False
+    #     else:
+    #         return False
         
-    @classmethod
-    def ableClient(cls, conection, clientId):
-        """
-            Re-enables a client by setting their status to 1 (active) in the database.
+    # @classmethod
+    # def ableClient(cls, conection, clientId):
+    #     """
+    #         Re-enables a client by setting their status to 1 (active) in the database.
 
-            This method executes an SQL query to update the `Estado` (status) of a client 
-            to 1 (active) in the `Cliente` table based on the provided `clientId`. 
-            If the update is successful, it commits the transaction and returns `True`. 
-            If no rows are affected or an error occurs, it rolls back the transaction and returns `False`.
+    #         This method executes an SQL query to update the `Estado` (status) of a client 
+    #         to 1 (active) in the `Cliente` table based on the provided `clientId`. 
+    #         If the update is successful, it commits the transaction and returns `True`. 
+    #         If no rows are affected or an error occurs, it rolls back the transaction and returns `False`.
 
-            Parameters:
-            conection (obj): The database connection object.
-            clientId (str): The client's ID (Cedula) to re-enable.
+    #         Parameters:
+    #         conection (obj): The database connection object.
+    #         clientId (str): The client's ID (Cedula) to re-enable.
 
-            Returns:
-            bool: `True` if the client was successfully re-enabled, 
-                `False` if no client was updated or an error occurred.
+    #         Returns:
+    #         bool: `True` if the client was successfully re-enabled, 
+    #             `False` if no client was updated or an error occurred.
 
-            Exceptions:
-            - Exception: Captures any general errors that may occur during the update 
-            process, such as issues with the SQL query or database connection.
-        """
+    #         Exceptions:
+    #         - Exception: Captures any general errors that may occur during the update 
+    #         process, such as issues with the SQL query or database connection.
+    #     """
 
-        if clientId != None:
-            try:
-                cursor = conection.cursor()
-                sql = """UPDATE Cliente SET Estado = 1  WHERE Cedula = %s"""
-                cursor.execute(sql, (clientId))
-                if cursor.rowcount > 0:
-                    conection.commit()
-                    return True
-                else:
-                    print("No se pudo actualizar el cliente.")
-                    conection.rollback()
-                    return False
+    #     if clientId != None:
+    #         try:
+    #             cursor = conection.cursor()
+    #             sql = """UPDATE Cliente SET Estado = 1  WHERE Cedula = %s"""
+    #             cursor.execute(sql, (clientId))
+    #             if cursor.rowcount > 0:
+    #                 conection.commit()
+    #                 return True
+    #             else:
+    #                 print("No se pudo actualizar el cliente.")
+    #                 conection.rollback()
+    #                 return False
 
-            except Exception as ex:
-                print(f"Ocurrió un error en actualizar un cliente {ex}")
-                conection.rollback()
-                return False
-        else:
-            return False
+    #         except Exception as ex:
+    #             print(f"Ocurrió un error en actualizar un cliente {ex}")
+    #             conection.rollback()
+    #             return False
+    #     else:
+    #         return False
     
     # @classmethod
     # def getDataClient(cls, request):
@@ -598,85 +598,95 @@ class ClientRepository(RepositoryBase):
         return True
         
         
+    def disable_client(self, client_id):
+        return self.update(client_id, State=0) 
+
+    def able_Client(self, client_id):
+        return self.update(client_id, State=1) 
+
+
+
+
+
         
     
-    @classmethod
-    def get_Notifications(cls, conexion):
-        """
-            Retrieves all notifications from the `notificacion` table in the database.
+    # @classmethod
+    # def get_Notifications(cls, conexion):
+    #     """
+    #         Retrieves all notifications from the `notificacion` table in the database.
 
-            This method executes an SQL query to fetch all rows from the `notificacion` table, 
-            which includes notification ID, subject, date, time, and status. 
-            Each row is used to create a `Notification` object, and the list of notifications 
-            is returned.
+    #         This method executes an SQL query to fetch all rows from the `notificacion` table, 
+    #         which includes notification ID, subject, date, time, and status. 
+    #         Each row is used to create a `Notification` object, and the list of notifications 
+    #         is returned.
 
-            Parameters:
-            conexion (obj): The database connection object.
+    #         Parameters:
+    #         conexion (obj): The database connection object.
 
-            Returns:
-            list: A list of `Notification` objects containing the notifications from the database.
-            - If an error occurs, an empty list is returned.
+    #         Returns:
+    #         list: A list of `Notification` objects containing the notifications from the database.
+    #         - If an error occurs, an empty list is returned.
 
-            Exceptions:
-            - Exception: Catches any errors that occur during the database query or connection.
-        """
+    #         Exceptions:
+    #         - Exception: Catches any errors that occur during the database query or connection.
+    #     """
 
-        try:
-            cursor = conexion.cursor()
-            sql = "SELECT ID_Notificacion, Asunto, Fecha, Hora, Estado FROM Notificacion"
-            cursor.execute(sql)
-            rows = cursor.fetchall()
-            notifications = []
-            for row in rows:
-                notification = Notification(row[0], row[1],row[2], row[3],row[4])
-                notifications.append(notification)
-            return notifications
-        except Exception as ex:
-            print(f"Error en get_notifications: {ex}")
-            return []
+    #     try:
+    #         cursor = conexion.cursor()
+    #         sql = "SELECT ID_Notificacion, Asunto, Fecha, Hora, Estado FROM Notificacion"
+    #         cursor.execute(sql)
+    #         rows = cursor.fetchall()
+    #         notifications = []
+    #         for row in rows:
+    #             notification = Notification(row[0], row[1],row[2], row[3],row[4])
+    #             notifications.append(notification)
+    #         return notifications
+    #     except Exception as ex:
+    #         print(f"Error en get_notifications: {ex}")
+    #         return []
         
 
-    @classmethod
-    def disableNotification(cls, conection, DocumentId):
-        if DocumentId != None:
-            try:
-                cursor = conection.cursor()
-                sql = """UPDATE Notificacion SET Estado = 0  WHERE ID_Notificacion = %s"""
-                cursor.execute(sql, (DocumentId))
-                if cursor.rowcount > 0:
-                    conection.commit()
+    # @classmethod
+    # def disableNotification(cls, conection, DocumentId):
+    #     if DocumentId != None:
+    #         try:
+    #             cursor = conection.cursor()
+    #             sql = """UPDATE Notificacion SET Estado = 0  WHERE ID_Notificacion = %s"""
+    #             cursor.execute(sql, (DocumentId))
+    #             if cursor.rowcount > 0:
+    #                 conection.commit()
                     
-                    return True
-                else:
-                    print("No se pudo actualizar la notificacion.")
-                    conection.rollback()
-                    return False
+    #                 return True
+    #             else:
+    #                 print("No se pudo actualizar la notificacion.")
+    #                 conection.rollback()
+    #                 return False
 
-            except Exception as ex:
-                print(f"Ocurrió un error en actualizar la notificacion {ex}")
-                conection.rollback()
-                return False
-        else:
-            return False
+    #         except Exception as ex:
+    #             print(f"Ocurrió un error en actualizar la notificacion {ex}")
+    #             conection.rollback()
+    #             return False
+    #     else:
+    #         return False
         
-    @classmethod
-    def ableNotification(cls, conection, DocumentId):
-        if DocumentId != None:
-            try:
-                cursor = conection.cursor()
-                sql = """UPDATE Notificacion SET Estado = 1  WHERE ID_Notificacion = %s"""
-                cursor.execute(sql, (DocumentId))
-                if cursor.rowcount > 0:
-                    conection.commit()
-                    return True
-                else:
-                    print("No se pudo actualizar la Notificacion.")
-                    conection.rollback()
-                    return False
+    # @classmethod
+    # def ableNotification(cls, conection, DocumentId):
+    #     if DocumentId != None:
+    #         try:
+    #             cursor = conection.cursor()
+    #             sql = """UPDATE Notificacion SET Estado = 1  WHERE ID_Notificacion = %s"""
+    #             cursor.execute(sql, (DocumentId))
+    #             if cursor.rowcount > 0:
+    #                 conection.commit()
+    #                 return True
+    #             else:
+    #                 print("No se pudo actualizar la Notificacion.")
+    #                 conection.rollback()
+    #                 return False
 
-            except Exception as ex:
-                print(f"Ocurrió un error en actualizar la Notificacion {ex}")
-                conection.rollback()
-                return False
-        else:
-            return False
+    #         except Exception as ex:
+    #             print(f"Ocurrió un error en actualizar la Notificacion {ex}")
+    #             conection.rollback()
+    #             return False
+    #     else:
+    #         return False

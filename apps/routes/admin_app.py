@@ -66,9 +66,7 @@ def clients():
                 return render_template("admin/clients.html", clients=clients, error=clientValidated, client = client)
             else:
                 clientController.create(client)
-
                 clients = clientController.get_all()
-                
                 flash('Registro creado exitosamente', 'success')
                 return render_template("admin/clients.html", clients=clients, client = None)
         else:
@@ -115,32 +113,24 @@ def clients():
 @login_required
 @admin_permission.require(http_exception=403)
 def UpdateClient(documentId):
-    conexion = Conection.conectar()
-    client = ClientRepository.getClient(conexion, documentId)
-    Conection.desconectar()
-    if client:
+
+    try:
+        client = clientController.get_one(documentId)
         if request.method == 'POST':
-            clientupdated = ClientRepository.getDataClient(request)
-            clientValidated = ClientRepository.validateDataForm(clientupdated)
+            clientupdated = clientController.getDataClient(request)
+            clientValidated = clientController.clientValidatedUpdate(client.DocumentId,clientupdated)
             if not type(clientValidated) == bool:
                 return render_template("admin/updateClient.html", error=clientValidated, client = client)
-            conection = Conection.conectar()
-            if conection == None:
-                return render_template("admin/updateClient.html", error= "Error en la conexión.", client = client)
-            update = ClientRepository.updateClient(conection, clientupdated, client.DocumentId)
-            Conection.desconectar()
-            if update and type(update) == bool:
-                return redirect(url_for('admin_app.clients', done = "Cliente actualizado correctamente."))
-            elif update == "Primary":
-                return render_template("admin/updateClient.html", error= "El número de cédula ingresado ya esta registrado con otro cliente.", client = client)
-            elif update == "DataBase":
-                return render_template("admin/updateClient.html", error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", client = client)
-            else:
-                return render_template("admin/updateClient.html", error= "No se pudo actualizar el cliente.", client = client)
+            clientController.updateClient(client.DocumentId,clientupdated)
+            flash('Registro actualizado exitosamente', 'success')
+            return redirect(url_for('admin_app.clients'))
         else:
-            return render_template("admin/updateClient.html", client=client)
-    else:
-        return redirect(url_for("admin_app.clients", error = "Cliente no encontrado"))
+                return render_template("admin/updateClient.html", client=client)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for("admin_app.clients"))
+ 
+
     
 @admin_app.route("/clientes/ver/<documentId>", methods = ['GET'])
 @login_required
@@ -152,7 +142,7 @@ def viewClient(documentId):
 
     except Exception as ex:
         flash(ex.args[0], 'danger')
-        return redirect(url_for('admin_app.clients', error="Cliente no encontrado"))
+        return redirect(url_for('admin_app.clients'))
 
 @admin_app.route("/clientes/deshabilitar", methods = ['POST'])
 @login_required
@@ -160,11 +150,8 @@ def viewClient(documentId):
 def disableClient():
     data = request.get_json()
     clientId = data.get('clientId')
-    conection = Conection.conectar()
-    if conection == None:
-        return redirect(url_for('admin_app.client', error = "No se pudo conectar con la base de datos"))
-    disable = ClientRepository.disableClient(conection, clientId)
-    Conection.desconectar()
+   
+    disable = clientController.disable_client(clientId)
 
     if disable:
         return jsonify({"message": "Hecho"})
@@ -178,12 +165,7 @@ def disableClient():
 def ableClient():
     data = request.get_json()
     clientId = data.get('clientId')
-    conection = Conection.conectar()
-    if conection == None:
-        return redirect(url_for('admin_app.client', error = "No se pudo conectar con la base de datos"))
-    able = ClientRepository.ableClient(conection, clientId)
-    Conection.desconectar()
-
+    able = clientController.able_Client(clientId)
     if able:
         return jsonify({"message": "Hecho"})
     else:
