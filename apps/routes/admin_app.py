@@ -272,81 +272,63 @@ def viewSession(Session_ID):
 @admin_app.route("/trainers", methods = ['POST', 'GET'])
 @login_required
 def trainers():
-
-    conection = Conection.conectar()
-
-    trainers = trainerController.get_all()
-
-    Conection.desconectar()
-    doneMessage = request.args.get('done')
-    errorMessage = request.args.get('error')
-    if request.method == 'POST':
-        trainer = ModelTrainer.getDataTrainer(request)
-        trainerValidated = ModelTrainer.validateDataForm(trainer)
-        if not type(trainerValidated) == bool:
-            return render_template("admin/trainers.html", trainers=trainers, error=trainerValidated, trainer = trainer)
-        conection = Conection.conectar()
-        if conection == None:
-            return render_template("admin/trainers.html", trainers=trainers, error= "Error en la conexión.", trainer = trainer)
-        insert = ModelTrainer.insertTrainer(conection, trainer)
-        if insert and type(insert) == bool:
-            Conection.desconectar()
-            return redirect(url_for("admin_app.trainers", done = "Entrenador creado correctamente."))
-        elif insert == "Primary":
-            Conection.desconectar()
-            return render_template("admin/trainers.html", trainers=trainers, error= "El número de cédula ingresado ya esta registrado con otro entrenador.", trainer = trainer)
-        elif insert == "DataBase":
-            return render_template("admin/trainers.html", trainers=trainers, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", trainer = trainer)
+    try:
+        trainers = trainerController.get_all()
+        if request.method == 'POST':
+            trainer = trainerController.getData(request)
+            trainerValidated = trainerController.validateDataForm(trainer)
+            if not type(trainerValidated) == bool:
+                return render_template("admin/trainers.html", trainers=trainers, error=trainerValidated, trainer = trainer)
+            trainerController.create(trainer)
+            trainers = trainerController.get_all()
+            flash('Registro creado exitosamente', 'success')
+            return render_template("admin/trainers.html", trainers=trainers, trainer = None)
         else:
-            Conection.desconectar()
-            return render_template("admin/trainers.html", trainers=trainers, error= "No se pudo ingresar el entrenador, por favor inténtalo más tarde.", trainer = trainer)
-    else:
-        return render_template("admin/trainers.html", trainers=trainers, trainer = None, done = doneMessage, error = errorMessage)
+            return render_template("admin/trainers.html", trainers=trainers, trainer = None)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return render_template("admin/trainers.html", trainers=trainers, trainer = None)
+ 
 
 @admin_app.route("/trainer/update/<documentId>", methods = ['POST', 'GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def updateTrainer(documentId):
-    conection = Conection.conectar()
-    trainer = ModelTrainer.getTrainer(conection, documentId)
-    Conection.desconectar()
 
-    if trainer:
+    try:
+        trainer = trainerController.get_one(documentId)
+
         if request.method == 'POST':
-            trainerUpdated = ModelTrainer.getDataTrainer(request)
-            trainerValidated = ModelTrainer.validateDataForm(trainerUpdated)
+            trainerUpdated = trainerController.getData(request)
+            trainerValidated = trainerController.TrainertValidatedUpdate(trainer.DocumentId,trainerUpdated)
 
             if not type(trainerValidated) == bool:
                 return render_template("admin/updateTrainer.html", error=trainerValidated, trainer = trainer)
-            conection = Conection.conectar()
-            update = ModelTrainer.updateTrainer(conection, trainerUpdated, trainer.DocumentId)
-            Conection.desconectar()
-            if update and type(update) == bool:
-                return redirect(url_for('admin_app.trainers', done = "Entrenador actualizado correctamente."))
-            elif update == "Primary":
-                return render_template("admin/updateTrainer.html", error= "El número de cédula ingresado ya esta registrado con otro entrenador.", trainer = trainer)
-            elif update == "DataBase":
-                return render_template("admin/updateTrainer.html", error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", trainer = trainer)
-            else:
-                return render_template("admin/updateTrainer.html", error= "No se pudo actualizar el entrenador.", trainer = trainer)
-    else:
-        return redirect(url_for("admin_app.trainer", error = "Entrenador no encontrado."))
-
-    return render_template("admin/updateTrainer.html", trainer = trainer)
+                
+            trainerController.updateTrainer(trainer.DocumentId,trainerUpdated)
+            flash('Registro actualizado exitosamente', 'success')
+            return redirect(url_for('admin_app.trainers'))
+                
+        return render_template("admin/updateTrainer.html", trainer = trainer)
+    
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for("admin_app.trainers"))
+ 
 
 
 @admin_app.route("/trainers/view/<documentId>", methods = ['GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def viewTrainer(documentId):
-    conection = Conection.conectar()
-    trainer = ModelTrainer.getTrainer(conection, documentId)
-    Conection.desconectar()
-
-    if trainer:
+    try:
+        trainer = trainerController.get_one(documentId)
         return render_template("admin/viewTrainer.html", trainer=trainer)
-    else:
-        return redirect(url_for("admin_app.trainer", error = "Entrenador no encontrado."))
+
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.trainers'))
+    
 
 @admin_app.route("/trainer/disable", methods = ['POST'])
 @login_required
@@ -354,9 +336,8 @@ def viewTrainer(documentId):
 def disableTrainer():
     data = request.get_json()
     DocumentId = data.get('clientID')
-    conexion = Conection.conectar()
-    disable = ModelTrainer.disableTrainer(conexion, DocumentId)
-    Conection.desconectar()
+
+    disable = trainerController.disable_trainer(DocumentId)
 
     if disable:
         return jsonify({"message": "Hecho"})
@@ -370,9 +351,7 @@ def disableTrainer():
 def ableTrainer():
     data = request.get_json()
     DocumentId = data.get('clientID')
-    conection = Conection.conectar()
-    able = ModelTrainer.ableTrainer(conection, DocumentId)
-    Conection.desconectar()
+    able = trainerController.able_trainer(DocumentId)
 
     if able:
         return jsonify({"message": "Hecho"})
@@ -499,7 +478,7 @@ def bills():
 
     bills = ModelBill.get_all(conection)
     clients = ClientRepository.get_allAble(conection)
-    trainers = ModelTrainer.get_allAble(conection)
+    trainers = trainerController.get_allAble(conection)
     memberships = ModelMembership.get_allAble(conection)
     products = ModelProduct.get_allAble(conection)
     Conection.desconectar()
@@ -660,7 +639,7 @@ def viewcancelBill(ID_Bill):
             return redirect(url_for('admin_app.bills', error = "No se pudo obtener la información de la factura anulada."))
 
         if bill.EntityType == 'Entrenador':
-            trainer = ModelTrainer.getTrainerBill(conection, bill.ID_Entity)
+            trainer = trainerController.getTrainerBill(conection, bill.ID_Entity)
             
             return render_template('admin/viewCancel.html', trainer = trainer, ID_Bill = ID_Bill, bill = bill, cancelBill = cancelBill)
                 

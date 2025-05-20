@@ -49,7 +49,7 @@ class clientController:
     @classmethod
     def clientValidated(cls, request):
            # Validar que el cliente no exista ya
-            existing_client = cls.ClientRepository.findOne_any({'DocumentId': request.DocumentId})
+            existing_client = cls.ClientRepository.findOne({'DocumentId': request.DocumentId})
             if existing_client:
                 return f"Ya existe un cliente registrado con la cédula '{request.DocumentId}'."
             else:
@@ -61,9 +61,10 @@ class clientController:
         if DocumentId == request.DocumentId:
              return  cls.ClientRepository.validateDataForm(request)
         else:
-            existing_client = cls.ClientRepository.findOne_any({'DocumentId': request.DocumentId})
+            existing_client = cls.ClientRepository.findOne({'DocumentId': request.DocumentId})
             if existing_client:
                 return f"Ya existe un cliente registrado con la cédula '{request.DocumentId}'."
+            return  cls.ClientRepository.validateDataForm(request)
            
 
 
@@ -128,7 +129,7 @@ class clientController:
     #         document_id = request.form['documentId']
 
     #         # Validar que el cliente no exista ya
-    #         existing_client = cls.ClientRepository.findOne_any({'DocumentId': document_id})
+    #         existing_client = cls.ClientRepository.findOne({'DocumentId': document_id})
     #         if existing_client:
     #             raise Exception(f"Ya existe un cliente registrado con la cédula '{document_id}'.")
 
