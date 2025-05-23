@@ -53,3 +53,13 @@ class NotificationRepository(RepositoryBase):
                 return False
         else:
             return False
+        
+
+
+    classmethod
+    def disableNotification(self, notification_id):
+        return self.update(notification_id, State=0) 
+
+    classmethod
+    def ableNotification(self, notification_id):
+        return self.update(notification_id, State=1) 

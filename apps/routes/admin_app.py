@@ -26,6 +26,7 @@ from flask import send_file
 from apps.controllers.client_controller import clientController
 from apps.controllers.trainer_controller import trainerController
 from apps.controllers.statistics_controller import statisticsController
+from apps.controllers.notification_controller import notificationController
 
 
 
@@ -148,29 +149,37 @@ def viewClient(documentId):
 @login_required
 @admin_permission.require(http_exception=403)
 def disableClient():
-    data = request.get_json()
-    clientId = data.get('clientId')
-   
-    disable = clientController.disable_client(clientId)
+    try:
+        data = request.get_json()
+        clientId = data.get('clientId')
+    
+        disable = clientController.disable_client(clientId)
 
-    if disable:
-        return jsonify({"message": "Hecho"})
-    else:
-        # Manejar el caso en que no se encuentre el cliente
-        return jsonify({"error": "No se pudo deshabilitar"})
+        if disable:
+            return jsonify({"message": "Hecho"})
+        else:
+            # Manejar el caso en que no se encuentre el cliente
+            return jsonify({"error": "No se pudo deshabilitar"})
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.clients'))
     
 @admin_app.route("/clientes/habilitar", methods = ['POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def ableClient():
-    data = request.get_json()
-    clientId = data.get('clientId')
-    able = clientController.able_Client(clientId)
-    if able:
-        return jsonify({"message": "Hecho"})
-    else:
-        # Manejar el caso en que no se encuentre el cliente
-        return jsonify({"error": "No se pudo habilitar"})
+    try:
+        data = request.get_json()
+        clientId = data.get('clientId')
+        able = clientController.able_Client(clientId)
+        if able:
+            return jsonify({"message": "Hecho"})
+        else:
+            # Manejar el caso en que no se encuentre el cliente
+            return jsonify({"error": "No se pudo habilitar"})
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.clients'))
 
 
 @admin_app.route("/client/statisticsClient/<documentId>", methods=['GET'])
@@ -334,29 +343,38 @@ def viewTrainer(documentId):
 @login_required
 @admin_permission.require(http_exception=403)
 def disableTrainer():
-    data = request.get_json()
-    DocumentId = data.get('clientID')
+    try:
+        data = request.get_json()
+        DocumentId = data.get('clientID')
 
-    disable = trainerController.disable_trainer(DocumentId)
+        disable = trainerController.disable_trainer(DocumentId)
 
-    if disable:
-        return jsonify({"message": "Hecho"})
-    else:
-        
-        return jsonify({"error": "No se pudo deshabilitar"})
+        if disable:
+            return jsonify({"message": "Hecho"})
+        else:
+            
+            return jsonify({"error": "No se pudo deshabilitar"})
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.trainers'))
+
     
 @admin_app.route("/trainer/able", methods = ['POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def ableTrainer():
-    data = request.get_json()
-    DocumentId = data.get('clientID')
-    able = trainerController.able_trainer(DocumentId)
+    try:
+        data = request.get_json()
+        DocumentId = data.get('clientID')
+        able = trainerController.able_trainer(DocumentId)
 
-    if able:
-        return jsonify({"message": "Hecho"})
-    else:
-        return jsonify({"error": "No se pudo habilitar"})
+        if able:
+            return jsonify({"message": "Hecho"})
+        else:
+            return jsonify({"error": "No se pudo habilitar"})
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.trainers'))
     
 
 #-------------Rutas de user-------------#
@@ -802,27 +820,18 @@ def ableProduct():
 @admin_app.route("/notifications", methods = ['GET', 'POST'])
 @login_required
 def notifications():
-    conection = Conection.conectar()
-    notifications = UserRepository.get_Notifications(conection)
-    Conection.desconectar()
-    doneMessage = request.args.get('done')
-    errorMessage = request.args.get('error')
-    if request.method == 'POST':
-        notification = UserRepository.getDataNotification(request)
-        conection = Conection.conectar()
-        if conection == None:
-            return render_template("admin/notifications.html", notifications=notifications, error= "Error en la conexión.", notification=notification)
-        insert = UserRepository.insertNotification(conection, notification)
-        if insert and type(insert) == bool:
-            notifications = UserRepository.get_Notifications(conection)
-            Conection.desconectar()
-            return render_template("admin/notifications.html", notifications=notifications, done = "Notificación creada correctamente.", notification = None)
+    try:
+        notifications = notificationController.get_all()
+        if request.method == 'POST':
+            notificationController.CreateData(request)
+            notifications = notificationController.get_all()
+            flash('Registro creado exitosamente', 'success')
+            return render_template("admin/notifications.html", notifications=notifications, notification = None)
         else:
-            Conection.desconectar()
-            return render_template("admin/notifications.html", notifications=notifications, error= "No se pudo ingresar la notificación, por favor inténtalo más tarde.", notification=notification)
-    else:
-        return render_template("admin/notifications.html", notifications=notifications, notification = None, done = doneMessage, error = errorMessage)
-
+            return render_template("admin/notifications.html", notifications=notifications, notification = None)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for("admin_app.notifications"))
 
 @admin_app.route("/notifications/view/<ID_Notication>")
 @login_required
@@ -830,44 +839,48 @@ def notifications():
 def viewNotification(ID_Notication):
     notification = None
     try:
-        conection = Conection.conectar()
-        notification = UserRepository.get_Notification(conection, ID_Notication)
-    except Exception as e:
-        print(f"Error al obtener la notificación: {e}")
-    finally:
-        Conection().desconectar()
-
-    return render_template("/admin/viewNotification.html", notification=notification)
-
+        notification = notificationController.get_one(ID_Notication)
+        return render_template("admin/viewNotification.html", notification=notification)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.notifications'))
 
 
 @admin_app.route("/notifications/disable", methods = ['POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def disableNotification():
-    data = request.get_json()
-    ID_Notification = data.get('DocumentId')
-    conexion = Conection.conectar()
-    disable = ClientRepository.disableNotification(conexion, ID_Notification)
-    Conection.desconectar()
-    if disable:
-        return jsonify({"message": "Hecho"})
-    else:
-        return jsonify({"error": "No se pudo deshabilitar"})
+    try:
+        data = request.get_json()
+        ID_Notification = data.get('DocumentId')
+        disable = notificationController.disableNotification(ID_Notification)
+
+        if disable:
+            return jsonify({"message": "Hecho"})
+        else:
+            return jsonify({"error": "No se pudo deshabilitar"})
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.notifications'))
+
     
 @admin_app.route("/notifications/able", methods = ['POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def ableNotification():
-    data = request.get_json()
-    ID_Product = data.get('DocumentId')
-    conexion = Conection.conectar()
-    able = ClientRepository.ableNotification(conexion, ID_Product)
-    Conection.desconectar()
-    if able:
-        return jsonify({"message": "Hecho"})
-    else:
-        return jsonify({"error": "No se pudo habilitar"})
+    try: 
+        data = request.get_json()
+        ID_Product = data.get('DocumentId')
+        able = notificationController.ableNotification(ID_Product)
+
+        if able:
+            return jsonify({"message": "Hecho"})
+        else:
+            return jsonify({"error": "No se pudo habilitar"})
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.notifications'))
+
 
 
 
