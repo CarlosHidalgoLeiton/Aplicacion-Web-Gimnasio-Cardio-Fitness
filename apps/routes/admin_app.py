@@ -26,6 +26,7 @@ from flask import send_file
 from apps.controllers.client_controller import clientController
 from apps.controllers.trainer_controller import trainerController
 from apps.controllers.statistics_controller import statisticsController
+from apps.controllers.notification_controller import notificationController
 
 
 
@@ -148,29 +149,37 @@ def viewClient(documentId):
 @login_required
 @admin_permission.require(http_exception=403)
 def disableClient():
-    data = request.get_json()
-    clientId = data.get('clientId')
-   
-    disable = clientController.disable_client(clientId)
+    try:
+        data = request.get_json()
+        clientId = data.get('clientId')
+    
+        disable = clientController.disable_client(clientId)
 
-    if disable:
-        return jsonify({"message": "Hecho"})
-    else:
-        # Manejar el caso en que no se encuentre el cliente
-        return jsonify({"error": "No se pudo deshabilitar"})
+        if disable:
+            return jsonify({"message": "Hecho"})
+        else:
+            # Manejar el caso en que no se encuentre el cliente
+            return jsonify({"error": "No se pudo deshabilitar"})
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.clients'))
     
 @admin_app.route("/clientes/habilitar", methods = ['POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def ableClient():
-    data = request.get_json()
-    clientId = data.get('clientId')
-    able = clientController.able_Client(clientId)
-    if able:
-        return jsonify({"message": "Hecho"})
-    else:
-        # Manejar el caso en que no se encuentre el cliente
-        return jsonify({"error": "No se pudo habilitar"})
+    try:
+        data = request.get_json()
+        clientId = data.get('clientId')
+        able = clientController.able_Client(clientId)
+        if able:
+            return jsonify({"message": "Hecho"})
+        else:
+            # Manejar el caso en que no se encuentre el cliente
+            return jsonify({"error": "No se pudo habilitar"})
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.clients'))
 
 
 @admin_app.route("/client/statisticsClient/<documentId>", methods=['GET'])
@@ -272,112 +281,100 @@ def viewSession(Session_ID):
 @admin_app.route("/trainers", methods = ['POST', 'GET'])
 @login_required
 def trainers():
-
-    conection = Conection.conectar()
-
-    trainers = trainerController.get_all()
-
-    Conection.desconectar()
-    doneMessage = request.args.get('done')
-    errorMessage = request.args.get('error')
-    if request.method == 'POST':
-        trainer = ModelTrainer.getDataTrainer(request)
-        trainerValidated = ModelTrainer.validateDataForm(trainer)
-        if not type(trainerValidated) == bool:
-            return render_template("admin/trainers.html", trainers=trainers, error=trainerValidated, trainer = trainer)
-        conection = Conection.conectar()
-        if conection == None:
-            return render_template("admin/trainers.html", trainers=trainers, error= "Error en la conexión.", trainer = trainer)
-        insert = ModelTrainer.insertTrainer(conection, trainer)
-        if insert and type(insert) == bool:
-            Conection.desconectar()
-            return redirect(url_for("admin_app.trainers", done = "Entrenador creado correctamente."))
-        elif insert == "Primary":
-            Conection.desconectar()
-            return render_template("admin/trainers.html", trainers=trainers, error= "El número de cédula ingresado ya esta registrado con otro entrenador.", trainer = trainer)
-        elif insert == "DataBase":
-            return render_template("admin/trainers.html", trainers=trainers, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", trainer = trainer)
+    try:
+        trainers = trainerController.get_all()
+        if request.method == 'POST':
+            trainer = trainerController.getData(request)
+            trainerValidated = trainerController.validateDataForm(trainer)
+            if not type(trainerValidated) == bool:
+                return render_template("admin/trainers.html", trainers=trainers, error=trainerValidated, trainer = trainer)
+            trainerController.create(trainer)
+            trainers = trainerController.get_all()
+            flash('Registro creado exitosamente', 'success')
+            return render_template("admin/trainers.html", trainers=trainers, trainer = None)
         else:
-            Conection.desconectar()
-            return render_template("admin/trainers.html", trainers=trainers, error= "No se pudo ingresar el entrenador, por favor inténtalo más tarde.", trainer = trainer)
-    else:
-        return render_template("admin/trainers.html", trainers=trainers, trainer = None, done = doneMessage, error = errorMessage)
+            return render_template("admin/trainers.html", trainers=trainers, trainer = None)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return render_template("admin/trainers.html", trainers=trainers, trainer = None)
+ 
 
 @admin_app.route("/trainer/update/<documentId>", methods = ['POST', 'GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def updateTrainer(documentId):
-    conection = Conection.conectar()
-    trainer = ModelTrainer.getTrainer(conection, documentId)
-    Conection.desconectar()
 
-    if trainer:
+    try:
+        trainer = trainerController.get_one(documentId)
+
         if request.method == 'POST':
-            trainerUpdated = ModelTrainer.getDataTrainer(request)
-            trainerValidated = ModelTrainer.validateDataForm(trainerUpdated)
+            trainerUpdated = trainerController.getData(request)
+            trainerValidated = trainerController.TrainertValidatedUpdate(trainer.DocumentId,trainerUpdated)
 
             if not type(trainerValidated) == bool:
                 return render_template("admin/updateTrainer.html", error=trainerValidated, trainer = trainer)
-            conection = Conection.conectar()
-            update = ModelTrainer.updateTrainer(conection, trainerUpdated, trainer.DocumentId)
-            Conection.desconectar()
-            if update and type(update) == bool:
-                return redirect(url_for('admin_app.trainers', done = "Entrenador actualizado correctamente."))
-            elif update == "Primary":
-                return render_template("admin/updateTrainer.html", error= "El número de cédula ingresado ya esta registrado con otro entrenador.", trainer = trainer)
-            elif update == "DataBase":
-                return render_template("admin/updateTrainer.html", error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", trainer = trainer)
-            else:
-                return render_template("admin/updateTrainer.html", error= "No se pudo actualizar el entrenador.", trainer = trainer)
-    else:
-        return redirect(url_for("admin_app.trainer", error = "Entrenador no encontrado."))
-
-    return render_template("admin/updateTrainer.html", trainer = trainer)
+                
+            trainerController.updateTrainer(trainer.DocumentId,trainerUpdated)
+            flash('Registro actualizado exitosamente', 'success')
+            return redirect(url_for('admin_app.trainers'))
+                
+        return render_template("admin/updateTrainer.html", trainer = trainer)
+    
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for("admin_app.trainers"))
+ 
 
 
 @admin_app.route("/trainers/view/<documentId>", methods = ['GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def viewTrainer(documentId):
-    conection = Conection.conectar()
-    trainer = ModelTrainer.getTrainer(conection, documentId)
-    Conection.desconectar()
-
-    if trainer:
+    try:
+        trainer = trainerController.get_one(documentId)
         return render_template("admin/viewTrainer.html", trainer=trainer)
-    else:
-        return redirect(url_for("admin_app.trainer", error = "Entrenador no encontrado."))
+
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.trainers'))
+    
 
 @admin_app.route("/trainer/disable", methods = ['POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def disableTrainer():
-    data = request.get_json()
-    DocumentId = data.get('clientID')
-    conexion = Conection.conectar()
-    disable = ModelTrainer.disableTrainer(conexion, DocumentId)
-    Conection.desconectar()
+    try:
+        data = request.get_json()
+        DocumentId = data.get('clientID')
 
-    if disable:
-        return jsonify({"message": "Hecho"})
-    else:
-        
-        return jsonify({"error": "No se pudo deshabilitar"})
+        disable = trainerController.disable_trainer(DocumentId)
+
+        if disable:
+            return jsonify({"message": "Hecho"})
+        else:
+            
+            return jsonify({"error": "No se pudo deshabilitar"})
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.trainers'))
+
     
 @admin_app.route("/trainer/able", methods = ['POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def ableTrainer():
-    data = request.get_json()
-    DocumentId = data.get('clientID')
-    conection = Conection.conectar()
-    able = ModelTrainer.ableTrainer(conection, DocumentId)
-    Conection.desconectar()
+    try:
+        data = request.get_json()
+        DocumentId = data.get('clientID')
+        able = trainerController.able_trainer(DocumentId)
 
-    if able:
-        return jsonify({"message": "Hecho"})
-    else:
-        return jsonify({"error": "No se pudo habilitar"})
+        if able:
+            return jsonify({"message": "Hecho"})
+        else:
+            return jsonify({"error": "No se pudo habilitar"})
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.trainers'))
     
 
 #-------------Rutas de user-------------#
@@ -499,7 +496,7 @@ def bills():
 
     bills = ModelBill.get_all(conection)
     clients = ClientRepository.get_allAble(conection)
-    trainers = ModelTrainer.get_allAble(conection)
+    trainers = trainerController.get_allAble(conection)
     memberships = ModelMembership.get_allAble(conection)
     products = ModelProduct.get_allAble(conection)
     Conection.desconectar()
@@ -660,7 +657,7 @@ def viewcancelBill(ID_Bill):
             return redirect(url_for('admin_app.bills', error = "No se pudo obtener la información de la factura anulada."))
 
         if bill.EntityType == 'Entrenador':
-            trainer = ModelTrainer.getTrainerBill(conection, bill.ID_Entity)
+            trainer = trainerController.getTrainerBill(conection, bill.ID_Entity)
             
             return render_template('admin/viewCancel.html', trainer = trainer, ID_Bill = ID_Bill, bill = bill, cancelBill = cancelBill)
                 
@@ -823,27 +820,18 @@ def ableProduct():
 @admin_app.route("/notifications", methods = ['GET', 'POST'])
 @login_required
 def notifications():
-    conection = Conection.conectar()
-    notifications = UserRepository.get_Notifications(conection)
-    Conection.desconectar()
-    doneMessage = request.args.get('done')
-    errorMessage = request.args.get('error')
-    if request.method == 'POST':
-        notification = UserRepository.getDataNotification(request)
-        conection = Conection.conectar()
-        if conection == None:
-            return render_template("admin/notifications.html", notifications=notifications, error= "Error en la conexión.", notification=notification)
-        insert = UserRepository.insertNotification(conection, notification)
-        if insert and type(insert) == bool:
-            notifications = UserRepository.get_Notifications(conection)
-            Conection.desconectar()
-            return render_template("admin/notifications.html", notifications=notifications, done = "Notificación creada correctamente.", notification = None)
+    try:
+        notifications = notificationController.get_all()
+        if request.method == 'POST':
+            notificationController.CreateData(request)
+            notifications = notificationController.get_all()
+            flash('Registro creado exitosamente', 'success')
+            return render_template("admin/notifications.html", notifications=notifications, notification = None)
         else:
-            Conection.desconectar()
-            return render_template("admin/notifications.html", notifications=notifications, error= "No se pudo ingresar la notificación, por favor inténtalo más tarde.", notification=notification)
-    else:
-        return render_template("admin/notifications.html", notifications=notifications, notification = None, done = doneMessage, error = errorMessage)
-
+            return render_template("admin/notifications.html", notifications=notifications, notification = None)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for("admin_app.notifications"))
 
 @admin_app.route("/notifications/view/<ID_Notication>")
 @login_required
@@ -851,44 +839,48 @@ def notifications():
 def viewNotification(ID_Notication):
     notification = None
     try:
-        conection = Conection.conectar()
-        notification = UserRepository.get_Notification(conection, ID_Notication)
-    except Exception as e:
-        print(f"Error al obtener la notificación: {e}")
-    finally:
-        Conection().desconectar()
-
-    return render_template("/admin/viewNotification.html", notification=notification)
-
+        notification = notificationController.get_one(ID_Notication)
+        return render_template("admin/viewNotification.html", notification=notification)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.notifications'))
 
 
 @admin_app.route("/notifications/disable", methods = ['POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def disableNotification():
-    data = request.get_json()
-    ID_Notification = data.get('DocumentId')
-    conexion = Conection.conectar()
-    disable = ClientRepository.disableNotification(conexion, ID_Notification)
-    Conection.desconectar()
-    if disable:
-        return jsonify({"message": "Hecho"})
-    else:
-        return jsonify({"error": "No se pudo deshabilitar"})
+    try:
+        data = request.get_json()
+        ID_Notification = data.get('DocumentId')
+        disable = notificationController.disableNotification(ID_Notification)
+
+        if disable:
+            return jsonify({"message": "Hecho"})
+        else:
+            return jsonify({"error": "No se pudo deshabilitar"})
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.notifications'))
+
     
 @admin_app.route("/notifications/able", methods = ['POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def ableNotification():
-    data = request.get_json()
-    ID_Product = data.get('DocumentId')
-    conexion = Conection.conectar()
-    able = ClientRepository.ableNotification(conexion, ID_Product)
-    Conection.desconectar()
-    if able:
-        return jsonify({"message": "Hecho"})
-    else:
-        return jsonify({"error": "No se pudo habilitar"})
+    try: 
+        data = request.get_json()
+        ID_Product = data.get('DocumentId')
+        able = notificationController.ableNotification(ID_Product)
+
+        if able:
+            return jsonify({"message": "Hecho"})
+        else:
+            return jsonify({"error": "No se pudo habilitar"})
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.notifications'))
+
 
 
 

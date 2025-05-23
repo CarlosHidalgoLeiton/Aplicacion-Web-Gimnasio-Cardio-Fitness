@@ -1,11 +1,9 @@
 from apps.db.repositories.ClientRepository import ClientRepository
 from apps.db.repositories.NotificationRepository import NotificationRepository
 from datetime import datetime, date
+from apps.db.models.Notification import Notification
 
-
-class clientController:
-
-    ClientRepository = ClientRepository()
+class notificationController:
 
     NotificationRepository = NotificationRepository()
 
@@ -18,79 +16,68 @@ class clientController:
 
     @classmethod
     def get_all(cls):
-        clients = cls.ClientRepository.findAll()
-        if not clients:
-            raise Exception('No se encontraron clientes')
-        return clients
-        
-    @classmethod
-    def getClientById(cls,id):
-
-        try:
-            relations = ['membresia']
-
-            # Obtener la estadística con sus relaciones
-            statistic = cls.ClientRepository.get_one(id, relations=relations)
-
-            if not statistic:
-                raise Exception(f"Error al obtener el cliente {id}.")
-
-            return statistic
-        except Exception as ex:
-            raise Exception(f'Error en StatisticsController.get_statistic_by_id: {ex}')
-        
-    @classmethod
-    def getDataClient(cls, request):
-            return cls.ClientRepository.getDataClient(request) 
-
-        
+        notifications = cls.NotificationRepository.findAll()
+        if not notifications:
+            raise Exception('No se encontraron notificaciones')
+        return notifications
         
 
     @classmethod
-    def clientValidated(cls, request):
-           # Validar que el cliente no exista ya
-            existing_client = cls.ClientRepository.findOne({'DocumentId': request.DocumentId})
-            if existing_client:
-                return f"Ya existe un cliente registrado con la cédula '{request.DocumentId}'."
-            else:
-                return  cls.ClientRepository.validateDataForm(request)
-            
+    def create(cls, data):
+        dataNotification = cls.NotificationRepository.to_dict(data)
+        notification = cls.NotificationRepository.create(**dataNotification)
+        return notification
+    
+        
+ 
 
     @classmethod
-    def clientValidatedUpdate(cls, DocumentId, request):
-        if DocumentId == request.DocumentId:
-             return  cls.ClientRepository.validateDataForm(request)
-        else:
-            existing_client = cls.ClientRepository.findOne({'DocumentId': request.DocumentId})
-            if existing_client:
-                return f"Ya existe un cliente registrado con la cédula '{request.DocumentId}'."
-            return  cls.ClientRepository.validateDataForm(request)
+    def CreateData(cls, request):
+        subject = request.form['Subject']
+        date_str = request.form['Date']
+        hour_str = request.form['Hour']
+
+        # Convertir cadenas a tipos nativos
+        date = datetime.strptime(date_str, "%Y-%m-%d").date()
+        hour = datetime.strptime(hour_str, "%H:%M").time()
+
+        # Crear la instancia del modelo Notification
+        notification_instance = Notification(
+            Subject=subject,
+            Date=date,
+            Hour=hour,
+            State=True
+        )
+
+        # Guardar la instancia en la base de datos
+        notification = cls.create(notification_instance)
+        return notification
+
+
+
+        
+        
+
            
 
 
     @classmethod
-    def create(cls, data):
-        dataClient = cls.ClientRepository.to_dict(data)
-        cliente = cls.ClientRepository.create(**dataClient)
-        return cliente
-    
-    @classmethod
     def updateClient(cls,id, data):
-        dataClient = cls.ClientRepository.to_dict(data)
-        cliente = cls.ClientRepository.update(id,**dataClient)
+        dataClient = cls.NotificationRepository.to_dict(data)
+        cliente = cls.NotificationRepository.update(id,**dataClient)
         return cliente
 
     @classmethod
     def get_one(cls,id):
-         return cls.ClientRepository.get_one(id)
+         return cls.NotificationRepository.get_one(id)
 
     @classmethod
-    def disable_client(cls, id):
-         return cls.ClientRepository.disable_client(id)
+    def disableNotification(cls, id):
+         return cls.NotificationRepository.disableNotification(id)
     
     @classmethod
-    def able_Client(cls, id):
-         return cls.ClientRepository.able_Client(id)
+    def ableNotification(cls, id):
+         return cls.NotificationRepository.ableNotification(id)
         
     # @classmethod
     # def getDataClient(cls, request):
