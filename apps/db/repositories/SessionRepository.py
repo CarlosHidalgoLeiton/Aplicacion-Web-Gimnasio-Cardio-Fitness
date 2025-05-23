@@ -2,7 +2,13 @@ from apps.db.models.Session import Session
 from datetime import datetime
 from pymysql import IntegrityError
 import json
-class ModelSession:
+
+from apps.db.repositories.RepositoryBase import RepositoryBase
+
+class SessionRepository(RepositoryBase):
+
+    def __init__(self):
+        super().__init__(Session)
 
     @classmethod
     def insertSession(cls, conection, session):
@@ -62,15 +68,15 @@ class ModelSession:
                     return "Error"
                     
             except IntegrityError as ex:
-                print(f"Error en ModelSession updateSession: {ex}")
+                print(f"Error en SessionRepository updateSession: {ex}")
                 conection.rollback()
                 return "Unique"
             except BaseException as ex:
-                print(f"Error en ModelSession updateSession: {ex}")
+                print(f"Error en SessionRepository updateSession: {ex}")
                 conection.rollback()
                 return "DataBase"
             except Exception as ex:
-                print(f"Error en ModelSession updateSession: {ex}")
+                print(f"Error en SessionRepository updateSession: {ex}")
                 conection.rollback()
                 return "Error"
         else:

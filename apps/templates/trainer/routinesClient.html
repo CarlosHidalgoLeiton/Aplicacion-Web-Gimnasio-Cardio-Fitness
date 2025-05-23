@@ -47,9 +47,9 @@
 										<tbody>
 											{% for routine in routines %}
 											<tr>
-												<td>{{ routine['Indications'] }}</td>
+												<td>{{ routine['Indications']  if routine['Indications'] else 'Sin indicaciones'  }}</td>
 												<td>{{ routine['Date'] }}</td>
-												<td>{{ routine['State'] }}</td>
+												<td>{{ 'Activo' if routine['State'] == True else 'Inactivo' }}</td>
 												<td>
 													<div class="d-flex">
 

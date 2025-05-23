@@ -1,12 +1,14 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from apps.db.conection import Conection
-from apps.db.repositories.ModelRoutine import ModelRoutine
-from apps.db.repositories.ModelSesion import ModelSession
+from apps.db.repositories.RoutineRepository import RoutineRepository
+from apps.db.repositories.SessionRepository import SessionRepository
 from apps.routes.permissions import trainer_permission
 import json  
 from apps.controllers.client_controller import clientController
 from apps.controllers.trainer_controller import trainerController
+from apps.controllers.routine_controller import routineController
+from apps.controllers.session_controller import sessionController
 
 
 trainer_app = Blueprint('trainer_app', __name__)
@@ -123,7 +125,6 @@ def updateStatistics(statisticsId,documentId):
             statistics_data = ModelStatistics.getDataStatisticsUpdate(request)
             statisticsValidated = ModelStatistics.validateDataFormUpdate(statistics_data)
 
-           
             if not isinstance(statisticsValidated, bool):
                 return render_template("trainer/updateStatistics.html", statistics=statistics, error=statisticsValidated, statistics_data=statistics_data, statisticsId=statisticsId,documentId=documentId)
             conection = Conection.conectar()
@@ -153,7 +154,7 @@ def viewStatistics(documentId,clientId):
         client = ModelStatistics.getClientById(conection, clientId)
         Conection.desconectar()
         if client is None:
-         return redirect(url_for('trainer_app.statisticsClient', error="Cliente no encontrado"))
+            return redirect(url_for('trainer_app.statisticsClient', error="Cliente no encontrado"))
     
 
     except Exception as ex:
@@ -165,53 +166,62 @@ def viewStatistics(documentId,clientId):
     return render_template("trainer/viewStatistics.html", statistics=statistics, clientId = clientId,client=client)
 
 
-
-
-
-
-
-
 ## VER RUTINAS
-@trainer_app.route("/client/routinesClient/<ID_Cliente>", methods=['GET', 'POST'])
+@trainer_app.route("/client/routinesClient/<ID_Cliente>", methods=['GET'])
 @login_required
 @trainer_permission.require(http_exception=403)
 def routinesClient(ID_Cliente):
-    conection = Conection.conectar()
-    client = ModelClient.getClient(conection,ID_Cliente)
-    routines = ModelRoutine.get_all(conection, ID_Cliente)  
-    errorMessage = request.args.get('error')
-    Conection.desconectar()
-    return render_template("trainer/routinesClient.html", routines=routines, client=client, error=errorMessage)
+    try:
+        client = clientController.finOneByDocumentId(ID_Cliente)
+
+        if not client:
+            raise Exception('No se ha encontrado el cliente')
+
+        routines = trainerController.getRoutineClient(ID_Cliente)
+
+        return render_template("trainer/routinesClient.html", routines=routines, client=client)
+
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('trainer_app.clients'))
 
 
 @trainer_app.route("/viewRoutine/<routineId>/<DocumentId>", methods=['GET'])
 @login_required
 def viewRoutine(routineId, DocumentId):
-    conexion = Conection.conectar()
-    routine = ModelRoutine.get_routine(conexion, routineId)
-    sessions = ModelSession.get_session_by_Routine(conexion, routineId)
-    client = ModelClient.getClient(conexion, DocumentId)
-    Conection.desconectar()
-
-    if routine:
+    try:
+        client = clientController.finOneByDocumentId(DocumentId)
+        routine = routineController.findOneRoutine(routineId)
+        sessions = sessionController.findAllByIdRoutine(routineId)
         return render_template("trainer/viewRoutine.html", routine=routine, sessions=sessions, client=client)
-    else:
-        return redirect(url_for('trainer_app.clients', error="Rutina no encontrada"))
 
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('trainer_app.routinesClient', ID_Cliente = DocumentId))
 
-    
+    # conexion = Conection.conectar()
+    # routine = RoutineRepository.get_routine(conexion, routineId)
+    # sessions = SessionRepository.get_session_by_Routine(conexion, routineId)
+    # client = ModelClient.getClient(conexion, DocumentId)
+    # Conection.desconectar()
+
+    # if routine:
+    #     return render_template("trainer/viewRoutine.html", routine=routine, sessions=sessions, client=client)
+    # else:
+    #     return redirect(url_for('trainer_app.clients', error="Rutina no encontrada"))
+
 @trainer_app.route("/UpdateRoutine/<ID_Cliente>/<routineId>", methods=['GET', 'POST'])
 @login_required
 @trainer_permission.require(http_exception=403)
 def UpdateRoutine(ID_Cliente, routineId):
     conection = Conection.conectar()
     client = ModelClient.getClient(conection, ID_Cliente)
-    routine = ModelRoutine.get_routine(conection, routineId)
+    routine = RoutineRepository.get_routine(conection, routineId)
     Conection.desconectar()
 
     if request.method == 'POST':
-        updated_routine = ModelRoutine.getDataRoutine(request)
-        routineValidated = ModelRoutine.validateDataForm(updated_routine)
+        updated_routine = RoutineRepository.getDataRoutine(request)
+        routineValidated = RoutineRepository.validateDataForm(updated_routine)
 
         if not isinstance(routineValidated, bool):
             return render_template("trainer/updateRoutineClient.html", client=client, error=routineValidated, routine=updated_routine)
@@ -226,7 +236,7 @@ def UpdateRoutine(ID_Cliente, routineId):
             # Actualizar la rutina principal
             trainer_id = request.form.get('TrainerId')
             indications = request.form.get('Indications')
-            ModelRoutine.updateRoutine(conection, indications, routineId)
+            RoutineRepository.updateRoutine(conection, indications, routineId)
 
             # Procesar sesiones
             sessions_data = request.form.get('sessions')
@@ -238,7 +248,7 @@ def UpdateRoutine(ID_Cliente, routineId):
                 delete_ids = json.loads(delete_ids_str[0]) if delete_ids_str else []
 
             if delete_ids:
-                ModelSession.deleteSessions(conection, routineId, delete_ids)
+                SessionRepository.deleteSessions(conection, routineId, delete_ids)
 
             if sessions_data:
                 sessions_data = json.loads(sessions_data)
@@ -246,11 +256,11 @@ def UpdateRoutine(ID_Cliente, routineId):
                 for session in sessions_data:
                     if session.get('insert', False):  
                         session['Routine_ID'] = routineId
-                        session_result = ModelSession.insertSession(conection, session)
+                        session_result = SessionRepository.insertSession(conection, session)
                         if not session_result:
                             raise Exception(f"Error al insertar la sesión: {session['Name']}")
                     else:  # Sesión existente, se actualiza
-                        session_result = ModelSession.updateSession(conection, session,routineId )
+                        session_result = SessionRepository.updateSession(conection, session,routineId )
                         if not session_result:
                             raise Exception(f"Error al actualizar la sesión: {session['Name']}")
 
@@ -273,7 +283,7 @@ def UpdateRoutine(ID_Cliente, routineId):
 @trainer_permission.require(http_exception=403)
 def getSessions(ID_Routine):
     conection = Conection.conectar()
-    getSessions = ModelSession.get_session_by_Routine(conection, ID_Routine)
+    getSessions = SessionRepository.get_session_by_Routine(conection, ID_Routine)
     Conection.desconectar()
     sessions = [session.to_dict() for session in getSessions]
 
@@ -289,63 +299,21 @@ def getSessions(ID_Routine):
 @trainer_app.route("/client/routineClient/<ID_Cliente>", methods=['GET', 'POST'])
 @login_required
 def routineClient(ID_Cliente):
-    conection = Conection.conectar()
-    client = ModelClient.getClient(conection, ID_Cliente)  
-    doneMessage = request.args.get('done')
-    errorMessage = request.args.get('error')
-    clear_local_storage = request.args.get('clear_local_storage') 
-    Conection.desconectar()
+    try:
+        client = clientController.getClientById(ID_Cliente)
+        clear_local_storage = request.args.get('clear_local_storage')
 
-    if request.method == 'POST':
-        routine = ModelRoutine.getDataRoutine(request)
-        routineValidated = ModelRoutine.validateDataForm(routine)
+        if request.method == 'POST':
+            trainerController.createRoutine(request)
 
-        if not isinstance(routineValidated, bool):
-            return render_template("trainer/routineClient.html", client=client, error=routineValidated, routine=routine)
+            flash('Se ha creado la rutina correctamente', 'success')
+            return redirect(url_for('trainer_app.routinesClient', ID_Cliente=ID_Cliente, clear_local_storage=True))
 
-        conection = Conection.conectar()
-        if conection is None:
-            return render_template("trainer/routineClient.html", client=client, error="Error en la conexión.", routine=routine)
+        return render_template("trainer/routineClient.html", routine=None, client=client, clear_local_storage=clear_local_storage)
 
-        try:
-            sessions = request.form.get('sessions')
-            if sessions == '[]':
-                return render_template("trainer/routineClient.html", client=client, error="Debe ingresar al menos una sesión.", routine=routine) 
-
-            conection.begin()
-
-            insert, success = ModelRoutine.insertRoutine(conection, routine)
-
-            if not success:
-                raise Exception("Error al insertar la rutina.")
-
-            Routine_ID = insert.RoutineId  # Obtener el ID de la rutina creada
-            
-            sessions_data = json.loads(sessions)
-
-            for session in sessions_data:
-                session['Routine_ID'] = Routine_ID
-                session_result = ModelSession.insertSession(conection, session)
-                if session_result != True:
-                    raise Exception(f"Error al insertar la sesión: {session['Name']}")
-
-            conection.commit()
-            Conection.desconectar()
-
-            return redirect(url_for('trainer_app.routinesClient', ID_Cliente=ID_Cliente, done="Rutina creada correctamente.", clear_local_storage=True))
-
-        except Exception as e:
-            conection.rollback()
-            print(f"Error durante la creación de la rutina y sesiones: {e}")
-            if 'Routine_ID' in locals():
-                ModelRoutine.deleteRoutine(conection, Routine_ID)
-                print(f"Rutina {Routine_ID} eliminada debido a un fallo en las sesiones.")
-            
-            Conection.desconectar()
-            return render_template("trainer/routineClient.html", client=client, error="Error al crear la rutina o sesiones.", routine=routine)
-
-    else:
-        return render_template("trainer/routineClient.html", routine=None, client=client, done=doneMessage, error=errorMessage, clear_local_storage=clear_local_storage)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('trainer_app.routineClient', ID_Cliente = ID_Cliente))
 
 
 @trainer_app.route("/client/routineClient/disable", methods = ['POST'])
@@ -355,7 +323,7 @@ def disableRoutine():
     data = request.get_json()
     DocumentId = data.get('routineID')
     conexion = Conection.conectar()
-    disable = ModelRoutine.disableRoutine(conexion, DocumentId)
+    disable = RoutineRepository.disableRoutine(conexion, DocumentId)
     Conection.desconectar()
 
     if disable:
@@ -371,7 +339,7 @@ def ableRoutine():
     data = request.get_json()
     DocumentId = data.get('routineID')
     conection = Conection.conectar()
-    able = ModelRoutine.ableRoutine(conection, DocumentId)
+    able = RoutineRepository.ableRoutine(conection, DocumentId)
     Conection.desconectar()
 
     if able:
@@ -426,9 +394,7 @@ def ableStatistics():
 @trainer_app.route("client/newSession/<ID_Cliente>", methods=['GET', 'POST'])
 @login_required
 def newSession(ID_Cliente):
-    conection = Conection.conectar()
-    client = ModelClient.getClient(conection, ID_Cliente)  
-    Conection.desconectar()
+    client = clientController.getClientById(ID_Cliente)
     return render_template("trainer/newSession.html", client=client)
 
 
@@ -437,7 +403,7 @@ def newSession(ID_Cliente):
 def newSessionUpdate(ID_Cliente, ID_Rutina):
     conection = Conection.conectar()
     client = ModelClient.getClient(conection, ID_Cliente) 
-    routine = ModelRoutine.get_routine(conection, ID_Rutina) 
+    routine = RoutineRepository.get_routine(conection, ID_Rutina) 
     Conection.desconectar()
     return render_template("trainer/newSessionUpdate.html", client=client, routine=routine)
 
@@ -454,59 +420,34 @@ def viewClient(documentId):
         # Manejar el caso en que no se encuentre el cliente
         return redirect(url_for('trainer_app.clients', error="Cliente no encontrado"))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @trainer_app.route("/verSesion" )
 @login_required
 def verSesion():
     return render_template("trainer/verSesion.html")
 
-
 @trainer_app.route("/viewRoutine/viewSession/<Session_ID>", methods=['GET'])
 @login_required
 def viewSession(Session_ID):
-    conexion = Conection.conectar()
-    session = ModelSession.get_sesssion_by_id(conexion, Session_ID)
-    routine = ModelRoutine.get_routine(conexion, session.Routine_ID)
-    Conection.desconectar()
-    
-    if session:
-        # Deserializa el JSON a un objeto Python
+    try:
+        session = sessionController.findOneById(Session_ID)
         session.Exercises = json.loads(session.Exercises)
-        return render_template("trainer/viewSession.html", session=session, routine=routine)
-    else:
-        return redirect(url_for('trainer_app.viewRoutine', routineId=routine.RoutineId, DocumentId=routine.ClientId, error="Sesión no encontrada"))
+
+        return render_template("trainer/viewSession.html", session=session, routine=session.routine)
+
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+
+    # conexion = Conection.conectar()
+    # session = SessionRepository.get_sesssion_by_id(conexion, Session_ID)
+    # routine = RoutineRepository.get_routine(conexion, session.Routine_ID)
+    # Conection.desconectar()
+    
+    # if session:
+    #     # Deserializa el JSON a un objeto Python
+    #     session.Exercises = json.loads(session.Exercises)
+    #     return render_template("trainer/viewSession.html", session=session, routine=routine)
+    # else:
+    #     return redirect(url_for('trainer_app.viewRoutine', routineId=routine.RoutineId, DocumentId=routine.ClientId, error="Sesión no encontrada"))
 
 
 @trainer_app.route("/viewNewSession/<sessionId>/<clientId>", methods=['GET'])

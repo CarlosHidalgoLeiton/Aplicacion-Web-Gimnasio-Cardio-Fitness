@@ -107,10 +107,12 @@ class RepositoryBase:
             raise Exception(f'Error en findAllFiltered para {self.model}: {ex}')
     
 
-    def findOne(self, filters=None):
+    def findOne(self, filters=None, relations=None):
         try:
             query = db.session.query(self.model)
 
+            query = self._load_relations(query, relations)
+            
             if filters:
                 for key, value in filters.items():
                     column = getattr(self.model, key, None)
@@ -123,25 +125,6 @@ class RepositoryBase:
         except Exception as ex:
             raise Exception(f'Error en findOne para {self.model}: {ex}')
         
-
-    def findOne_any(self, filters=None):
-        try:
-            query = db.session.query(self.model)
-
-            if filters:
-                for key, value in filters.items():
-                    column = getattr(self.model, key, None)
-                    if column is None:
-                        raise Exception(f"Columna '{key}' no existe en {self.model}")
-                    query = query.filter(column == value)
-
-            return query.first()  # Esto devuelve None si no encuentra nada, lo cual está bien
-
-        except Exception as ex:
-            raise Exception(f'Error en findOne para {self.model}: {ex}')
-
-    
-
     def findOneFiltered(self, column_names, filters=None):
         try:
             columns = [getattr(self.model, name) for name in column_names]

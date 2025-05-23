@@ -6,8 +6,8 @@ from apps.db.conection import Conection
 from apps.controllers.client_controller import clientController
 from apps.db.repositories.ModelProduct import ModelProduct
 from apps.db.repositories.StatisticsRepository import StatisticsRepository
-from apps.db.repositories.ModelSesion import ModelSession
-from apps.db.repositories.ModelRoutine import ModelRoutine
+from apps.db.repositories.SessionRepository import SessionRepository
+from apps.db.repositories.RoutineRepository import RoutineRepository
 from apps.db.repositories.ModelMembership import ModelMembership
 import json  
 # from apps.routes.chatbot import get_response 
@@ -153,7 +153,7 @@ def viewProduct():
 @client_permission.require(http_exception=403)
 def routinesClient():
     conection = Conection.conectar()
-    routines = ModelRoutine.get_all(conection, current_user.DocumentId)  
+    routines = RoutineRepository.get_all(conection, current_user.DocumentId)  
     errorMessage = request.args.get('error')
     Conection.desconectar()
     return render_template("client/routinesClient.html", routines=routines, error=errorMessage)
@@ -163,8 +163,8 @@ def routinesClient():
 @client_permission.require(http_exception=403)
 def viewRoutine(routineId):
     conexion = Conection.conectar()
-    routine = ModelRoutine.get_routine(conexion, routineId)
-    sessions = ModelSession.get_session_by_Routine(conexion, routineId)
+    routine = RoutineRepository.get_routine(conexion, routineId)
+    sessions = SessionRepository.get_session_by_Routine(conexion, routineId)
     Conection.desconectar()
 
     if routine:
@@ -177,7 +177,7 @@ def viewRoutine(routineId):
 @client_permission.require(http_exception=403)
 def getSessions(ID_Routine):
     conection = Conection.conectar()
-    getSessions = ModelSession.get_session_by_Routine(conection, ID_Routine)
+    getSessions = SessionRepository.get_session_by_Routine(conection, ID_Routine)
     Conection.desconectar()
     sessions = [session.to_dict() for session in getSessions]
 
@@ -192,8 +192,8 @@ def getSessions(ID_Routine):
 @client_permission.require(http_exception=403)
 def viewSession(Session_ID):
     conexion = Conection.conectar()
-    session = ModelSession.get_sesssion_by_id(conexion, Session_ID)
-    routine = ModelRoutine.get_routine(conexion, session.Routine_ID)
+    session = SessionRepository.get_sesssion_by_id(conexion, Session_ID)
+    routine = RoutineRepository.get_routine(conexion, session.Routine_ID)
     Conection.desconectar()
     
     if session:

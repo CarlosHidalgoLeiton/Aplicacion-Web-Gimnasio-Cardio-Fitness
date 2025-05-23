@@ -1,37 +1,14 @@
 from apps.db.models.Routine import Routine
 from datetime import datetime
 from pymysql import IntegrityError
+from apps.db.models.Routine import Routine
 
-class ModelRoutine:
-    @classmethod
-    def insertRoutine(cls, conection, routine):
-        if routine is not None:
-            try:
-                routine.State = 1
-                cursor = conection.cursor()
-                sql = """INSERT INTO Rutina (ID_Cliente, ID_Entrenador, Indicaciones, Fecha, Estado)
-                        VALUES (%s, %s, %s, %s, %s)"""
-                cursor.execute(sql, (routine.ClientId, routine.TrainerId, routine.Indications, routine.Date, routine.State))
-                conection.commit()
+from apps.db.repositories.RepositoryBase import RepositoryBase
 
-                if cursor.rowcount > 0:
-                    routine.RoutineId = cursor.lastrowid  # Obtener el ID de la rutina recién creada
-                    print(f"Rutina {routine.RoutineId} creada exitosamente.")
-                    return routine, True  # Retornar la rutina y True
-                else:
-                    print("No se pudo crear la rutina.")
-                    return "Error",
-                    
-            except BaseException as ex:
-                print(f"Error en ModelRoutine insertRoutine: {ex}")
-                conection.rollback()
-                return "DataBase",
-            except Exception as ex:
-                print(f"Error en ModelRoutine insertRoutine: {ex}")
-                conection.rollback()
-                return "Error",
-        else:
-            return "Error",
+class RoutineRepository(RepositoryBase):
+    
+    def __init__(self):
+        super().__init__(Routine)
 
     @classmethod
     def updateRoutine(cls, conection, indications, routineId):
@@ -50,15 +27,15 @@ class ModelRoutine:
                     return "Error"
 
             except IntegrityError as ex:
-                print(f"Error en ModelRoutine updateRoutine: {ex}")
+                print(f"Error en RoutineRepository updateRoutine: {ex}")
                 conection.rollback()
                 return "Primary"
             except BaseException as ex:
-                print(f"Error en ModelRoutine updateRoutine: {ex}")
+                print(f"Error en RoutineRepository updateRoutine: {ex}")
                 conection.rollback()
                 return "DataBase"
             except Exception as ex:
-                print(f"Error en ModelRoutine updateRoutine: {ex}")
+                print(f"Error en RoutineRepository updateRoutine: {ex}")
                 conection.rollback()
                 return "Error"
         else:

@@ -8,7 +8,9 @@ class Session(db.Model):
     Name = db.Column(db.String(100), nullable=False, key='Name', name='Nombre')
     Indications = db.Column(db.String(255), nullable=True, key='Indications', name='Indicaciones')
     Exercises = db.Column(db.Text, nullable=True, key='Exercises', name='Ejercicios')
-    Routine_ID = db.Column(db.String, db.ForeignKey('rutina.ID_Rutina'), nullable=False, key='Routine_ID', name='ID_Rutina')
+    Routine_ID = db.Column(db.Integer, db.ForeignKey('rutina.RoutineId'), nullable=False, key='Routine_ID', name='ID_Rutina')
+
+    routine = db.relationship('Routine', backref='rutina', lazy='joined')
 
     def to_dict(self):
         return {

@@ -10,6 +10,13 @@ class clientController:
     NotificationRepository = NotificationRepository()
 
     @classmethod
+    def finOneByDocumentId(cls, documentId):
+        if not documentId:
+            raise Exception('El número de cédula es requerido')
+
+        return cls.ClientRepository.findOne({'DocumentId': documentId})
+
+    @classmethod
     def getNotifications(cls):
         notifications = cls.NotificationRepository.findAll()
         if not notifications:
@@ -48,23 +55,22 @@ class clientController:
 
     @classmethod
     def clientValidated(cls, request):
-           # Validar que el cliente no exista ya
-            existing_client = cls.ClientRepository.findOne_any({'DocumentId': request.DocumentId})
-            if existing_client:
-                return f"Ya existe un cliente registrado con la cédula '{request.DocumentId}'."
-            else:
-                return  cls.ClientRepository.validateDataForm(request)
+        # Validar que el cliente no exista ya
+        existing_client = cls.ClientRepository.findOne_any({'DocumentId': request.DocumentId})
+        if existing_client:
+            return f"Ya existe un cliente registrado con la cédula '{request.DocumentId}'."
+        else:
+            return  cls.ClientRepository.validateDataForm(request)
             
 
     @classmethod
     def clientValidatedUpdate(cls, DocumentId, request):
         if DocumentId == request.DocumentId:
-             return  cls.ClientRepository.validateDataForm(request)
+            return  cls.ClientRepository.validateDataForm(request)
         else:
             existing_client = cls.ClientRepository.findOne_any({'DocumentId': request.DocumentId})
             if existing_client:
                 return f"Ya existe un cliente registrado con la cédula '{request.DocumentId}'."
-           
 
 
     @classmethod
@@ -81,15 +87,15 @@ class clientController:
 
     @classmethod
     def get_one(cls,id):
-         return cls.ClientRepository.get_one(id)
+        return cls.ClientRepository.get_one(id)
 
     @classmethod
     def disable_client(cls, id):
-         return cls.ClientRepository.disable_client(id)
+        return cls.ClientRepository.disable_client(id)
     
     @classmethod
     def able_Client(cls, id):
-         return cls.ClientRepository.able_Client(id)
+        return cls.ClientRepository.able_Client(id)
         
     # @classmethod
     # def getDataClient(cls, request):
