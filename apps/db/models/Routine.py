@@ -22,5 +22,5 @@ class Routine(db.Model):
             "Indications": self.Indications,
             "Date": self.Date,
             "State": self.State,
-        }  
+        } 
 

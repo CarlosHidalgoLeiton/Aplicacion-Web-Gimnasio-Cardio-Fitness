@@ -6,7 +6,7 @@ const disableRoutine = (event) => {
 
     Swal.fire({
         title: "¿Esta seguro?",
-        text: "Se deshabilitará la siguiente rutina .",
+        text: "Se deshabilitará la siguiente rutina.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",

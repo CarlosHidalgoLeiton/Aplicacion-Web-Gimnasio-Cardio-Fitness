@@ -9,7 +9,7 @@ from apps.controllers.client_controller import clientController
 from apps.controllers.trainer_controller import trainerController
 from apps.controllers.routine_controller import routineController
 from apps.controllers.session_controller import sessionController
-
+from apps.utils.utils import getDataRoutine, validateDataRoutine
 
 trainer_app = Blueprint('trainer_app', __name__)
 
@@ -177,7 +177,7 @@ def routinesClient(ID_Cliente):
         if not client:
             raise Exception('No se ha encontrado el cliente')
 
-        routines = trainerController.getRoutineClient(ID_Cliente)
+        routines = routineController.getRoutineClient(ID_Cliente)
 
         return render_template("trainer/routinesClient.html", routines=routines, client=client)
 
@@ -199,98 +199,56 @@ def viewRoutine(routineId, DocumentId):
         flash(ex.args[0], 'danger')
         return redirect(url_for('trainer_app.routinesClient', ID_Cliente = DocumentId))
 
-    # conexion = Conection.conectar()
-    # routine = RoutineRepository.get_routine(conexion, routineId)
-    # sessions = SessionRepository.get_session_by_Routine(conexion, routineId)
-    # client = ModelClient.getClient(conexion, DocumentId)
-    # Conection.desconectar()
-
-    # if routine:
-    #     return render_template("trainer/viewRoutine.html", routine=routine, sessions=sessions, client=client)
-    # else:
-    #     return redirect(url_for('trainer_app.clients', error="Rutina no encontrada"))
-
 @trainer_app.route("/UpdateRoutine/<ID_Cliente>/<routineId>", methods=['GET', 'POST'])
 @login_required
 @trainer_permission.require(http_exception=403)
 def UpdateRoutine(ID_Cliente, routineId):
-    conection = Conection.conectar()
-    client = ModelClient.getClient(conection, ID_Cliente)
-    routine = RoutineRepository.get_routine(conection, routineId)
-    Conection.desconectar()
+    try:
+        client = clientController.finOneByDocumentId(ID_Cliente)
+        routine = routineController.findOneRoutine(routineId)
+        
+        if request.method == 'POST':
+            updated_routine =  getDataRoutine(request)
+            routineValidated = validateDataRoutine(updated_routine)
 
-    if request.method == 'POST':
-        updated_routine = RoutineRepository.getDataRoutine(request)
-        routineValidated = RoutineRepository.validateDataForm(updated_routine)
+            if not isinstance(routineValidated, bool):
+                flash(routineValidated, 'danger')
+                return render_template("trainer/updateRoutineClient.html", client=client, routine=updated_routine)
+            
+            updatedRoutine = routineController.updateRoutine(request, routineId)
 
-        if not isinstance(routineValidated, bool):
-            return render_template("trainer/updateRoutineClient.html", client=client, error=routineValidated, routine=updated_routine)
+            flash('Se ha actualizado la rutina correctamente', 'success')
+            return redirect(url_for('trainer_app.routinesClient', ID_Cliente=ID_Cliente))
+        
+        return render_template("trainer/updateRoutineClient.html", routine=routine, client=client)
 
-        conection = Conection.conectar()
-        if conection is None:
-            return render_template("trainer/updateRoutineClient.html", client=client, error="Error en la conexión.", routine=updated_routine)
-
-        try:
-            conection.begin()
-
-            # Actualizar la rutina principal
-            trainer_id = request.form.get('TrainerId')
-            indications = request.form.get('Indications')
-            RoutineRepository.updateRoutine(conection, indications, routineId)
-
-            # Procesar sesiones
-            sessions_data = request.form.get('sessions')
-            delete_ids_str = request.form.getlist('delete')  # Lista de IDs para eliminar
-
-            delete_ids = []
-            if delete_ids_str:
-                # Convertir la cadena JSON en lista de IDs
-                delete_ids = json.loads(delete_ids_str[0]) if delete_ids_str else []
-
-            if delete_ids:
-                SessionRepository.deleteSessions(conection, routineId, delete_ids)
-
-            if sessions_data:
-                sessions_data = json.loads(sessions_data)
-
-                for session in sessions_data:
-                    if session.get('insert', False):  
-                        session['Routine_ID'] = routineId
-                        session_result = SessionRepository.insertSession(conection, session)
-                        if not session_result:
-                            raise Exception(f"Error al insertar la sesión: {session['Name']}")
-                    else:  # Sesión existente, se actualiza
-                        session_result = SessionRepository.updateSession(conection, session,routineId )
-                        if not session_result:
-                            raise Exception(f"Error al actualizar la sesión: {session['Name']}")
-
-            conection.commit()
-            Conection.desconectar()
-
-            return redirect(url_for('trainer_app.routinesClient', ID_Cliente=ID_Cliente, done="Rutina actualizada correctamente."))
-
-        except Exception as e:
-            conection.rollback()
-            print(f"Error durante la actualización de la rutina y sesiones: {e}")
-            Conection.desconectar()
-            return render_template("trainer/updateRoutineClient.html", client=client, error="Error al actualizar la rutina o sesiones.", routine=updated_routine)
-
-    return render_template("trainer/updateRoutineClient.html", routine=routine, client=client)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('trainer_app.UpdateRoutine', ID_Cliente = ID_Cliente, routineId=routineId))
 
 
 @trainer_app.route("/getSession/<ID_Routine>", methods=['GET'])
 @login_required
 @trainer_permission.require(http_exception=403)
 def getSessions(ID_Routine):
-    conection = Conection.conectar()
-    getSessions = SessionRepository.get_session_by_Routine(conection, ID_Routine)
-    Conection.desconectar()
-    sessions = [session.to_dict() for session in getSessions]
+    try:
+        sessions = sessionController.findAllByIdRoutine(ID_Routine)
 
-    if sessions:
         return jsonify(sessions)
-    else:
+    except:
         return jsonify({'error': 'No se encontraron las sesiones.'})
+
+      
+
+    # conection = Conection.conectar()
+    # getSessions = SessionRepository.get_session_by_Routine(conection, ID_Routine)
+    # Conection.desconectar()
+    # sessions = [session.to_dict() for session in getSessions]
+
+    # if sessions:
+    #     return jsonify(sessions)
+    # else:
+    #     return jsonify({'error': 'No se encontraron las sesiones.'})
     
 
 
@@ -304,7 +262,7 @@ def routineClient(ID_Cliente):
         clear_local_storage = request.args.get('clear_local_storage')
 
         if request.method == 'POST':
-            trainerController.createRoutine(request)
+            routineController.createRoutine(request)
 
             flash('Se ha creado la rutina correctamente', 'success')
             return redirect(url_for('trainer_app.routinesClient', ID_Cliente=ID_Cliente, clear_local_storage=True))
@@ -320,32 +278,21 @@ def routineClient(ID_Cliente):
 @login_required
 @trainer_permission.require(http_exception=403)
 def disableRoutine():
-    data = request.get_json()
-    DocumentId = data.get('routineID')
-    conexion = Conection.conectar()
-    disable = RoutineRepository.disableRoutine(conexion, DocumentId)
-    Conection.desconectar()
-
-    if disable:
+    try:
+        routine = routineController.disableRoutine(request)
         return jsonify({"message": "Hecho"})
-    else:
-        
+    except Exception as ex:
         return jsonify({"error": "No se pudo deshabilitar"})
     
 @trainer_app.route("/client/routineClient/able", methods = ['POST'])
 @login_required
 @trainer_permission.require(http_exception=403)
 def ableRoutine():
-    data = request.get_json()
-    DocumentId = data.get('routineID')
-    conection = Conection.conectar()
-    able = RoutineRepository.ableRoutine(conection, DocumentId)
-    Conection.desconectar()
-
-    if able:
+    try:
+        routine = routineController.ableRoutine(request)
         return jsonify({"message": "Hecho"})
-    else:
-        return jsonify({"error": "No se pudo habilitar"})
+    except Exception as ex:
+        return jsonify({"error": "No se pudo deshabilitar"})
 
 
 
@@ -401,11 +348,14 @@ def newSession(ID_Cliente):
 @trainer_app.route("newSessionUpdate/<ID_Cliente>/<ID_Rutina>", methods=['GET', 'POST'])
 @login_required
 def newSessionUpdate(ID_Cliente, ID_Rutina):
-    conection = Conection.conectar()
-    client = ModelClient.getClient(conection, ID_Cliente) 
-    routine = RoutineRepository.get_routine(conection, ID_Rutina) 
-    Conection.desconectar()
-    return render_template("trainer/newSessionUpdate.html", client=client, routine=routine)
+    try:
+        client = clientController.getClientById(ID_Cliente)
+        routine = routineController.findOneRoutine(ID_Rutina)
+        return render_template("trainer/newSessionUpdate.html", client=client, routine=routine)
+
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('trainer_app.UpdateRoutine', ID_Cliente = ID_Cliente, routineId = ID_Rutina))
 
 @trainer_app.route("/viewClient/<documentId>")
 @login_required

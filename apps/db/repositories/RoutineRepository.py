@@ -1,5 +1,4 @@
 from apps.db.models.Routine import Routine
-from datetime import datetime
 from pymysql import IntegrityError
 from apps.db.models.Routine import Routine
 
@@ -89,32 +88,6 @@ class RoutineRepository(RepositoryBase):
         except Exception as ex:
             print(f"Error en get_routine: {ex}")
             return None
-
-    @classmethod
-    def getDataRoutine(cls, request):
-        ClientId = request.form['ClientId']
-        TrainerId = request.form['TrainerId']
-        Indications = request.form['Indications']
-        Date = datetime.now()
-
-        return Routine(None, ClientId, TrainerId, Indications, Date)
-
-    @classmethod
-    def validateDataForm(cls, routine):
-
-        #Validation for Client
-        if routine.ClientId == None:
-            return "Debe contener ID cliente"
-        
-        #Validation for Trainer
-        if routine.TrainerId == None:
-            return "Debe contener ID de entrenador"
-        
-        #Validation for Indications
-        if routine.Indications == None:
-            return "Debe ingresar las indicaciones."
-    
-        return True
 
     @classmethod
     def deleteRoutine(cls, conection, routine_id):

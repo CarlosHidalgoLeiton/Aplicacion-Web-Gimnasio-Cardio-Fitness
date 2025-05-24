@@ -9,7 +9,7 @@ class SessionRepository(RepositoryBase):
 
     def __init__(self):
         super().__init__(Session)
-
+    
     @classmethod
     def insertSession(cls, conection, session):
         if session is not None:
@@ -180,17 +180,26 @@ class SessionRepository(RepositoryBase):
         True
 
 
-    @classmethod
-    def deleteSessions(cls, conexion, routineId, deleteIds):
-        try:
-            cursor = conexion.cursor()
-            for deleteId in deleteIds:
-                sql = "DELETE FROM sesion WHERE ID_Rutina = %s AND ID_Sesion = %s"
-                cursor.execute(sql, (routineId, deleteId))
-            conexion.commit() 
-            return True
+    # @classmethod
+    # def deleteSessions(cls, conexion, routineId, deleteIds):
+    #     try:
+    #         cursor = conexion.cursor()
+    #         for deleteId in deleteIds:
+    #             sql = "DELETE FROM sesion WHERE ID_Rutina = %s AND ID_Sesion = %s"
+    #             cursor.execute(sql, (routineId, deleteId))
+    #         conexion.commit() 
+    #         return True
             
-        except Exception as ex:
-            print(f"Error in deleteSessions: {ex}")
-            conexion.rollback() 
-            return False
+    #     except Exception as ex:
+    #         print(f"Error in deleteSessions: {ex}")
+    #         conexion.rollback() 
+    #         return False
+
+    @classmethod
+    def deleteSession(cls, routineId, deleteIds):
+        repository = cls()
+        for id in deleteIds:
+            repository.delete(id)
+        
+        return True
+        

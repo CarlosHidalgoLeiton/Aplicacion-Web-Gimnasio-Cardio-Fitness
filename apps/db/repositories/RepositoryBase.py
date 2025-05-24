@@ -49,8 +49,6 @@ class RepositoryBase:
             query = self._load_relations(query, relations)
 
             result = query.get(id)
-            if result is None:
-                raise Exception(f"No se encontró un registro con ID {id} en {self.model}")
             
             return result
         except Exception as ex:
@@ -75,8 +73,6 @@ class RepositoryBase:
             # Convertimos todas las instancias a diccionarios
             return [self._instance_to_dict(result, relations) for result in results]
         
-        
-
         except Exception as ex:
             raise Exception(f'Error en findAll para {self.model}: {ex}')
 

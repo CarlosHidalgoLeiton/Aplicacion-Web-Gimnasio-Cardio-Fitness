@@ -1,6 +1,8 @@
 import secrets
 import re
 from werkzeug.security import check_password_hash, generate_password_hash
+from datetime import datetime
+from apps.db.models.Routine import Routine
 
 def generateToken():
     token = secrets.token_urlsafe(32)
@@ -30,3 +32,27 @@ def validateBothPasswords(pwd1, pwd2):
 
 def hashPassword(password):
     return generate_password_hash(password)
+
+def getDataRoutine(request):
+    ClientId = request.form['ClientId']
+    TrainerId = request.form['TrainerId']
+    Indications = request.form['Indications']
+    Date = datetime.now()
+
+    return Routine(ClientId = ClientId, TrainerId=TrainerId, Indications=Indications, Date=Date)
+
+def validateDataRoutine(routine):
+
+    #Validation for Client
+    if routine.ClientId == None:
+        return "Debe contener ID cliente"
+    
+    #Validation for Trainer
+    if routine.TrainerId == None:
+        return "Debe contener ID de entrenador"
+    
+    #Validation for Indications
+    if routine.Indications == None:
+        return "Debe ingresar las indicaciones."
+
+    return True
