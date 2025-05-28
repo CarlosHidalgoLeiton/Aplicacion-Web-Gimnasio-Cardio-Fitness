@@ -4,9 +4,9 @@ from flask_login import login_required, current_user
 from apps.db.conection import Conection
 from apps.db.repositories.UserRepository import UserRepository
 from apps.db.repositories.ClientRepository import ClientRepository
+from apps.db.repositories.RepositoryProduct import ProductRepository
 from apps.db.repositories.RoutineRepository import RoutineRepository
 from apps.db.repositories.SessionRepository import SessionRepository
-from apps.db.repositories.ModelProduct import ModelProduct
 from apps.db.repositories.ModelMembership import ModelMembership
 from apps.db.repositories.ModelBill import ModelBill
 from apps.db.repositories.ModelCancelledBill import ModelCancelledBill
@@ -26,6 +26,7 @@ from flask import send_file
 from apps.controllers.client_controller import clientController
 from apps.controllers.trainer_controller import trainerController
 from apps.controllers.statistics_controller import statisticsController
+from apps.controllers.inventory_controller import productController
 from apps.controllers.notification_controller import notificationController
 
 
@@ -498,7 +499,7 @@ def bills():
     clients = ClientRepository.get_allAble(conection)
     trainers = trainerController.get_allAble(conection)
     memberships = ModelMembership.get_allAble(conection)
-    products = ModelProduct.get_allAble(conection)
+    products = ProductRepository.get_allAble(conection)
     Conection.desconectar()
     doneMessage = request.args.get('done')
     errorMessage = request.args.get('error')
@@ -693,35 +694,25 @@ def getClientsPay():
 @login_required
 @admin_permission.require(http_exception=403)
 def inventory():
-    conection = Conection.conectar()
-    products = ModelProduct.get_all(conection)
-    Conection.desconectar()
-    doneMessage = request.args.get('done')
-    errorMessage = request.args.get('error')
-    if request.method == 'POST':
-        product = ModelProduct.getDataProduct(request, None)
-        productValidated = ModelProduct.validateDataForm(product)
-        if not type(productValidated) == bool:
-            return render_template("admin/inventory.html", products=products, error=productValidated, product = product)
-        conection = Conection.conectar()
-        if conection == None:
-            return render_template("admin/inventory.html", products=products, error= "Error en la conexión.", product = product)
-        insert = ModelProduct.insertProduct(conection, product)
-        if insert and type(insert) == bool:
-            products = ModelProduct.get_all(conection)
-            Conection.desconectar()
-            # return render_template("admin/inventory.html", products=products, done = "Producto creado correctamente.", product = None)
-            return redirect(url_for('admin_app.inventory', done = "Producto creado correctamente."))
-        elif insert == "Unique":
-            Conection.desconectar()
-            return render_template("admin/inventory.html", products=products, error= "El nombre del producto ingresado ya esta registrado.", product = product)
-        elif insert == "DataBase":
-            return render_template("admin/inventory.html", products=products, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", product = product)
+    try:
+        products = productController.get_all()
+        if request.method == 'POST':
+
+            product = productController.getDataProduct(request, None)
+            productValidated = productController.productValidated(product)
+            if not type(productValidated) == bool:
+                return render_template("admin/inventory.html", products=products, error=productValidated, product = product)
+            else:
+                productController.create(product)
+                products = productController.get_all()
+                flash('Producto creado exitosamente', 'success')
+                return render_template("admin/inventory.html", products=products, product = None)
         else:
-            Conection.desconectar()
-            return render_template("admin/inventory.html", products=products, error= "No se pudo ingresar el producto, por favor inténtalo más tarde.", product = product)
-    else:
-        return render_template("admin/inventory.html", products=products, product = None, done = doneMessage, error = errorMessage)
+            return render_template("admin/inventory.html", products=products, product = None )
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return render_template("admin/inventory.html", products=products, product = None)
+    
 
 @admin_app.route("/inventory/selectProduct/", methods=['POST', 'GET'])
 @login_required
@@ -740,80 +731,180 @@ def select_Product():
     else:
         return redirect(url_for('admin_app.inventory', error="Invalid action."))
 
-@admin_app.route("/inventory/view", methods=['GET'])
-@login_required
-@admin_permission.require(http_exception=403)
-def viewProduct():
-    productId = session.get('IdProduct') 
-    if not productId:
-        return redirect(url_for('admin_app.inventory', error="No product selected."))
-
-    conexion = Conection.conectar()
-    product = ModelProduct.get_product_by_id(conexion, productId)  # Asegurarse de que se usa productId
-    Conection.desconectar()
-
-    if product:
-        return render_template("admin/viewProduct.html", product=product)
-    else:
-        return redirect(url_for('admin_app.inventory', error="Producto no encontrado"))
 
 @admin_app.route("/inventory/updateProduct", methods=['POST', 'GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def updateProduct():
-    productId = session.get('IdProduct') 
-    conexion = Conection.conectar()
-    product = ModelProduct.get_product_by_id(conexion, productId)
-    Conection.desconectar()
-    if product:
+    try:
+        productId = session.get('IdProduct') 
+        product = productController.get_one(productId)
         if request.method == 'POST':
-            productUpdated = ModelProduct.getDataProduct(request, product.Image)
-            productValidated = ModelProduct.validateDataForm(productUpdated)
+            productUpdated = productController.getDataUpdateProduct(request, product.Image)
+            productValidated = productController.productValidatedUpdate(product.Name, productUpdated)
+
             if not type(productValidated) == bool:
-                return render_template("admin/updateProduct.html", error=productValidated, product = product)
-            conection = Conection.conectar()
-            if conection == None:
-                return render_template("admin/updateProduct.html", error= "Error en la conexión.", product = product)
-            update = ModelProduct.updateProduct(conection, productUpdated, product.ID_Product)
-            Conection.desconectar()
-            if update and type(update) == bool:
-                return redirect(url_for('admin_app.inventory', done = "Producto actualizado correctamente."))
-            elif update == "DataBase":
-                return render_template("admin/updateProduct.html", error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", product = product)
-            else:
-                return render_template("admin/updateProduct.html", error= "No se pudo actualizar el Producto.", product = product)
+                    return render_template("admin/updateProduct.html", error=productUpdated, product = product)
+        
+            productController.updateProduct(product.ID_Product, productUpdated)
+            flash('Producto actualizado exitosamente', 'success')
+            return redirect(url_for('admin_app.inventory'))    
+    
         else:
             return render_template("admin/updateProduct.html", product=product)
-    else:
-        return redirect(url_for("admin_app.inventory", error = "Producto no encontrado"))
+        
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for("admin_app.inventory"))
+
+@admin_app.route("/inventory/view", methods=['GET'])
+@login_required
+@admin_permission.require(http_exception=403)
+def viewProduct():
+    try:
+        productId = session.get('IdProduct') 
+        product = productController.getProductById(productId)
+        return render_template("admin/viewProduct.html", product=product)
+
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.inventory'))
+
 
 @admin_app.route("/inventory/view/disable", methods = ['POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def disableProduct():
-    data = request.get_json()
-    ID_Product = data.get('ProductId')
-    conexion = Conection.conectar()
-    disable = ModelProduct.disableProduct(conexion, ID_Product)
-    Conection.desconectar()
+    productId = session.get('IdProduct') 
+   
+    disable = productController.disable_product(productId)
+
     if disable:
         return jsonify({"message": "Hecho"})
     else:
+        # Manejar el caso en que no se encuentre el producto
         return jsonify({"error": "No se pudo deshabilitar"})
     
 @admin_app.route("/inventory/view/able", methods = ['POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def ableProduct():
-    data = request.get_json()
-    ID_Product = data.get('ProductId')
-    conexion = Conection.conectar()
-    able = ModelProduct.ableProduct(conexion, ID_Product)
-    Conection.desconectar()
+    productId = session.get('IdProduct') 
+    
+    able = productController.able_Product(productId)
     if able:
         return jsonify({"message": "Hecho"})
     else:
+        # Manejar el caso en que no se encuentre el cliente
         return jsonify({"error": "No se pudo habilitar"})
+
+# @admin_app.route("/inventory", methods = ['GET', 'POST'])
+# @login_required
+# @admin_permission.require(http_exception=403)
+# def inventory():
+#     products = productController.getProducts()
+#     doneMessage = request.args.get('done')
+#     errorMessage = request.args.get('error')
+#     if request.method == 'POST':
+#         product = ProductRepository.getDataProduct(request, None)
+#         productValidated = ProductRepository.validateDataForm(product)
+#         if not type(productValidated) == bool:
+#             return render_template("admin/inventory.html", products=products, error=productValidated, product = product)
+#         conection = Conection.conectar()
+#         if conection == None:
+#             return render_template("admin/inventory.html", products=products, error= "Error en la conexión.", product = product)
+#         insert = ProductRepository.insertProduct(conection, product)
+#         if insert and type(insert) == bool:
+#             products = ProductRepository.get_all(conection)
+#             Conection.desconectar()
+#             # return render_template("admin/inventory.html", products=products, done = "Producto creado correctamente.", product = None)
+#             return redirect(url_for('admin_app.inventory', done = "Producto creado correctamente."))
+#         elif insert == "Unique":
+#             Conection.desconectar()
+#             return render_template("admin/inventory.html", products=products, error= "El nombre del producto ingresado ya esta registrado.", product = product)
+#         elif insert == "DataBase":
+#             return render_template("admin/inventory.html", products=products, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", product = product)
+#         else:
+#             Conection.desconectar()
+#             return render_template("admin/inventory.html", products=products, error= "No se pudo ingresar el producto, por favor inténtalo más tarde.", product = product)
+#     else:
+#         return render_template("admin/inventory.html", products=products, product = None, done = doneMessage, error = errorMessage)
+    
+
+
+
+
+# @admin_app.route("/inventory/view", methods=['GET'])
+# @login_required
+# @admin_permission.require(http_exception=403)
+# def viewProduct():
+#     productId = session.get('IdProduct') 
+#     if not productId:
+#         return redirect(url_for('admin_app.inventory', error="No product selected."))
+
+#     product = productController.getProductId( productId)  # Asegurarse de que se usa productId
+
+#     if product:
+#         return render_template("admin/viewProduct.html", product=product)
+#     else:
+#         return redirect(url_for('admin_app.inventory', error="Producto no encontrado"))
+
+# @admin_app.route("/inventory/updateProduct", methods=['POST', 'GET'])
+# @login_required
+# @admin_permission.require(http_exception=403)
+# def updateProduct():
+#     productId = session.get('IdProduct') 
+#     product = productController.getProductId(productId)
+
+#     if product:
+#         if request.method == 'POST':
+#             productUpdated = ProductRepository.getDataProduct(request, product.Image)
+#             productValidated = ProductRepository.validateDataForm(productUpdated)
+#             if not type(productValidated) == bool:
+#                 return render_template("admin/updateProduct.html", error=productValidated, product = product)
+#             conection = Conection.conectar()
+#             if conection == None:
+#                 return render_template("admin/updateProduct.html", error= "Error en la conexión.", product = product)
+#             update = ProductRepository.updateProduct(conection, productUpdated, product.ID_Product)
+#             Conection.desconectar()
+#             if update and type(update) == bool:
+#                 return redirect(url_for('admin_app.inventory', done = "Producto actualizado correctamente."))
+#             elif update == "DataBase":
+#                 return render_template("admin/updateProduct.html", error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", product = product)
+#             else:
+#                 return render_template("admin/updateProduct.html", error= "No se pudo actualizar el Producto.", product = product)
+#         else:
+#             return render_template("admin/updateProduct.html", product=product)
+#     else:
+#         return redirect(url_for("admin_app.inventory", error = "Producto no encontrado"))
+
+# @admin_app.route("/inventory/view/disable", methods = ['POST'])
+# @login_required
+# @admin_permission.require(http_exception=403)
+# def disableProduct():
+#     data = request.get_json()
+#     ID_Product = data.get('ProductId')
+#     conexion = Conection.conectar()
+#     disable = ProductRepository.disableProduct(conexion, ID_Product)
+#     Conection.desconectar()
+#     if disable:
+#         return jsonify({"message": "Hecho"})
+#     else:
+#         return jsonify({"error": "No se pudo deshabilitar"})
+    
+# @admin_app.route("/inventory/view/able", methods = ['POST'])
+# @login_required
+# @admin_permission.require(http_exception=403)
+# def ableProduct():
+#     data = request.get_json()
+#     ID_Product = data.get('ProductId')
+#     conexion = Conection.conectar()
+#     able = ProductRepository.ableProduct(conexion, ID_Product)
+#     Conection.desconectar()
+#     if able:
+#         return jsonify({"message": "Hecho"})
+#     else:
+#         return jsonify({"error": "No se pudo habilitar"})
 
 
 #-------------Rutas de Notificaciones-------------#
