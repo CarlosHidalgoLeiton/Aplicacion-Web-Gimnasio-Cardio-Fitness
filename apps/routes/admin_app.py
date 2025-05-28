@@ -75,40 +75,6 @@ def clients():
     except Exception as ex:
         flash(ex.args[0], 'danger')
         return render_template("admin/clients.html", clients=clients, client = None)
- 
-
-
-
-
-    # conection = Conection.conectar()
-    # clients = ModelClient.get_all(conection)
-    # Conection.desconectar()
-    # doneMessage = request.args.get('done')
-    # errorMessage = request.args.get('error')
-    # if request.method == 'POST':
-    #     client = ModelClient.getDataClient(request)
-    #     clientValidated = ModelClient.validateDataForm(client)
-    #     if not type(clientValidated) == bool:
-    #         return render_template("admin/clients.html", clients=clients, error=clientValidated, client = client)
-    #     conection = Conection.conectar()
-    #     if conection == None:
-    #         return render_template("admin/clients.html", clients=clients, error= "Error en la conexión.", client = client)
-    #     insert = ModelClient.insertClient(conection, client)
-    #     if insert and type(insert) == bool:
-    #         clients = ModelClient.get_all(conection)
-    #         Conection.desconectar()
-    #         return render_template("admin/clients.html", clients=clients, done = "Cliente creado correctamente.", client = None)
-    #     elif insert == "Primary":
-    #         Conection.desconectar()
-    #         return render_template("admin/clients.html", clients=clients, error= "El número de cédula ingresado ya esta registrado con otro cliente.", client = client)
-    #     elif insert == "DataBase":
-    #         return render_template("admin/clients.html", clients=clients, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", client = client)
-    #     else:
-    #         Conection.desconectar()
-    #         return render_template("admin/clients.html", clients=clients, error= "No se pudo ingresar el cliente, por favor inténtalo más tarde.", client = client)
-    # else:
-    #     return render_template("admin/clients.html", clients=clients, client = None, done = doneMessage, error = errorMessage)
-
     
 @admin_app.route("/client/update/<documentId>", methods=['POST', 'GET'])
 @login_required

@@ -14,7 +14,12 @@ class clientController:
         if not documentId:
             raise Exception('El número de cédula es requerido')
 
-        return cls.ClientRepository.findOne({'DocumentId': documentId})
+        client = cls.ClientRepository.findOne({'DocumentId': documentId})
+
+        if not client:
+            raise Exception('No se ha encontrado el cliente')
+
+        return client
 
     @classmethod
     def getNotifications(cls):
