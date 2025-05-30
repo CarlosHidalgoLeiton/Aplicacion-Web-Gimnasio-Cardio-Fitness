@@ -5,10 +5,12 @@ from apps.routes.permissions import client_permission
 from apps.db.conection import Conection
 from apps.controllers.client_controller import clientController
 from apps.db.repositories.RepositoryProduct import ProductRepository
-from apps.db.repositories.StatisticsRepository import StatisticsRepository
+from apps.controllers.session_controller import sessionController
 from apps.db.repositories.SessionRepository import SessionRepository
+from apps.controllers.routine_controller import routineController
 from apps.db.repositories.RoutineRepository import RoutineRepository
 from apps.db.repositories.ModelMembership import ModelMembership
+from apps.controllers.statistics_controller import statisticsController
 import json  
 from apps.controllers.inventory_controller import productController
 
@@ -29,50 +31,7 @@ def inicio():
     except Exception as ex:
         flash(ex.args[0], 'danger')
         return render_template("client/index.html")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# @client_app.route("/get_bot", methods=["POST"])
-# @login_required
-# @client_permission.require(http_exception=403)
-# def get_bot_response():
-#     """
-#     Ruta que recibe el mensaje del usuario y devuelve la respuesta del chatbot
-#     junto con las opciones a seguir.
-#     """
-#     data = request.get_json()  # Obtener los datos del cuerpo de la solicitud JSON
-#     userText = data.get('msg')  # Obtener el mensaje del usuario
-
-#     if userText:
-#         # Generar la respuesta del bot (basado en el texto del usuario)
-#         bot_response = get_response(userText)
-
-#         # Las opciones siempre serán las mismas, sin importar la entrada del usuario
-#         options = [
-#             {"text": "Ver horarios", "value": "horarios"},
-#             {"text": "Ver precios", "value": "precios"},
-#             {"text": "Ver ubicación", "value": "ubicación"},
-#             {"text": "Ver contacto", "value": "contacto"}
-#         ]
-
-#         return jsonify({"response": bot_response, "options": options})
     
-#     return jsonify({"response": "Lo siento, no pude entender tu pregunta."})
-
 @client_app.errorhandler(403)
 def forbidden(error):
     return redirect(url_for('client_app.notAutorized'))
@@ -93,25 +52,36 @@ def notAutorized():
 @client_permission.require(http_exception=403)
 def profile():
     try:
-        conexion = Conection.conectar()
-        client = ClientRepository.getClient(conexion, current_user.DocumentId)
-        print(client)
-    except Exception as ex:
-        print(f"Error al obtener el perfil del cliente: {ex}")
-        client = None
-    finally:
-        Conection.desconectar()
-    
-    return render_template("client/profile.html", client=client)
+        client = clientController.finOneByDocumentId(current_user.DocumentId)
 
+        return render_template("client/profile.html", client=client)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return render_template("client/profile.html", client = None)
 
 #-------------Rutas de inventario-------------#
 @client_app.route("/inventory", methods = ['GET', 'POST'])
 @login_required
 @client_permission.require(http_exception=403)
 def inventory():
-    products = productController.get_all()
-    return render_template("client/inventory.html", products=products)
+    try:
+        products = productController.get_all()
+        if request.method == 'POST':
+
+            product = productController.getDataProduct(request, None)
+            productValidated = productController.productValidated(product)
+            if not type(productValidated) == bool:
+                return render_template("client/inventory.html", products=products, error=productValidated, product = product)
+            else:
+                productController.create(product)
+                products = productController.get_all()
+                flash('Producto creado exitosamente', 'success')
+                return render_template("client/inventory.html", products=products, product = None)
+        else:
+            return render_template("client/inventory.html", products=products, product = None )
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return render_template("client/inventory.html", products=products, product = None)
 
 @client_app.route("/inventory/selectProduct/", methods=['POST', 'GET'])
 @login_required
@@ -127,23 +97,19 @@ def select_Product():
     else:
         return redirect(url_for('client_app.inventory', error="Invalid action."))
 
-
 #------------- VER PRODUCTO -------------#
-
 @client_app.route("/inventory/view", methods=['GET'])
 @login_required
 @client_permission.require(http_exception=403)
 def viewProduct():
-    productId = session.get('IdProduct') 
-    if not productId:
-        return redirect(url_for('client_app.inventory', error="No product selected."))
-    
-    product = productController.getProductById(productId)  
-
-    if product:
+    try:
+        productId = session.get('IdProduct') 
+        product = productController.getProductById(productId)
         return render_template("client/viewProduct.html", product=product)
-    else:
-        return redirect(url_for('client_app.inventory', error="Producto no encontrado"))
+
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('client_app.inventory'))
     
 #-------------Rutas de rutinas-------------#
 
@@ -152,105 +118,81 @@ def viewProduct():
 @login_required
 @client_permission.require(http_exception=403)
 def routinesClient():
-    conection = Conection.conectar()
-    routines = RoutineRepository.get_all(conection, current_user.DocumentId)  
-    errorMessage = request.args.get('error')
-    Conection.desconectar()
-    return render_template("client/routinesClient.html", routines=routines, error=errorMessage)
+    try:
+        ID_Cliente = current_user.DocumentId
+        client = clientController.finOneByDocumentId(ID_Cliente)
+
+        routines = routineController.getRoutineClient(ID_Cliente)
+
+        return render_template("client/routinesClient.html", routines=routines, client=client)
+
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('client_app.inicio'))
 
 @client_app.route("/viewRoutine/<routineId>", methods=['GET'])
 @login_required
 @client_permission.require(http_exception=403)
 def viewRoutine(routineId):
-    conexion = Conection.conectar()
-    routine = RoutineRepository.get_routine(conexion, routineId)
-    sessions = SessionRepository.get_session_by_Routine(conexion, routineId)
-    Conection.desconectar()
+    try:
+        DocumentId = current_user.DocumentId
+        client = clientController.finOneByDocumentId(DocumentId)
+        routine = routineController.findOneRoutine(routineId)
+        sessions = sessionController.findAllByIdRoutine(routineId)
+        return render_template("client/viewRoutine.html", routine=routine, sessions=sessions, client=client)
 
-    if routine:
-        return render_template("client/viewRoutine.html", routine=routine, sessions=sessions)
-    else:
-        return redirect(url_for('client_app.clients', error="Rutina no encontrada"))
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('client_app.routinesClient', ID_Cliente = DocumentId))
 
 @client_app.route("/getSession/<ID_Routine>", methods=['GET'])
 @login_required
 @client_permission.require(http_exception=403)
 def getSessions(ID_Routine):
-    conection = Conection.conectar()
-    getSessions = SessionRepository.get_session_by_Routine(conection, ID_Routine)
-    Conection.desconectar()
-    sessions = [session.to_dict() for session in getSessions]
+    try:
+        sessions = sessionController.findAllByIdRoutine(ID_Routine)
 
-    if sessions:
         return jsonify(sessions)
-    else:
+    except:
         return jsonify({'error': 'No se encontraron las sesiones.'})
     
-
 @client_app.route("/viewRoutine/viewSession/<Session_ID>", methods=['GET'])
 @login_required
 @client_permission.require(http_exception=403)
 def viewSession(Session_ID):
-    conexion = Conection.conectar()
-    session = SessionRepository.get_sesssion_by_id(conexion, Session_ID)
-    routine = RoutineRepository.get_routine(conexion, session.Routine_ID)
-    Conection.desconectar()
-    
-    if session:
-        # Deserializa el JSON a un objeto Python
+    try:
+        session = sessionController.findOneById(Session_ID)
         session.Exercises = json.loads(session.Exercises)
-        return render_template("client/viewSession.html", session=session, routine=routine)
-    else:
-        return redirect(url_for('client_app.viewRoutine', routineId=routine.RoutineId, DocumentId=routine.ClientId, error="Sesión no encontrada"))
 
-
+        return render_template("client/viewSession.html", session=session, routine=session.routine)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
 
 #-------------Rutas de estadisticas-------------#
-
-
 @client_app.route("/statisticsClient", methods=['GET'])
 @login_required
 def statisticsClient():
-    # Conectar a la base de datos
-    conection = Conection.conectar()
-    documentId = current_user.DocumentId
-    # Obtener las estadísticas del cliente por su ID
-    statistics = ModelStatistics.getStatisticsByClientId(conection, documentId)
-    client = ModelStatistics.getClientById(conection, documentId)
-    Conection.desconectar()
-
-    # Verificar si el cliente existe
-    if client is None:
-        return redirect(url_for('client_app.dashboard', error="Cliente no encontrado"))
-
-    # Mensajes opcionales de éxito o error
-    doneMessage = request.args.get('done')
-    errorMessage = request.args.get('error')
-
-    # Renderizar la plantilla de estadísticas del cliente
-    return render_template("client/statisticsClient.html", client=client, statistics=statistics,documentId = documentId, done=doneMessage, error=errorMessage)
-
-@client_app.route("/viewStatistics/<documentId>/<clientId>", methods = ['GET'])
-@login_required
-def viewStatistics(documentId,clientId):
     try:
-        conection = Conection.conectar()
-        statistics = ModelStatistics.getStatisticsId(conection, documentId)
+        documentId = current_user.DocumentId
+        client = clientController.finOneByDocumentId(documentId)
+        statistics = statisticsController.getStatisticsByClientId(documentId)
 
-        client = ModelStatistics.getClientById(conection, clientId)
-        Conection.desconectar()
-        if client is None:
-            return redirect(url_for('client_app.statisticsClient', error="Cliente no encontrado"))
-    
-
+        return render_template("client/statisticsClient.html", client = client, statistics=statistics, documentId = documentId)
     except Exception as ex:
-        print(f"Error al obtener las estadísticas del cliente: {ex}")
-        statistics = None
-    finally:
-        Conection.desconectar()
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('client_app.inicio'))
     
-    return render_template("client/viewStatistics.html", statistics=statistics, clientId = clientId,client=client)
+@client_app.route("/viewStatistics/<statisticsId>/<documentId>", methods = ['GET'])
+@login_required
+def viewStatistics(statisticsId, documentId):
+    try:
+        statistics = statisticsController.getStatisticById(statisticsId)
+        client = clientController.finOneByDocumentId(documentId)
 
+        return render_template("client/viewStatistics.html", statistics=statistics, clientId = documentId,client=client)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for("client_app.statisticsClient", documentId=documentId))
 
 @client_app.route("/viewMemberships", methods = ['GET'])
 @login_required
