@@ -132,7 +132,7 @@
                     <div class="new-arrival-product">
                         <div class="new-arrivals-img-contnent">
                             <a href="{{ url_for('admin_app.select_Product', IdProduct=product.ID_Product, action='view') }}">
-                                <img class="img-fluid rounded" src="data:image/jpeg;base64,{{ product.Image }}" alt="{{ product.Name }}">
+                                <img class="img-fluid rounded" src="data:image/jpeg;base64,{{ product.Image  }}" alt="{{ product.Name }}">
                             </a>
                         </div>
                         <div class="new-arrival-content text-center mt-3">

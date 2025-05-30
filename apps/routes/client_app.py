@@ -4,12 +4,14 @@ from flask_login import login_required, current_user
 from apps.routes.permissions import client_permission
 from apps.db.conection import Conection
 from apps.controllers.client_controller import clientController
-from apps.db.repositories.ModelProduct import ModelProduct
+from apps.db.repositories.RepositoryProduct import ProductRepository
 from apps.db.repositories.StatisticsRepository import StatisticsRepository
 from apps.db.repositories.SessionRepository import SessionRepository
 from apps.db.repositories.RoutineRepository import RoutineRepository
 from apps.db.repositories.ModelMembership import ModelMembership
 import json  
+from apps.controllers.inventory_controller import productController
+
 # from apps.routes.chatbot import get_response 
 
 #Creación de los blueprint para usar en app.py
@@ -108,12 +110,8 @@ def profile():
 @login_required
 @client_permission.require(http_exception=403)
 def inventory():
-    conection = Conection.conectar()
-    products = ModelProduct.get_allAble(conection)
-    Conection.desconectar()
-    doneMessage = request.args.get('done')
-    errorMessage = request.args.get('error')
-    return render_template("client/inventory.html", products=products, product = None, done = doneMessage, error = errorMessage)
+    products = productController.get_all()
+    return render_template("client/inventory.html", products=products)
 
 @client_app.route("/inventory/selectProduct/", methods=['POST', 'GET'])
 @login_required
@@ -129,6 +127,9 @@ def select_Product():
     else:
         return redirect(url_for('client_app.inventory', error="Invalid action."))
 
+
+#------------- VER PRODUCTO -------------#
+
 @client_app.route("/inventory/view", methods=['GET'])
 @login_required
 @client_permission.require(http_exception=403)
@@ -136,9 +137,8 @@ def viewProduct():
     productId = session.get('IdProduct') 
     if not productId:
         return redirect(url_for('client_app.inventory', error="No product selected."))
-    conexion = Conection.conectar()
-    product = ModelProduct.get_product_by_id(conexion, productId)  # Asegurarse de que se usa productId
-    Conection.desconectar()
+    
+    product = productController.getProductById(productId)  
 
     if product:
         return render_template("client/viewProduct.html", product=product)

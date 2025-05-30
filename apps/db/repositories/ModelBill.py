@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta, date
 from collections import defaultdict
 import re
-from apps.db.repositories.ModelProduct import ModelProduct
 from apps.db.models.Bill import Bill
 from apps.db.models.Client import Client
 class ModelBill:
