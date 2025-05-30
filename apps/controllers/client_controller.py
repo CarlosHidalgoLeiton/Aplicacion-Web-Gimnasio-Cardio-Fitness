@@ -36,6 +36,16 @@ class clientController:
         return clients
         
     @classmethod
+    def get_allAble(cls):
+        filters = {'State': True}
+        clients = cls.ClientRepository.findAll(filters=filters)
+        if not clients:
+            raise Exception('No se encontraron clientes')
+        return clients
+
+
+
+    @classmethod
     def getClientById(cls,id):
 
         try:
@@ -54,9 +64,6 @@ class clientController:
     @classmethod
     def getDataClient(cls, request):
             return cls.ClientRepository.getDataClient(request) 
-
-        
-        
 
     @classmethod
     def clientValidated(cls, request):

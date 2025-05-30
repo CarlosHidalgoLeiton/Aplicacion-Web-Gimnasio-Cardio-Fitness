@@ -3,6 +3,7 @@ from datetime import datetime
 import re
 from pymysql import IntegrityError
 import base64
+
 from apps.db.repositories.RepositoryBase import RepositoryBase
 
 class ProductRepository(RepositoryBase):
@@ -10,6 +11,23 @@ class ProductRepository(RepositoryBase):
     def __init__(self):
         super().__init__(Product)
 
+
+
+    def get_stock(self, product_id):
+            try:
+                result = self.findOneFiltered(column_names=["Stock"], filters={"ID_Product": product_id})
+                if result:
+                    return result["Stock"]
+                return None
+            except Exception as ex:
+                raise Exception(f"Error obteniendo el stock para el producto con ID {product_id}: {ex}")
+            
+
+    def disable_product(self, product_id):
+        return self.update(product_id, State=0) 
+
+    def able_Product(self, product_id):
+        return self.update(product_id, State=1) 
     # @classmethod
     # def insertProduct(cls, conection, product):
     #     if product != None:
@@ -29,7 +47,7 @@ class ProductRepository(RepositoryBase):
     #                 return "Error"
                 
     #         except IntegrityError as ex:
-    #             print(f"Error en ModelProduct updateProduct: {ex}")
+    #             print(f"Error en ModelProduct updateClient: {ex}")
     #             conection.rollback()
     #             return "Unique"
     #         except BaseException as ex:
@@ -42,9 +60,7 @@ class ProductRepository(RepositoryBase):
     #             return "Error"
     #     else:
     #         return "Error"
-
-
-
+    
     # @classmethod
     # def updateProduct(cls, conection, product, IdProducto):
     #     if product != None:
@@ -63,7 +79,7 @@ class ProductRepository(RepositoryBase):
     #                 return "Error"
                 
     #         except IntegrityError as ex:
-    #             print(f"Error en ModelProduct updateProduct: {ex}")
+    #             print(f"Error en ModelProduct updateClient: {ex}")
     #             conection.rollback()
     #             return "Unique"
     #         except BaseException as ex:
@@ -222,11 +238,43 @@ class ProductRepository(RepositoryBase):
     #     else:
     #         return False
     
-    
+    # @classmethod
+    # def getDataProduct(cls, request, image):
+    #     name = request.form['Name']
+    #     detail = request.form['Detail']
+    #     price = request.form['Price']
+    #     stock = request.form['Stock']
+    #     image_file = request.files['Image']
+    #     image_blob = None
         
-    def disable_product(self, product_id):
-        return self.update(product_id, State=0) 
+    #     if image:
+    #         if image_file.content_length == 0:
+    #             image_blob = base64.b64decode(image)
+    #         else:
+    #             image_blob = image_file.read()
+        
+    #     else:
+    #         if image_file:
+    #             image_blob = image_file.read()
 
-    def able_Product(self, product_id):
-        return self.update(product_id, State=1) 
+    #     return Product(None, name, detail, price, stock, image_blob)
+
+    # @classmethod
+    # def validateDataForm(cls, product):
+    #     # Validar que la imagen no sea None o esté vacía
+    #     if not product.Image:
+    #         print("La imagen del producto es requerida.")
+    #         return False
+        
+    #     if product.Price is not None:
+    #         if any(p.isalpha() for p in str(product.Price)):
+    #             return "El precio no debe contener letras."
+    #         elif any(p in "-$" for p in str(product.Price)):  # Verifica si contiene caracteres no permitidos
+    #             return "El precio no debe contener caracteres especiales como '-'."
+    #     else:
+    #         return "Debe ingresar el precio en número."
+       
+    #     return True
+            
+        
         
