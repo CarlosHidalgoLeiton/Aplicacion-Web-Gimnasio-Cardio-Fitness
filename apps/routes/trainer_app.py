@@ -47,22 +47,6 @@ def clients():
         flash(ex.args[0], 'danger')
         return render_template("trainer/clients.html", clients=[])
 
-@trainer_app.route("/editarEstadistica" )
-@login_required
-def editarEstadistica():
-    return render_template("trainer/editarEstadistica.html")
-
-@trainer_app.route("/editarSesion" )
-@login_required
-def editarSesion():
-    return render_template("trainer/editarSesion.html")
-
-@trainer_app.route("/editarSesionesRutinaCliente" )
-@login_required
-def editarSesionesRutinaCliente():
-    return render_template("trainer/editarSesionesRutinaCliente.html")
-
-
 @trainer_app.route("/statisticsClient/<documentId>", methods=['GET', 'POST'])
 @login_required
 def statisticsClient(documentId):
@@ -77,7 +61,7 @@ def statisticsClient(documentId):
             if not isinstance(statisticsValidated, bool):
                 return render_template("trainer/statisticsClient.html", statistics=statistics, error=statisticsValidated, statistics_data=statistics_data, documentId=documentId,client=client)
 
-            newStatistic = statisticsController.create(statistics_data)
+            statisticsController.create(statistics_data)
             
             flash('Estadística creada correctamente', 'success')
 
@@ -114,7 +98,6 @@ def updateStatistics(statisticsId, documentId):
         flash(ex.args[0], 'danger')
         return redirect(url_for("trainer_app.statisticsClient", documentId=documentId))
 
-
 @trainer_app.route("/viewStatistics/<statisticsId>/<documentId>", methods = ['GET'])
 @login_required
 def viewStatistics(statisticsId,documentId):
@@ -126,7 +109,6 @@ def viewStatistics(statisticsId,documentId):
     except Exception as ex:
         flash(ex.args[0], 'danger')
         return redirect(url_for("trainer_app.statisticsClient", documentId=documentId))
-
 
 ## VER RUTINAS
 @trainer_app.route("/client/routinesClient/<ID_Cliente>", methods=['GET'])
@@ -143,7 +125,6 @@ def routinesClient(ID_Cliente):
     except Exception as ex:
         flash(ex.args[0], 'danger')
         return redirect(url_for('trainer_app.clients'))
-
 
 @trainer_app.route("/viewRoutine/<routineId>/<DocumentId>", methods=['GET'])
 @login_required
@@ -174,7 +155,7 @@ def UpdateRoutine(ID_Cliente, routineId):
                 flash(routineValidated, 'danger')
                 return render_template("trainer/updateRoutineClient.html", client=client, routine=updated_routine)
             
-            updatedRoutine = routineController.updateRoutine(request, routineId)
+            routineController.updateRoutine(request, routineId)
 
             flash('Se ha actualizado la rutina correctamente', 'success')
             return redirect(url_for('trainer_app.routinesClient', ID_Cliente=ID_Cliente))
@@ -196,22 +177,6 @@ def getSessions(ID_Routine):
         return jsonify(sessions)
     except:
         return jsonify({'error': 'No se encontraron las sesiones.'})
-
-      
-
-    # conection = Conection.conectar()
-    # getSessions = SessionRepository.get_session_by_Routine(conection, ID_Routine)
-    # Conection.desconectar()
-    # sessions = [session.to_dict() for session in getSessions]
-
-    # if sessions:
-    #     return jsonify(sessions)
-    # else:
-    #     return jsonify({'error': 'No se encontraron las sesiones.'})
-    
-
-
-
 
 @trainer_app.route("/client/routineClient/<ID_Cliente>", methods=['GET', 'POST'])
 @login_required
@@ -238,7 +203,7 @@ def routineClient(ID_Cliente):
 @trainer_permission.require(http_exception=403)
 def disableRoutine():
     try:
-        routine = routineController.disableRoutine(request)
+        routineController.disableRoutine(request)
         return jsonify({"message": "Hecho"})
     except Exception as ex:
         return jsonify({"error": "No se pudo deshabilitar"})
@@ -248,7 +213,7 @@ def disableRoutine():
 @trainer_permission.require(http_exception=403)
 def ableRoutine():
     try:
-        routine = routineController.ableRoutine(request)
+        routineController.ableRoutine(request)
         return jsonify({"message": "Hecho"})
     except Exception as ex:
         return jsonify({"error": "No se pudo deshabilitar"})
@@ -258,7 +223,7 @@ def ableRoutine():
 @trainer_permission.require(http_exception=403)
 def disableStatistics():
     try:
-        statistics = statisticsController.disableStatistic(request)
+        statisticsController.disableStatistic(request)
         return jsonify({"message": "Hecho"})
     except Exception as ex:
         return jsonify({"error": "No se pudo deshabilitar"})
@@ -268,18 +233,22 @@ def disableStatistics():
 @trainer_permission.require(http_exception=403)
 def ableStatistics():
     try:
-        statistics = statisticsController.ableStatistic(request)
+        statisticsController.ableStatistic(request)
         return jsonify({"message": "Hecho"})
     except Exception as ex:
         return jsonify({"error": "No se pudo deshabilitar"})
         
 ## Sesiones
-
 @trainer_app.route("client/newSession/<ID_Cliente>", methods=['GET', 'POST'])
 @login_required
 def newSession(ID_Cliente):
-    client = clientController.getClientById(ID_Cliente)
-    return render_template("trainer/newSession.html", client=client)
+    try:
+        client = clientController.getClientById(ID_Cliente)
+        return render_template("trainer/newSession.html", client=client)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('trainer_app.routineClient', ID_Cliente = ID_Cliente))
+
 
 
 @trainer_app.route("newSessionUpdate/<ID_Cliente>/<ID_Rutina>", methods=['GET', 'POST'])
@@ -305,12 +274,7 @@ def viewClient(documentId):
     except Exception as ex:
         flash(ex.args[0], 'danger')
         return redirect(url_for('trainer_app.clients'))
-
-@trainer_app.route("/verSesion" )
-@login_required
-def verSesion():
-    return render_template("trainer/verSesion.html")
-
+    
 @trainer_app.route("/viewRoutine/viewSession/<Session_ID>", methods=['GET'])
 @login_required
 def viewSession(Session_ID):
@@ -323,19 +287,6 @@ def viewSession(Session_ID):
     except Exception as ex:
         flash(ex.args[0], 'danger')
 
-    # conexion = Conection.conectar()
-    # session = SessionRepository.get_sesssion_by_id(conexion, Session_ID)
-    # routine = RoutineRepository.get_routine(conexion, session.Routine_ID)
-    # Conection.desconectar()
-    
-    # if session:
-    #     # Deserializa el JSON a un objeto Python
-    #     session.Exercises = json.loads(session.Exercises)
-    #     return render_template("trainer/viewSession.html", session=session, routine=routine)
-    # else:
-    #     return redirect(url_for('trainer_app.viewRoutine', routineId=routine.RoutineId, DocumentId=routine.ClientId, error="Sesión no encontrada"))
-
-
 @trainer_app.route("/viewNewSession/<sessionId>/<clientId>", methods=['GET'])
 @login_required
 def viewSessionInsert(sessionId, clientId):
@@ -343,15 +294,3 @@ def viewSessionInsert(sessionId, clientId):
         return render_template('trainer/viewNewSession.html', sessionId = sessionId, clientId = clientId)
     else:
         return redirect(url_for('trainer_app.routineClient', error="Sesión no encontrada"))
-    
-
-@trainer_app.route("/viewUpdateSession/<sessionId>/<clientId>", methods=['GET'])
-@login_required
-def viewSessionUpdate(sessionId, clientId):
-    routineId = request.args.get('routineId')
-    if sessionId and clientId and routineId:
-        return render_template('trainer/viewUpdateSession.html', sessionId = sessionId, clientId = clientId, routineId = routineId)
-    else:
-        return redirect(url_for('trainer_app.routineClient', error="Sesión no encontrada"))
-
-
