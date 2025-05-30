@@ -125,7 +125,6 @@ def login():
             logged_user = userController.login(request)
 
             login_user(logged_user)
-            flash('Se ha iniciado sesión exitosamente', 'success')
 
             if logged_user.role == "Admin":
                 return redirect(url_for('admin_app.inicio'))

@@ -18,7 +18,7 @@ trainer_app = Blueprint('trainer_app', __name__)
 @login_required
 @trainer_permission.require(http_exception=403)
 def inicio():
-    return render_template("trainer/index.html")
+    return redirect(url_for("trainer_app.clients"))
 
 #-------------Rutas de Perfil -------------#
 @trainer_app.route("/profile")
