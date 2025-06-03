@@ -184,7 +184,7 @@
                                                 {% for product in products %}
                                                 <option value="{{ product.ID_Product }}"
                                                     data-price="{{ product.Price }}">
-                                                    {{ product.Name }} (Producto)
+                                                    {{ product.Name }} 
                                                 </option>
                                                 {% endfor %}
                                                 {% endif %}
@@ -294,7 +294,7 @@
                                                 <option value="">Seleccionar la membresía</option>
                                                 {% if memberships %}
                                                 {% for membership in memberships %}
-                                                <option value="{{ membership.id }}" data-price="{{ membership.Precio }}"
+                                                <option value="{{ membership.id }}" data-price="{{ membership.Price }}"
                                                     data-type="{{ membership.type }}">
                                                     {{ membership.Name }} (Membresía)
                                                 </option>
@@ -535,6 +535,8 @@
 
         document.getElementById('AmountProductBill').value = totalPrice.toFixed(2);
         document.getElementById('TotalPrice').value = totalPrice.toFixed(2);
+        
     }
+    
 </script>
 {% endblock %}

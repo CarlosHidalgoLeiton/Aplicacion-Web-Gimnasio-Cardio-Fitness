@@ -31,11 +31,10 @@
 										<div class="mb-3 row">
 											<label class="col-lg-4 col-form-label">Nombre completo</label>
 											<div class="col-lg-6">
-												<input type="text" class="form-control"  value="{{ client[0] }} {{ client[1] }} {{ client[2] }}" readonly>
+												<input type="text" class="form-control"  value="{{ client.Name }} {{ client.First_LastName }} {{ client.Second_LastName }}" readonly>
 											</div>
 										</div>
-								
-
+							
 
 										<div class="mb-3 row">
 											<label class="col-lg-4 col-form-label" for="validationCustom01">Fecha de Medición</label>
@@ -89,7 +88,7 @@
 										<div class="mb-3 row">
 											<label class="col-lg-4 col-form-label" >Edad</label>
 											<div class="col-lg-6">
-												<input type="text" class="form-control" value="{{client[3]}}" readonly>
+												<input type="text" class="form-control" value="{{client.Age}}" readonly>
 											</div>
 										</div>
 									
@@ -231,7 +230,7 @@
 										<div class="mb-3 row">
 											<label class="col-lg-4 col-form-label" >¿Es deportista? </label>
 											<div class="col-lg-6">
-												<input type="text" class="form-control" name="sportsman" value="{{statistics.sportsman}}" readonly>
+												<input type="text" class="form-control" name="sportsman" value="{{'Sí' if statistics.sportsman == True else 'No'}}" readonly>
 											</div>
 										</div>
 										<div class="mb-3 row">

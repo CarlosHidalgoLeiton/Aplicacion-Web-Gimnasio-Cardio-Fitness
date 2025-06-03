@@ -1,32 +1,31 @@
 # Importaciones
-from flask import Blueprint, render_template, request, session, redirect, url_for, jsonify, Response, flash
-from flask_login import login_required, current_user
+from flask import Blueprint, render_template, request, session, redirect, url_for, jsonify, flash
+from flask_login import login_required
 from apps.db.conection import Conection
 from apps.db.repositories.UserRepository import UserRepository
 from apps.db.repositories.ClientRepository import ClientRepository
-from apps.db.repositories.RoutineRepository import RoutineRepository
-from apps.db.repositories.SessionRepository import SessionRepository
-from apps.db.repositories.ModelProduct import ModelProduct
-from apps.db.repositories.MembershipRepository import MembershipRepository
-from apps.db.repositories.ModelBill import ModelBill
-from apps.db.repositories.ModelCancelledBill import ModelCancelledBill
-from apps.db.repositories.StatisticsRepository import StatisticsRepository
+
 from apps.db.models.User import User
 from apps.routes.permissions import admin_permission
 import json  
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.colors import HexColor
 from reportlab.lib.units import inch
-from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Paragraph, Spacer
+from reportlab.platypus import Table, TableStyle
 from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from io import BytesIO
 from flask import send_file
 from apps.controllers.client_controller import clientController
 from apps.controllers.trainer_controller import trainerController
 from apps.controllers.statistics_controller import statisticsController
+from apps.controllers.inventory_controller import productController
 from apps.controllers.notification_controller import notificationController
+from apps.controllers.bill_controller import billController
+from apps.controllers.membership_controller import membershipController
+from apps.controllers.cancelledBill_controller import cancelledBillController
+from apps.controllers.routine_controller import routineController
+from apps.controllers.session_controller import sessionController
 from apps.controllers.membership_controller import membershipController
 
 
@@ -76,40 +75,6 @@ def clients():
     except Exception as ex:
         flash(ex.args[0], 'danger')
         return render_template("admin/clients.html", clients=clients, client = None)
- 
-
-
-
-
-    # conection = Conection.conectar()
-    # clients = ModelClient.get_all(conection)
-    # Conection.desconectar()
-    # doneMessage = request.args.get('done')
-    # errorMessage = request.args.get('error')
-    # if request.method == 'POST':
-    #     client = ModelClient.getDataClient(request)
-    #     clientValidated = ModelClient.validateDataForm(client)
-    #     if not type(clientValidated) == bool:
-    #         return render_template("admin/clients.html", clients=clients, error=clientValidated, client = client)
-    #     conection = Conection.conectar()
-    #     if conection == None:
-    #         return render_template("admin/clients.html", clients=clients, error= "Error en la conexión.", client = client)
-    #     insert = ModelClient.insertClient(conection, client)
-    #     if insert and type(insert) == bool:
-    #         clients = ModelClient.get_all(conection)
-    #         Conection.desconectar()
-    #         return render_template("admin/clients.html", clients=clients, done = "Cliente creado correctamente.", client = None)
-    #     elif insert == "Primary":
-    #         Conection.desconectar()
-    #         return render_template("admin/clients.html", clients=clients, error= "El número de cédula ingresado ya esta registrado con otro cliente.", client = client)
-    #     elif insert == "DataBase":
-    #         return render_template("admin/clients.html", clients=clients, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", client = client)
-    #     else:
-    #         Conection.desconectar()
-    #         return render_template("admin/clients.html", clients=clients, error= "No se pudo ingresar el cliente, por favor inténtalo más tarde.", client = client)
-    # else:
-    #     return render_template("admin/clients.html", clients=clients, client = None, done = doneMessage, error = errorMessage)
-
     
 @admin_app.route("/client/update/<documentId>", methods=['POST', 'GET'])
 @login_required
@@ -194,7 +159,6 @@ def statisticsClient(documentId):
 
     statistics = statisticsController.getStatisticsByClientId(documentId)
     #client = clientController.getClientById(documentId)
-    Conection.desconectar()
     # if client is None:
     #     return redirect(url_for('admin_app.clients', error="Cliente no encontrado"))
     
@@ -221,12 +185,16 @@ def viewStatistics(documentId,clientId):
 @login_required
 @admin_permission.require(http_exception=403)
 def routinesClient(ID_Cliente):
-    conection = Conection.conectar()
-    client = ClientRepository.getClient(conection,ID_Cliente)
-    routines = RoutineRepository.get_all(conection, ID_Cliente)  
-    errorMessage = request.args.get('error')
-    Conection.desconectar()
-    return render_template("admin/routinesClient.html", routines=routines, client=client, error=errorMessage)
+    try:
+            client = clientController.finOneByDocumentId(ID_Cliente)
+
+            routines = routineController.getRoutineClient(ID_Cliente)
+
+            return render_template("admin/routinesClient.html", routines=routines, client=client)
+
+    except Exception as ex:
+            flash(ex.args[0], 'danger')
+            return redirect(url_for('admin_app.clients'))
 
 
 
@@ -234,29 +202,25 @@ def routinesClient(ID_Cliente):
 @login_required
 @admin_permission.require(http_exception=403)
 def viewRoutine(routineId, DocumentId):
-    conexion = Conection.conectar()
-    routine = RoutineRepository.get_routine(conexion, routineId)
-    sessions = SessionRepository.get_session_by_Routine(conexion, routineId)
-    client = ClientRepository.getClient(conexion, DocumentId)
-    Conection.desconectar()
-
-    if routine:
+    try:
+        client = clientController.finOneByDocumentId(DocumentId)
+        routine = routineController.findOneRoutine(routineId)
+        sessions = sessionController.findAllByIdRoutine(routineId)
         return render_template("admin/viewRoutine.html", routine=routine, sessions=sessions, client=client)
-    else:
-        return redirect(url_for('admin_app.clients', error="Rutina no encontrada"))
+
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.routinesClient', ID_Cliente = DocumentId))
 
 @admin_app.route("/getSession/<ID_Routine>", methods=['GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def getSessions(ID_Routine):
-    conection = Conection.conectar()
-    getSessions = SessionRepository.get_session_by_Routine(conection, ID_Routine)
-    Conection.desconectar()
-    sessions = [session.to_dict() for session in getSessions]
+    try:
+        sessions = sessionController.findAllByIdRoutine(ID_Routine)
 
-    if sessions:
         return jsonify(sessions)
-    else:
+    except:
         return jsonify({'error': 'No se encontraron las sesiones.'})
     
 
@@ -264,17 +228,14 @@ def getSessions(ID_Routine):
 @login_required
 @admin_permission.require(http_exception=403)
 def viewSession(Session_ID):
-    conexion = Conection.conectar()
-    session = SessionRepository.get_sesssion_by_id(conexion, Session_ID)
-    routine = RoutineRepository.get_routine(conexion, session.Routine_ID)
-    Conection.desconectar()
-    
-    if session:
-        # Deserializa el JSON a un objeto Python
+    try:
+        session = sessionController.findOneById(Session_ID)
         session.Exercises = json.loads(session.Exercises)
-        return render_template("admin/viewSession.html", session=session, routine=routine)
-    else:
-        return redirect(url_for('admin_app.viewRoutine', routineId=routine.RoutineId, DocumentId=routine.ClientId, error="Sesión no encontrada"))
+
+        return render_template("admin/viewSession.html", session=session, routine=session.routine)
+
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
 
 #-------------Rutas de Entrenadores-------------#
 
@@ -490,135 +451,108 @@ def ableUser():
 @login_required
 @admin_permission.require(http_exception=403)
 def bills():
-    conection = Conection.conectar()
+    try:
+        bills = billController.get_allAble()
+        clients = clientController.get_allAble()
+        trainers = trainerController.get_allAble()
+        memberships = membershipController.get_allAble()
+        products = productController.get_allAble()
 
-    if not conection:
-        return render_template("admin/bill.html", error = "No se pudo conectar con la base de datos.", clients = None, trainers = None, memberships = None, products = None)
+        if request.method == 'POST':
+            if request.form['typeEntity'] == 'Trainer':
+                bill = billController.getDataTrainerBill(request)
+                validatedBill = billController.validateDataFormTrainer(bill)
+                if not type(validatedBill) == bool:
+                    flash(validatedBill, 'danger')
+                    return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, trainerValidated = bill, generalValidated = None, productValidated = None, membershipValidated = None  ) 
+                
+                billController.create( bill)
+                bills = billController.get_all()
+                flash('Registro creado exitosamente', 'success')
+                return redirect(url_for("admin_app.bills"))
+            
+            elif request.form['typeEntity'] == 'General':
+                bill = billController.getDataGeneralBill(request)
+                validatedBill = billController.validateDataFormGeneral(bill)
+                if not type(validatedBill) == bool:
+                    flash(validatedBill, 'danger')
+                    return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, generalValidated = bill, trainerValidated = None,productValidated = None, membershipValidated = None ) 
 
-    bills = ModelBill.get_all(conection)
-    clients = ClientRepository.get_allAble(conection)
-    trainers = trainerController.get_allAble(conection)
-    memberships = ModelMembership.get_allAble(conection)
-    products = ModelProduct.get_allAble(conection)
-    Conection.desconectar()
-    doneMessage = request.args.get('done')
-    errorMessage = request.args.get('error')
-    if request.method == 'POST':
-        if request.form['typeEntity'] == 'Trainer':
-            bill = ModelBill.getDataTrainerBill(request)
-            validatedBill = ModelBill.validateDataFormTrainer(bill)
-            if not type(validatedBill) == bool:
-                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = validatedBill, trainerValidated = bill, generalValidated = None, productValidated = None, membershipValidated = None  ) 
+                insert = billController.create(bill)
+                bills = billController.get_all()
+                flash('Registro creado exitosamente', 'success')
+                return redirect(url_for("admin_app.bills"))
 
-            conection = Conection.conectar()
-            insert = ModelBill.insertTrainerBill(conection, bill)
-            Conection.desconectar()
-            if insert and type(insert) == bool:
-                return redirect(url_for('admin_app.bills', done = "Pago registrado correctamente."))
-            elif insert == "DataBase":
-                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.', trainerValidated = bill, generalValidated = None, productValidated = None, membershipValidated = None ) 
-            else:
-                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se pudo realizar el pago.', trainerValidated = bill, generalValidated = None, productValidated = None, membershipValidated = None ) 
-    
-        if request.form['typeEntity'] == 'General':
-            bill = ModelBill.getDataGeneralBill(request)
-            validatedBill = ModelBill.validateDataFormGeneral(bill)
-            if not type(validatedBill) == bool:
-                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = validatedBill, generalValidated = bill, trainerValidated = None,productValidated = None, membershipValidated = None ) 
+        
+            if request.form['typeEntity'] == 'Product':
+                bill = billController.getDataProductBill(request)
+                validatedBill = billController.validateDataFormProduct(bill)
+                if not type(validatedBill) == bool:
+                    flash(validatedBill, 'danger')
+                    return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, productValidated = bill, generalValidated = None, trainerValidated = None, membershipValidated = None  ) 
 
-            conection = Conection.conectar()
-            insert = ModelBill.insertGeneralBill(conection, bill)
+                stock = productController.get_stock(bill.ID_Entity)
 
-            if insert and type(insert) == bool:
-                return redirect(url_for('admin_app.bills', done = "Pago registrado correctamente."))
-            elif insert == "DataBase":
-                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.', trainerValidated = None, generalValidated = bill, productValidated = None, membershipValidated = None ) 
-            else:
-                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se pudo realizar el pago.', generalValidated = bill, trainerValidated = None, productValidated = None, membershipValidated = None ) 
-    
-        if request.form['typeEntity'] == 'Product':
-            bill = ModelBill.getDataProductBill(request)
-            validatedBill = ModelBill.validateDataFormProduct(bill)
-            if not type(validatedBill) == bool:
-                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = validatedBill, productValidated = bill, generalValidated = None, trainerValidated = None, membershipValidated = None  ) 
+                if not stock:
+                    flash('No se pudo realizar el pago.', 'danger')
+                    return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, productValidated = bill, generalValidated = None, trainerValidated = None, membershipValidated = None ) 
 
-            conection = Conection.conectar()
-            stock = ModelBill.getStock(conection, bill.ID_Entity)
-
-            if not stock:
-                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se pudo realizar el pago.', productValidated = bill, generalValidated = None, trainerValidated = None, membershipValidated = None ) 
-
-            lotEnough = ModelBill.validateStock(stock ,bill.Lot)
-            if lotEnough:
-                insert = ModelBill.insertProductBill(conection, bill, (stock-int(bill.Lot)))
-                Conection.desconectar()
-                if insert and type(insert) == bool:
-                    return redirect(url_for('admin_app.bills', done = "Pago registrado correctamente."))
-                elif insert == "DataBase":
-                    return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.', productValidated = bill, generalValidated = None, trainerValidated = None, membershipValidated = None ) 
+                lotEnough = billController.validateStock(stock ,bill.Lot)
+                if lotEnough:
+                    bill.Lot = stock - int(bill.Lot)
+                    billController.create(bill)
+                    flash('Registro creado exitosamente', 'success')
+                    return redirect(url_for('admin_app.bills'))
                 else:
-                    return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se pudo realizar el pago.', productValidated = bill, generalValidated = None, trainerValidated = None, membershipValidated = None ) 
-            else:
-                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'La cantidad ingresada excede la cantidad en el stock.', productValidated = bill, generalValidated = None, trainerValidated = None, membershipValidated = None ) 
+                    flash('La cantidad ingresada excede la cantidad en el stock.', 'danger')
+                    return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, productValidated = bill, generalValidated = None, trainerValidated = None, membershipValidated = None ) 
 
-        if request.form['typeEntity'] == 'Membership':
-            bill = ModelBill.getDataMembershipBill(request)
-            validatedBill = ModelBill.validateDataFormMembership(bill)
-            if not type(validatedBill) == bool:
-                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = validatedBill, membershipValidated = bill, generalValidated = None, trainerValidated = None, productValidated = None) 
+            if request.form['typeEntity'] == 'Membership':
+                bill = billController.getDataMembershipBill(request)
+                validatedBill = billController.validateDataFormMembership(bill)
+                if not type(validatedBill) == bool:
+                    flash(validatedBill, 'danger')
+                    return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, membershipValidated = bill, generalValidated = None, trainerValidated = None, productValidated = None) 
 
-            conection = Conection.conectar()
-            insert = ModelBill.insertMembershipBill(conection, bill)
-            Conection.desconectar()
+                billController.create(bill)
 
-            if insert and type(insert) == bool:
                 if request.form['typeEntity']=='Membership':
-                    # Obtener los datos del cliente y membresía
-                    conection = Conection.conectar()
-                    client = ModelBill.getDataMembershipClient(conection, request)
-                    Conection.desconectar()
+                        # Obtener los datos del cliente y membresía
+                    days = billController.getDataMembership(request)
 
+                    # days = billController.getDataMembershipDay(idMembership)
+
+                    client = billController.getDataMembershipClient(request,days)
 
                     # Validar los datos obtenidos del formulario
-                    validation_result = ModelBill.validateDataFormMembershipClient(client)
+                    validation_result = billController.validateDataFormMembershipClient(client)
                 
                     if validation_result == True:
                         # Intentar actualizar la membresía del cliente
-                        conection = Conection.conectar()
-                        update_result = ModelBill.updateClientMembership(conection, client)
-                        Conection.desconectar()
-
-
-                        if update_result == True:
-                            return redirect(url_for('admin_app.bills', done="Pago registrado correctamente y cliente actualizado."))
-                        else:
-                            return render_template("admin/bill.html", bills=bills, clients=clients, memberships=memberships, error="Error actualizando el cliente.", membershipValidated=bill, generalValidated=None, trainerValidated=None, productValidated=None)
-                else:
-                    # Si la validación falla, mostrar el mensaje de error
-                    return render_template("admin/bill.html", bills=bills, clients=clients, memberships=memberships, error=validation_result, membershipValidated=bill, generalValidated=None, trainerValidated=None, productValidated=None)
-
-            elif insert == "DataBase":
-                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.', membershipValidated = bill, generalValidated = None, trainerValidated = None, productValidated = None ) 
-            else:
-                return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, error = 'No se pudo realizar el pago.',  membershipValidated = bill, generalValidated = None, trainerValidated = None, productValidated = None  ) 
+                        billController.updateClientMembership(client)
+                        flash('Registro creado exitosamente', 'success')
+                        return redirect(url_for('admin_app.bills'))
+                    else:
+                        flash(validation_result, 'danger')
+                        return render_template("admin/bill.html", bills=bills, clients=clients, memberships=memberships, membershipValidated=bill, generalValidated=None, trainerValidated=None, productValidated=None)
+        else:
+            return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, trainerValidated = None, generalValidated = None, productValidated = None, membershipValidated = None)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.bills'))
     
-    else:
-        return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, trainerValidated = None, generalValidated = None, productValidated = None, membershipValidated = None , done = doneMessage, error = errorMessage)
 
 @admin_app.route("/bills/view/<ID_Bill>")
 @login_required
 @admin_permission.require(http_exception=403)
 def viewBill(ID_Bill):
     try:
-        conection = Conection.conectar()
-        bill = ModelBill.getBill(conection, ID_Bill)  
-    except Exception as e:
-        print(f"Error al obtener la factura: {e}")
-        user = None
-    finally:
-        Conection().desconectar()
+        bill = billController.get_one(ID_Bill)  
+        return render_template("/admin/viewBill.html", bill=bill)
 
-    return render_template("/admin/viewBill.html", bill=bill)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.bills'))
 
 
 
@@ -626,44 +560,44 @@ def viewBill(ID_Bill):
 @login_required
 @admin_permission.require(http_exception=403)
 def cancelBill(ID_Bill):
-    if request.method == 'POST':
-        cancelBill = ModelCancelledBill.getDataCanceledBill(request)
-        validatedCancel = ModelCancelledBill.validateDataForm(cancelBill)
+    try:
+        if request.method == 'POST':
+            cancelBill = cancelledBillController.getDataCanceledBill(request)
+            validatedCancel = cancelledBillController.validateDataForm(cancelBill)
 
-        if not type(validatedCancel) == bool:
-            return render_template('admin/cancelBill.html', error = validatedCancel, cancelBill = cancelBill, ID_Bill = ID_Bill)
-        
-        conection = Conection.conectar()
-        insert = ModelCancelledBill.insertCancelledBill(conection ,cancelBill)
+            if not type(validatedCancel) == bool:
+                flash('Registro creado exitosamente', 'success')
+                return render_template('admin/cancelBill.html', error = validatedCancel, cancelBill = cancelBill, ID_Bill = ID_Bill)
+            
+            cancelledBillController.create(cancelBill)
+            billController.disable_bill(ID_Bill)
+            flash('Registro creado exitosamente', 'success')
+            return redirect(url_for('admin_app.bills'))
 
-        if insert and type(insert) == bool:
-            return redirect(url_for('admin_app.bills', done = "Factura anulada correctamente."))
-        elif insert == "DataBase":
-            return render_template("admin/cancelBill.html", error = "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", ID_Bill = ID_Bill, cancelBill = cancelBill) 
-        else:
-            return render_template("admin/cancelBill.html", error = "No se pudo realizar la anulación de la factura.", ID_Bill = ID_Bill, cancelBill = cancelBill) 
-
-    return render_template("admin/cancelBill.html", ID_Bill = ID_Bill, cancelBill = None)  
-
+        return render_template("admin/cancelBill.html", ID_Bill = ID_Bill, cancelBill = None)
+      
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.bills'))
+    
 @admin_app.route("/bills/viewCancelBill/<ID_Bill>", methods = ['GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def viewcancelBill(ID_Bill):
     
     if ID_Bill != None:
-        conection = Conection.conectar()
-        bill = ModelBill.getBill(conection, ID_Bill)
-        cancelBill = ModelCancelledBill.getCancelBill(conection, ID_Bill)
+        bill = billController.get_one(ID_Bill)
+        cancelBill = cancelledBillController.getCancelBill(ID_Bill)
         if not bill or not cancelBill:
             return redirect(url_for('admin_app.bills', error = "No se pudo obtener la información de la factura anulada."))
 
         if bill.EntityType == 'Entrenador':
-            trainer = trainerController.getTrainerBill(conection, bill.ID_Entity)
+            trainer = trainerController.getTrainerBill( bill.ID_Entity)
             
             return render_template('admin/viewCancel.html', trainer = trainer, ID_Bill = ID_Bill, bill = bill, cancelBill = cancelBill)
                 
         elif bill.EntityType == 'Cliente': 
-            client = ClientRepository.getClientBill(conection, bill.ID_Entity)
+            client = ClientRepository.getClientBill( bill.ID_Entity)
             
             return render_template('admin/viewCancel.html', client = client, ID_Bill = ID_Bill, bill = bill, cancelBill = cancelBill)
         
@@ -694,35 +628,25 @@ def getClientsPay():
 @login_required
 @admin_permission.require(http_exception=403)
 def inventory():
-    conection = Conection.conectar()
-    products = ModelProduct.get_all(conection)
-    Conection.desconectar()
-    doneMessage = request.args.get('done')
-    errorMessage = request.args.get('error')
-    if request.method == 'POST':
-        product = ModelProduct.getDataProduct(request, None)
-        productValidated = ModelProduct.validateDataForm(product)
-        if not type(productValidated) == bool:
-            return render_template("admin/inventory.html", products=products, error=productValidated, product = product)
-        conection = Conection.conectar()
-        if conection == None:
-            return render_template("admin/inventory.html", products=products, error= "Error en la conexión.", product = product)
-        insert = ModelProduct.insertProduct(conection, product)
-        if insert and type(insert) == bool:
-            products = ModelProduct.get_all(conection)
-            Conection.desconectar()
-            # return render_template("admin/inventory.html", products=products, done = "Producto creado correctamente.", product = None)
-            return redirect(url_for('admin_app.inventory', done = "Producto creado correctamente."))
-        elif insert == "Unique":
-            Conection.desconectar()
-            return render_template("admin/inventory.html", products=products, error= "El nombre del producto ingresado ya esta registrado.", product = product)
-        elif insert == "DataBase":
-            return render_template("admin/inventory.html", products=products, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", product = product)
+    try:
+        products = productController.get_all()
+        if request.method == 'POST':
+
+            product = productController.getDataProduct(request, None)
+            productValidated = productController.productValidated(product)
+            if not type(productValidated) == bool:
+                return render_template("admin/inventory.html", products=products, error=productValidated, product = product)
+            else:
+                productController.create(product)
+                products = productController.get_all()
+                flash('Producto creado exitosamente', 'success')
+                return render_template("admin/inventory.html", products=products, product = None)
         else:
-            Conection.desconectar()
-            return render_template("admin/inventory.html", products=products, error= "No se pudo ingresar el producto, por favor inténtalo más tarde.", product = product)
-    else:
-        return render_template("admin/inventory.html", products=products, product = None, done = doneMessage, error = errorMessage)
+            return render_template("admin/inventory.html", products=products, product = None )
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return render_template("admin/inventory.html", products=products, product = None)
+    
 
 @admin_app.route("/inventory/selectProduct/", methods=['POST', 'GET'])
 @login_required
@@ -741,80 +665,180 @@ def select_Product():
     else:
         return redirect(url_for('admin_app.inventory', error="Invalid action."))
 
-@admin_app.route("/inventory/view", methods=['GET'])
-@login_required
-@admin_permission.require(http_exception=403)
-def viewProduct():
-    productId = session.get('IdProduct') 
-    if not productId:
-        return redirect(url_for('admin_app.inventory', error="No product selected."))
-
-    conexion = Conection.conectar()
-    product = ModelProduct.get_product_by_id(conexion, productId)  # Asegurarse de que se usa productId
-    Conection.desconectar()
-
-    if product:
-        return render_template("admin/viewProduct.html", product=product)
-    else:
-        return redirect(url_for('admin_app.inventory', error="Producto no encontrado"))
 
 @admin_app.route("/inventory/updateProduct", methods=['POST', 'GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def updateProduct():
-    productId = session.get('IdProduct') 
-    conexion = Conection.conectar()
-    product = ModelProduct.get_product_by_id(conexion, productId)
-    Conection.desconectar()
-    if product:
+    try:
+        productId = session.get('IdProduct') 
+        product = productController.get_one(productId)
         if request.method == 'POST':
-            productUpdated = ModelProduct.getDataProduct(request, product.Image)
-            productValidated = ModelProduct.validateDataForm(productUpdated)
+            productUpdated = productController.getDataUpdateProduct(request, product.Image)
+            productValidated = productController.productValidatedUpdate(product.Name, productUpdated)
+
             if not type(productValidated) == bool:
-                return render_template("admin/updateProduct.html", error=productValidated, product = product)
-            conection = Conection.conectar()
-            if conection == None:
-                return render_template("admin/updateProduct.html", error= "Error en la conexión.", product = product)
-            update = ModelProduct.updateProduct(conection, productUpdated, product.ID_Product)
-            Conection.desconectar()
-            if update and type(update) == bool:
-                return redirect(url_for('admin_app.inventory', done = "Producto actualizado correctamente."))
-            elif update == "DataBase":
-                return render_template("admin/updateProduct.html", error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", product = product)
-            else:
-                return render_template("admin/updateProduct.html", error= "No se pudo actualizar el Producto.", product = product)
+                    return render_template("admin/updateProduct.html", error=productUpdated, product = product)
+        
+            productController.updateProduct(product.ID_Product, productUpdated)
+            flash('Producto actualizado exitosamente', 'success')
+            return redirect(url_for('admin_app.inventory'))    
+    
         else:
             return render_template("admin/updateProduct.html", product=product)
-    else:
-        return redirect(url_for("admin_app.inventory", error = "Producto no encontrado"))
+        
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for("admin_app.inventory"))
+
+@admin_app.route("/inventory/view", methods=['GET'])
+@login_required
+@admin_permission.require(http_exception=403)
+def viewProduct():
+    try:
+        productId = session.get('IdProduct') 
+        product = productController.getProductById(productId)
+        return render_template("admin/viewProduct.html", product=product)
+
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.inventory'))
+
 
 @admin_app.route("/inventory/view/disable", methods = ['POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def disableProduct():
-    data = request.get_json()
-    ID_Product = data.get('ProductId')
-    conexion = Conection.conectar()
-    disable = ModelProduct.disableProduct(conexion, ID_Product)
-    Conection.desconectar()
+    productId = session.get('IdProduct') 
+   
+    disable = productController.disable_product(productId)
+
     if disable:
         return jsonify({"message": "Hecho"})
     else:
+        # Manejar el caso en que no se encuentre el producto
         return jsonify({"error": "No se pudo deshabilitar"})
     
 @admin_app.route("/inventory/view/able", methods = ['POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def ableProduct():
-    data = request.get_json()
-    ID_Product = data.get('ProductId')
-    conexion = Conection.conectar()
-    able = ModelProduct.ableProduct(conexion, ID_Product)
-    Conection.desconectar()
+    productId = session.get('IdProduct') 
+    
+    able = productController.able_Product(productId)
     if able:
         return jsonify({"message": "Hecho"})
     else:
+        # Manejar el caso en que no se encuentre el cliente
         return jsonify({"error": "No se pudo habilitar"})
+
+# @admin_app.route("/inventory", methods = ['GET', 'POST'])
+# @login_required
+# @admin_permission.require(http_exception=403)
+# def inventory():
+#     products = productController.getProducts()
+#     doneMessage = request.args.get('done')
+#     errorMessage = request.args.get('error')
+#     if request.method == 'POST':
+#         product = ProductRepository.getDataProduct(request, None)
+#         productValidated = ProductRepository.validateDataForm(product)
+#         if not type(productValidated) == bool:
+#             return render_template("admin/inventory.html", products=products, error=productValidated, product = product)
+#         conection = Conection.conectar()
+#         if conection == None:
+#             return render_template("admin/inventory.html", products=products, error= "Error en la conexión.", product = product)
+#         insert = ProductRepository.insertProduct(conection, product)
+#         if insert and type(insert) == bool:
+#             products = ProductRepository.get_all(conection)
+#             Conection.desconectar()
+#             # return render_template("admin/inventory.html", products=products, done = "Producto creado correctamente.", product = None)
+#             return redirect(url_for('admin_app.inventory', done = "Producto creado correctamente."))
+#         elif insert == "Unique":
+#             Conection.desconectar()
+#             return render_template("admin/inventory.html", products=products, error= "El nombre del producto ingresado ya esta registrado.", product = product)
+#         elif insert == "DataBase":
+#             return render_template("admin/inventory.html", products=products, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", product = product)
+#         else:
+#             Conection.desconectar()
+#             return render_template("admin/inventory.html", products=products, error= "No se pudo ingresar el producto, por favor inténtalo más tarde.", product = product)
+#     else:
+#         return render_template("admin/inventory.html", products=products, product = None, done = doneMessage, error = errorMessage)
+    
+
+
+
+
+# @admin_app.route("/inventory/view", methods=['GET'])
+# @login_required
+# @admin_permission.require(http_exception=403)
+# def viewProduct():
+#     productId = session.get('IdProduct') 
+#     if not productId:
+#         return redirect(url_for('admin_app.inventory', error="No product selected."))
+
+#     product = productController.getProductId( productId)  # Asegurarse de que se usa productId
+
+#     if product:
+#         return render_template("admin/viewProduct.html", product=product)
+#     else:
+#         return redirect(url_for('admin_app.inventory', error="Producto no encontrado"))
+
+# @admin_app.route("/inventory/updateProduct", methods=['POST', 'GET'])
+# @login_required
+# @admin_permission.require(http_exception=403)
+# def updateProduct():
+#     productId = session.get('IdProduct') 
+#     product = productController.getProductId(productId)
+
+#     if product:
+#         if request.method == 'POST':
+#             productUpdated = ProductRepository.getDataProduct(request, product.Image)
+#             productValidated = ProductRepository.validateDataForm(productUpdated)
+#             if not type(productValidated) == bool:
+#                 return render_template("admin/updateProduct.html", error=productValidated, product = product)
+#             conection = Conection.conectar()
+#             if conection == None:
+#                 return render_template("admin/updateProduct.html", error= "Error en la conexión.", product = product)
+#             update = ProductRepository.updateProduct(conection, productUpdated, product.ID_Product)
+#             Conection.desconectar()
+#             if update and type(update) == bool:
+#                 return redirect(url_for('admin_app.inventory', done = "Producto actualizado correctamente."))
+#             elif update == "DataBase":
+#                 return render_template("admin/updateProduct.html", error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", product = product)
+#             else:
+#                 return render_template("admin/updateProduct.html", error= "No se pudo actualizar el Producto.", product = product)
+#         else:
+#             return render_template("admin/updateProduct.html", product=product)
+#     else:
+#         return redirect(url_for("admin_app.inventory", error = "Producto no encontrado"))
+
+# @admin_app.route("/inventory/view/disable", methods = ['POST'])
+# @login_required
+# @admin_permission.require(http_exception=403)
+# def disableProduct():
+#     data = request.get_json()
+#     ID_Product = data.get('ProductId')
+#     conexion = Conection.conectar()
+#     disable = ProductRepository.disableProduct(conexion, ID_Product)
+#     Conection.desconectar()
+#     if disable:
+#         return jsonify({"message": "Hecho"})
+#     else:
+#         return jsonify({"error": "No se pudo deshabilitar"})
+    
+# @admin_app.route("/inventory/view/able", methods = ['POST'])
+# @login_required
+# @admin_permission.require(http_exception=403)
+# def ableProduct():
+#     data = request.get_json()
+#     ID_Product = data.get('ProductId')
+#     conexion = Conection.conectar()
+#     able = ProductRepository.ableProduct(conexion, ID_Product)
+#     Conection.desconectar()
+#     if able:
+#         return jsonify({"message": "Hecho"})
+#     else:
+#         return jsonify({"error": "No se pudo habilitar"})
 
 
 #-------------Rutas de Notificaciones-------------#

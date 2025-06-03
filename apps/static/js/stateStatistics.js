@@ -39,7 +39,7 @@ const disableStatistics = (event) => {
                         Swal.fire({
                             icon: "success",
                             title: "¡Exito!",
-                            text: "Las estadísticas ha sido deshabilitado correctamente.",
+                            text: "La estadística ha sido deshabilitada correctamente.",
                             confirmButtonColor: 'green',
                         }).then((result) => {
                             if (result.isConfirmed) {
@@ -98,7 +98,7 @@ const ableStatistics = (event) => {
                         Swal.fire({
                             icon: "success",
                             title: "¡Exito!",
-                            text: "Las estadísticas ha sido habilitado correctamente.",
+                            text: "La estadística ha sido habilitada correctamente.",
                             confirmButtonColor: 'green',
                         }).then((result) => {
                             if (result.isConfirmed) {

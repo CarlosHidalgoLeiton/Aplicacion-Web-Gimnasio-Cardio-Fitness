@@ -25,6 +25,9 @@
 							<form class="needs-validation" action="/trainer/statisticsUpdate/{{statisticsId}}/{{documentId}}" novalidate method="POST">
 								<h4>Escaneo</h4>
 								<hr>
+								<input type="hidden" name="State" value="{{statistics.State}}">
+								<input type="hidden" name="Client_ID" value="{{statistics.Client_ID}}">
+								<input type="hidden" name="Trainer_ID" value="{{statistics.Trainer_ID}}">
 								<div class="row">
 									<div class="col-xl-6">
 										<div class="mb-3 row">
@@ -216,7 +219,10 @@
 										<div class="mb-3 row">
 											<label class="col-lg-4 col-form-label" >¿Es deportista? </label>
 											<div class="col-lg-6">
-												<input type="text" class="form-control" name="sportsman" value="{{statistics.sportsman}}" >
+												<select name="sportsman" id="sportsman" class="form-control">
+													<option value="True" {% if statistics.sportsman == True %}selected{% endif %} >Sí</option>
+													<option value="False" {% if statistics.sportsman == False %}selected{% endif %}>No</option>
+												</select>								
 											</div>
 										</div>
 										<div class="mb-3 row">

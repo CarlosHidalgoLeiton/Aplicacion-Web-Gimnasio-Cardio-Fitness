@@ -14,7 +14,12 @@ class clientController:
         if not documentId:
             raise Exception('El número de cédula es requerido')
 
-        return cls.ClientRepository.findOne({'DocumentId': documentId})
+        client = cls.ClientRepository.findOne({'DocumentId': documentId})
+
+        if not client:
+            raise Exception('No se ha encontrado el cliente')
+
+        return client
 
     @classmethod
     def getNotifications(cls):
@@ -30,6 +35,16 @@ class clientController:
             raise Exception('No se encontraron clientes')
         return clients
         
+    @classmethod
+    def get_allAble(cls):
+        filters = {'State': True}
+        clients = cls.ClientRepository.findAll(filters=filters)
+        if not clients:
+            raise Exception('No se encontraron clientes')
+        return clients
+
+
+
     @classmethod
     def getClientById(cls,id):
 
@@ -49,9 +64,6 @@ class clientController:
     @classmethod
     def getDataClient(cls, request):
             return cls.ClientRepository.getDataClient(request) 
-
-        
-        
 
     @classmethod
     def clientValidated(cls, request):
