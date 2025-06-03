@@ -64,7 +64,7 @@ def getDataProductInsert( request, image):
         Stock = stock,
         Image = image_blob,
         State = True
-        )
+    )
 
 def getDataUpdateProductUpdate(request, previous_image_blob):
     ID_Product = request.form['ID_Product']
@@ -75,7 +75,7 @@ def getDataUpdateProductUpdate(request, previous_image_blob):
     image_file = request.files['Image'] # Usa get para evitar errores si no está
 
     # Prioriza la nueva imagen si fue cargada
-    if image_file and image_file.filename != '' and image_file.content_length > 0:
+    if image_file and image_file.filename != '':
         image_blob = image_file.read()
     else:
         image_blob = previous_image_blob  # Usa la imagen anterior
@@ -89,7 +89,7 @@ def getDataUpdateProductUpdate(request, previous_image_blob):
         Image=image_blob,
         State=True
     )
-        
+   
 
 def validateDataProduct( product):
     # Validar que la imagen no sea None o esté vacía
