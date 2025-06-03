@@ -184,7 +184,7 @@
                                                 {% for product in products %}
                                                 <option value="{{ product.ID_Product }}"
                                                     data-price="{{ product.Price }}">
-                                                    {{ product.Name }} (Producto)
+                                                    {{ product.Name }} 
                                                 </option>
                                                 {% endfor %}
                                                 {% endif %}
@@ -535,6 +535,8 @@
 
         document.getElementById('AmountProductBill').value = totalPrice.toFixed(2);
         document.getElementById('TotalPrice').value = totalPrice.toFixed(2);
+        
     }
+    
 </script>
 {% endblock %}
