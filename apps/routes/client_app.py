@@ -8,7 +8,7 @@ from apps.db.repositories.ModelProduct import ModelProduct
 from apps.db.repositories.StatisticsRepository import StatisticsRepository
 from apps.db.repositories.SessionRepository import SessionRepository
 from apps.db.repositories.RoutineRepository import RoutineRepository
-from apps.db.repositories.ModelMembership import ModelMembership
+from apps.db.repositories.MembershipRepository import MembershipRepository
 import json  
 # from apps.routes.chatbot import get_response 
 
