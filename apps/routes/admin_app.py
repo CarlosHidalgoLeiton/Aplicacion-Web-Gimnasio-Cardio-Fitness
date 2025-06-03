@@ -29,6 +29,8 @@ from apps.controllers.notification_controller import notificationController
 from apps.controllers.bill_controller import billController
 from apps.controllers.membership_controller import membershipController
 from apps.controllers.cancelledBill_controller import cancelledBillController
+from apps.controllers.routine_controller import routineController
+from apps.controllers.session_controller import sessionController
 
 
 
@@ -187,12 +189,16 @@ def viewStatistics(documentId,clientId):
 @login_required
 @admin_permission.require(http_exception=403)
 def routinesClient(ID_Cliente):
-    conection = Conection.conectar()
-    client = ClientRepository.getClient(conection,ID_Cliente)
-    routines = RoutineRepository.get_all(conection, ID_Cliente)  
-    errorMessage = request.args.get('error')
-    Conection.desconectar()
-    return render_template("admin/routinesClient.html", routines=routines, client=client, error=errorMessage)
+    try:
+            client = clientController.finOneByDocumentId(ID_Cliente)
+
+            routines = routineController.getRoutineClient(ID_Cliente)
+
+            return render_template("admin/routinesClient.html", routines=routines, client=client)
+
+    except Exception as ex:
+            flash(ex.args[0], 'danger')
+            return redirect(url_for('admin_app.clients'))
 
 
 
@@ -200,29 +206,25 @@ def routinesClient(ID_Cliente):
 @login_required
 @admin_permission.require(http_exception=403)
 def viewRoutine(routineId, DocumentId):
-    conexion = Conection.conectar()
-    routine = RoutineRepository.get_routine(conexion, routineId)
-    sessions = SessionRepository.get_session_by_Routine(conexion, routineId)
-    client = ClientRepository.getClient(conexion, DocumentId)
-    Conection.desconectar()
-
-    if routine:
+    try:
+        client = clientController.finOneByDocumentId(DocumentId)
+        routine = routineController.findOneRoutine(routineId)
+        sessions = sessionController.findAllByIdRoutine(routineId)
         return render_template("admin/viewRoutine.html", routine=routine, sessions=sessions, client=client)
-    else:
-        return redirect(url_for('admin_app.clients', error="Rutina no encontrada"))
+
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.routinesClient', ID_Cliente = DocumentId))
 
 @admin_app.route("/getSession/<ID_Routine>", methods=['GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def getSessions(ID_Routine):
-    conection = Conection.conectar()
-    getSessions = SessionRepository.get_session_by_Routine(conection, ID_Routine)
-    Conection.desconectar()
-    sessions = [session.to_dict() for session in getSessions]
+    try:
+        sessions = sessionController.findAllByIdRoutine(ID_Routine)
 
-    if sessions:
         return jsonify(sessions)
-    else:
+    except:
         return jsonify({'error': 'No se encontraron las sesiones.'})
     
 
@@ -230,17 +232,14 @@ def getSessions(ID_Routine):
 @login_required
 @admin_permission.require(http_exception=403)
 def viewSession(Session_ID):
-    conexion = Conection.conectar()
-    session = SessionRepository.get_sesssion_by_id(conexion, Session_ID)
-    routine = RoutineRepository.get_routine(conexion, session.Routine_ID)
-    Conection.desconectar()
-    
-    if session:
-        # Deserializa el JSON a un objeto Python
+    try:
+        session = sessionController.findOneById(Session_ID)
         session.Exercises = json.loads(session.Exercises)
-        return render_template("admin/viewSession.html", session=session, routine=routine)
-    else:
-        return redirect(url_for('admin_app.viewRoutine', routineId=routine.RoutineId, DocumentId=routine.ClientId, error="Sesión no encontrada"))
+
+        return render_template("admin/viewSession.html", session=session, routine=session.routine)
+
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
 
 #-------------Rutas de Entrenadores-------------#
 
