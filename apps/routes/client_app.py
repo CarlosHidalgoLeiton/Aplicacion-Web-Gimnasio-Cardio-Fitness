@@ -4,12 +4,12 @@ from flask_login import login_required, current_user
 from apps.routes.permissions import client_permission
 from apps.db.conection import Conection
 from apps.controllers.client_controller import clientController
-from apps.db.repositories.RepositoryProduct import ProductRepository
+from apps.db.repositories.ProductRepository import ProductRepository
 from apps.controllers.session_controller import sessionController
 from apps.db.repositories.SessionRepository import SessionRepository
 from apps.controllers.routine_controller import routineController
 from apps.db.repositories.RoutineRepository import RoutineRepository
-from apps.db.repositories.ModelMembership import ModelMembership
+from apps.db.repositories.MembershipRepository import MembershipRepository
 from apps.controllers.statistics_controller import statisticsController
 import json  
 from apps.controllers.inventory_controller import productController

@@ -1,4 +1,4 @@
-from apps.db.repositories.RepositoryProduct import ProductRepository
+from apps.db.repositories.ProductRepository import ProductRepository
 
 from apps.db.models.Product import Product
 
@@ -88,5 +88,18 @@ class productController:
     @classmethod
     def able_Product(cls, id):
          return cls.ProductRepository.able_Product(id)
+    
+    @classmethod
+    def get_allAble(cls):
+        filters = {'State': True}
+        products = cls.ProductRepository.findAll(filters=filters)
+        if not products:
+            raise Exception('No se encontraron productos')
+        return products
+    
+    @classmethod
+    def get_stock(cls,product_id):
+        stock= cls.ProductRepository.get_stock(product_id)
+        return stock
     
     
