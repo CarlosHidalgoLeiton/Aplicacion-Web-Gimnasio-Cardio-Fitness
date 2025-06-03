@@ -248,7 +248,7 @@
                                 <div class="mb-3 row">
                                     <label class="col-lg-4 col-form-label" >¿Es deportista? </label>
                                     <div class="col-lg-6">
-                                        <input type="text" class="form-control" name="sportsman" value="{{statistics.sportsman}}" readonly>
+                                        <input type="text" class="form-control" name="sportsman" value="{{ 'Sí' if statistics.sportsman else 'No' }}" readonly>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">

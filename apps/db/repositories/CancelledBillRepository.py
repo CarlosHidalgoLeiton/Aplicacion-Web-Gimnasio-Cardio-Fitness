@@ -8,48 +8,6 @@ class BillRepository(RepositoryBase):
         def __init__(self):
          super().__init__(CancelledBill)
 
-    # @classmethod
-    # def insertCancelledBill(cls, conection, cancelledBill):
-    #     if cancelledBill != None:
-    #         try:
-    #             cancelDate = datetime.now()
-    #             cursor = conection.cursor()
-    #             sql = """INSERT INTO FacturaAnulada (Motivo, FechaAnulacion, ID_Factura)
-    #             VALUES (%s, %s, %s)"""
-    #             cursor.execute(sql, (cancelledBill.Motive, cancelDate, cancelledBill.ID_Bill))
-    #             conection.commit()
-
-    #             if cursor.rowcount > 0:
-    #                 cursor.close()
-    #                 state = 0
-    #                 cursor = conection.cursor()
-    #                 sql = """UPDATE Factura SET Estado = (%s) WHERE ID_Factura = (%s)"""
-    #                 cursor.execute(sql, (state, cancelledBill.ID_Bill))
-    #                 conection.commit()
-
-    #                 if cursor.rowcount > 0:
-    #                     print(f"Factura anulada correctamente")
-    #                     return True
-    #                 else:
-    #                     print("No se pudo cambiar el estado de la factura.")
-    #                     conection.rollback()
-    #                     return "Error"
-    #             else:
-    #                 print("No se pudo crear la factura anulada.")
-    #                 conection.rollback()
-    #                 return "Error"
-                
-    #         except BaseException as ex:
-    #             print(f"Error en ModelCancelledBill insertCancelledBill: {ex}")
-    #             conection.rollback()
-    #             return "DataBase"
-    #         except Exception as ex:
-    #             print(f"Error en ModelCancelledBill insertCancelledBill: {ex}")
-    #             conection.rollback()
-    #             return "Error"
-    #     else:
-    #         return "Error"
-    
         @classmethod
         def getDataCanceledBill(cls, request):
             motive = request.form['Motive']
@@ -66,21 +24,3 @@ class BillRepository(RepositoryBase):
                 return "No se encontró el número de factura."
             
             return True
-    
-    
-    # @classmethod
-    # def getCancelBill(cls, conection, ID_Bill):
-    #     try:
-    #         cursor = conection.cursor()
-    #         sql = "SELECT Motivo, FechaAnulacion FROM FacturaAnulada WHERE ID_Factura = (%s)"
-    #         cursor.execute(sql, (ID_Bill))
-    #         row = cursor.fetchone() 
-    #         if row:
-    #             return CancelledBill(
-    #                 Motive= row[0],
-    #                 CancelledDate= row[1],
-    #             )
-    #         return None
-    #     except Exception as ex:
-    #         print(f"Error en getCancelBill: {ex}")
-    #         return None
