@@ -21,6 +21,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from io import BytesIO
 from flask import send_file
+from apps.controllers.user_controller import userController
 from apps.controllers.client_controller import clientController
 from apps.controllers.trainer_controller import trainerController
 from apps.controllers.statistics_controller import statisticsController
@@ -344,110 +345,113 @@ def ableTrainer():
     
 
 #-------------Rutas de user-------------#
-@admin_app.route("/users", methods = ['GET', 'POST'])
+
+#Aquí he cambiadooo
+@admin_app.route("/users", methods = ['POST', 'GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def users():
-    conection = Conection.conectar()
-    users = UserRepository.get_Users(conection)
-    clients = UserRepository.get_Clients(conection) 
-    trainers = UserRepository.get_Trainers(conection) 
-    Conection.desconectar()
-    doneMessage = request.args.get('done')
-    errorMessage = request.args.get('error')
-    if request.method == 'POST':
-        user = UserRepository.validateDataForm(request)
-        if type(user) != User:
-            return render_template("admin/users.html", users=users, clients=clients, trainers=trainers,  error=user)
-        conection = Conection.conectar()
-        if conection == None:
-            return render_template("admin/users.html", users=users, clients=clients, trainers=trainers,  error= "Error en la conexión.")
-        insert = UserRepository.insertUser(conection, user)
-        if insert:
-            users = UserRepository.get_Users(conection)
-            Conection.desconectar()
-            return redirect(url_for("admin_app.users", done = "Usuario creado correctamente."))
+    try:
+        users = userController.get_all()
+        clients = userController.get_Clients() 
+        trainers = userController.get_Trainers() 
+        if request.method == 'POST':
+            user = userController.getData(request)
+            userValidated = userController.validateDataForm(user)
+            if not type(userValidated) == bool:
+                return render_template("admin/users.html", users=users,  clients=clients, trainers=trainers,  error=userValidated, user = user)
+            userController.create(user)
+            users = userController.get_all()
+            flash('Registro creado exitosamente', 'success')
+            return render_template("admin/users.html", users=users, clients=clients, trainers=trainers, user = None)
         else:
-            Conection.desconectar()
-            return render_template("admin/users.html", users=users,  clients=clients, trainers=trainers, error= "No se pudo ingresar el cliente.")
-    else:
-        return render_template("admin/users.html", users=users, clients=clients, trainers=trainers, done = doneMessage, errorMessage = errorMessage)
+            return render_template("admin/users.html", users=users, clients=clients, trainers=trainers, user = None)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return render_template("admin/users.html", users=users, clients=clients, trainers=trainers, user = None)
     
-
-@admin_app.route("/users/view/<DocumentId>")
+    
+@admin_app.route("/users/view/<DocumentId>", methods = ['GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def viewUser(DocumentId):
     try:
-        conection = Conection.conectar()
-        user = UserRepository.get_User(conection, DocumentId)  
-    except Exception as e:
-        print(f"Error al obtener el usuario: {e}")
-        user = None
-    finally:
-        Conection().desconectar()
+        user = userController.getUser(DocumentId)
+        return render_template("admin/viewUser.html", user=user)
 
-    return render_template("/admin/viewUser.html", user=user)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.users'))
+    
 
-@admin_app.route("/users/update/<DocumentId>", methods=["POST", 'GET'])
+@admin_app.route("/users/update/<DocumentId>", methods = ['POST', 'GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def updateUser(DocumentId):
-    conection = Conection.conectar()
-    user = UserRepository.get_UserU(conection, DocumentId)
-    Conection.desconectar()
-    if user:
+
+    try:
+        user = userController.getUser(DocumentId)
+
         if request.method == 'POST':
-            validatedUser = UserRepository.validateDataFormUpdate(request, user)
-            if type(validatedUser) == str:  
-                return render_template("/admin/updateUser.html", user=user, error=validatedUser)
-            conection = Conection.conectar()
-            if conection == None:
-                return render_template("/admin/updateUser.html", user=user, error="Error en la conexión.")
-            update_result = UserRepository.update_User(conection, validatedUser, user.id)
-            Conection.desconectar()
-            if update_result:
-                return redirect(url_for('admin_app.users', done = "Usuario actualizado correctamente"))
-            else:
-                return render_template("/admin/updateUser.html", user=user, error="No se pudo actualizar el usuario.")
+           
+            userUpdated = userController.getDataUpdate(request)
+            userValidated = userController.validateDataFormUpdate(userUpdated,DocumentId)
+
+            if not type(userValidated) == bool:
+                return render_template("admin/updateUser.html", error=userValidated, user = user)
+            
+            if not userUpdated.Password:
+                userUpdated.Password = user.Password
+
+            userController.updateUser(user.id ,userUpdated )
+            flash('Registro actualizado exitosamente', 'success')
+            return redirect(url_for('admin_app.users'))
+                
+        return render_template("admin/updateUser.html", user = user)
+    
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for("admin_app.users"))
+
+
+
+@admin_app.route("/users/able", methods = ['POST'])
+@login_required
+@admin_permission.require(http_exception=403)
+def ableUser():
+    try:
+        data = request.get_json()
+        DocumentId = data.get('DocumentId')
+        able = userController.able_user(DocumentId)
+        if able:
+            return jsonify({"message": "Hecho"})
         else:
-            return render_template('admin/updateUser.html', user = user)
-    else:
-        return redirect(url_for("admin_app.users", error = "Usuario no encontrado"))
-
-
-
+            # Manejar el caso en que no se encuentre el cliente
+            return jsonify({"error": "No se pudo habilitar"})
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.users'))
+    
 
 @admin_app.route("/users/disable", methods = ['POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def disableUser():
-    data = request.get_json()
-    DocumentId = data.get('DocumentId')
-    conexion = Conection.conectar()
-    disable = UserRepository.disableUser(conexion, DocumentId)
-    Conection.desconectar()
-
-    if disable:
-        return jsonify({"message": "Hecho"})
-    else:
-        
-        return jsonify({"error": "No se pudo deshabilitar"})
+    try:
+        data = request.get_json()
+        DocumentId = data.get('DocumentId')
     
-@admin_app.route("/users/able", methods = ['POST'])
-@login_required
-@admin_permission.require(http_exception=403)
-def ableUser():
-    data = request.get_json()
-    DocumentId = data.get('DocumentId')
-    conection = Conection.conectar()
-    able = UserRepository.ableUser(conection, DocumentId)
-    Conection.desconectar()
+        disable = userController.disable_user(DocumentId)
 
-    if able:
-        return jsonify({"message": "Hecho"})
-    else:
-        return jsonify({"error": "No se pudo habilitar"})
+        if disable:
+            return jsonify({"message": "Hecho"})
+        else:
+            # Manejar el caso en que no se encuentre el cliente
+            return jsonify({"error": "No se pudo deshabilitar"})
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.users'))
+    
 
 
 #-------------Rutas de facturas-------------#
