@@ -6,6 +6,7 @@ from apps.db.repositories.ClientRepository import ClientRepository
 import serial
 
 from apps.controllers.user_controller import userController
+from apps.controllers.client_controller import clientController
 
 
 login_app = Blueprint('login_app', __name__)
@@ -51,10 +52,8 @@ def abrir_porton():
 def entryInstallation():
     if request.method == "POST":
         user_document_id = request.form['DocumentId']
-        conexion = None
         try:
-            conexion = Conection.conectar()
-            client = ClientRepository.getClient(conexion, user_document_id)
+            client = clientController.get_one(user_document_id)
 
             if client is not None:
                 if client.is_member_active():
@@ -64,11 +63,9 @@ def entryInstallation():
                     else:
                         success_message = "Acceso Permitido, pero hubo un problema al abrir el portón."
                     
-                    Conection().desconectar()  # Desconectar antes de retornar
                     return render_template("login/entryInstallationStatus.html", success_message=success_message)
                 else:
                     error_message = "Acceso Denegado. Su membresía no se encuentra activa."
-                    Conection().desconectar()  # Desconectar antes de retornar
                     return render_template("login/entryInstallationStatus.html", error=error_message)
             else:
                 error_message = "Cliente no encontrado."
@@ -79,9 +76,6 @@ def entryInstallation():
             error_message = "Hubo un error en el sistema. Inténtelo más tarde."
             return render_template("login/entryInstallationStatus.html", error=error_message)
 
-        finally:
-            if conexion:
-                Conection().desconectar()
     return render_template("login/entryInstallation.html")
 
 @login_app.route("/entryInstallationStatus")
