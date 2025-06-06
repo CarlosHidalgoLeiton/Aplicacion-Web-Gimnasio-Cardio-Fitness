@@ -28,8 +28,9 @@ from apps.controllers.cancelledBill_controller import cancelledBillController
 from apps.controllers.routine_controller import routineController
 from apps.controllers.session_controller import sessionController
 from apps.controllers.membership_controller import membershipController
+from apps.controllers.reportController import reportController
 
-
+import traceback
 
 #Creación de los blueprint para usar en app.py
 admin_app = Blueprint('admin_app', __name__)
@@ -914,216 +915,204 @@ def ableNotification():
 
 
 
-
-
-
-
 @admin_app.route("/notifications/delete")
 @login_required
 def notificationsDesable(id):
     return render_template("admin/verNotificacion.html")
 
-#-------------Reportes------------#
+
+#------------- Reportes (Facturas) ------------#
+import traceback
+
 @admin_app.route("/billsReports", methods=['GET', 'POST'])
 @login_required
 def billsReports():
     connection = Conection.conectar()
     if request.method == 'POST':
-        data = request.get_json()
-        invoice_type = data.get('invoiceType')
-
         try:
-            if invoice_type in ['diaria', 'semanal', 'mensual']:
-                reports = ModelBill.get_reports(connection, invoice_type)
+            data = request.get_json()
+            invoice_type = data.get('invoiceType')
+            print("invoice_type:", invoice_type)          
+
+            if invoice_type in ('diaria', 'semanal', 'mensual'):
+                reports = reportController.get_general_reports(connection, invoice_type)
                 if reports is None:
-                    return jsonify({"error": "Error al obtener los reportes"}), 500
+                    return jsonify({"error": "Sin datos"}), 404
                 return jsonify(reports)
-            else:
-                return jsonify({"error": "Tipo de reporte no válido"}), 400
+
+            return jsonify({"error": "Tipo no válido"}), 400
+
         except Exception as e:
+            print("❌ Error en get_general_reports:")
+            traceback.print_exc()  # <---- Esto imprime la traza completa
             return jsonify({"error": str(e)}), 500
 
     return render_template("admin/billsReports.html")
 
 
+
+
+
 @admin_app.route("/generate_report_bill", methods=['GET'])
 @login_required
 def generate_reportBills_pdf():
-    period = request.args.get('month')
-    invoice_type = request.args.get('invoice_type')
-    connection = Conection.conectar()
-    reports = ModelBill.get_reports(connection, invoice_type)
+    period       = request.args.get('month')         
+    invoice_type = request.args.get('invoice_type')  
+    connection   = Conection.conectar()
+    reports = reportController.get_general_reports(connection, invoice_type)
     if not reports:
         return jsonify({"error": "No se encontraron reportes"}), 404
 
     filtered_reports = {}
-    for group, group_reports in reports.items():
-        if invoice_type == 'semanal':
-            if str(group) == period:
-                filtered_reports[group] = group_reports
-        elif invoice_type in ['mensual', 'diaria']:
-            if group == period:
-                filtered_reports[group] = group_reports
+    for grupo, lista in reports.items():
+        if (invoice_type == 'semanal' and str(grupo) == period) or \
+           (invoice_type in ('mensual', 'diaria') and grupo == period):
+            filtered_reports[grupo] = lista
+
     if not filtered_reports:
         return jsonify({"error": "No se encontraron reportes para el período seleccionado"}), 404
+
     buffer = BytesIO()
-    c = canvas.Canvas(buffer, pagesize=letter)
+    pdf    = canvas.Canvas(buffer, pagesize=letter)
 
-    logo_path = "static/images/icono.jpg"
     try:
-        c.drawImage(logo_path, 450, 750, width=1.5 * inch, height=0.8 * inch, preserveAspectRatio=True)
-    except Exception as ex:
-        print(f"Error al cargar el logo: {ex}")
+        pdf.drawImage("static/images/icono.jpg",
+                      450, 750, width=1.5*inch, height=0.8*inch,
+                      preserveAspectRatio=True)
+    except Exception:
+        pass
 
-    c.setFont("Helvetica-Bold", 18)
-    c.setFillColor(HexColor("#c0392b"))
-    c.drawString(50, 750, f"Reporte de Facturas - {invoice_type.capitalize()} ({period})")
-    c.setFont("Helvetica", 12)
-    c.setFillColor(HexColor("#7f8c8d"))
-    c.drawString(50, 730, f"Detalles de facturación para el período de {period}")
-    c.setFont("Helvetica", 10)
-    for group, group_reports in filtered_reports.items():
-        c.setFont("Helvetica-Bold", 12)
-        c.drawString(50, 700, f"Fecha: {group}")
-        y_position = 680
+    pdf.setFont("Helvetica-Bold", 18)
+    pdf.setFillColor(HexColor("#c0392b"))
+    pdf.drawString(50, 750, f"Reporte de Facturas - {invoice_type.capitalize()} ({period})")
+    pdf.setFont("Helvetica", 12)
+    pdf.setFillColor(HexColor("#7f8c8d"))
+    pdf.drawString(50, 730, "Detalles de facturación")
 
-        entity_groups = {}
-        for report in group_reports:
-            entity_type = report.get('TipoEntidad', 'General')
-            if entity_type not in entity_groups:
-                entity_groups[entity_type] = []
-            entity_groups[entity_type].append(report)
+    y = 700
+    for grupo, lista in filtered_reports.items():
+        pdf.setFont("Helvetica-Bold", 12)
+        pdf.drawString(50, y, f"Fecha / Grupo: {grupo}")
+        y -= 20
+        entidades = {}
+        for rep in lista:
+            entidades.setdefault(rep.get('TipoEntidad', 'General'), []).append(rep)
 
-        for entity_type, reports_in_entity in entity_groups.items():
-            entity_title = {
-                'Entrenador': 'Pago Entrenador',
-                'Cliente': 'Membresía Cliente',
-                'Producto': 'Venta de Producto',
-                'General': 'General'
-            }.get(entity_type, 'General')
+        for tipo, fila in entidades.items():
+            titulo = {'Cliente': 'Membresía Cliente',
+                      'Entrenador': 'Pago Entrenador',
+                      'Producto': 'Venta de Producto'}.get(tipo, 'General')
 
-            c.setFont("Helvetica-Bold", 12)
-            c.drawString(50, y_position, f"{entity_title}")
-            y_position -= 20
-            y_position -= 10
-            data = []
-            if entity_type == 'Producto':
-                data = [["Producto", "Monto", "Fecha"]]
-                for report in reports_in_entity:
-                    data.append([report.get('Producto', 'N/A'), report['Monto'], report.get('Fecha', 'N/A')])
-            elif entity_type in ['Cliente', 'Entrenador']:
-                data = [["Nombre", "Cédula", "Monto", "Fecha"]]
-                for report in reports_in_entity:
-                    data.append([report.get('Nombre', 'N/A'), report.get('Cedula', 'N/A'), report['Monto'], report.get('Fecha', 'N/A')])
+            pdf.drawString(60, y, titulo)
+            y -= 15
+            if tipo == 'Producto':
+                cab = ["Producto", "Monto", "Fecha"]
+                filas = [[r.get('Producto', 'N/A'), r['Monto'], r.get('Fecha', 'N/A')] for r in fila]
+            elif tipo in ('Cliente', 'Entrenador'):
+                cab = ["Nombre", "Cédula", "Monto", "Fecha"]
+                filas = [[r.get('Nombre', 'N/A'), r.get('Cedula', 'N/A'),
+                          r['Monto'], r.get('Fecha', 'N/A')] for r in fila]
             else:
-                data = [["Descripción", "Monto", "Fecha"]]
-                for report in reports_in_entity:
-                    data.append([report['Descripcion'], report['Monto'], report.get('Fecha', 'N/A')])
+                cab = ["Descripción", "Monto", "Fecha"]
+                filas = [[r['Descripcion'], r['Monto'], r.get('Fecha', 'N/A')] for r in fila]
 
-            table = Table(data, colWidths=[70, 150, 90, 90, 90])
-            table.setStyle(TableStyle([
+            tabla = Table([cab] + filas, colWidths=[150, 90, 90, 90])
+            tabla.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, 0), HexColor("#e74c3c")),
-                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, -1), 10),
-                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-                ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-                ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                ('TEXTCOLOR',  (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN',      (0, 0), (-1, -1), 'CENTER'),
+                ('FONTNAME',   (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE',   (0, 0), (-1, -1), 9),
+                ('GRID',       (0, 0), (-1, -1), 0.3, colors.grey),
             ]))
-            table.wrapOn(c, 50, y_position - 20)
-            table.drawOn(c, 50, y_position - 40)
+            tabla.wrapOn(pdf, 50, y-20)
+            tabla.drawOn(pdf, 50, y-20 - len(filas)*18)
+            y -= len(filas)*18 + 40
 
-            y_position -= len(reports_in_entity) * 20 + 40  
-    c.showPage()
-    c.save()
+            if y < 120:
+                pdf.showPage()
+                y = 750
+    pdf.showPage()
+    pdf.save()
     buffer.seek(0)
+    return send_file(buffer, as_attachment=True,
+                     download_name=f"reporte_facturas_{period}.pdf",
+                     mimetype="application/pdf")
 
-    return send_file(buffer, as_attachment=True, download_name=f"reporte_facturas_{period}.pdf", mimetype="application/pdf")
 
+#------------- Reportes (Inventario Productos) ------------#
 @admin_app.route("/inventoryReports", methods=['GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def inventoryReports():
-    conection = Conection.conectar()
-    doneMessage = request.args.get('done')
+    conn         = Conection.conectar()
+    doneMessage  = request.args.get('done')
     errorMessage = request.args.get('error')
-    reports = ModelBill.get_ProductBills(conection)  
+    reports      = reportController.get_product_bills(conn)
     Conection.desconectar()
-    return render_template("admin/inventoryReports.html", reports=reports, done=doneMessage, error=errorMessage)
+    return render_template("admin/inventoryReports.html",
+                           reports=reports, done=doneMessage, error=errorMessage)
 
 
 @admin_app.route("/generate_report_pdf", methods=['GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def generate_report_pdf():
-    month = request.args.get('month')
-    conection = Conection.conectar()
-
-    reports = ModelBill.get_ProductBills(conection).get(month, [])
+    month = request.args.get('month')  
+    conn  = Conection.conectar()
+    month_data = reportController.get_product_bills(conn).get(month, [])
     Conection.desconectar()
 
-    if not reports:
+    if not month_data:
         return "No hay facturas para este mes", 404
 
+    # --- PDF de inventario ---
     buffer = BytesIO()
-    c = canvas.Canvas(buffer, pagesize=letter)
+    pdf    = canvas.Canvas(buffer, pagesize=letter)
 
-    logo_path = "static/images/icono.jpg"
     try:
-        c.drawImage(logo_path, 450, 700, width=1.5 * inch, height=0.8 * inch, preserveAspectRatio=True)
-    except Exception as ex:
-        print(f"Error al cargar el logo: {ex}")
+        pdf.drawImage("static/images/icono.jpg",
+                      450, 700, width=1.5*inch, height=0.8*inch,
+                      preserveAspectRatio=True)
+    except Exception:
+        pass
 
-    c.setFont("Helvetica-Bold", 18)
-    c.setFillColor(HexColor("#c0392b"))  
-    c.drawString(50, 750, f"Reporte de Inventario - {month}")
+    pdf.setFont("Helvetica-Bold", 18)
+    pdf.setFillColor(HexColor("#c0392b"))
+    pdf.drawString(50, 750, f"Reporte de Inventario - {month}")
+    pdf.setFont("Helvetica", 12)
+    pdf.setFillColor(HexColor("#7f8c8d"))
+    pdf.drawString(50, 730, f"Ventas de productos para el mes {month}")
+    pdf.setFont("Helvetica", 10)
 
-    c.setFont("Helvetica", 12)
-    c.setFillColor(HexColor("#7f8c8d"))
-    c.drawString(50, 730, f"Reporte de ventas de productos para el mes de {month}")
+    tabla_data = [["Código", "Producto", "Precio", "Cantidad Vendida", "Total Vendido"]]
+    for rep in month_data:
+        tabla_data.append([
+            rep['ProductCode'],
+            rep['ProductName'],
+            f"{rep['Price']:.2f}",
+            rep['QuantitySold'],
+            f"{rep['TotalSold']:.2f}"
+        ])
 
-    c.setFont("Helvetica", 10)
-
-    data = [["Código", "Producto", "Precio", "Cantidad Vendida", "Total Vendido"]]
-    for report in reports:
-        row = [
-            str(report['ProductCode']),
-            report['ProductName'],
-            f"{report['Price']:.2f}",
-            str(report['QuantitySold']),
-            f"{report['TotalSold']:.2f}"
-        ]
-        data.append(row)
-
-    table = Table(data, colWidths=[70, 150, 90, 90, 90])
-    table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), HexColor("#e74c3c")),  
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 10),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.white),  
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey), 
-        ('LINEABOVE', (0, 0), (-1, 0), 1, HexColor("#c0392b")), 
-        ('LINEBELOW', (0, -1), (-1, -1), 1, HexColor("#c0392b")),  
-        ('LINEBEFORE', (0, 0), (0, -1), 1, HexColor("#c0392b")),  
-        ('LINEAFTER', (-1, 0), (-1, -1), 1, HexColor("#c0392b")),  
+    tabla = Table(tabla_data, colWidths=[70, 150, 90, 90, 90])
+    tabla.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), HexColor("#e74c3c")),
+        ('TEXTCOLOR',  (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN',      (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME',   (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE',   (0, 0), (-1, -1), 9),
+        ('GRID',       (0, 0), (-1, -1), 0.3, colors.grey),
     ]))
+    tabla.wrapOn(pdf, 50, 600)
+    tabla.drawOn(pdf, 50, 500)
 
-    table.wrapOn(c, 50, 600)
-    table.drawOn(c, 50, 500)  
-
-    c.setStrokeColor(HexColor("#c0392b"))
-    c.setLineWidth(1)
-    c.line(50, 490, 550, 490)  
-
-    c.showPage()
-    c.save()
+    pdf.showPage()
+    pdf.save()
     buffer.seek(0)
-    return send_file(buffer, as_attachment=True, download_name=f"reporte_inventario_{month}.pdf", mimetype="application/pdf")
-
+    return send_file(buffer, as_attachment=True,
+                     download_name=f"reporte_inventario_{month}.pdf",
+                     mimetype="application/pdf")
 
     #-------------Perfil------------#
 @admin_app.route("/profile")
@@ -1131,39 +1120,7 @@ def generate_report_pdf():
 def profile():
     return render_template("admin/profile.html")
 
-#-------------Rutas de Membresias-------------#
-# @admin_app.route("/memberships", methods = ['GET', 'POST'])
-# @login_required
-# @admin_permission.require(http_exception=403)
-# def memberships():
-#     conection = Conection.conectar()
-#     memberships = ModelMembership.get_all(conection)
-#     Conection.desconectar()
-#     doneMessage = request.args.get('done')
-#     errorMessage = request.args.get('error')
-#     if request.method == 'POST':
-#         membership = ModelMembership.getDataMembership(request)
-#         membershipValidated = ModelMembership.validateDataForm(membership)
-#         if not type(membershipValidated) == bool:
-#             return render_template("admin/membership.html", memberships=memberships, error=membershipValidated, membership = membership)
-#         conection = Conection.conectar()
-#         if conection == None:
-#             return render_template("admin/membership.html", memberships=memberships, error= "Error en la conexión.", membership = membership)
-#         insert = ModelMembership.insertMembership(conection, membership)
-#         if insert and type(insert) == bool:
-#             memberships = ModelMembership.get_all(conection)
-#             Conection.desconectar()
-#             return redirect(url_for('admin_app.memberships', done = "Membresía creada correctamente."))
-#         elif insert == "Unique":
-#             return render_template("admin/membership.html", memberships=memberships, error= "Ya existe una membresía con el nombre ingresado.", membership = membership)
-#         elif insert == "DataBase":
-#             return render_template("admin/membership.html", memberships=memberships, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", membership = membership)
-#         else:
-#             Conection.desconectar()
-#             return render_template("admin/membership.html", memberships=memberships, error= "No se pudo ingresar la membresía, por favor inténtalo más tarde.", membership = membership)
-#     else:
-#         return render_template("admin/membership.html", memberships=memberships, membership = None, done = doneMessage, error = errorMessage)
-
+#-------------------Membresias------------------- #
 @admin_app.route("/memberships", methods=['GET', 'POST'])
 @login_required
 @admin_permission.require(http_exception=403)
@@ -1190,36 +1147,6 @@ def memberships():
         return render_template("admin/membership.html", memberships=[], membership=None)
 
 
-
-
-# @admin_app.route("/membership/updateMembership/<id>", methods=['POST', 'GET'])
-# @login_required
-# @admin_permission.require(http_exception=403)
-# def updateMembership(id):
-#     conexion = Conection.conectar()
-#     membership = ModelMembership.getMembership(conexion, id)
-#     Conection.desconectar()
-#     if membership:
-#         if request.method == 'POST':
-#             membershipUpdate = ModelMembership.getDataMembership(request)
-#             membershipValidated = ModelMembership.validateDataForm(membershipUpdate)
-#             if not type(membershipValidated) == bool:
-#                 return render_template("admin/updateMembership.html", error=membershipValidated, membership = membership)
-#             conection = Conection.conectar()
-#             if conection == None:
-#                 return render_template("admin/updateMembership.html", error= "Error en la conexión.", membership = membership)
-#             update = ModelMembership.updateMembership(conection, membershipUpdate, id)
-#             Conection.desconectar()
-#             if update and type(update) == bool:
-#                 return redirect(url_for('admin_app.memberships', done = "Membresia actualizada correctamente."))
-#             elif update == "DataBase":
-#                 return render_template("admin/updateMembership.html", error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", membership = membership)
-#             else:
-#                 return render_template("admin/updateMembership.html", error= "No se pudo actualizar la membresia.", membership = membership)
-#         else:
-#             return render_template("admin/updateMembership.html", membership = membership)
-#     else:
-#         return redirect(url_for("admin_app.memberships", error = "Membresia no encontrada."))
 
 @admin_app.route("/membership/updateMembership/<id>", methods=['POST', 'GET'])
 @login_required
@@ -1253,16 +1180,6 @@ def updateMembership(id):
 
 
 
-# @admin_app.route("/membership/view/<id>")
-# @login_required
-# def viewMembership(id):
-#     conection = Conection.conectar()
-#     membership = ModelMembership.getMembership(conection, id)
-#     Conection.desconectar()
-#     if membership:
-#         return render_template("admin/viewMembership.html", membership=membership)
-#     else:
-#         return redirect(url_for("admin_app.memberships", error = "Membresia no encontrada."))
 
 @admin_app.route("/membership/view/<id>")
 @login_required
@@ -1276,22 +1193,6 @@ def viewMembership(id):
 
     
 
-# @admin_app.route("/membresias/deshabilitar", methods = ['POST'])
-# @login_required
-# @admin_permission.require(http_exception=403)
-# def disableMembership():
-#     data = request.get_json()
-#     membershipId = data.get('membershipId')
-#     conection = Conection.conectar()
-#     if conection == None:
-#         return redirect(url_for('admin_app.memberships', error = "No se pudo conectar con la base de datos."))
-#     disable = ModelMembership.disableMembership(conection, membershipId)
-#     Conection.desconectar()
-
-#     if disable:
-#         return jsonify({"message": "Hecho"})
-#     else:
-#         return jsonify({"error": "No se pudo deshabilitar"})
 
 @admin_app.route("/membresias/deshabilitar", methods=['POST'])
 @login_required
@@ -1310,23 +1211,7 @@ def disableMembership():
         return jsonify({"error": str(e)})
 
     
-# @admin_app.route("/membresias/habilitar", methods = ['POST'])
-# @login_required
-# @admin_permission.require(http_exception=403)
-# def ableMembership():
-#     data = request.get_json()
-#     membershipId = data.get('membershipId')
-#     conection = Conection.conectar()
-#     if conection == None:
-#         return redirect(url_for('admin_app.memberships', error = "No se pudo conectar con la base de datos"))
-#     able = ModelMembership.ableMembership(conection, membershipId)
-#     Conection.desconectar()
 
-#     if able:
-#         return jsonify({"message": "Hecho"})
-#     else:
-#         # Manejar el caso en que no se encuentre el cliente
-#         return jsonify({"error": "No se pudo habilitar"})
 
 @admin_app.route("/membresias/habilitar", methods=['POST'])
 @login_required

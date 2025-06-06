@@ -1,57 +1,132 @@
 {% extends "./layout/Layout_Admin.html" %}
 
 {% block content %}
-        <!--**********************************
-            Content body start
-        ***********************************-->
-        <div class="row page-titles">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="javascript:void(0)">Inventario</a></li>
-                <li class="breadcrumb-item active"><a href="javascript:void(0)">Reporte</a></li>
-            </ol>
-        </div>
+<!--**********************************
+    Content body start
+***********************************-->
+<div class="row page-titles">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Facturación</a></li>
+        <li class="breadcrumb-item active"><a href="javascript:void(0)">Reporte</a></li>
+    </ol>
+</div>
 
-        <div class="row">
-            <!--**********************************
-                DATATABLES 
-            ***********************************-->
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">Lista de Reportes Mensuales</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table id="example2" class="display min-w850">
-                                <thead>
-                                    <tr>
-                                        <th>Fecha Inicio</th>
-                                        <th>Fecha Final</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for month, bills in reports.items() %}
-                                        <tr>
-                                            <td>{{ month }}-01</td>
-                                            <td>{{ month }}-28</td>
-                                            <td>
-                                                <div class="d-flex">
-                                                    <a href="{{ url_for('admin_app.generate_report_pdf', month=month) }}" class="btn btn-danger shadow btn-xs sharp">
-                                                        <i class="fa fa-download"></i> 
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <label for="invoiceType">Tipo de reporte:</label>
+        <select id="invoiceType" class="form-control">
+            <option value="">Seleccione...</option>
+            <option value="diaria">Diario</option>
+            <option value="semanal">Semanal</option>
+            <option value="mensual">Mensual</option>
+        </select>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Lista de Reportes</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="example2" class="display min-w850">
+                        <thead>
+                            <tr>
+                                <th>Periodo</th>
+                                <th>Total</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Cargado dinámicamente con JavaScript -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-        <!--**********************************
-            Content body end
-        ***********************************-->
+    </div>
+</div>
+<!--**********************************
+    Content body end
+***********************************-->
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const invoiceTypeSelector = document.getElementById('invoiceType');
+
+    invoiceTypeSelector.addEventListener('change', function () {
+        const value = this.value;
+        const table = $('#example2');
+        const tableBody = document.querySelector('#example2 tbody');
+
+        if (!value) {
+            alert('Por favor, seleccione un tipo de reporte válido.');
+            return;
+        }
+
+        fetch('/admin/billsReports', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ invoiceType: value })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Error en la solicitud: ' + response.statusText);
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            // Destruir DataTable si ya existe
+            if ($.fn.DataTable.isDataTable('#example2')) {
+                table.DataTable().clear().destroy();
+            }
+
+            tableBody.innerHTML = ''; // Limpiar
+
+            Object.keys(data).forEach(group => {
+                const reports = data[group];
+                let totalMonto = 0;
+
+                reports.forEach(r => totalMonto += parseFloat(r.Monto || 0));
+
+                let groupLabel = '';
+                if (value === 'mensual') {
+                    groupLabel = 'Mes: ' + group;
+                } else if (value === 'semanal') {
+                    const year = group.slice(0, 4);
+                    const week = group.slice(4);
+                    groupLabel = `Semana ${week} del ${year}`;
+                } else if (value === 'diaria') {
+                    groupLabel = 'Día: ' + group;
+                }
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${groupLabel}</td>
+                    <td>₡${totalMonto.toFixed(2)}</td>
+                    <td>
+                        <a href="/admin/generate_report_bill?month=${group}&invoice_type=${value}" 
+                           class="btn btn-danger shadow btn-xs sharp" target="_blank">
+                            <i class="fa fa-download"></i>
+                        </a>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Re-inicializar DataTable
+            table.DataTable();
+        })
+        .catch(error => {
+            console.error('Error al obtener los reportes:', error);
+            alert('Ocurrió un error al generar el reporte.');
+        });
+    });
+});
+</script>
 {% endblock %}
