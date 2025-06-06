@@ -1,13 +1,9 @@
 # Importaciones
-from flask import Blueprint, render_template, request, session, redirect, url_for, jsonify, Response, flash
-from flask_login import login_required, current_user
+from flask import Blueprint, render_template, request, session, redirect, url_for, jsonify, flash
+from flask_login import login_required
 from apps.db.conection import Conection
 from apps.db.repositories.UserRepository import UserRepository
 from apps.db.repositories.ClientRepository import ClientRepository
-from apps.db.repositories.ProductRepository import ProductRepository
-from apps.db.repositories.RoutineRepository import RoutineRepository
-from apps.db.repositories.SessionRepository import SessionRepository
-
 
 from apps.db.models.User import User
 from apps.routes.permissions import admin_permission
@@ -15,12 +11,12 @@ import json
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.colors import HexColor
 from reportlab.lib.units import inch
-from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Paragraph, Spacer
+from reportlab.platypus import Table, TableStyle
 from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
 from io import BytesIO
 from flask import send_file
+from apps.controllers.user_controller import userController
 from apps.controllers.client_controller import clientController
 from apps.controllers.trainer_controller import trainerController
 from apps.controllers.statistics_controller import statisticsController
@@ -31,6 +27,7 @@ from apps.controllers.membership_controller import membershipController
 from apps.controllers.cancelledBill_controller import cancelledBillController
 from apps.controllers.routine_controller import routineController
 from apps.controllers.session_controller import sessionController
+from apps.controllers.membership_controller import membershipController
 
 
 
@@ -344,110 +341,113 @@ def ableTrainer():
     
 
 #-------------Rutas de user-------------#
-@admin_app.route("/users", methods = ['GET', 'POST'])
+
+#Aquí he cambiadooo
+@admin_app.route("/users", methods = ['POST', 'GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def users():
-    conection = Conection.conectar()
-    users = UserRepository.get_Users(conection)
-    clients = UserRepository.get_Clients(conection) 
-    trainers = UserRepository.get_Trainers(conection) 
-    Conection.desconectar()
-    doneMessage = request.args.get('done')
-    errorMessage = request.args.get('error')
-    if request.method == 'POST':
-        user = UserRepository.validateDataForm(request)
-        if type(user) != User:
-            return render_template("admin/users.html", users=users, clients=clients, trainers=trainers,  error=user)
-        conection = Conection.conectar()
-        if conection == None:
-            return render_template("admin/users.html", users=users, clients=clients, trainers=trainers,  error= "Error en la conexión.")
-        insert = UserRepository.insertUser(conection, user)
-        if insert:
-            users = UserRepository.get_Users(conection)
-            Conection.desconectar()
-            return redirect(url_for("admin_app.users", done = "Usuario creado correctamente."))
+    try:
+        users = userController.get_all()
+        clients = userController.get_Clients() 
+        trainers = userController.get_Trainers() 
+        if request.method == 'POST':
+            user = userController.getData(request)
+            userValidated = userController.validateDataForm(user)
+            if not type(userValidated) == bool:
+                return render_template("admin/users.html", users=users,  clients=clients, trainers=trainers,  error=userValidated, user = user)
+            userController.create(user)
+            users = userController.get_all()
+            flash('Registro creado exitosamente', 'success')
+            return render_template("admin/users.html", users=users, clients=clients, trainers=trainers, user = None)
         else:
-            Conection.desconectar()
-            return render_template("admin/users.html", users=users,  clients=clients, trainers=trainers, error= "No se pudo ingresar el cliente.")
-    else:
-        return render_template("admin/users.html", users=users, clients=clients, trainers=trainers, done = doneMessage, errorMessage = errorMessage)
+            return render_template("admin/users.html", users=users, clients=clients, trainers=trainers, user = None)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return render_template("admin/users.html", users=users, clients=clients, trainers=trainers, user = None)
     
-
-@admin_app.route("/users/view/<DocumentId>")
+    
+@admin_app.route("/users/view/<DocumentId>", methods = ['GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def viewUser(DocumentId):
     try:
-        conection = Conection.conectar()
-        user = UserRepository.get_User(conection, DocumentId)  
-    except Exception as e:
-        print(f"Error al obtener el usuario: {e}")
-        user = None
-    finally:
-        Conection().desconectar()
+        user = userController.getUser(DocumentId)
+        return render_template("admin/viewUser.html", user=user)
 
-    return render_template("/admin/viewUser.html", user=user)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.users'))
+    
 
-@admin_app.route("/users/update/<DocumentId>", methods=["POST", 'GET'])
+@admin_app.route("/users/update/<DocumentId>", methods = ['POST', 'GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def updateUser(DocumentId):
-    conection = Conection.conectar()
-    user = UserRepository.get_UserU(conection, DocumentId)
-    Conection.desconectar()
-    if user:
+
+    try:
+        user = userController.getUser(DocumentId)
+
         if request.method == 'POST':
-            validatedUser = UserRepository.validateDataFormUpdate(request, user)
-            if type(validatedUser) == str:  
-                return render_template("/admin/updateUser.html", user=user, error=validatedUser)
-            conection = Conection.conectar()
-            if conection == None:
-                return render_template("/admin/updateUser.html", user=user, error="Error en la conexión.")
-            update_result = UserRepository.update_User(conection, validatedUser, user.id)
-            Conection.desconectar()
-            if update_result:
-                return redirect(url_for('admin_app.users', done = "Usuario actualizado correctamente"))
-            else:
-                return render_template("/admin/updateUser.html", user=user, error="No se pudo actualizar el usuario.")
+           
+            userUpdated = userController.getDataUpdate(request)
+            userValidated = userController.validateDataFormUpdate(userUpdated,DocumentId)
+
+            if not type(userValidated) == bool:
+                return render_template("admin/updateUser.html", error=userValidated, user = user)
+            
+            if not userUpdated.Password:
+                userUpdated.Password = user.Password
+
+            userController.updateUser(user.id ,userUpdated )
+            flash('Registro actualizado exitosamente', 'success')
+            return redirect(url_for('admin_app.users'))
+                
+        return render_template("admin/updateUser.html", user = user)
+    
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for("admin_app.users"))
+
+
+
+@admin_app.route("/users/able", methods = ['POST'])
+@login_required
+@admin_permission.require(http_exception=403)
+def ableUser():
+    try:
+        data = request.get_json()
+        DocumentId = data.get('DocumentId')
+        able = userController.able_user(DocumentId)
+        if able:
+            return jsonify({"message": "Hecho"})
         else:
-            return render_template('admin/updateUser.html', user = user)
-    else:
-        return redirect(url_for("admin_app.users", error = "Usuario no encontrado"))
-
-
-
+            # Manejar el caso en que no se encuentre el cliente
+            return jsonify({"error": "No se pudo habilitar"})
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.users'))
+    
 
 @admin_app.route("/users/disable", methods = ['POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def disableUser():
-    data = request.get_json()
-    DocumentId = data.get('DocumentId')
-    conexion = Conection.conectar()
-    disable = UserRepository.disableUser(conexion, DocumentId)
-    Conection.desconectar()
-
-    if disable:
-        return jsonify({"message": "Hecho"})
-    else:
-        
-        return jsonify({"error": "No se pudo deshabilitar"})
+    try:
+        data = request.get_json()
+        DocumentId = data.get('DocumentId')
     
-@admin_app.route("/users/able", methods = ['POST'])
-@login_required
-@admin_permission.require(http_exception=403)
-def ableUser():
-    data = request.get_json()
-    DocumentId = data.get('DocumentId')
-    conection = Conection.conectar()
-    able = UserRepository.ableUser(conection, DocumentId)
-    Conection.desconectar()
+        disable = userController.disable_user(DocumentId)
 
-    if able:
-        return jsonify({"message": "Hecho"})
-    else:
-        return jsonify({"error": "No se pudo habilitar"})
+        if disable:
+            return jsonify({"message": "Hecho"})
+        else:
+            # Manejar el caso en que no se encuentre el cliente
+            return jsonify({"error": "No se pudo deshabilitar"})
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.users'))
+    
 
 
 #-------------Rutas de facturas-------------#
@@ -1132,110 +1132,214 @@ def profile():
     return render_template("admin/profile.html")
 
 #-------------Rutas de Membresias-------------#
-@admin_app.route("/memberships", methods = ['GET', 'POST'])
+# @admin_app.route("/memberships", methods = ['GET', 'POST'])
+# @login_required
+# @admin_permission.require(http_exception=403)
+# def memberships():
+#     conection = Conection.conectar()
+#     memberships = ModelMembership.get_all(conection)
+#     Conection.desconectar()
+#     doneMessage = request.args.get('done')
+#     errorMessage = request.args.get('error')
+#     if request.method == 'POST':
+#         membership = ModelMembership.getDataMembership(request)
+#         membershipValidated = ModelMembership.validateDataForm(membership)
+#         if not type(membershipValidated) == bool:
+#             return render_template("admin/membership.html", memberships=memberships, error=membershipValidated, membership = membership)
+#         conection = Conection.conectar()
+#         if conection == None:
+#             return render_template("admin/membership.html", memberships=memberships, error= "Error en la conexión.", membership = membership)
+#         insert = ModelMembership.insertMembership(conection, membership)
+#         if insert and type(insert) == bool:
+#             memberships = ModelMembership.get_all(conection)
+#             Conection.desconectar()
+#             return redirect(url_for('admin_app.memberships', done = "Membresía creada correctamente."))
+#         elif insert == "Unique":
+#             return render_template("admin/membership.html", memberships=memberships, error= "Ya existe una membresía con el nombre ingresado.", membership = membership)
+#         elif insert == "DataBase":
+#             return render_template("admin/membership.html", memberships=memberships, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", membership = membership)
+#         else:
+#             Conection.desconectar()
+#             return render_template("admin/membership.html", memberships=memberships, error= "No se pudo ingresar la membresía, por favor inténtalo más tarde.", membership = membership)
+#     else:
+#         return render_template("admin/membership.html", memberships=memberships, membership = None, done = doneMessage, error = errorMessage)
+
+@admin_app.route("/memberships", methods=['GET', 'POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def memberships():
-    conection = Conection.conectar()
-    memberships = ModelMembership.get_all(conection)
-    Conection.desconectar()
-    doneMessage = request.args.get('done')
-    errorMessage = request.args.get('error')
-    if request.method == 'POST':
-        membership = ModelMembership.getDataMembership(request)
-        membershipValidated = ModelMembership.validateDataForm(membership)
-        if not type(membershipValidated) == bool:
-            return render_template("admin/membership.html", memberships=memberships, error=membershipValidated, membership = membership)
-        conection = Conection.conectar()
-        if conection == None:
-            return render_template("admin/membership.html", memberships=memberships, error= "Error en la conexión.", membership = membership)
-        insert = ModelMembership.insertMembership(conection, membership)
-        if insert and type(insert) == bool:
-            memberships = ModelMembership.get_all(conection)
-            Conection.desconectar()
-            return redirect(url_for('admin_app.memberships', done = "Membresía creada correctamente."))
-        elif insert == "Unique":
-            return render_template("admin/membership.html", memberships=memberships, error= "Ya existe una membresía con el nombre ingresado.", membership = membership)
-        elif insert == "DataBase":
-            return render_template("admin/membership.html", memberships=memberships, error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", membership = membership)
+    try:
+        memberships = membershipController.get_all()
+
+        if request.method == 'POST':
+            membership = membershipController.getDataMembership(request)
+            membershipValidated = membershipController.membershipValidated(membership)
+
+            if not type(membershipValidated) == bool:
+                return render_template("admin/membership.html", memberships=memberships, error=membershipValidated, membership=membership)
+            else:
+                membershipController.create_membership(membership)
+                memberships = membershipController.get_all()
+                flash('Membresía creada exitosamente', 'success')
+                return render_template("admin/membership.html", memberships=memberships, membership=None)
         else:
-            Conection.desconectar()
-            return render_template("admin/membership.html", memberships=memberships, error= "No se pudo ingresar la membresía, por favor inténtalo más tarde.", membership = membership)
-    else:
-        return render_template("admin/membership.html", memberships=memberships, membership = None, done = doneMessage, error = errorMessage)
+            return render_template("admin/membership.html", memberships=memberships, membership=None)
+
+    except Exception as ex:
+        flash(str(ex), 'danger')
+        return render_template("admin/membership.html", memberships=[], membership=None)
+
+
+
+
+# @admin_app.route("/membership/updateMembership/<id>", methods=['POST', 'GET'])
+# @login_required
+# @admin_permission.require(http_exception=403)
+# def updateMembership(id):
+#     conexion = Conection.conectar()
+#     membership = ModelMembership.getMembership(conexion, id)
+#     Conection.desconectar()
+#     if membership:
+#         if request.method == 'POST':
+#             membershipUpdate = ModelMembership.getDataMembership(request)
+#             membershipValidated = ModelMembership.validateDataForm(membershipUpdate)
+#             if not type(membershipValidated) == bool:
+#                 return render_template("admin/updateMembership.html", error=membershipValidated, membership = membership)
+#             conection = Conection.conectar()
+#             if conection == None:
+#                 return render_template("admin/updateMembership.html", error= "Error en la conexión.", membership = membership)
+#             update = ModelMembership.updateMembership(conection, membershipUpdate, id)
+#             Conection.desconectar()
+#             if update and type(update) == bool:
+#                 return redirect(url_for('admin_app.memberships', done = "Membresia actualizada correctamente."))
+#             elif update == "DataBase":
+#                 return render_template("admin/updateMembership.html", error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", membership = membership)
+#             else:
+#                 return render_template("admin/updateMembership.html", error= "No se pudo actualizar la membresia.", membership = membership)
+#         else:
+#             return render_template("admin/updateMembership.html", membership = membership)
+#     else:
+#         return redirect(url_for("admin_app.memberships", error = "Membresia no encontrada."))
 
 @admin_app.route("/membership/updateMembership/<id>", methods=['POST', 'GET'])
 @login_required
 @admin_permission.require(http_exception=403)
 def updateMembership(id):
-    conexion = Conection.conectar()
-    membership = ModelMembership.getMembership(conexion, id)
-    Conection.desconectar()
-    if membership:
+    try:
         if request.method == 'POST':
-            membershipUpdate = ModelMembership.getDataMembership(request)
-            membershipValidated = ModelMembership.validateDataForm(membershipUpdate)
-            if not type(membershipValidated) == bool:
-                return render_template("admin/updateMembership.html", error=membershipValidated, membership = membership)
-            conection = Conection.conectar()
-            if conection == None:
-                return render_template("admin/updateMembership.html", error= "Error en la conexión.", membership = membership)
-            update = ModelMembership.updateMembership(conection, membershipUpdate, id)
-            Conection.desconectar()
-            if update and type(update) == bool:
-                return redirect(url_for('admin_app.memberships', done = "Membresia actualizada correctamente."))
-            elif update == "DataBase":
-                return render_template("admin/updateMembership.html", error= "No se puede conectar a la base de datos, por favor inténtalo más tarde o comuniquese con el desarrollador.", membership = membership)
+            membership_data = membershipController.getDataMembership(request)
+            membershipValidated = membershipController.membershipValidated(membership_data)
+
+            if not isinstance(membershipValidated, bool):
+                membership_data["id"] = id
+                return render_template("admin/updateMembership.html", error=membershipValidated, membership=membership_data)
+
+            updated = membershipController.update_membership(id, membership_data)
+
+            if updated:
+                flash("Membresía actualizada correctamente.", "success")
+                return redirect(url_for("admin_app.memberships"))
             else:
-                return render_template("admin/updateMembership.html", error= "No se pudo actualizar la membresia.", membership = membership)
+                flash("No se pudo actualizar la membresía.", "danger")
+                return redirect(url_for("admin_app.updateMembership", id=id))
+
         else:
-            return render_template("admin/updateMembership.html", membership = membership)
-    else:
-        return redirect(url_for("admin_app.memberships", error = "Membresia no encontrada."))
+            membership = membershipController.get_by_id(id)
+            return render_template("admin/updateMembership.html", membership=membership)
+
+    except Exception as e:
+        flash(str(e), "danger")
+        return redirect(url_for("admin_app.memberships"))
+
+
+
+# @admin_app.route("/membership/view/<id>")
+# @login_required
+# def viewMembership(id):
+#     conection = Conection.conectar()
+#     membership = ModelMembership.getMembership(conection, id)
+#     Conection.desconectar()
+#     if membership:
+#         return render_template("admin/viewMembership.html", membership=membership)
+#     else:
+#         return redirect(url_for("admin_app.memberships", error = "Membresia no encontrada."))
 
 @admin_app.route("/membership/view/<id>")
 @login_required
 def viewMembership(id):
-    conection = Conection.conectar()
-    membership = ModelMembership.getMembership(conection, id)
-    Conection.desconectar()
-    if membership:
+    try:
+        membership = membershipController.get_by_id(id)
         return render_template("admin/viewMembership.html", membership=membership)
-    else:
-        return redirect(url_for("admin_app.memberships", error = "Membresia no encontrada."))
+    except Exception as e:
+        flash(str(e), 'danger')
+        return redirect(url_for("admin_app.memberships"))
+
     
 
-@admin_app.route("/membresias/deshabilitar", methods = ['POST'])
+# @admin_app.route("/membresias/deshabilitar", methods = ['POST'])
+# @login_required
+# @admin_permission.require(http_exception=403)
+# def disableMembership():
+#     data = request.get_json()
+#     membershipId = data.get('membershipId')
+#     conection = Conection.conectar()
+#     if conection == None:
+#         return redirect(url_for('admin_app.memberships', error = "No se pudo conectar con la base de datos."))
+#     disable = ModelMembership.disableMembership(conection, membershipId)
+#     Conection.desconectar()
+
+#     if disable:
+#         return jsonify({"message": "Hecho"})
+#     else:
+#         return jsonify({"error": "No se pudo deshabilitar"})
+
+@admin_app.route("/membresias/deshabilitar", methods=['POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def disableMembership():
     data = request.get_json()
     membershipId = data.get('membershipId')
-    conection = Conection.conectar()
-    if conection == None:
-        return redirect(url_for('admin_app.memberships', error = "No se pudo conectar con la base de datos."))
-    disable = ModelMembership.disableMembership(conection, membershipId)
-    Conection.desconectar()
 
-    if disable:
-        return jsonify({"message": "Hecho"})
-    else:
-        return jsonify({"error": "No se pudo deshabilitar"})
+    try:
+        result = membershipController.disable_membership(membershipId)
+        if result:
+            return jsonify({"message": "Hecho"})
+        else:
+            return jsonify({"error": "No se pudo deshabilitar la membresía"})
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
     
-@admin_app.route("/membresias/habilitar", methods = ['POST'])
+# @admin_app.route("/membresias/habilitar", methods = ['POST'])
+# @login_required
+# @admin_permission.require(http_exception=403)
+# def ableMembership():
+#     data = request.get_json()
+#     membershipId = data.get('membershipId')
+#     conection = Conection.conectar()
+#     if conection == None:
+#         return redirect(url_for('admin_app.memberships', error = "No se pudo conectar con la base de datos"))
+#     able = ModelMembership.ableMembership(conection, membershipId)
+#     Conection.desconectar()
+
+#     if able:
+#         return jsonify({"message": "Hecho"})
+#     else:
+#         # Manejar el caso en que no se encuentre el cliente
+#         return jsonify({"error": "No se pudo habilitar"})
+
+@admin_app.route("/membresias/habilitar", methods=['POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def ableMembership():
     data = request.get_json()
     membershipId = data.get('membershipId')
-    conection = Conection.conectar()
-    if conection == None:
-        return redirect(url_for('admin_app.memberships', error = "No se pudo conectar con la base de datos"))
-    able = ModelMembership.ableMembership(conection, membershipId)
-    Conection.desconectar()
 
-    if able:
-        return jsonify({"message": "Hecho"})
-    else:
-        # Manejar el caso en que no se encuentre el cliente
-        return jsonify({"error": "No se pudo habilitar"})
+    try:
+        result = membershipController.enable_membership(membershipId)
+        if result:
+            return jsonify({"message": "Hecho"})
+        else:
+            return jsonify({"error": "No se pudo habilitar la membresía"})
+    except Exception as e:
+        return jsonify({"error": str(e)})

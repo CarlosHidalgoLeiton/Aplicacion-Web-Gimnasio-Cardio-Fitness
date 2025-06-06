@@ -1,14 +1,19 @@
 from apps.db.repositories.UserRepository import UserRepository
+from apps.db.repositories.ClientRepository import ClientRepository
+from apps.db.repositories.TrainerRepository import TrainerRepository
 from apps.db.repositories.TokenRepository import TokenRepository
 from apps.db.models.User import User
 from apps.utils.utils import generateToken
 from datetime import datetime, timedelta
 from notifications.emailTest import manageEmail
-from apps.utils.utils import validateBothPasswords, generate_password_hash
+from apps.utils.utils import validateBothPasswords, generate_password_hash, validateDataUserForm, validateDataUserFormUpdate
+
 
 class userController:
 
     userRepository = UserRepository()
+    clientRepository = ClientRepository()
+    trainerRepository = TrainerRepository()
     tokenRepository = TokenRepository()
 
     @classmethod
@@ -103,6 +108,106 @@ class userController:
         return update
         
 
+    @classmethod
+    def get_all(cls):
+        users = cls.userRepository.findAll()
+        if not users:
+            raise Exception('No se encontraron usuarios')
+        return users
+
+    @classmethod
+    def get_Clients(cls):
+        clients = cls.clientRepository.findAll()
+        users = cls.userRepository.findAll()
+
+        if not clients:
+            raise Exception('No se encontraron clientes')
+
+        # Obtener todas las cédulas de los usuarios
+        user_cedulas = set(user['DocumentId'] for user in users)
+
+        # Filtrar clientes cuya cédula NO esté en usuarios
+        filtered_clients = [client for client in clients if client['DocumentId'] not in user_cedulas]
+
+        return filtered_clients
+
+    @classmethod
+    def get_Trainers(cls):
+        trainers = cls.trainerRepository.findAll()
+        users = cls.userRepository.findAll()
+
+        if not trainers:
+            raise Exception('No se encontraron clientes')
+
+        # Obtener todas las cédulas de los usuarios
+        user_cedulas = set(user['DocumentId'] for user in users)
+
+        # Filtrar clientes cuya cédula NO esté en usuarios
+        filtered_trainer = [trainer for trainer in trainers if trainer['DocumentId'] not in user_cedulas]
+
+        return filtered_trainer
+
+    @classmethod
+    def getUser(cls, documentId):
+        user = cls.userRepository.findOne(filters={'DocumentId': documentId})
+        return user
+    
+    @classmethod
+    def get_one(cls,id):
+         return cls.userRepository.get_one(id)
+    
+
+    @classmethod
+    def getData(cls, request):
+        return cls.userRepository.getDataUser(request)
+    
+    @classmethod
+    def getDataUpdate(cls, request):
+        return cls.userRepository.getDataUserUpdate(request)
+    
+    @classmethod
+    def validateDataForm(cls, request):
+        existing_user = cls.userRepository.findOne({'DocumentId': request.DocumentId})
+        if existing_user:
+            return f"Ya existe un usuario registrado con la cédula '{request.DocumentId}'."
+        else:
+            return  validateDataUserForm(request)
+        
+    @classmethod
+    def validateDataFormUpdate(cls, request, DocumentId):
+        existing_user = cls.userRepository.findOne({'DocumentId': request.DocumentId})
+        if existing_user.DocumentId and DocumentId != existing_user.DocumentId:
+            raise Exception("No se puede actualizar, debido a que existe el usuario con la cedula " + DocumentId )
+        return  validateDataUserFormUpdate(request)
+
+    
+    @classmethod
+    def create(cls, data):
+        dataUser = cls.userRepository.to_dict(data)
+        user = cls.userRepository.create(**dataUser)
+        return user
+    
+    @classmethod
+    def updateUser(cls,id, data):
+        dataUser = cls.userRepository.to_dict(data)
+        del dataUser['id']
+        user = cls.userRepository.update(id,**dataUser)
+        return user
+    
+    @classmethod
+    def disable_user(cls, id):
+        user = cls.userRepository.findOne({'DocumentId': id})
+        return cls.userRepository.disable_user(user.id)
+    
+    @classmethod
+    def able_user(cls, id):
+        user = cls.userRepository.findOne({'DocumentId': id})
+        return cls.userRepository.able_user(user.id)
+    
+
+    
+        
+    
     # def get_by_id(id):
     #     try:
     #         user = UserRepository.findOne(id)

@@ -6,6 +6,7 @@ import base64
 from datetime import datetime
 from apps.db.models.Routine import Routine
 from apps.db.models.Statistics import Statistics
+from apps.db.models.User import User
 
 def generateToken():
     token = secrets.token_urlsafe(32)
@@ -34,7 +35,7 @@ def validateBothPasswords(pwd1, pwd2):
     return True
 
 def hashPassword(password):
-    return generate_password_hash(password)
+    return generate_password_hash(password, method='pbkdf2:sha256')
 
 
 
@@ -228,3 +229,83 @@ def validateDataStatistics(statistics, isUpdate = False):
 
     return True
     
+ 
+def validateDataUserForm(user):
+    
+    # Validación para DocumentId
+    if user.DocumentId is None:
+        return "Debe ingresar el número de cédula."
+    
+    if user.Password is None or user.ConfirmPassword is None:
+        return "Debe ingresar la contraseña y su confirmación."
+
+    if user.Password != user.ConfirmPassword:
+        return "Las contraseñas no coinciden."
+
+    if len(user.Password) < 8:
+        return "La contraseña debe tener al menos 8 caracteres."
+
+    if not re.search(r"[A-Z]", user.Password):
+        return "La contraseña debe contener al menos una letra mayúscula."
+
+    if not re.search(r"[a-z]", user.Password):
+        return "La contraseña debe contener al menos una letra minúscula."
+
+    if not re.search(r"[0-9]", user.Password):
+        return "La contraseña debe contener al menos un número."
+
+    if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", user.Password):
+        return "La contraseña debe contener al menos un carácter especial."
+
+    # Validación para correo
+    if user.Email is None:
+        return "Debe ingresar el correo."
+    
+    expression = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'  # Validar formato de correo
+    if not re.match(expression, user.Email):
+        return "El correo ingresado no es válido."
+
+    # Si todas las validaciones pasan, devuelve el objeto User
+    return True
+
+
+
+def validateDataUserFormUpdate(user):
+    
+
+    # Validación para DocumentId
+    if user.DocumentId is None:
+        return "Debe ingresar el número de cédula."
+    
+    if user.Password is None or user.ConfirmPassword is None:
+        return "Debe ingresar la contraseña y su confirmación."
+
+    if user.Password and user.ConfirmPassword:
+        if user.Password != user.ConfirmPassword:
+            return "Las contraseñas no coinciden."
+
+        if len(user.Password) < 8:
+            return "La contraseña debe tener al menos 8 caracteres."
+
+        if not re.search(r"[A-Z]", user.Password):
+            return "La contraseña debe contener al menos una letra mayúscula."
+
+        if not re.search(r"[a-z]", user.Password):
+            return "La contraseña debe contener al menos una letra minúscula."
+
+        if not re.search(r"[0-9]", user.Password):
+            return "La contraseña debe contener al menos un número."
+
+        if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", user.Password):
+            return "La contraseña debe contener al menos un carácter especial."
+
+    # Validación para correo
+    if user.Email is None:
+        return "Debe ingresar el correo."
+    
+    expression = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'  # Validar formato de correo
+    if not re.match(expression, user.Email):
+        return "El correo ingresado no es válido."
+
+    # Si todas las validaciones pasan, devuelve el objeto User
+    return True
