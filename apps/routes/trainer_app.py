@@ -249,8 +249,6 @@ def newSession(ID_Cliente):
         flash(ex.args[0], 'danger')
         return redirect(url_for('trainer_app.routineClient', ID_Cliente = ID_Cliente))
 
-
-
 @trainer_app.route("newSessionUpdate/<ID_Cliente>/<ID_Rutina>", methods=['GET', 'POST'])
 @login_required
 def newSessionUpdate(ID_Cliente, ID_Rutina):
@@ -262,6 +260,16 @@ def newSessionUpdate(ID_Cliente, ID_Rutina):
     except Exception as ex:
         flash(ex.args[0], 'danger')
         return redirect(url_for('trainer_app.UpdateRoutine', ID_Cliente = ID_Cliente, routineId = ID_Rutina))
+
+@trainer_app.route("/viewUpdateSession/<sessionId>/<clientId>", methods=['GET'])
+@login_required
+def viewSessionUpdate(sessionId, clientId):
+    routineId = request.args.get('routineId')
+    if sessionId and clientId and routineId:
+        return render_template('trainer/viewUpdateSession.html', sessionId = sessionId, clientId = clientId, routineId = routineId)
+    else:
+        flash(ex.args[0], 'No se encontró la sesión')
+        return redirect(url_for('trainer_app.routineClient'))
 
 @trainer_app.route("/viewClient/<documentId>")
 @login_required
