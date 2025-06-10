@@ -24,23 +24,20 @@ class clientController:
     @classmethod
     def getNotifications(cls):
         notifications = cls.NotificationRepository.findAll()
-        if not notifications:
-            raise Exception('No se encontraron notificaciones')
+       
         return notifications
 
     @classmethod
     def get_all(cls):
         clients = cls.ClientRepository.findAll()
-        if not clients:
-            raise Exception('No se encontraron clientes')
+       
         return clients
         
     @classmethod
     def get_allAble(cls):
         filters = {'State': True}
         clients = cls.ClientRepository.findAll(filters=filters)
-        if not clients:
-            raise Exception('No se encontraron clientes')
+       
         return clients
 
 

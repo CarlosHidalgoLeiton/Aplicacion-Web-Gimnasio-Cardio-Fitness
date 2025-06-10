@@ -20,18 +20,18 @@ class UserRepository(RepositoryBase):
         State = request.form['State']
         
         if role == 'Admin':
-            DocumentId = request.form['DocumentId']
+            DocumentId = request.form.get('DocumentId')
         elif role == 'Trainer':
-            DocumentId = request.form['DocumentIdTrainer']
+            DocumentId = request.form.get('DocumentIdTrainer')
         elif role == 'Client':
-            DocumentId = request.form['DocumentIdClient']
+            DocumentId = request.form.get('DocumentIdClient')
 
-        Password = request.form['Password']
-        ConfirmPassword = request.form['ConfirmPassword']
+        Password = request.form.get('Password')
+        ConfirmPassword = request.form.get('ConfirmPassword')
         
         
         CreationDate = datetime.now()
-        Email = request.form['Email']
+        Email = request.form.get('Email')
 
         user = User(
             DocumentId=DocumentId,

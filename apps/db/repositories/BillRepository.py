@@ -20,7 +20,7 @@ class BillRepository(RepositoryBase):
         # Obtener y convertir datos del formulario
         amount = request.form['AmountTrainerBill']
         description = request.form['Description']
-        id_entity = request.form['DocumentIdTrainer']
+        id_entity = request.form.get('DocumentIdTrainer')
 
         return Bill(
             Amount=amount,
@@ -43,19 +43,19 @@ class BillRepository(RepositoryBase):
     
     @classmethod
     def getDataProductBill(cls, request):
-        ID_Entity = request.form['DocumentIdProduct']
-        Amount = request.form['AmountProductBill']
+        ID_Entity = request.form.get('DocumentIdProduct')
+        Amount = request.form.get('AmountProductBill')
         Description = request.form['Description']
-        Lot = request.form['Amount']
+        Lot = request.form.get('Amount')
 
         return Bill(Amount=Amount,Type="Pago Producto",Description=Description,Date=datetime.now(),EntityType="Producto",ID_Entity=ID_Entity, State=True, Lot=Lot)
 
 
     @classmethod
     def getDataMembershipBill(cls, request):
-        ID_Entity = request.form['DocumentIdClient']
-        Amount = request.form['AmountMembershipBill']
-        Description = request.form['Description']
+        ID_Entity = request.form.get('DocumentIdClient')
+        Amount = request.form.get('AmountMembershipBill')
+        Description = request.form.get('Description')
 
         return Bill(Amount=Amount, Type="Pago Membresia", Description=Description, Date=datetime.now(),EntityType="Cliente",ID_Entity=ID_Entity,State=True,Lot=None)
     
@@ -209,9 +209,9 @@ class BillRepository(RepositoryBase):
     @classmethod
     def validateDataFormProduct(cls, bill):
         
-        if bill.ID_Entity == "":
+        if bill.ID_Entity == "" or bill.ID_Entity is None:
             return "Debe seleccionar el producto."
-        
+                
         if bill.Amount:
             # Remueve cualquier espacio en blanco alrededor del monto
             amount = bill.Amount.strip()

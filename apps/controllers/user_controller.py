@@ -120,8 +120,8 @@ class userController:
         clients = cls.clientRepository.findAll()
         users = cls.userRepository.findAll()
 
-        if not clients:
-            raise Exception('No se encontraron clientes')
+        # if not clients:
+        #     raise Exception('No se encontraron clientes')
 
         # Obtener todas las cédulas de los usuarios
         user_cedulas = set(user['DocumentId'] for user in users)
@@ -136,8 +136,8 @@ class userController:
         trainers = cls.trainerRepository.findAll()
         users = cls.userRepository.findAll()
 
-        if not trainers:
-            raise Exception('No se encontraron clientes')
+        # if not trainers:
+        #     raise Exception('No se encontraron clientes')
 
         # Obtener todas las cédulas de los usuarios
         user_cedulas = set(user['DocumentId'] for user in users)

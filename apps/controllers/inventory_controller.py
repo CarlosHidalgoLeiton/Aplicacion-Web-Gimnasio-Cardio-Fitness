@@ -93,8 +93,6 @@ class productController:
     def get_allAble(cls):
         filters = {'State': True}
         products = cls.ProductRepository.findAll(filters=filters)
-        if not products:
-            raise Exception('No se encontraron productos')
         return products
     
     @classmethod

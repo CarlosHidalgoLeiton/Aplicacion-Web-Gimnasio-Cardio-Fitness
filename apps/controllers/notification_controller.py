@@ -17,8 +17,6 @@ class notificationController:
     @classmethod
     def get_all(cls):
         notifications = cls.NotificationRepository.findAll()
-        if not notifications:
-            raise Exception('No se encontraron notificaciones')
         return notifications
         
 
