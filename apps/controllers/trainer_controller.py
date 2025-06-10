@@ -13,15 +13,12 @@ class trainerController:
     @classmethod
     def get_all(cls):
         trainers = cls.TrainerRepository.findAll()
-
         return trainers
     
     @classmethod
     def get_allAble(cls):
         filters = {'State': True}
         trainers = cls.TrainerRepository.findAll(filters=filters)
-        if not trainers:
-            raise Exception('No se encontraron entrenadores')
         return trainers
 
     

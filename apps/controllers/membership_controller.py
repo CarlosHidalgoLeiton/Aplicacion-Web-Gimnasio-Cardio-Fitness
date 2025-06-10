@@ -9,8 +9,6 @@ class membershipController:
     def get_allAble(cls):
         filters = {'State': True}
         memberships = cls.MembershipRepository.findAll(filters=filters)
-        if not memberships:
-            raise Exception('No se encontraron membresías')
         return memberships
     @classmethod
     def validateDataFormTrainer(cls,data):
@@ -20,8 +18,6 @@ class membershipController:
     @classmethod
     def get_all(cls, filters=None):
         memberships = cls.MembershipRepository.findAll(filters)
-        if not memberships:
-            raise Exception('No se encontraron membresías')
         return memberships
 
     @classmethod

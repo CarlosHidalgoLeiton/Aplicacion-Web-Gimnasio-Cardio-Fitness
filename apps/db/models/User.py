@@ -7,7 +7,7 @@ class User(db.Model, UserMixin):
     __tablename__ = 'Usuario'
     id = db.Column(db.Integer, primary_key=True, key='id', name='ID_Usuario')
     DocumentId = db.Column(db.String(60), nullable=False, key='DocumentId', name='Cedula')
-    Password = db.Column(db.String(102), nullable=False, key='Password', name='Contrasena')
+    Password = db.Column(db.String(255), nullable=False, key='Password', name='Contrasena')
     State = db.Column(db.SmallInteger, nullable=False, default=1, key='State', name='Estado')
     role = db.Column(db.String(50), nullable=False, key='role', name='Rol')
     CreationDate = db.Column(db.Date, nullable=False, key='CreationDate', name='FechaCreacion')

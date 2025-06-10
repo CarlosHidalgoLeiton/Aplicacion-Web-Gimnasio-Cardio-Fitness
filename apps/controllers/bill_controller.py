@@ -10,8 +10,6 @@ class billController:
     @classmethod
     def get_all(cls):
         bills = cls.BillRepository.findAll()
-        if not bills:
-            raise Exception('No se encontraron facturas')
         return bills
     
     @classmethod
@@ -111,7 +109,5 @@ class billController:
     def get_allAble(cls):
         filters = {'State': True}
         Bills = cls.BillRepository.findAll(filters=filters)
-        if not Bills:
-            raise Exception('No se encontraron facturas')
         return Bills
     

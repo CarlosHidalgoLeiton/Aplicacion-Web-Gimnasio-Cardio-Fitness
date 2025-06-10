@@ -257,6 +257,9 @@ def validateDataUserForm(user):
     if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", user.Password):
         return "La contraseña debe contener al menos un carácter especial."
 
+
+    user.Password = hashPassword(user.Password)
+    
     # Validación para correo
     if user.Email is None:
         return "Debe ingresar el correo."
@@ -298,6 +301,8 @@ def validateDataUserFormUpdate(user):
 
         if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", user.Password):
             return "La contraseña debe contener al menos un carácter especial."
+        
+        user.Password = hashPassword(user.Password)
 
     # Validación para correo
     if user.Email is None:
