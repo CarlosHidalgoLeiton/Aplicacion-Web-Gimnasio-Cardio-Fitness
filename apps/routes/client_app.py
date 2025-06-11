@@ -10,7 +10,7 @@ from apps.controllers.statistics_controller import statisticsController
 import json  
 from apps.controllers.inventory_controller import productController
 
-# from apps.routes.chatbot import get_response 
+from apps.routes.chatbot import generate_bot_response 
 
 #Creación de los blueprint para usar en app.py
 client_app = Blueprint('client_app', __name__)
@@ -35,6 +35,28 @@ def forbidden(error):
 @client_app.errorhandler(401)
 def forbidden(error):
     return redirect(url_for('client_app.notAutorized'))
+
+
+@client_app.route("/get_bot", methods=["POST"])
+@login_required
+@client_permission.require(http_exception=403)
+def get_bot_response():
+    data = request.get_json()
+    userText = data.get('msg')
+
+    if userText:
+        bot_response = generate_bot_response(userText)  # uso correcto
+
+        options = [
+            {"text": "Ver horarios", "value": "horarios"},
+            {"text": "Ver precios", "value": "precios"},
+            {"text": "Ver ubicación", "value": "ubicación"},
+            {"text": "Ver contacto", "value": "contacto"}
+        ]
+
+        return jsonify({"response": bot_response, "options": options})
+
+    return jsonify({"response": "Lo siento, no pude entender tu pregunta."})
 
 
 @client_app.route('/notAutorized')
