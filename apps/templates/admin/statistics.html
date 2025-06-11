@@ -1,0 +1,93 @@
+{% extends "./layout/Layout_Admin.html" %}
+
+
+{% block content %}
+<!--**********************************
+            Content body start
+        ***********************************-->
+
+	<div style="display: flex; justify-content: center;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <script type="text/javascript">
+                        var message = "{{ message|escape }}";  // Usamos 'escape' en lugar de 'escapejs'
+                        var category = "{{ category }}";  // Usamos la categoría (danger, success)
+    
+                        // Verificamos la categoría en JavaScript y ejecutamos la función correspondiente
+                        if (category == 'danger') {
+                            errorMessage(message);  // Si la categoría es 'danger', mostramos un mensaje de error
+                        } else if (category == 'success') {
+                            successMessage(message);  // Si la categoría es 'success', mostramos un mensaje de éxito
+                        }
+                    </script>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+
+<div class="page-titles">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a href="{{ url_for('admin_app.clients') }}">Clientes</a></li>
+		<li class="breadcrumb-item active"><a href="">Estadísticas</a></li>
+	</ol>
+</div>
+<!-- row -->
+
+
+<!--**********************************
+                        DATATABLES 
+                    ***********************************-->
+<div class="card">
+	<div class="card-header">
+		<h4 class="card-title">Lista de Estadisticas</h4>
+	</div>
+	<div class="card-body">
+		<div class="table-responsive">
+			<table id="example2" class="display min-w850">
+				<thead>
+					<tr>
+						<th>Fecha</th>
+						<th>Entrenador</th>
+						<th>Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% if statistics %}
+						{% for stat in statistics %}
+						<tr>
+							<td>{{ stat['Measurement_Date'].strftime('%d/%m/%Y') }}</td>
+							<td>{{ stat['entrenador']['Name'] }} {{ stat['entrenador']['First_LastName'] }}</td>
+							<td>
+								<div class="d-flex">
+									{% if stat['State'] == 1 %}
+									<a href="{{ url_for('admin_app.viewStatistics', documentId=stat['ID_Statistics'], clientId=stat['cliente']['DocumentId']) }}"
+										class="btn btn-primary shadow btn-xs sharp me-1">
+										<i class="fa fa-eye"></i>
+									</a>
+									{% endif %}
+								</div>
+							</td>
+						</tr>
+						{% endfor %}
+					{% else %}
+
+						<tr>
+							<td colspan="3">No hay estadísticas registradas para este cliente.</td>
+							<td ></td>
+							<td ></td>
+						</tr>
+					{% endif %}
+				</tbody>
+			</table>
+		</div>
+
+		<!--**********************************
+            Content body end
+        ***********************************-->
+		{% endblock %}
+
+		{% block scripts %}
+
+		{% endblock %}

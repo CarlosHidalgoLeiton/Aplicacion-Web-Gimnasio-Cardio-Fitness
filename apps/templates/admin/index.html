@@ -1,0 +1,108 @@
+{% extends "./layout/Layout_Admin.html" %}
+
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <a href="{{ url_for('admin_app.clients') }}" class="col-md-6">
+      <div class="card-index form-container">
+        <div class="card-title text-center" style="margin: 10px; color: #1B2E40;">
+          <i class="flaticon-381-user-8" style="font-size: 40px;"></i>
+        </div>
+        <div class="card-body text-center" style="padding: 15px;">
+          <h4>Clientes</h4>
+        </div>
+      </div>
+    </a>
+    <a href="{{ url_for('admin_app.trainers') }}" class="col-md-6">
+      <div class="card-index form-container">
+        <div class="card-title text-center" style="margin: 10px; color: #1B2E40;">
+          <i class="flaticon-381-user-3" style="font-size: 40px;"></i>
+        </div>
+        <div class="card-body text-center" style="padding: 15px;">
+          <h4>Entrenadores</h4>
+        </div>
+      </div>
+    </a>
+    <a href="{{ url_for('admin_app.users') }}" class="col-md-6">
+      <div class="card-index form-container">
+        <div class="card-title text-center" style="margin: 10px; color: #1B2E40;">
+          <i class="flaticon-381-user-7" style="font-size: 40px;"></i>
+        </div>
+        <div class="card-body text-center" style="padding: 15px;">
+          <h4>Usuarios</h4>
+        </div>
+      </div>
+    </a>
+    <a href="{{ url_for('admin_app.notifications') }}" class="col-md-6">
+      <div class="card-index form-container">
+        <div class="card-title text-center" style="margin: 10px; color: #1B2E40;">
+          <i class="fa fa-bell" style="font-size: 40px;"></i>
+        </div>
+        <div class="card-body text-center" style="padding: 15px;">
+          <h4>Notificaciones</h4>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <h3>Facturación</h3>
+  <div class="row">
+    <a href="{{ url_for('admin_app.bills') }}" class="col-md-6">
+      <div class="card-index form-container">
+        <div class="card-title text-center" style="margin: 10px; color: #1B2E40;">
+          <i class="fas fa-file-invoice" style="font-size: 40px;"></i>
+        </div>
+        <div class="card-body text-center" style="padding: 15px;">
+          <h4>Facturas</h4>
+        </div>
+      </div>
+    </a>
+    <a href="{{ url_for('admin_app.billsReports') }}" class="col-md-6">
+      <div class="card-index form-container">
+        <div class="card-title text-center" style="margin: 10px; color: #1B2E40;">
+          <i class="fas fa-file-alt" style="font-size: 40px;"></i>
+        </div>
+        <div class="card-body text-center" style="padding: 15px;">
+          <h4>Reportes</h4>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <h3>Inventario</h3>
+  <div class="row">
+    <a href="{{ url_for('admin_app.inventory') }}" class="col-md-6">
+      <div class="card-index form-container">
+        <div class="card-title text-center" style="margin: 10px; color: #1B2E40;">
+          <i class="fa-solid fa-box" style="font-size: 40px;"></i>
+        </div>
+        <div class="card-body text-center" style="padding: 15px;">
+          <h4>Productos</h4>
+        </div>
+      </div>
+    </a>
+    <a href="{{ url_for('admin_app.memberships') }}" class="col-md-6">
+      <div class="card-index form-container">
+        <div class="card-title text-center" style="margin: 10px; color: #1B2E40;">
+          <i class="fas fa-id-card" style="font-size: 40px;"></i>
+        </div>
+        <div class="card-body text-center" style="padding: 15px;">
+          <h4>Membresías</h4>
+        </div>
+      </div>
+    </a>
+    <a href="{{ url_for('admin_app.inventoryReports') }}" class="col-md-6">
+      <div class="card-index form-container">
+        <div class="card-title text-center" style="margin: 10px; color: #1B2E40;">
+          <i class="fas fa-file-alt" style="font-size: 40px;"></i>
+        </div>
+        <div class="card-body text-center" style="padding: 15px;">
+          <h4>Reporte</h4>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+
+{% endblock %}
