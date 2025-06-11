@@ -182,8 +182,8 @@
                     <table id="example2" class="display min-w850">
                         <thead>
                             <tr>
-                                <th>Cedula</th>
-                                <th>role</th>
+                                <th>Cédula</th>
+                                <th>Rol</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
@@ -201,7 +201,13 @@
                                         Cliente
                                     {% endif %}
                                 </td>
-                                <td>{{ user.State }}</td>
+                                <td>
+                                     {% if user.State == 1 %}
+                                        Activo
+                                    {% else %}
+                                        Deshabilitado
+                                    {% endif %}
+                                </td>
                                 <td>
                                     <div class="d-flex">
                                         {% if user['State'] == 1 %}
