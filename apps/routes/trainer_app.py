@@ -133,7 +133,7 @@ def viewRoutine(routineId, DocumentId):
         client = clientController.finOneByDocumentId(DocumentId)
         routine = routineController.findOneRoutine(routineId)
         sessions = sessionController.findAllByIdRoutine(routineId)
-        return render_template("trainer/viewRoutine.html", routine=routine, sessions=sessions, client=client)
+        return render_template("trainer/viewRoutine.html", routine=routine, sessions=sessions, client=client, DocumentId=DocumentId)
 
     except Exception as ex:
         flash(ex.args[0], 'danger')
@@ -283,10 +283,12 @@ def viewClient(documentId):
         flash(ex.args[0], 'danger')
         return redirect(url_for('trainer_app.clients'))
     
-@trainer_app.route("/viewRoutine/viewSession/<Session_ID>", methods=['GET'])
+@trainer_app.route("/viewRoutine/viewSession/<Session_ID>>", methods=['GET'])
 @login_required
 def viewSession(Session_ID):
     try:
+        ID_Routine = request.args.get("routine_id")
+        DocumentId = request.args.get("DocumentId")
         session = sessionController.findOneById(Session_ID)
         session.Exercises = json.loads(session.Exercises)
 
@@ -294,6 +296,8 @@ def viewSession(Session_ID):
 
     except Exception as ex:
         flash(ex.args[0], 'danger')
+        return redirect(url_for('trainer_app.viewRoutine', ID_Routine = ID_Routine, DocumentId=DocumentId))
+
 
 @trainer_app.route("/viewNewSession/<sessionId>/<clientId>", methods=['GET'])
 @login_required

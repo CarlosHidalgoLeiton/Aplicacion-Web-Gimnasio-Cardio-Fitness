@@ -179,12 +179,16 @@ def getSessions(ID_Routine):
 @client_permission.require(http_exception=403)
 def viewSession(Session_ID):
     try:
+        ID_Routine = request.args.get("routine_id")
+
         session = sessionController.findOneById(Session_ID)
         session.Exercises = json.loads(session.Exercises)
 
         return render_template("client/viewSession.html", session=session, routine=session.routine)
     except Exception as ex:
         flash(ex.args[0], 'danger')
+        return redirect(url_for('client_app.viewRoutine', ID_Routine = ID_Routine))
+
 
 #-------------Rutas de estadisticas-------------#
 @client_app.route("/statisticsClient", methods=['GET'])

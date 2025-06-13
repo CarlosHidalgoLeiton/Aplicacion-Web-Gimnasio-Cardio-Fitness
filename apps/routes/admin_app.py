@@ -69,14 +69,13 @@ def clients():
                 return render_template("admin/clients.html", clients=clients, error=clientValidated, client = client)
             else:
                 clientController.create(client)
-                clients = clientController.get_all()
                 flash('Registro creado exitosamente', 'success')
-                return render_template("admin/clients.html", clients=clients, client = None)
+                return redirect(url_for("admin_app.clients"))
         else:
             return render_template("admin/clients.html", clients=clients, client = None )
     except Exception as ex:
         flash(ex.args[0], 'danger')
-        return render_template("admin/clients.html", clients=clients, client = None)
+        return redirect(url_for("admin_app.clients"))    
     
 @admin_app.route("/client/update/<documentId>", methods=['POST', 'GET'])
 @login_required
@@ -113,7 +112,7 @@ def viewClient(documentId):
         flash(ex.args[0], 'danger')
         return redirect(url_for('admin_app.clients'))
 
-@admin_app.route("/clientes/deshabilitar", methods = ['POST'])
+@admin_app.route("/clientes/disable", methods = ['POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def disableClient():
@@ -132,7 +131,7 @@ def disableClient():
         flash(ex.args[0], 'danger')
         return redirect(url_for('admin_app.clients'))
     
-@admin_app.route("/clientes/habilitar", methods = ['POST'])
+@admin_app.route("/clientes/able", methods = ['POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def ableClient():
@@ -153,22 +152,12 @@ def ableClient():
 @admin_app.route("/client/statisticsClient/<documentId>", methods=['GET'])
 @login_required
 def statisticsClient(documentId):
-    conection = Conection.conectar()
-
-    # Obtener las estadísticas del cliente por su ID
-    #statistics = ModelStatistics.getStatisticsByClientId(conection, documentId)
-    #client = ModelStatistics.getClientById(conection, documentId)
-
-    statistics = statisticsController.getStatisticsByClientId(documentId)
-    #client = clientController.getClientById(documentId)
-    # if client is None:
-    #     return redirect(url_for('admin_app.clients', error="Cliente no encontrado"))
-    
-    doneMessage = request.args.get('done')
-    errorMessage = request.args.get('error')
-    
-    return render_template("admin/statistics.html", statistics=statistics, done=doneMessage, error=errorMessage, documentId = documentId)
-
+    try:
+        statistics = statisticsController.getStatisticsByClientId(documentId)
+        return render_template("admin/statistics.html", statistics=statistics,documentId = documentId)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.clients'))
 
 @admin_app.route("/viewStatistics/<documentId>/<clientId>", methods = ['GET'])
 @login_required
@@ -179,7 +168,7 @@ def viewStatistics(documentId,clientId):
     
     except Exception as ex:
         flash(ex.args[0], 'danger')
-        return render_template("admin/viewStatistics.html", statistics = None)
+        return redirect(url_for('admin_app.statisticsClient'))
 
 
 ## VER RUTINAS
@@ -208,7 +197,7 @@ def viewRoutine(routineId, DocumentId):
         client = clientController.finOneByDocumentId(DocumentId)
         routine = routineController.findOneRoutine(routineId)
         sessions = sessionController.findAllByIdRoutine(routineId)
-        return render_template("admin/viewRoutine.html", routine=routine, sessions=sessions, client=client)
+        return render_template("admin/viewRoutine.html", routine=routine, sessions=sessions, client=client,DocumentId=DocumentId)
 
     except Exception as ex:
         flash(ex.args[0], 'danger')
@@ -231,6 +220,8 @@ def getSessions(ID_Routine):
 @admin_permission.require(http_exception=403)
 def viewSession(Session_ID):
     try:
+        ID_Routine = request.args.get("routine_id")
+        DocumentId = request.args.get("DocumentId")
         session = sessionController.findOneById(Session_ID)
         session.Exercises = json.loads(session.Exercises)
 
@@ -238,6 +229,7 @@ def viewSession(Session_ID):
 
     except Exception as ex:
         flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.routinesClient', ID_Routine = ID_Routine, DocumentId = DocumentId))
 
 #-------------Rutas de Entrenadores-------------#
 
@@ -253,14 +245,13 @@ def trainers():
             if not type(trainerValidated) == bool:
                 return render_template("admin/trainers.html", trainers=trainers, error=trainerValidated, trainer = trainer)
             trainerController.create(trainer)
-            trainers = trainerController.get_all()
             flash('Registro creado exitosamente', 'success')
-            return render_template("admin/trainers.html", trainers=trainers, trainer = None)
+            return redirect(url_for('admin_app.trainers'))
         else:
             return render_template("admin/trainers.html", trainers=trainers, trainer = None)
     except Exception as ex:
         flash(ex.args[0], 'danger')
-        return render_template("admin/trainers.html", trainers=trainers, trainer = None)
+        return redirect(url_for('admin_app.trainers'))
  
 
 @admin_app.route("/trainer/update/<documentId>", methods = ['POST', 'GET'])
@@ -358,9 +349,8 @@ def users():
             if not type(userValidated) == bool:
                 return render_template("admin/users.html", users=users,  clients=clients, trainers=trainers,  error=userValidated, user = user)
             userController.create(user)
-            users = userController.get_all()
             flash('Registro creado exitosamente', 'success')
-            return render_template("admin/users.html", users=users, clients=clients, trainers=trainers, user = None)
+            return redirect(url_for('admin_app.users'))
         else:
             return render_template("admin/users.html", users=users, clients=clients, trainers=trainers, user = None)
     except Exception as ex:
@@ -643,9 +633,8 @@ def inventory():
                 return render_template("admin/inventory.html", products=products, error=productValidated, product = product)
             else:
                 productController.create(product)
-                products = productController.get_all()
                 flash('Producto creado exitosamente', 'success')
-                return render_template("admin/inventory.html", products=products, product = None)
+                return redirect(url_for('admin_app.inventory'))
         else:
             return render_template("admin/inventory.html", products=products, product = None )
     except Exception as ex:
@@ -746,9 +735,8 @@ def notifications():
         notifications = notificationController.get_all()
         if request.method == 'POST':
             notificationController.CreateData(request)
-            notifications = notificationController.get_all()
             flash('Registro creado exitosamente', 'success')
-            return render_template("admin/notifications.html", notifications=notifications, notification = None)
+            return redirect(url_for("admin_app.notifications"))
         else:
             return render_template("admin/notifications.html", notifications=notifications, notification = None)
     except Exception as ex:
@@ -792,8 +780,8 @@ def disableNotification():
 def ableNotification():
     try: 
         data = request.get_json()
-        ID_Product = data.get('DocumentId')
-        able = notificationController.ableNotification(ID_Product)
+        ID_Notification = data.get('DocumentId')
+        able = notificationController.ableNotification(ID_Notification)
 
         if able:
             return jsonify({"message": "Hecho"})
