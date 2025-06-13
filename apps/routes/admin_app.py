@@ -69,7 +69,6 @@ def clients():
                 return render_template("admin/clients.html", clients=clients, error=clientValidated, client = client)
             else:
                 clientController.create(client)
-                clients = clientController.get_all()
                 flash('Registro creado exitosamente', 'success')
                 return redirect(url_for("admin_app.clients"))
         else:
@@ -246,14 +245,13 @@ def trainers():
             if not type(trainerValidated) == bool:
                 return render_template("admin/trainers.html", trainers=trainers, error=trainerValidated, trainer = trainer)
             trainerController.create(trainer)
-            trainers = trainerController.get_all()
             flash('Registro creado exitosamente', 'success')
-            return render_template("admin/trainers.html", trainers=trainers, trainer = None)
+            return redirect(url_for('admin_app.trainers'))
         else:
             return render_template("admin/trainers.html", trainers=trainers, trainer = None)
     except Exception as ex:
         flash(ex.args[0], 'danger')
-        return render_template("admin/trainers.html", trainers=trainers, trainer = None)
+        return redirect(url_for('admin_app.trainers'))
  
 
 @admin_app.route("/trainer/update/<documentId>", methods = ['POST', 'GET'])
@@ -351,9 +349,8 @@ def users():
             if not type(userValidated) == bool:
                 return render_template("admin/users.html", users=users,  clients=clients, trainers=trainers,  error=userValidated, user = user)
             userController.create(user)
-            users = userController.get_all()
             flash('Registro creado exitosamente', 'success')
-            return render_template("admin/users.html", users=users, clients=clients, trainers=trainers, user = None)
+            return redirect(url_for('admin_app.users'))
         else:
             return render_template("admin/users.html", users=users, clients=clients, trainers=trainers, user = None)
     except Exception as ex:
@@ -636,9 +633,8 @@ def inventory():
                 return render_template("admin/inventory.html", products=products, error=productValidated, product = product)
             else:
                 productController.create(product)
-                products = productController.get_all()
                 flash('Producto creado exitosamente', 'success')
-                return render_template("admin/inventory.html", products=products, product = None)
+                return redirect(url_for('admin_app.inventory'))
         else:
             return render_template("admin/inventory.html", products=products, product = None )
     except Exception as ex:
@@ -739,7 +735,6 @@ def notifications():
         notifications = notificationController.get_all()
         if request.method == 'POST':
             notificationController.CreateData(request)
-            notifications = notificationController.get_all()
             flash('Registro creado exitosamente', 'success')
             return redirect(url_for("admin_app.notifications"))
         else:
