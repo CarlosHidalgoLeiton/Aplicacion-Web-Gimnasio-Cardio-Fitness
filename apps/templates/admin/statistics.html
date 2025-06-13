@@ -62,7 +62,7 @@
 							<td>
 								<div class="d-flex">
 									{% if stat['State'] == 1 %}
-									<a href="{{ url_for('admin_app.viewStatistics', documentId=stat['ID_Statistics'], clientId=stat['cliente']['DocumentId']) }}"
+									<a href="{{ url_for('admin_app.viewStatistics', documentId=stat['ID_Statistics'], clientId=stat['cliente']['DocumentId']) }}" title="Ver"
 										class="btn btn-primary shadow btn-xs sharp me-1">
 										<i class="fa fa-eye"></i>
 									</a>

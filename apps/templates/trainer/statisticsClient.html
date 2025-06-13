@@ -324,24 +324,24 @@
 													{% if stat.State == 1 %}
 
 													<!-- Ver estadística -->
-													<a href="{{ url_for('trainer_app.viewStatistics', statisticsId=stat.ID_Statistics, documentId= documentId) }}"
+													<a href="{{ url_for('trainer_app.viewStatistics', statisticsId=stat.ID_Statistics, documentId= documentId) }}" title="Ver"
 														class="btn btn-primary shadow btn-xs sharp me-1">
 														<i class="fa fa-eye"></i>
 													</a>
 													<!-- Editar estadística -->
-													<a href="{{ url_for('trainer_app.updateStatistics', statisticsId=stat.ID_Statistics, documentId=documentId) }}"
+													<a href="{{ url_for('trainer_app.updateStatistics', statisticsId=stat.ID_Statistics, documentId=documentId) }}" title="Actualizar"
 														class="btn btn-primary shadow btn-xs sharp me-1">
 														<i class="fa fa-pencil"></i>
 													</a>
 													<!-- Eliminar estadística -->
-													<button onclick="disableStatistics(event)" data-id="{{ stat.ID_Statistics }}"
+													<button onclick="disableStatistics(event)" data-id="{{ stat.ID_Statistics }}" title="Deshabilitar"
 													id="deshabilitar-{{ stat.ID_Statistics }}"
 													class="btn btn-danger shadow btn-xs sharp">
 													<i class="fa fa-trash"></i>
 													</button>
 													{% else %}
 
-													<button onclick="ableStatistics(event)" data-id="{{ stat.ID_Statistics }}"
+													<button onclick="ableStatistics(event)" data-id="{{ stat.ID_Statistics }}" title="Habilitar"
 													id="habilitar-{{ stat.ID_Statistics }}"
 													class="btn btn-success shadow btn-xs sharp">
 													<i class="fa fa-check"></i>

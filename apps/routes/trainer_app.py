@@ -268,7 +268,6 @@ def viewSessionUpdate(sessionId, clientId):
     if sessionId and clientId and routineId:
         return render_template('trainer/viewUpdateSession.html', sessionId = sessionId, clientId = clientId, routineId = routineId)
     else:
-        flash(ex.args[0], 'No se encontró la sesión')
         return redirect(url_for('trainer_app.routineClient'))
 
 @trainer_app.route("/viewClient/<documentId>")

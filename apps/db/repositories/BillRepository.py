@@ -4,16 +4,89 @@ import re
 from apps.db.models.Bill import Bill
 from apps.db.models.Client import Client
 from apps.db.repositories.RepositoryBase import RepositoryBase
+from apps.db.db import db
 
 class BillRepository(RepositoryBase):
     
     def __init__(self):
         super().__init__(Bill)
+
+    @classmethod
+    def get_reports(cls, group_by):
+        try:
+            # Definir formato de agrupación
+            group_sql = {
+                'diaria': "DATE(Fecha)",
+                'semanal': "YEARWEEK(Fecha, 1)",
+                'mensual': "DATE_FORMAT(Fecha, '%Y-%m')"
+            }
+
+            if group_by not in group_sql:
+                raise ValueError("Tipo de agrupación no válido: 'diaria', 'semanal', 'mensual'.")
+
+            sql = f"""
+                SELECT {group_sql[group_by]} AS group_key, ID_Factura, Monto, Tipo, Descripcion,
+                    TipoEntidad, ID_Entidad, Estado, Fecha
+                FROM Factura
+                ORDER BY group_key
+            """
+
+            result = db.session.execute(sql).fetchall()
+
+            reports = defaultdict(list)
+            totals = defaultdict(float)
+
+            for row in result:
+                group_key = row.group_key
+
+                if isinstance(group_key, (datetime, date)):
+                    group_key = (
+                        group_key.strftime('%Y-%m-%d') if group_by == 'diaria'
+                        else group_key.strftime('%Y-%m')
+                    )
+
+                report = {
+                    'ID_Factura': row.ID_Factura,
+                    'Monto': row.Monto,
+                    'Tipo': row.Tipo,
+                    'Descripcion': row.Descripcion,
+                    'TipoEntidad': row.TipoEntidad or 'Desconocido',
+                    'ID_Entidad': row.ID_Entidad,
+                    'Estado': row.Estado,
+                    'Fecha': row.Fecha
+                }
+
+                tipo_entidad = row.TipoEntidad
+
+                # Buscar entidad relacionada
+                if tipo_entidad in ('Cliente', 'Entrenador'):
+                    entity_sql = f"SELECT Cedula, Nombre FROM {tipo_entidad} WHERE Cedula = :cedula"
+                    entity_result = db.session.execute(entity_sql, {'cedula': row.ID_Entidad}).fetchone()
+                    if entity_result:
+                        report['Cedula'] = entity_result.Cedula
+                        report['Nombre'] = entity_result.Nombre
+                elif tipo_entidad == 'Producto':
+                    product_result = db.session.execute(
+                        "SELECT Nombre FROM Producto WHERE ID_Producto = :id",
+                        {'id': row.ID_Entidad}
+                    ).fetchone()
+                    if product_result:
+                        report['Producto'] = product_result.Nombre
+
+                reports[group_key].append(report)
+                totals[group_key] += float(row.Monto or 0)
+
+            return {
+                'data': dict(reports),
+                'totals': dict(totals)
+            }
+
+        except Exception as ex:
+            print(f"Error en get_reports: {ex}")
+            return None
     
     def disable_bill(self, id):
         return self.update(id, State=0) 
-
-
 
     @classmethod
     def getDataTrainerBill(cls, request):
@@ -46,9 +119,9 @@ class BillRepository(RepositoryBase):
         ID_Entity = request.form.get('DocumentIdProduct')
         Amount = request.form.get('AmountProductBill')
         Description = request.form['Description']
-        Lot = request.form.get('Amount')
+        Quantity = request.form.get('Amount')
 
-        return Bill(Amount=Amount,Type="Pago Producto",Description=Description,Date=datetime.now(),EntityType="Producto",ID_Entity=ID_Entity, State=True, Lot=Lot)
+        return Bill(Amount=Amount,Type="Pago Producto",Description=Description,Date=datetime.now(),EntityType="Producto",ID_Entity=ID_Entity, State=True, Quantity=Quantity)
 
 
     @classmethod

@@ -45,13 +45,13 @@
                                         <td>{{ client['Occupation'] }}</td>
                                         <td>
                                             <div class="d-flex">
-                                                <a href="{{ url_for ('trainer_app.routinesClient', ID_Cliente = client['DocumentId']) }}"
+                                                <a href="{{ url_for ('trainer_app.routinesClient', ID_Cliente = client['DocumentId']) }}" title="Rutinas"
                                                     class="btn btn-primary shadow btn-xs sharp me-1"><i
                                                         class="flaticon-381-notepad"></i></a>
-                                                <a href="{{ url_for ('trainer_app.statisticsClient',documentId=client['DocumentId']) }}"
+                                                <a href="{{ url_for ('trainer_app.statisticsClient',documentId=client['DocumentId']) }}" title="Estadísticas"
                                                     class="btn btn-primary shadow btn-xs sharp me-1"><i
                                                         class="fas fa-chart-bar"></i></a>
-                                                <a href="{{ url_for('trainer_app.viewClient', documentId=client['DocumentId']) }}"
+                                                <a href="{{ url_for('trainer_app.viewClient', documentId=client['DocumentId']) }}" title="Ver"
                                                     class="btn btn-primary shadow btn-xs sharp me-1"><i
                                                         class="fa fa-eye"></i></a>
                                             </div>

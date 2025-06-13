@@ -4,7 +4,6 @@ from apps.db.repositories.MembershipRepository import MembershipRepository
 class membershipController:
     MembershipRepository =  MembershipRepository()
 
-
     @classmethod
     def get_allAble(cls):
         filters = {'State': True}
@@ -46,6 +45,10 @@ class membershipController:
     @classmethod
     def getDataMembership(cls, request):
         return cls.MembershipRepository.getDataMembership(request)
+    
+    @classmethod
+    def getDataMembershipSent(cls, request):
+        return cls.MembershipRepository.getDataMembershipSent(request)
 
     @classmethod
     def membershipValidated(cls, membership):

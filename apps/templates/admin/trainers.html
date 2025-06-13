@@ -165,11 +165,11 @@
                                 <td>
                                     <div class="d-flex">
                                         {% if trainer['State'] == 1 %}
-                                        <a href="{{ url_for('admin_app.viewTrainer', documentId=trainer['DocumentId']) }}"
+                                        <a href="{{ url_for('admin_app.viewTrainer', documentId=trainer['DocumentId']) }}" title="Ver"
                                             class="btn btn-primary shadow btn-xs sharp me-1">
                                             <i class="fa fa-eye"></i>
                                         </a>
-                                        <a href="{{ url_for('admin_app.updateTrainer', documentId=trainer['DocumentId']) }}"
+                                        <a href="{{ url_for('admin_app.updateTrainer', documentId=trainer['DocumentId']) }}" title="Actualizar"
                                             class="btn btn-primary shadow btn-xs sharp me-1">
                                             <i class="fa fa-pencil"></i>
                                         </a>
