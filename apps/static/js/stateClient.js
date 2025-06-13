@@ -19,7 +19,7 @@ const disableClient = (event) => {
                 data: JSON.stringify({
                     clientId: clientId,
                 }),
-                url: "/admin/clientes/deshabilitar",
+                url: "/admin/clientes/disable",
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json",
@@ -78,7 +78,7 @@ const ableClient = (event) => {
                 data: JSON.stringify({
                     clientId: clientId,
                 }),
-                url: "/admin/clientes/habilitar",
+                url: "/admin/clientes/able",
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json",
