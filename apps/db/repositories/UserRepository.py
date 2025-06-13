@@ -74,15 +74,6 @@ class UserRepository(RepositoryBase):
         return user
 
     
-    @classmethod
-    def document_exists(cls, conexion, document_id):
-        cursor = conexion.cursor()
-        cursor.execute("SELECT COUNT(*) FROM Usuario WHERE Cedula = %s", (document_id,))
-        count = cursor.fetchone()[0]
-        cursor.close()
-        return count > 0
-    
- 
     def disable_user(self, DocumentId):
         return self.update(DocumentId, State=0) 
 
