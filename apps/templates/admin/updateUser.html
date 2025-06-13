@@ -33,13 +33,9 @@
                                 </div>
 
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label" for="role">role <span class="text-danger">*</span></label>
+                                    <label class="col-lg-4 col-form-label" for="role">Rol <span class="text-danger"></span></label>
                                     <div class="col-lg-6">
-                                        <select class="form-control" name="Role" id="role" required>
-                                            <option value="Admin" {% if user.role == 'Admin' %} selected {% endif %}>Administrador</option>
-                                            <option value="Trainer" {% if user.role == 'Trainer' %} selected {% endif %}>Entrenador</option>
-                                            <option value="Client" {% if user.role == 'Client' %} selected {% endif %}>Cliente</option>
-                                        </select>
+                                         <input type="text" class="form-control" name="Role" id="Role" value="{{ user.role }}" readonly>
                                     </div>
                                 </div>
 

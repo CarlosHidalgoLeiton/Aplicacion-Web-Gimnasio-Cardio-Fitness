@@ -59,7 +59,7 @@ def statisticsClient(documentId):
             statisticsValidated = validateDataStatistics(statistics_data)
 
             if not isinstance(statisticsValidated, bool):
-                return render_template("trainer/statisticsClient.html", statistics=statistics, error=statisticsValidated, statistics_data=statistics_data, documentId=documentId,client=client)
+                return render_template("trainer/statisticsClient.html", statistics=statistics, error=statisticsValidated, statistics_data=statistics_data, documentId=documentId, client=client)
 
             statisticsController.create(statistics_data)
             
