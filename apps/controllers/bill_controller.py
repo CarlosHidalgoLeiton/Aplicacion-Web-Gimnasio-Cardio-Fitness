@@ -137,6 +137,10 @@ class billController:
         return cls.BillRepository.get_reports(group_by=group_by)
     
     @classmethod
+    def get_product_bills(cls):
+        return cls.BillRepository.get_ProductBills()
+
+    @classmethod
     def get_reports_bills(cls, group_by):
         return cls.BillRepository.get_reports_bills(group_by=group_by)
     

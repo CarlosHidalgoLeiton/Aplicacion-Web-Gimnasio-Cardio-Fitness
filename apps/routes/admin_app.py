@@ -888,9 +888,9 @@ def generate_reportBills_pdf():
 
             # Armar la tabla
             if entity_type == 'Producto':
-                data = [["Producto", "Monto", "Fecha"]]
+                data = [["Producto", "Cantidad", "Monto", "Fecha"]]
                 for r in reports_in_entity:
-                    data.append([r.get('Producto', 'N/A'), str(r['Monto']), str(r.get('Fecha', 'N/A'))])
+                    data.append([r.get('Producto', 'N/A'), str(r['Cantidad']),str(r['Monto']), str(r.get('Fecha', 'N/A'))])
             elif entity_type in ['Cliente', 'Entrenador']:
                 data = [["Nombre", "Cédula", "Monto", "Fecha"]]
                 for r in reports_in_entity:
@@ -947,9 +947,14 @@ def generate_reportBills_pdf():
 @login_required
 @admin_permission.require(http_exception=403)
 def inventoryReports():
-    reports = billController.get_product_bills()
-    return render_template("admin/inventoryReports.html",
+    try:
+        reports = billController.get_product_bills()
+        print(reports)
+        return render_template("admin/inventoryReports.html",
                            reports=reports)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('admin_app.inicio'))
 
 @admin_app.route("/generate_report_pdf", methods=['GET'])
 @login_required
@@ -957,7 +962,12 @@ def inventoryReports():
 def generate_report_pdf():
     month = request.args.get('month')
 
-    reports = billController.get_productOne_bill(month)
+    all_reports = billController.get_product_bills()
+
+    if not all_reports or month not in all_reports:
+        return "No hay facturas para este mes", 404
+
+    reports = all_reports[month] 
 
     if not reports:
         return "No hay facturas para este mes", 404
@@ -977,25 +987,20 @@ def generate_report_pdf():
 
     c.setFont("Helvetica", 12)
     c.setFillColor(HexColor("#7f8c8d"))
-    c.drawString(50, 730, f"Reporte de ventas de productos para el mes {month}")
+    c.drawString(50, 730, f"Reporte de ventas de productos para el mes de {month}")
 
     c.setFont("Helvetica", 10)
 
     data = [["Código", "Producto", "Precio", "Cantidad Vendida", "Total Vendido"]]
-   
-    quantity = reports['Quantity']
-    if quantity is None:
-        quantity = 0
-    
-
-    row = [
-        str(reports['ID_Entity']),
-        reports['product'].Name,
-        f"{reports['product'].Price:.2f}",
-        str(quantity),
-        f"{(quantity*reports['product'].Price):.2f}"
-    ]
-    data.append(row)
+    for report in reports:
+        row = [
+            str(report['ID_Producto']),
+            report['Nombre_Producto'],
+            f"{report['Precio']:.2f}",
+            str(report['Cantidad']),
+            f"{report['Total_Vendido']:.2f}"
+        ]
+        data.append(row)
 
     table = Table(data, colWidths=[70, 150, 90, 90, 90])
     table.setStyle(TableStyle([
@@ -1024,7 +1029,6 @@ def generate_report_pdf():
     c.save()
     buffer.seek(0)
     return send_file(buffer, as_attachment=True, download_name=f"reporte_inventario_{month}.pdf", mimetype="application/pdf")
-
 
     #-------------Perfil------------#
 @admin_app.route("/profile")

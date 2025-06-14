@@ -13,6 +13,53 @@ class BillRepository(RepositoryBase):
         super().__init__(Bill)
 
     @classmethod
+    def get_ProductBills(cls):
+        try:
+            sql = text("""
+                SELECT ID_Factura, Monto, Fecha, Tipo, Descripcion, TipoEntidad, ID_Entidad, Estado, Cantidad 
+                FROM factura 
+                WHERE TipoEntidad = 'Producto'
+            """)
+            rows = db.session.execute(sql).fetchall()
+
+            bills_by_month = defaultdict(list)
+
+            for row in rows:
+                product_id = row.ID_Entidad
+
+                # Obtener detalles del producto
+                product_sql = text("SELECT ID_Producto, Nombre, Precio FROM producto WHERE ID_Producto = :id")
+                product_row = db.session.execute(product_sql, {'id': product_id}).fetchone()
+
+                if product_row:
+                    bill = {
+                        'ID_Producto': product_row.ID_Producto,
+                        'Precio': product_row.Precio,
+                        'Nombre_Producto': product_row.Nombre,
+                        'Cantidad': row.Cantidad,
+                        'Total_Vendido': row.Cantidad * product_row.Precio,
+                        'ID_Factura': row.ID_Factura,
+                        'Monto': row.Monto,
+                        'Tipo': row.Tipo,
+                        'Descripcion': row.Descripcion,
+                        'TipoEntidad': row.TipoEntidad or 'Desconocido',
+                        'ID_Entidad': row.ID_Entidad,
+                        'Estado': row.Estado,
+                        'Fecha': row.Fecha,
+                        'Cantidad': row.Cantidad
+                    }
+
+                    # Agrupación por mes y año
+                    month_year = row.Fecha.strftime('%Y-%m') if isinstance(row.Fecha, (datetime, date)) else str(row.Fecha)
+                    bills_by_month[month_year].append(bill)
+
+            return dict(bills_by_month)
+
+        except Exception as ex:
+            print(f"Error en get_ProductBills: {ex}")
+            return None
+
+    @classmethod
     def get_reports_bills(cls, group_by):
         try:
             # Definir agrupamiento por tipo
@@ -27,7 +74,7 @@ class BillRepository(RepositoryBase):
 
             # Consulta SQL principal
             sql = f"""
-                SELECT {group_sql[group_by]} AS group_key, ID_Factura, Monto, Tipo, Descripcion,
+                SELECT {group_sql[group_by]} AS group_key, ID_Factura, Cantidad, Monto, Tipo, Descripcion,
                        TipoEntidad, ID_Entidad, Estado, Fecha
                 FROM factura
                 ORDER BY group_key
@@ -51,7 +98,8 @@ class BillRepository(RepositoryBase):
                     'TipoEntidad': row.TipoEntidad or 'Desconocido',
                     'ID_Entidad': row.ID_Entidad,
                     'Estado': row.Estado,
-                    'Fecha': row.Fecha
+                    'Fecha': row.Fecha,
+                    'Cantidad': row.Cantidad
                 }
 
                 # Consultar datos de entidad relacionada
@@ -92,7 +140,7 @@ class BillRepository(RepositoryBase):
                 raise ValueError("Tipo de agrupación no válido: 'diaria', 'semanal', 'mensual'.")
 
             sql = text(f"""
-                SELECT {group_sql[group_by]} AS group_key, ID_Factura, Monto, Tipo, Descripcion,
+                SELECT {group_sql[group_by]} AS group_key, ID_Factura, Cantidad, Monto, Tipo, Descripcion,
                     TipoEntidad, ID_Entidad, Estado, Fecha
                 FROM factura
                 ORDER BY group_key
@@ -120,7 +168,8 @@ class BillRepository(RepositoryBase):
                     'TipoEntidad': row.TipoEntidad or 'Desconocido',
                     'ID_Entidad': row.ID_Entidad,
                     'Estado': row.Estado,
-                    'Fecha': row.Fecha
+                    'Fecha': row.Fecha,
+                    'Cantidad': row.Cantidad
                 }
 
                 tipo_entidad = row.TipoEntidad

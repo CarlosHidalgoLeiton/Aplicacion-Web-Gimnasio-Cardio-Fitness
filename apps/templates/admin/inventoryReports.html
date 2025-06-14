@@ -31,19 +31,19 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for report in reports %}
+                                    {% for month_key in reports.keys() %}
                                         <tr>
-                                            <td>{{ report.Date.month }}-01</td>
-                                            <td>{{ report.Date.month }}-28</td>
+                                            <td>{{ month_key }}-01</td>
+                                            <td>{{ month_key }}-28</td>
                                             <td>
                                                 <div class="d-flex">
-                                                    <a href="{{ url_for('admin_app.generate_report_pdf', month=report.Date.month) }}" class="btn btn-danger shadow btn-xs sharp" download>
+                                                    <a href="{{ url_for('admin_app.generate_report_pdf', month=month_key) }}" class="btn btn-danger shadow btn-xs sharp" download>
                                                         <i class="fa fa-download"></i> 
                                                     </a>
                                                 </div>
                                             </td>
                                         </tr>
-                                    {% endfor %}
+                                        {% endfor %}
                                 </tbody>
                             </table>
                         </div>
