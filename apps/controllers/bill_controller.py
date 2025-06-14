@@ -1,11 +1,13 @@
 from apps.db.repositories.BillRepository import BillRepository
 from apps.db.repositories.MembershipRepository import MembershipRepository
 from apps.db.repositories.ClientRepository import ClientRepository
+from apps.db.repositories.ProductRepository import ProductRepository
 
 class billController:
     BillRepository = BillRepository()
     MembershipRepository = MembershipRepository()
     ClientRepository = ClientRepository()
+    ProductRepository = ProductRepository()
     
     @classmethod
     def get_all(cls):
@@ -111,3 +113,37 @@ class billController:
         Bills = cls.BillRepository.findAll(filters=filters)
         return Bills
     
+    @classmethod
+    def get_product_bills(cls):
+        filters = {'EntityType': 'Producto'}
+        return cls.BillRepository.findAll(filters=filters)
+    
+    @classmethod
+    def get_productOne_bill(cls, month):
+        filters = {'EntityType': 'Producto'}
+        all_bills = cls.BillRepository.findAll(filters=filters)
+        
+        for bill in all_bills:
+            date = bill.get('Date')
+            if date and date.month == int(month):
+                filterProduct = {'ID_Product': bill['ID_Entity']}
+                product = cls.ProductRepository.findOne(filters=filterProduct)
+                bill['product'] = product
+                return bill  # Devuelve la primera factura que coincida
+        return None
+
+    @classmethod
+    def get_reports(cls, group_by):
+        return cls.BillRepository.get_reports(group_by=group_by)
+    
+    @classmethod
+    def get_product_bills(cls):
+        return cls.BillRepository.get_ProductBills()
+
+    @classmethod
+    def get_reports_bills(cls, group_by):
+        return cls.BillRepository.get_reports_bills(group_by=group_by)
+    
+    @classmethod
+    def updateQuantityProduct(cls, quantity, id):
+        return cls.ProductRepository.quantity_Product(quantity, id)

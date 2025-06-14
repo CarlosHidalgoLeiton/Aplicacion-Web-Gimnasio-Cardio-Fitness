@@ -54,24 +54,24 @@
 													<div class="d-flex">
 
 													{% if routine['State'] == 1 %}
-														<a href="{{ url_for('trainer_app.viewRoutine', routineId = routine['RoutineId'], DocumentId= client['DocumentId']) }}"
+														<a href="{{ url_for('trainer_app.viewRoutine', routineId = routine['RoutineId'], DocumentId= client['DocumentId']) }}" title="Ver"
 															class="btn btn-primary shadow btn-xs sharp me-1">
 															<i class="fa fa-eye"></i>
 														</a>
 
-														<a href="{{ url_for('trainer_app.UpdateRoutine', ID_Cliente=client['DocumentId'], routineId=routine['RoutineId']) }}"
+														<a href="{{ url_for('trainer_app.UpdateRoutine', ID_Cliente=client['DocumentId'], routineId=routine['RoutineId']) }}" title="Actualizar"
 															class="btn btn-primary shadow btn-xs sharp me-1">
 															<i class="fa fa-pencil"></i>
 														</a>
 
-														<button onclick="disableRoutine(event)" data-id="{{ routine['RoutineId'] }}"
+														<button onclick="disableRoutine(event)" data-id="{{ routine['RoutineId'] }}" title="Deshabilitar"
 															id="deshabilitar-{{ routine['RoutineId'] }}"
 															class="btn btn-danger shadow btn-xs sharp">
 															<i class="fa fa-trash"></i>
 														</button>
 				
 													{% else %}
-														<button onclick="ableRoutine(event)" data-id="{{ routine['RoutineId'] }}"
+														<button onclick="ableRoutine(event)" data-id="{{ routine['RoutineId'] }}" title="Habilitar"
 															id="habilitar-{{ routine['RoutineId'] }}"
 															class="btn btn-success shadow btn-xs sharp">
 															<i class="fa fa-check"></i>

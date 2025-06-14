@@ -211,23 +211,23 @@
                                 <td>
                                     <div class="d-flex">
                                         {% if user['State'] == 1 %}
-                                        <a href="{{ url_for('admin_app.viewUser', DocumentId=user.DocumentId) }}"
+                                        <a href="{{ url_for('admin_app.viewUser', DocumentId=user.DocumentId) }}" title="Ver"
                                             class="btn btn-primary shadow btn-xs sharp me-1">
                                             <i class="fa fa-eye"></i>
                                         </a>
 
-                                        <a href="{{ url_for('admin_app.updateUser', DocumentId=user.DocumentId) }}"
+                                        <a href="{{ url_for('admin_app.updateUser', DocumentId=user.DocumentId) }}" title="Actualizar"
                                             class="btn btn-primary shadow btn-xs sharp me-1">
                                             <i class="fa fa-pencil"></i>
                                         </a>
-                                        <button onclick="disableUser(event)" data-id="{{ user['DocumentId'] }}"
+                                        <button onclick="disableUser(event)" data-id="{{ user['DocumentId'] }}" title="Deshabilitar"
                                             id="deshabilitar-{{ user['DocumentId'] }}"
                                             class="btn btn-danger shadow btn-xs sharp">
                                             <i class="fa fa-trash"></i>
                                         </button>
 
                                         {% else %}
-                                        <button onclick="ableUser(event)" data-id="{{ user['DocumentId'] }}"
+                                        <button onclick="ableUser(event)" data-id="{{ user['DocumentId'] }}" title="Habilitar"
                                             id="habilitar-{{ user['DocumentId'] }}"
                                             class="btn btn-success shadow btn-xs sharp">
                                             <i class="fa fa-check"></i>

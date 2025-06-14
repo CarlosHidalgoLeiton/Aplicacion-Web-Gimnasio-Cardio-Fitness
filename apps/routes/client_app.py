@@ -9,6 +9,7 @@ from apps.controllers.routine_controller import routineController
 from apps.controllers.statistics_controller import statisticsController
 import json  
 from apps.controllers.inventory_controller import productController
+from apps.controllers.membership_controller import membershipController
 
 from apps.routes.chatbot import generate_bot_response 
 
@@ -57,7 +58,6 @@ def get_bot_response():
         return jsonify({"response": bot_response, "options": options})
 
     return jsonify({"response": "Lo siento, no pude entender tu pregunta."})
-
 
 @client_app.route('/notAutorized')
 def notAutorized():
@@ -179,12 +179,16 @@ def getSessions(ID_Routine):
 @client_permission.require(http_exception=403)
 def viewSession(Session_ID):
     try:
+        ID_Routine = request.args.get("routine_id")
+
         session = sessionController.findOneById(Session_ID)
         session.Exercises = json.loads(session.Exercises)
 
         return render_template("client/viewSession.html", session=session, routine=session.routine)
     except Exception as ex:
         flash(ex.args[0], 'danger')
+        return redirect(url_for('client_app.viewRoutine', ID_Routine = ID_Routine))
+
 
 #-------------Rutas de estadisticas-------------#
 @client_app.route("/statisticsClient", methods=['GET'])
@@ -215,23 +219,21 @@ def viewStatistics(statisticsId, documentId):
 @client_app.route("/viewMemberships", methods = ['GET'])
 @login_required
 def viewMemberships():
-    errorMessage = request.args.get('error')
+    try:
+        memberships = membershipController.get_all()
 
-    conection = Conection.conectar()
+        return render_template("client/membershipClient.html", memberships=memberships)
 
-    memberships = ModelMembership.get_allAble(conection)
-
-    return render_template("client/membershipClient.html", memberships = memberships, error = errorMessage)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for('client_app.inicio'))
 
 @client_app.route("/viewMemberships/<membershipId>", methods = ['GET'])
 @login_required
 def viewMembership(membershipId):
-
-    conection = Conection.conectar()
-
-    membership = ModelMembership.getMembership(conection, membershipId)
-
-    if(membership):
-        return render_template("client/viewMembership.html", membership = membership)
-    else:
-        return redirect(url_for("client_app.viewMemberships", error = "No se pudo encontrar la membresia."))
+    try:
+        membership = membershipController.get_by_id(membershipId)
+        return render_template("client/viewMembership.html", membership=membership)
+    except Exception as ex:
+        flash(ex.args[0], 'danger')
+        return redirect(url_for("client_app.inicio"))

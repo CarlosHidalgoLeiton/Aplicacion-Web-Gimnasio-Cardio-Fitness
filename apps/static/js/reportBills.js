@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 Object.keys(data).forEach(group => {
                     var groupReports = data[group];
+                    console.log(groupReports)
                     var totalMonto = 0;
 
                     groupReports.forEach(report => {
@@ -58,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <td>${groupLabel}</td>
                         <td>${totalMonto.toFixed(2)}</td>
                         <td>
-                            <a href="/admin/generate_report_bill?month=${group}&invoice_type=${value}" 
+                            <a href="/admin/generate_report_bill?month=${group}&invoice_type=${value}" title="Descargar" download
                                class="btn btn-danger shadow btn-xs sharp" 
                                target="_blank">
                                 <i class="fa fa-download"></i>

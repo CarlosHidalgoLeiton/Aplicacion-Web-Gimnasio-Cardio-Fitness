@@ -4,16 +4,206 @@ import re
 from apps.db.models.Bill import Bill
 from apps.db.models.Client import Client
 from apps.db.repositories.RepositoryBase import RepositoryBase
+from apps.db.db import db
+from sqlalchemy import text
 
 class BillRepository(RepositoryBase):
     
     def __init__(self):
         super().__init__(Bill)
+
+    @classmethod
+    def get_ProductBills(cls):
+        try:
+            sql = text("""
+                SELECT ID_Factura, Monto, Fecha, Tipo, Descripcion, TipoEntidad, ID_Entidad, Estado, Cantidad 
+                FROM factura 
+                WHERE TipoEntidad = 'Producto'
+            """)
+            rows = db.session.execute(sql).fetchall()
+
+            bills_by_month = defaultdict(list)
+
+            for row in rows:
+                product_id = row.ID_Entidad
+
+                # Obtener detalles del producto
+                product_sql = text("SELECT ID_Producto, Nombre, Precio FROM producto WHERE ID_Producto = :id")
+                product_row = db.session.execute(product_sql, {'id': product_id}).fetchone()
+
+                if product_row:
+                    bill = {
+                        'ID_Producto': product_row.ID_Producto,
+                        'Precio': product_row.Precio,
+                        'Nombre_Producto': product_row.Nombre,
+                        'Cantidad': row.Cantidad,
+                        'Total_Vendido': row.Cantidad * product_row.Precio,
+                        'ID_Factura': row.ID_Factura,
+                        'Monto': row.Monto,
+                        'Tipo': row.Tipo,
+                        'Descripcion': row.Descripcion,
+                        'TipoEntidad': row.TipoEntidad or 'Desconocido',
+                        'ID_Entidad': row.ID_Entidad,
+                        'Estado': row.Estado,
+                        'Fecha': row.Fecha,
+                        'Cantidad': row.Cantidad
+                    }
+
+                    # Agrupación por mes y año
+                    month_year = row.Fecha.strftime('%Y-%m') if isinstance(row.Fecha, (datetime, date)) else str(row.Fecha)
+                    bills_by_month[month_year].append(bill)
+
+            return dict(bills_by_month)
+
+        except Exception as ex:
+            print(f"Error en get_ProductBills: {ex}")
+            return None
+
+    @classmethod
+    def get_reports_bills(cls, group_by):
+        try:
+            # Definir agrupamiento por tipo
+            group_sql = {
+                'diaria': "DATE(Fecha)",
+                'semanal': "YEARWEEK(Fecha, 1)",
+                'mensual': "DATE_FORMAT(Fecha, '%Y-%m')"
+            }
+
+            if group_by not in group_sql:
+                raise ValueError("Tipo de reporte no válido: 'diaria', 'semanal', 'mensual'.")
+
+            # Consulta SQL principal
+            sql = f"""
+                SELECT {group_sql[group_by]} AS group_key, ID_Factura, Cantidad, Monto, Tipo, Descripcion,
+                       TipoEntidad, ID_Entidad, Estado, Fecha
+                FROM factura
+                ORDER BY group_key
+            """
+
+            result = db.session.execute(text(sql)).fetchall()
+
+            reports = defaultdict(list)
+
+            for row in result:
+                group_key = row.group_key
+
+                if isinstance(group_key, (datetime, date)):
+                    group_key = group_key.strftime('%Y-%m-%d') if group_by == 'diaria' else group_key.strftime('%Y-%m')
+
+                report = {
+                    'ID_Factura': row.ID_Factura,
+                    'Monto': row.Monto,
+                    'Tipo': row.Tipo,
+                    'Descripcion': row.Descripcion,
+                    'TipoEntidad': row.TipoEntidad or 'Desconocido',
+                    'ID_Entidad': row.ID_Entidad,
+                    'Estado': row.Estado,
+                    'Fecha': row.Fecha,
+                    'Cantidad': row.Cantidad
+                }
+
+                # Consultar datos de entidad relacionada
+                tipo_entidad = row.TipoEntidad
+                id_entidad = row.ID_Entidad
+
+                if tipo_entidad in ('cliente', 'entrenador'):
+                    entity_sql = text(f"SELECT Cedula, Nombre FROM {tipo_entidad} WHERE Cedula = :cedula")
+                    entity_row = db.session.execute(entity_sql, {'cedula': id_entidad}).fetchone()
+                    if entity_row:
+                        report['Cedula'] = entity_row.Cedula
+                        report['Nombre'] = entity_row.Nombre
+                elif tipo_entidad == 'Producto':
+                    product_sql = text("SELECT Nombre FROM producto WHERE ID_Producto = :id")
+                    product_row = db.session.execute(product_sql, {'id': id_entidad}).fetchone()
+                    if product_row:
+                        report['Producto'] = product_row.Nombre
+
+                reports[group_key].append(report)
+
+            return dict(reports)
+
+        except Exception as ex:
+            print(f"Error en get_reports_bill: {ex}")
+            return None
+
+    @classmethod
+    def get_reports(cls, group_by):
+        try:
+            # Definir formato de agrupación
+            group_sql = {
+                'diaria': "DATE(Fecha)",
+                'semanal': "YEARWEEK(Fecha, 1)",
+                'mensual': "DATE_FORMAT(Fecha, '%Y-%m')"
+            }
+
+            if group_by not in group_sql:
+                raise ValueError("Tipo de agrupación no válido: 'diaria', 'semanal', 'mensual'.")
+
+            sql = text(f"""
+                SELECT {group_sql[group_by]} AS group_key, ID_Factura, Cantidad, Monto, Tipo, Descripcion,
+                    TipoEntidad, ID_Entidad, Estado, Fecha
+                FROM factura
+                ORDER BY group_key
+            """)
+
+            result = db.session.execute(sql).fetchall()
+
+            reports = defaultdict(list)
+            totals = defaultdict(float)
+
+            for row in result:
+                group_key = row.group_key
+
+                if isinstance(group_key, (datetime, date)):
+                    group_key = (
+                        group_key.strftime('%Y-%m-%d') if group_by == 'diaria'
+                        else group_key.strftime('%Y-%m')
+                    )
+
+                report = {
+                    'ID_Factura': row.ID_Factura,
+                    'Monto': row.Monto,
+                    'Tipo': row.Tipo,
+                    'Descripcion': row.Descripcion,
+                    'TipoEntidad': row.TipoEntidad or 'Desconocido',
+                    'ID_Entidad': row.ID_Entidad,
+                    'Estado': row.Estado,
+                    'Fecha': row.Fecha,
+                    'Cantidad': row.Cantidad
+                }
+
+                tipo_entidad = row.TipoEntidad
+
+                # Buscar entidad relacionada
+                if tipo_entidad in ('cliente', 'entrenador'):
+                    entity_sql = text(f"SELECT Cedula, Nombre FROM {tipo_entidad} WHERE Cedula = :cedula")
+                    entity_result = db.session.execute(entity_sql, {'cedula': row.ID_Entidad}).fetchone()
+                    if entity_result:
+                        report['Cedula'] = entity_result.Cedula
+                        report['Nombre'] = entity_result.Nombre
+                elif tipo_entidad == 'Producto':
+                    product_sql = text("SELECT Nombre FROM producto WHERE ID_Producto = :id")
+                    product_result = db.session.execute(
+                        product_sql,
+                        {'id': row.ID_Entidad}
+                    ).fetchone()
+                    if product_result:
+                        report['Producto'] = product_result.Nombre
+
+                reports[group_key].append(report)
+                totals[group_key] += float(row.Monto or 0)
+
+            return {
+                'data': dict(reports),
+                'totals': dict(totals)
+            }
+
+        except Exception as ex:
+            print(f"Error en get_reports: {ex}")
+            return None
     
     def disable_bill(self, id):
         return self.update(id, State=0) 
-
-
 
     @classmethod
     def getDataTrainerBill(cls, request):
@@ -27,7 +217,7 @@ class BillRepository(RepositoryBase):
             Type="Pago Entrenador",  # puedes cambiar esto si necesitás otro tipo
             Description=description,
             Date=datetime.now(),
-            EntityType="Entrenador",
+            EntityType="entrenador",
             ID_Entity=id_entity,
             State=True,
             Lot=None # o generarlo dinámicamente si hace falta
@@ -46,9 +236,9 @@ class BillRepository(RepositoryBase):
         ID_Entity = request.form.get('DocumentIdProduct')
         Amount = request.form.get('AmountProductBill')
         Description = request.form['Description']
-        Lot = request.form.get('Amount')
+        Quantity = request.form.get('Amount')
 
-        return Bill(Amount=Amount,Type="Pago Producto",Description=Description,Date=datetime.now(),EntityType="Producto",ID_Entity=ID_Entity, State=True, Lot=Lot)
+        return Bill(Amount=Amount,Type="Pago Producto",Description=Description,Date=datetime.now(),EntityType="Producto",ID_Entity=ID_Entity, State=True,Lot= None, Quantity=Quantity)
 
 
     @classmethod
@@ -57,7 +247,7 @@ class BillRepository(RepositoryBase):
         Amount = request.form.get('AmountMembershipBill')
         Description = request.form.get('Description')
 
-        return Bill(Amount=Amount, Type="Pago Membresia", Description=Description, Date=datetime.now(),EntityType="Cliente",ID_Entity=ID_Entity,State=True,Lot=None)
+        return Bill(Amount=Amount, Type="Pago Membresia", Description=Description, Date=datetime.now(),EntityType="cliente",ID_Entity=ID_Entity,State=True,Lot=None)
     
     @classmethod
     def validateDataFormTrainer(cls, bill):
@@ -237,8 +427,8 @@ class BillRepository(RepositoryBase):
         if bill.Description == None:
             return "Debe de ingresar la descripción."
         
-        if bill.Lot != None:
-            if "-" in bill.Lot or not bill.Lot.isdigit(): #Valida que sea alfabetico y que no tenga un "-" 
+        if bill.Quantity != None:
+            if "-" in bill.Quantity or not bill.Quantity.isdigit(): #Valida que sea alfabetico y que no tenga un "-" 
                 return "La cantidad ingresada no es válida."
         else:
             return "Debe de ingresar la cantidad."
@@ -253,7 +443,7 @@ class BillRepository(RepositoryBase):
                 lot_int = int(lot)
                 stock_int = int(stock)
 
-                if lot_int < stock_int:
+                if lot_int <= stock_int:
                     return True
                 else:
                     return False

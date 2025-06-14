@@ -13,3 +13,4 @@ class Bill(db.Model):
     ID_Entity = db.Column(db.String(255), nullable=False, key="ID_Entity", name="ID_Entidad")
     State = db.Column(db.Boolean, nullable=False, key="State", name="Estado")
     Lot = db.Column(db.String(50), nullable=False, key="Lot", name="Lot")
+    Quantity = db.Column(db.Integer, nullable=True, key="Quantity", name="Cantidad")

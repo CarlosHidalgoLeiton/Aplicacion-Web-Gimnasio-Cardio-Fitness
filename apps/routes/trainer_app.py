@@ -59,7 +59,7 @@ def statisticsClient(documentId):
             statisticsValidated = validateDataStatistics(statistics_data)
 
             if not isinstance(statisticsValidated, bool):
-                return render_template("trainer/statisticsClient.html", statistics=statistics, error=statisticsValidated, statistics_data=statistics_data, documentId=documentId,client=client)
+                return render_template("trainer/statisticsClient.html", statistics=statistics, error=statisticsValidated, statistics_data=statistics_data, documentId=documentId, client=client)
 
             statisticsController.create(statistics_data)
             
@@ -133,7 +133,7 @@ def viewRoutine(routineId, DocumentId):
         client = clientController.finOneByDocumentId(DocumentId)
         routine = routineController.findOneRoutine(routineId)
         sessions = sessionController.findAllByIdRoutine(routineId)
-        return render_template("trainer/viewRoutine.html", routine=routine, sessions=sessions, client=client)
+        return render_template("trainer/viewRoutine.html", routine=routine, sessions=sessions, client=client, DocumentId=DocumentId)
 
     except Exception as ex:
         flash(ex.args[0], 'danger')
@@ -268,7 +268,6 @@ def viewSessionUpdate(sessionId, clientId):
     if sessionId and clientId and routineId:
         return render_template('trainer/viewUpdateSession.html', sessionId = sessionId, clientId = clientId, routineId = routineId)
     else:
-        flash(ex.args[0], 'No se encontró la sesión')
         return redirect(url_for('trainer_app.routineClient'))
 
 @trainer_app.route("/viewClient/<documentId>")
@@ -283,10 +282,12 @@ def viewClient(documentId):
         flash(ex.args[0], 'danger')
         return redirect(url_for('trainer_app.clients'))
     
-@trainer_app.route("/viewRoutine/viewSession/<Session_ID>", methods=['GET'])
+@trainer_app.route("/viewRoutine/viewSession/<Session_ID>>", methods=['GET'])
 @login_required
 def viewSession(Session_ID):
     try:
+        ID_Routine = request.args.get("routine_id")
+        DocumentId = request.args.get("DocumentId")
         session = sessionController.findOneById(Session_ID)
         session.Exercises = json.loads(session.Exercises)
 
@@ -294,6 +295,8 @@ def viewSession(Session_ID):
 
     except Exception as ex:
         flash(ex.args[0], 'danger')
+        return redirect(url_for('trainer_app.viewRoutine', ID_Routine = ID_Routine, DocumentId=DocumentId))
+
 
 @trainer_app.route("/viewNewSession/<sessionId>/<clientId>", methods=['GET'])
 @login_required

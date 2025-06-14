@@ -42,10 +42,10 @@
 								<tr>
 									<td>{{ routine['Indications'] }}</td>
 									<td>{{ routine['Date'] }}</td>
-									<td>{{ routine['State'] }}</td>
+									<td>{{ 'Activo' if routine['State'] else 'Inactivo' }}</td>
 									<td>
 										<div class="d-flex">
-											<a href="{{ url_for('admin_app.viewRoutine', routineId = routine['RoutineId'], DocumentId= client['DocumentId']) }}"
+											<a href="{{ url_for('admin_app.viewRoutine', routineId = routine['RoutineId'], DocumentId= client['DocumentId']) }}" title="Ver"
 												class="btn btn-primary shadow btn-xs sharp me-1">
 												<i class="fa fa-eye"></i>
 											</a>
