@@ -876,8 +876,8 @@ def generate_reportBills_pdf():
 
         for entity_type, reports_in_entity in entity_groups.items():
             entity_title = {
-                'Entrenador': 'Pago Entrenador',
-                'Cliente': 'Membresía Cliente',
+                'entrenador': 'Pago Entrenador',
+                'cliente': 'Membresía Cliente',
                 'Producto': 'Venta de Producto',
                 'General': 'General'
             }.get(entity_type, 'General')
@@ -891,7 +891,7 @@ def generate_reportBills_pdf():
                 data = [["Producto", "Cantidad", "Monto", "Fecha"]]
                 for r in reports_in_entity:
                     data.append([r.get('Producto', 'N/A'), str(r['Cantidad']),str(r['Monto']), str(r.get('Fecha', 'N/A'))])
-            elif entity_type in ['Cliente', 'Entrenador']:
+            elif entity_type in ['cliente', 'entrenador']:
                 data = [["Nombre", "Cédula", "Monto", "Fecha"]]
                 for r in reports_in_entity:
                     data.append([

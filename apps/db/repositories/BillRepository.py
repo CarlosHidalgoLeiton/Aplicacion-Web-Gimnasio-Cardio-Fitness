@@ -217,7 +217,7 @@ class BillRepository(RepositoryBase):
             Type="Pago Entrenador",  # puedes cambiar esto si necesitás otro tipo
             Description=description,
             Date=datetime.now(),
-            EntityType="Entrenador",
+            EntityType="entrenador",
             ID_Entity=id_entity,
             State=True,
             Lot=None # o generarlo dinámicamente si hace falta
@@ -247,7 +247,7 @@ class BillRepository(RepositoryBase):
         Amount = request.form.get('AmountMembershipBill')
         Description = request.form.get('Description')
 
-        return Bill(Amount=Amount, Type="Pago Membresia", Description=Description, Date=datetime.now(),EntityType="Cliente",ID_Entity=ID_Entity,State=True,Lot=None)
+        return Bill(Amount=Amount, Type="Pago Membresia", Description=Description, Date=datetime.now(),EntityType="cliente",ID_Entity=ID_Entity,State=True,Lot=None)
     
     @classmethod
     def validateDataFormTrainer(cls, bill):
