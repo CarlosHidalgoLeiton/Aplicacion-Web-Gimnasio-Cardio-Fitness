@@ -27,6 +27,7 @@ from apps.controllers.cancelledBill_controller import cancelledBillController
 from apps.controllers.routine_controller import routineController
 from apps.controllers.session_controller import sessionController
 from apps.controllers.membership_controller import membershipController
+from collections import defaultdict
 # from apps.controllers.report_controller import reportController
 
 #Creación de los blueprint para usar en app.py
@@ -806,13 +807,12 @@ def billsReports():
     if request.method == 'POST':
         data = request.get_json()
         invoice_type = data.get('invoiceType')
-
         try:
             if invoice_type in ['diaria', 'semanal', 'mensual']:
                 reports = billController.get_reports(invoice_type)
                 if reports is None:
                     return jsonify({"error": "Error al obtener los reportes"}), 500
-                return jsonify(reports)
+                return jsonify(reports['data'])
             else:
                 return jsonify({"error": "Tipo de reporte no válido"}), 400
         except Exception as e:
@@ -820,104 +820,126 @@ def billsReports():
 
     return render_template("admin/billsReports.html")
 
-
-
 @admin_app.route("/generate_report_bill", methods=['GET'])
 @login_required
 def generate_reportBills_pdf():
-    # period = request.args.get('month')
-    # invoice_type = request.args.get('invoice_type')
-    # connection = Conection.conectar()
-    # reports = reportController.get_reports(connection, invoice_type)
-    # if not reports:
-    #     return jsonify({"error": "No se encontraron reportes"}), 404
+    period = request.args.get('month')
+    invoice_type = request.args.get('invoice_type')
 
-    # filtered_reports = {}
-    # for group, group_reports in reports.items():
-    #     if invoice_type == 'semanal':
-    #         if str(group) == period:
-    #             filtered_reports[group] = group_reports
-    #     elif invoice_type in ['mensual', 'diaria']:
-    #         if group == period:
-    #             filtered_reports[group] = group_reports
-    # if not filtered_reports:
-    #     return jsonify({"error": "No se encontraron reportes para el período seleccionado"}), 404
-    # buffer = BytesIO()
-    # c = canvas.Canvas(buffer, pagesize=letter)
+    if not period or not invoice_type:
+        return jsonify({"error": "Parámetros requeridos: month e invoice_type"}), 400
 
-    # logo_path = "static/images/icono.jpg"
-    # try:
-    #     c.drawImage(logo_path, 450, 750, width=1.5 * inch, height=0.8 * inch, preserveAspectRatio=True)
-    # except Exception as ex:
-    #     print(f"Error al cargar el logo: {ex}")
+    reports = billController.get_reports_bills(invoice_type)
+    if not reports:
+        return jsonify({"error": "No se encontraron reportes"}), 404
 
-    # c.setFont("Helvetica-Bold", 18)
-    # c.setFillColor(HexColor("#c0392b"))
-    # c.drawString(50, 750, f"Reporte de Facturas - {invoice_type.capitalize()} ({period})")
-    # c.setFont("Helvetica", 12)
-    # c.setFillColor(HexColor("#7f8c8d"))
-    # c.drawString(50, 730, f"Detalles de facturación para el período de {period}")
-    # c.setFont("Helvetica", 10)
-    # for group, group_reports in filtered_reports.items():
-    #     c.setFont("Helvetica-Bold", 12)
-    #     c.drawString(50, 700, f"Fecha: {group}")
-    #     y_position = 680
+    # Filtrar por el período solicitado
+    filtered_reports = {
+        group: items for group, items in reports.items()
+        if str(group) == str(period)
+    }
 
-    #     entity_groups = {}
-    #     for report in group_reports:
-    #         entity_type = report.get('TipoEntidad', 'General')
-    #         if entity_type not in entity_groups:
-    #             entity_groups[entity_type] = []
-    #         entity_groups[entity_type].append(report)
+    if not filtered_reports:
+        return jsonify({"error": "No se encontraron reportes para el período seleccionado"}), 404
 
-    #     for entity_type, reports_in_entity in entity_groups.items():
-    #         entity_title = {
-    #             'Entrenador': 'Pago Entrenador',
-    #             'Cliente': 'Membresía Cliente',
-    #             'Producto': 'Venta de Producto',
-    #             'General': 'General'
-    #         }.get(entity_type, 'General')
+    # Comenzar la generación del PDF
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=letter)
 
-    #         c.setFont("Helvetica-Bold", 12)
-    #         c.drawString(50, y_position, f"{entity_title}")
-    #         y_position -= 20
-    #         y_position -= 10
-    #         data = []
-    #         if entity_type == 'Producto':
-    #             data = [["Producto", "Monto", "Fecha"]]
-    #             for report in reports_in_entity:
-    #                 data.append([report.get('Producto', 'N/A'), report['Monto'], report.get('Fecha', 'N/A')])
-    #         elif entity_type in ['Cliente', 'Entrenador']:
-    #             data = [["Nombre", "Cédula", "Monto", "Fecha"]]
-    #             for report in reports_in_entity:
-    #                 data.append([report.get('Nombre', 'N/A'), report.get('Cedula', 'N/A'), report['Monto'], report.get('Fecha', 'N/A')])
-    #         else:
-    #             data = [["Descripción", "Monto", "Fecha"]]
-    #             for report in reports_in_entity:
-    #                 data.append([report['Descripcion'], report['Monto'], report.get('Fecha', 'N/A')])
+    # Título y logo
+    logo_path = "static/images/icono.jpg"
+    try:
+        c.drawImage(logo_path, 450, 750, width=1.5 * inch, height=0.8 * inch, preserveAspectRatio=True)
+    except Exception as ex:
+        print(f"Error al cargar el logo: {ex}")
 
-    #         table = Table(data, colWidths=[70, 150, 90, 90, 90])
-    #         table.setStyle(TableStyle([
-    #             ('BACKGROUND', (0, 0), (-1, 0), HexColor("#e74c3c")),
-    #             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-    #             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-    #             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-    #             ('FONTSIZE', (0, 0), (-1, -1), 10),
-    #             ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-    #             ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-    #             ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-    #         ]))
-    #         table.wrapOn(c, 50, y_position - 20)
-    #         table.drawOn(c, 50, y_position - 40)
+    c.setFont("Helvetica-Bold", 18)
+    c.setFillColor(HexColor("#c0392b"))
+    c.drawString(50, 750, f"Reporte de Facturas - {invoice_type.capitalize()} ({period})")
+    c.setFont("Helvetica", 12)
+    c.setFillColor(HexColor("#7f8c8d"))
+    c.drawString(50, 730, f"Detalles de facturación para el período de {period}")
+    y_position = 700
 
-    #         y_position -= len(reports_in_entity) * 20 + 40  
-    # c.showPage()
-    # c.save()
-    # buffer.seek(0)
-    return True
-    # return send_file(buffer, as_attachment=True, download_name=f"reporte_facturas_{period}.pdf", mimetype="application/pdf")
+    # Contenido de facturas
+    for group, group_reports in filtered_reports.items():
+        c.setFont("Helvetica-Bold", 12)
+        c.setFillColor(colors.black)
+        c.drawString(50, y_position, f"Fecha: {group}")
+        y_position -= 20
 
+        entity_groups = defaultdict(list)
+        for report in group_reports:
+            entity_type = report.get('TipoEntidad', 'General')
+            entity_groups[entity_type].append(report)
 
+        for entity_type, reports_in_entity in entity_groups.items():
+            entity_title = {
+                'Entrenador': 'Pago Entrenador',
+                'Cliente': 'Membresía Cliente',
+                'Producto': 'Venta de Producto',
+                'General': 'General'
+            }.get(entity_type, 'General')
+
+            c.setFont("Helvetica-Bold", 12)
+            c.drawString(50, y_position, f"{entity_title}")
+            y_position -= 20
+
+            # Armar la tabla
+            if entity_type == 'Producto':
+                data = [["Producto", "Monto", "Fecha"]]
+                for r in reports_in_entity:
+                    data.append([r.get('Producto', 'N/A'), str(r['Monto']), str(r.get('Fecha', 'N/A'))])
+            elif entity_type in ['Cliente', 'Entrenador']:
+                data = [["Nombre", "Cédula", "Monto", "Fecha"]]
+                for r in reports_in_entity:
+                    data.append([
+                        r.get('Nombre', 'N/A'),
+                        r.get('Cedula', 'N/A'),
+                        str(r['Monto']),
+                        str(r.get('Fecha', 'N/A'))
+                    ])
+            else:
+                data = [["Descripción", "Monto", "Fecha"]]
+                for r in reports_in_entity:
+                    data.append([r.get('Descripcion', 'N/A'), str(r['Monto']), str(r.get('Fecha', 'N/A'))])
+
+            col_count = len(data[0])
+            col_width = 500 / col_count
+            table = Table(data, colWidths=[col_width] * col_count)
+            table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), HexColor("#e74c3c")),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ]))
+
+            table_height = 20 * len(data)
+            if y_position - table_height < 100:  # Salto de página si no hay espacio
+                c.showPage()
+                y_position = 750
+                c.setFont("Helvetica-Bold", 12)
+                c.drawString(50, y_position, f"{entity_title}")
+                y_position -= 20
+
+            table.wrapOn(c, 50, y_position)
+            table.drawOn(c, 50, y_position - table_height)
+            y_position -= table_height + 30  # Espacio después de la tabla
+
+    c.showPage()
+    c.save()
+    buffer.seek(0)
+
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name=f"reporte_facturas_{period}.pdf",
+        mimetype="application/pdf"
+    )
 
 #------------- Reportes (Inventario Productos) ------------#
 @admin_app.route("/inventoryReports", methods=['GET'])
@@ -954,7 +976,7 @@ def generate_report_pdf():
 
     c.setFont("Helvetica", 12)
     c.setFillColor(HexColor("#7f8c8d"))
-    c.drawString(50, 730, f"Reporte de ventas de productos para el mes de {month}")
+    c.drawString(50, 730, f"Reporte de ventas de productos para el mes {month}")
 
     c.setFont("Helvetica", 10)
 

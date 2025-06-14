@@ -5,11 +5,78 @@ from apps.db.models.Bill import Bill
 from apps.db.models.Client import Client
 from apps.db.repositories.RepositoryBase import RepositoryBase
 from apps.db.db import db
+from sqlalchemy import text
 
 class BillRepository(RepositoryBase):
     
     def __init__(self):
         super().__init__(Bill)
+
+    @classmethod
+    def get_reports_bills(cls, group_by):
+        try:
+            # Definir agrupamiento por tipo
+            group_sql = {
+                'diaria': "DATE(Fecha)",
+                'semanal': "YEARWEEK(Fecha, 1)",
+                'mensual': "DATE_FORMAT(Fecha, '%Y-%m')"
+            }
+
+            if group_by not in group_sql:
+                raise ValueError("Tipo de reporte no válido: 'diaria', 'semanal', 'mensual'.")
+
+            # Consulta SQL principal
+            sql = f"""
+                SELECT {group_sql[group_by]} AS group_key, ID_Factura, Monto, Tipo, Descripcion,
+                       TipoEntidad, ID_Entidad, Estado, Fecha
+                FROM factura
+                ORDER BY group_key
+            """
+
+            result = db.session.execute(text(sql)).fetchall()
+
+            reports = defaultdict(list)
+
+            for row in result:
+                group_key = row.group_key
+
+                if isinstance(group_key, (datetime, date)):
+                    group_key = group_key.strftime('%Y-%m-%d') if group_by == 'diaria' else group_key.strftime('%Y-%m')
+
+                report = {
+                    'ID_Factura': row.ID_Factura,
+                    'Monto': row.Monto,
+                    'Tipo': row.Tipo,
+                    'Descripcion': row.Descripcion,
+                    'TipoEntidad': row.TipoEntidad or 'Desconocido',
+                    'ID_Entidad': row.ID_Entidad,
+                    'Estado': row.Estado,
+                    'Fecha': row.Fecha
+                }
+
+                # Consultar datos de entidad relacionada
+                tipo_entidad = row.TipoEntidad
+                id_entidad = row.ID_Entidad
+
+                if tipo_entidad in ('cliente', 'entrenador'):
+                    entity_sql = text(f"SELECT Cedula, Nombre FROM {tipo_entidad} WHERE Cedula = :cedula")
+                    entity_row = db.session.execute(entity_sql, {'cedula': id_entidad}).fetchone()
+                    if entity_row:
+                        report['Cedula'] = entity_row.Cedula
+                        report['Nombre'] = entity_row.Nombre
+                elif tipo_entidad == 'Producto':
+                    product_sql = text("SELECT Nombre FROM producto WHERE ID_Producto = :id")
+                    product_row = db.session.execute(product_sql, {'id': id_entidad}).fetchone()
+                    if product_row:
+                        report['Producto'] = product_row.Nombre
+
+                reports[group_key].append(report)
+
+            return dict(reports)
+
+        except Exception as ex:
+            print(f"Error en get_reports_bill: {ex}")
+            return None
 
     @classmethod
     def get_reports(cls, group_by):
@@ -24,12 +91,12 @@ class BillRepository(RepositoryBase):
             if group_by not in group_sql:
                 raise ValueError("Tipo de agrupación no válido: 'diaria', 'semanal', 'mensual'.")
 
-            sql = f"""
+            sql = text(f"""
                 SELECT {group_sql[group_by]} AS group_key, ID_Factura, Monto, Tipo, Descripcion,
                     TipoEntidad, ID_Entidad, Estado, Fecha
-                FROM Factura
+                FROM factura
                 ORDER BY group_key
-            """
+            """)
 
             result = db.session.execute(sql).fetchall()
 
@@ -59,15 +126,16 @@ class BillRepository(RepositoryBase):
                 tipo_entidad = row.TipoEntidad
 
                 # Buscar entidad relacionada
-                if tipo_entidad in ('Cliente', 'Entrenador'):
-                    entity_sql = f"SELECT Cedula, Nombre FROM {tipo_entidad} WHERE Cedula = :cedula"
+                if tipo_entidad in ('cliente', 'entrenador'):
+                    entity_sql = text(f"SELECT Cedula, Nombre FROM {tipo_entidad} WHERE Cedula = :cedula")
                     entity_result = db.session.execute(entity_sql, {'cedula': row.ID_Entidad}).fetchone()
                     if entity_result:
                         report['Cedula'] = entity_result.Cedula
                         report['Nombre'] = entity_result.Nombre
                 elif tipo_entidad == 'Producto':
+                    product_sql = text("SELECT Nombre FROM producto WHERE ID_Producto = :id")
                     product_result = db.session.execute(
-                        "SELECT Nombre FROM Producto WHERE ID_Producto = :id",
+                        product_sql,
                         {'id': row.ID_Entidad}
                     ).fetchone()
                     if product_result:
