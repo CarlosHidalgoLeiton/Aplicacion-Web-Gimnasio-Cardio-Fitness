@@ -189,7 +189,7 @@ class BillRepository(RepositoryBase):
         Description = request.form['Description']
         Quantity = request.form.get('Amount')
 
-        return Bill(Amount=Amount,Type="Pago Producto",Description=Description,Date=datetime.now(),EntityType="Producto",ID_Entity=ID_Entity, State=True, Quantity=Quantity)
+        return Bill(Amount=Amount,Type="Pago Producto",Description=Description,Date=datetime.now(),EntityType="Producto",ID_Entity=ID_Entity, State=True,Lot= None, Quantity=Quantity)
 
 
     @classmethod
@@ -378,8 +378,8 @@ class BillRepository(RepositoryBase):
         if bill.Description == None:
             return "Debe de ingresar la descripción."
         
-        if bill.Lot != None:
-            if "-" in bill.Lot or not bill.Lot.isdigit(): #Valida que sea alfabetico y que no tenga un "-" 
+        if bill.Quantity != None:
+            if "-" in bill.Quantity or not bill.Quantity.isdigit(): #Valida que sea alfabetico y que no tenga un "-" 
                 return "La cantidad ingresada no es válida."
         else:
             return "Debe de ingresar la cantidad."
@@ -394,7 +394,7 @@ class BillRepository(RepositoryBase):
                 lot_int = int(lot)
                 stock_int = int(stock)
 
-                if lot_int < stock_int:
+                if lot_int <= stock_int:
                     return True
                 else:
                     return False
