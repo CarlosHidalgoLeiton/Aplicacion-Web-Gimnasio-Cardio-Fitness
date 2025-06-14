@@ -490,9 +490,10 @@ def bills():
                     flash('No se pudo realizar el pago.', 'danger')
                     return render_template("admin/bill.html", bills = bills, trainers = trainers, clients = clients, memberships = memberships, products = products, productValidated = bill, generalValidated = None, trainerValidated = None, membershipValidated = None ) 
 
-                lotEnough = billController.validateStock(stock ,bill.Lot)
+                lotEnough = billController.validateStock(stock ,bill.Quantity)
                 if lotEnough:
-                    bill.Lot = stock - int(bill.Lot)
+                    Quantity = stock - int(bill.Quantity)
+                    billController.updateQuantityProduct(Quantity, bill.ID_Entity)
                     billController.create(bill)
                     flash('Registro creado exitosamente', 'success')
                     return redirect(url_for('admin_app.bills'))

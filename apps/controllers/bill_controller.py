@@ -139,3 +139,7 @@ class billController:
     @classmethod
     def get_reports_bills(cls, group_by):
         return cls.BillRepository.get_reports_bills(group_by=group_by)
+    
+    @classmethod
+    def updateQuantityProduct(cls, quantity, id):
+        return cls.ProductRepository.quantity_Product(quantity, id)

@@ -28,6 +28,11 @@ class ProductRepository(RepositoryBase):
 
     def able_Product(self, product_id):
         return self.update(product_id, State=1) 
+    
+
+
+    def quantity_Product(self, quantity, product_id):
+        return self.update(product_id, Stock=quantity) 
     # @classmethod
     # def insertProduct(cls, conection, product):
     #     if product != None:
