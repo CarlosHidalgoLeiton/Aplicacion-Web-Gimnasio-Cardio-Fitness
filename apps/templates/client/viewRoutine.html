@@ -60,12 +60,12 @@
                                     </div>
                                 </div>
 
-                                <div class="col-xl-4 col-xxl-3 col-lg-2 col-sm-12 d-flex align-items-center">
-                                        <a href="{{ url_for('client_app.viewSession', Session_ID=session.Session_ID) }}?routine_id={{ routine.RoutineId }}"
-                                        class="btn mb-3 play-button rounded me-3">
-                                        <i class="las la-caret-right scale-2 me-3"></i>Visualizar
-                                    </a>
-                                </div>
+                                <div class="w-100 d-flex justify-content-end mb-3">
+                                <a href="{{ url_for('client_app.viewSession', Session_ID=session.Session_ID) }}?routine_id={{ routine.RoutineId }}"
+                                class="btn play-button rounded">
+                                    <i class="las la-caret-right scale-2 me-2"></i>Visualizar
+                                </a>
+                            </div>
                             </div>
                             {% endfor %}
 

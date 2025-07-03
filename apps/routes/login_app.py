@@ -4,6 +4,8 @@ from flask_principal import identity_changed, AnonymousIdentity
 from apps.db.conection import Conection
 from apps.db.repositories.ClientRepository import ClientRepository
 import serial
+import requests
+
 
 from apps.controllers.user_controller import userController
 from apps.controllers.client_controller import clientController
@@ -31,7 +33,7 @@ def notAutorized():
 @login_app.route("/")
 def inicio():
     logout_user()
-    return render_template("login/login.html")
+    return render_template("login/entryinstallation.html")
 
 
 # IP de la laptop autorizada (la que tiene el USB)
@@ -57,16 +59,29 @@ def entryInstallation():
 
             if client is not None:
                 if client.is_member_active():
-                    # Lógica para abrir el portón
-                    if abrir_porton():
-                        success_message = f"Acceso Permitido. Bienvenido {client.Name}. Su membresía finaliza el {client.ExpirationMembership}."
-                    else:
-                        success_message = "Acceso Permitido, pero hubo un problema al abrir el portón."
+                    try:
+                        # Dirección IP de la laptop + token secreto
+                        laptop_ip = "http://192.168.100.29:5000/abrir"  # Cambiá la IP si es necesario
+                        headers = {"Authorization": "CardioFit223344"}  # Token secreto
+
+                        # Enviamos la señal a la laptop
+                        response = requests.post(laptop_ip, headers=headers, timeout=5)
+
+                        if response.status_code == 200:
+                            success_message = f"Acceso Permitido. Bienvenido {client.Name}. Su membresía finaliza el {client.ExpirationMembership}."
+                        else:
+                            success_message = "Acceso Permitido, pero hubo un problema al abrir el portón."
                     
+                    except Exception as e:
+                        print(f"Error al conectarse con la laptop: {e}")
+                        success_message = "Acceso Permitido, pero no se pudo abrir el portón."
+
                     return render_template("login/entryInstallationStatus.html", success_message=success_message)
+                
                 else:
                     error_message = "Acceso Denegado. Su membresía no se encuentra activa."
                     return render_template("login/entryInstallationStatus.html", error=error_message)
+            
             else:
                 error_message = "Cliente no encontrado."
                 return render_template("login/entryInstallationStatus.html", error=error_message)
