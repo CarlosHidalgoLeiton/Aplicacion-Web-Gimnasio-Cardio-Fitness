@@ -33,7 +33,7 @@ def notAutorized():
 @login_app.route("/")
 def inicio():
     logout_user()
-    return render_template("login/entryinstallation.html")
+    return render_template("login/login.html")
 
 
 # IP de la laptop autorizada (la que tiene el USB)
@@ -60,21 +60,19 @@ def entryInstallation():
             if client is not None:
                 if client.is_member_active():
                     try:
-                        # Dirección IP de la laptop + token secreto
-                        laptop_ip = "http://192.168.100.29:5000/abrir"  # Cambiá la IP si es necesario
-                        headers = {"Authorization": "CardioFit223344"}  # Token secreto
+                        # Nueva forma: Enviamos orden al propio servidor
+                        orden_url = "https://gymcardiofitness.com/ordenar-apertura"
 
-                        # Enviamos la señal a la laptop
-                        response = requests.post(laptop_ip, headers=headers, timeout=5)
+                        response = requests.post(orden_url, timeout=5)
 
                         if response.status_code == 200:
                             success_message = f"Acceso Permitido. Bienvenido {client.Name}. Su membresía finaliza el {client.ExpirationMembership}."
                         else:
-                            success_message = "Acceso Permitido, pero hubo un problema al abrir el portón."
+                            success_message = "Acceso Permitido, pero hubo un problema al crear la orden de apertura."
                     
                     except Exception as e:
-                        print(f"Error al conectarse con la laptop: {e}")
-                        success_message = "Acceso Permitido, pero no se pudo abrir el portón."
+                        print(f"Error al crear la orden de apertura: {e}")
+                        success_message = "Acceso Permitido, pero no se pudo comunicar la orden."
 
                     return render_template("login/entryInstallationStatus.html", success_message=success_message)
                 
@@ -92,6 +90,7 @@ def entryInstallation():
             return render_template("login/entryInstallationStatus.html", error=error_message)
 
     return render_template("login/entryInstallation.html")
+
 
 @login_app.route("/entryInstallationStatus")
 def entryInstallationStatus():
