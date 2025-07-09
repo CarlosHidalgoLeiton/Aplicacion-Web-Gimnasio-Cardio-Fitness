@@ -5,6 +5,7 @@ from apps.db.db import db
 from apps.routes.login_app import login_app
 from apps.routes.admin_app import admin_app
 from apps.routes.client_app import client_app
+from apps.routes.landingPage_app import landingPage_app
 from apps.routes.trainer_app import trainer_app
 from apps.routes.porton_app import porton_app
 from apps.db.repositories.UserRepository import UserRepository
@@ -24,6 +25,7 @@ principal = Principal()
 principal.init_app(app)
 
 # --- Blueprints ---
+app.register_blueprint(landingPage_app)
 app.register_blueprint(login_app)
 app.register_blueprint(admin_app, url_prefix='/admin')
 app.register_blueprint(client_app, url_prefix='/client')
