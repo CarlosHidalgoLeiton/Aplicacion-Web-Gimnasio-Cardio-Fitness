@@ -1,95 +1,132 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
-    <!-- Title -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>Cardio - Fitness</title>
 
-    <!-- Meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="author" content="">
-    <meta name="robots" content="">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../static/images/Icono.jpg" />
 
-    <meta property="og:image" content="">
-    <meta name="format-detection" content="telephone=no">
+    <!-- Bootstrap CSS -->
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" />
 
-    <!-- Mobile Specific -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- App CSS -->
+    <link href="../../static/css/app.min.css" rel="stylesheet" />
+    <link href="../../static/css/entryInstallation.css" rel="stylesheet" />
 
-    <!-- App favicon -->
-    <link rel="shortcut icon" href="../../static/images/Icono.jpg">
+    <!-- Toastr CSS -->
+    <link href="../../../static/vendor/toastr/css/toastr.min.css" rel="stylesheet" />
 
-    <!-- Bootstrap css -->
-    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" type="text/css" id="app-style" />
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-    <!-- App css -->
-    <link href="../../static/css/app.min.css" rel="stylesheet" type="text/css" />
-    <link href="../../static/css/entryInstallation.css" rel="stylesheet" type="text/css" />
+        .bg-image {
+            background-image: url("../../static/images/bannerLogueo.jpg");
+            background-size: cover;
+            background-position: center;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            filter: brightness(0.3);
+        }
 
-    <!-- Toastr -->
-    <link href="../../../static/vendor/toastr/css/toastr.min.css" rel="stylesheet">
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-custom {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
+            text-align: center;
+            width: 700px;
+            animation: fadeIn 0.8s ease;
+            
+        }
+
+        .auth-brand img {
+            height: 80px;
+            margin-bottom: 1rem;
+        }
+
+        .btn-primary {
+            background-color: #ff5722;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #e64a19;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+    </style>
+
+    <!-- Scripts -->
     <script src="../../../static/vendor/global/global.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="../../static/js/toastrConfig.js"></script>
-
-  
 </head>
+<body>
 
-<body class="auth-fluid-pages">
+    <div class="bg-image"></div>
 
-    <div style="display: flex; justify-content: center;">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <script type="text/javascript">
-                        var message = "{{ message|escape }}";  // Usamos 'escape' en lugar de 'escapejs'
-                        var category = "{{ category }}";  // Usamos la categoría (danger, success)
-    
-                        // Verificamos la categoría en JavaScript y ejecutamos la función correspondiente
-                        if (category == 'danger') {
-                            errorMessage(message);  // Si la categoría es 'danger', mostramos un mensaje de error
-                        } else if (category == 'success') {
-                            successMessage(message);  // Si la categoría es 'success', mostramos un mensaje de éxito
-                        }
-                    </script>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-    </div>
-
-    <div class="auth-fluid">
-        <div class="auth-fluid-form-box">
-            <div class="text-center">
-                <!-- Logo -->
-                <div class="auth-brand">
-                    <a href="#" class="logo logo-dark">
-                        <img src="../../static/images/Icono.jpg" alt="Logo">
-                    </a>
-                </div>
-
-                <h4 class="mt-0">Ingreso a Instalaciones</h4>
-                <p class="text-muted">Ingresa tu cédula para acceder a las instalaciones.</p>
-
-                <!-- form -->
-                <form action="/entryInstallation" method="POST">
-                    <div class="mb-3">
-                        <label for="cedula" class="form-label">Cédula</label>
-                        <input class="form-control" name="DocumentId" type="text" id="DocumentId" required=""
-                            placeholder="Ingrese su cédula">
-                    </div>
-                    <div class="text-center d-grid">
-                        <button class="btn btn-primary" type="submit">Iniciar</button>
-                    </div>
-                </form>
+    <div class="auth-container">
+        <div class="card card-custom text-center">
+            <div class="auth-brand">
+                <img src="../../static/images/Icono.png" alt="Logo">
             </div>
+            <h4 class="mb-2">Ingreso a Instalaciones</h4>
+            <p class="text-muted mb-4">Ingresa tu cédula para acceder a las instalaciones.</p>
+
+            <form action="/entryInstallation" method="POST">
+                <div class="mb-3 text-start">
+                    <label for="DocumentId" class="form-label">Cédula</label>
+                    <input type="text" class="form-control" id="DocumentId" name="DocumentId" placeholder="Ingrese su cédula" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Iniciar</button>
+            </form>
         </div>
     </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <script type="text/javascript">
+                    var message = "{{ message|escape }}";
+                    var category = "{{ category }}";
+
+                    if (category === 'danger') {
+                        errorMessage(message);
+                    } else if (category === 'success') {
+                        successMessage(message);
+                    }
+                </script>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
     <script>
         localStorage.clear();
     </script>
 </body>
-
 </html>

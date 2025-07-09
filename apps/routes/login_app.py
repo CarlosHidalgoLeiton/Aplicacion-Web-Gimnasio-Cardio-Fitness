@@ -4,6 +4,8 @@ from flask_principal import identity_changed, AnonymousIdentity
 from apps.db.conection import Conection
 from apps.db.repositories.ClientRepository import ClientRepository
 import serial
+import requests
+
 
 from apps.controllers.user_controller import userController
 from apps.controllers.client_controller import clientController
@@ -57,16 +59,27 @@ def entryInstallation():
 
             if client is not None:
                 if client.is_member_active():
-                    # Lógica para abrir el portón
-                    if abrir_porton():
-                        success_message = f"Acceso Permitido. Bienvenido {client.Name}. Su membresía finaliza el {client.ExpirationMembership}."
-                    else:
-                        success_message = "Acceso Permitido, pero hubo un problema al abrir el portón."
+                    try:
+                        # Nueva forma: Enviamos orden al propio servidor
+                        orden_url = "https://gymcardiofitness.com/ordenar-apertura"
+
+                        response = requests.post(orden_url, timeout=5)
+
+                        if response.status_code == 200:
+                            success_message = f"Acceso Permitido. Bienvenido {client.Name}. Su membresía finaliza el {client.ExpirationMembership}."
+                        else:
+                            success_message = "Acceso Permitido, pero hubo un problema al crear la orden de apertura."
                     
+                    except Exception as e:
+                        print(f"Error al crear la orden de apertura: {e}")
+                        success_message = "Acceso Permitido, pero no se pudo comunicar la orden."
+
                     return render_template("login/entryInstallationStatus.html", success_message=success_message)
+                
                 else:
                     error_message = "Acceso Denegado. Su membresía no se encuentra activa."
                     return render_template("login/entryInstallationStatus.html", error=error_message)
+            
             else:
                 error_message = "Cliente no encontrado."
                 return render_template("login/entryInstallationStatus.html", error=error_message)
@@ -77,6 +90,7 @@ def entryInstallation():
             return render_template("login/entryInstallationStatus.html", error=error_message)
 
     return render_template("login/entryInstallation.html")
+
 
 @login_app.route("/entryInstallationStatus")
 def entryInstallationStatus():
