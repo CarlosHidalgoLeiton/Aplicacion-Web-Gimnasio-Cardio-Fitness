@@ -86,7 +86,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="../../static/js/toastrConfig.js"></script>
 </head>
-<body>
+<script>
+    // Al presionar Enter en el input o enviar el formulario
+    document.querySelector("form").addEventListener("submit", function () {
+        // Espera a que el teclado se cierre
+        setTimeout(function () {
+            // Forzar scroll hacia arriba
+            window.scrollTo(0, 0);
+            // Forzar un "repaint"
+            document.body.style.height = window.innerHeight + "px";
+        }, 300);
+    });
+</script>
+
+<body> 
 
     <div class="bg-image"></div>
 
