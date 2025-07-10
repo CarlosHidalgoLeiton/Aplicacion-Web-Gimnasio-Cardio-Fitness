@@ -82,22 +82,22 @@ class ClientRepository(RepositoryBase):
         
         #Validation for name
         if client.Name != None:
-            if not client.Name.isalpha():
-                return "El nombre no debe contener números o caracteres especiales."
+             if not re.fullmatch(r"[A-Za-zÁÉÍÓÚáéíóúÑñ ]+", client.Name.strip()):
+                 return "El nombre solo debe contener letras y espacios (sin caracteres especiales ni números)."
         else:
             return "Debe ingresar el nombre."
         
         #Validation for firstLastName
         if client.First_LastName != None:
-            if not client.First_LastName.isalpha():
-                return "El apellido 1 no debe contener números o caracteres especiales."
+               if not re.fullmatch(r"[A-Za-zÁÉÍÓÚáéíóúÑñ ]+", client.First_LastName.strip()):
+                return "El apellido 1 solo debe contener letras y espacios (sin números ni caracteres especiales)."
         else:
             return "Debe ingresar el apellido 1."
         
         #Validation for secondLastName
         if client.Second_LastName != None:
-            if not client.Second_LastName.isalpha():
-                return "El apellido 2 no debe contener números o caracteres especiales."
+            if not re.fullmatch(r"[A-Za-zÁÉÍÓÚáéíóúÑñ ]+", client.Second_LastName.strip()):
+                return "El apellido 2 solo debe contener letras y espacios (sin números ni caracteres especiales)."
         else:
             return "Debe ingresar el apellido 2."
         
