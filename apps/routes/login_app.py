@@ -5,6 +5,7 @@ from apps.db.conection import Conection
 from apps.db.repositories.ClientRepository import ClientRepository
 import serial
 import requests
+from datetime import date
 
 
 from apps.controllers.user_controller import userController
@@ -50,45 +51,59 @@ def abrir_porton():
         print(f"Error al intentar abrir el portón: {e}")
         return False
 
+
 @login_app.route("/entryInstallation", methods=["GET", "POST"])
 def entryInstallation():
     if request.method == "POST":
         user_document_id = request.form['DocumentId']
+
         try:
             client = clientController.get_one(user_document_id)
 
             if client is not None:
                 if client.is_member_active():
-                    try:
-                        # Nueva forma: Enviamos orden al propio servidor
-                        orden_url = "https://gymcardiofitness.com/ordenar-apertura"
 
-                        response = requests.post(orden_url, timeout=5)
+                    # Verificamos si ya ingresó hoy
+                    if client.EntranceDoor is not None and client.EntranceDoor == date.today():
+                        error_message = "Acceso Denegado. Usted ya registró una entrada al gimnasio hoy."
+                        return render_template("login/entryInstallationStatus.html", error=error_message)
 
-                        if response.status_code == 200:
-                            success_message = f"Acceso Permitido. Bienvenido {client.Name}. Su membresía finaliza el {client.ExpirationMembership}."
-                        else:
-                            success_message = "Acceso Permitido, pero hubo un problema al crear la orden de apertura."
-                    
-                    except Exception as e:
-                        print(f"Error al crear la orden de apertura: {e}")
-                        success_message = "Acceso Permitido, pero no se pudo comunicar la orden."
+                    else:
+                        try:
+                            # Enviar orden de apertura al servidor
+                            orden_url = "https://gymcardiofitness.com/ordenar-apertura"
+                            response = requests.post(orden_url, timeout=5)
 
-                    return render_template("login/entryInstallationStatus.html", success_message=success_message)
-                
+                            if response.status_code == 200:
+                                success_message = (
+                                    f"Acceso Permitido. Bienvenido {client.Name}. "
+                                    f"Su membresía finaliza el {client.ExpirationMembership}."
+                                )
+                                clientController.able_Entry(client.DocumentId)
+
+                            else:
+                                success_message = "Acceso Permitido, pero hubo un problema al crear la orden de apertura."
+
+                        except Exception as e:
+                            print(f"Error al crear la orden de apertura: {e}")
+                            success_message = "Acceso Permitido, pero no se pudo comunicar la orden."
+
+                        return render_template("login/entryInstallationStatus.html", success_message=success_message)
+
                 else:
                     error_message = "Acceso Denegado. Su membresía no se encuentra activa."
                     return render_template("login/entryInstallationStatus.html", error=error_message)
-            
+
             else:
                 error_message = "Cliente no encontrado."
                 return render_template("login/entryInstallationStatus.html", error=error_message)
 
         except Exception as e:
-            print(e)
+            print(f"Error general: {e}")
             error_message = "Hubo un error en el sistema. Inténtelo más tarde."
             return render_template("login/entryInstallationStatus.html", error=error_message)
 
+    # Si es GET, simplemente mostrar el formulario
     return render_template("login/entryInstallation.html")
 
 

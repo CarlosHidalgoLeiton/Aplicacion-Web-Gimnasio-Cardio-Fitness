@@ -9,6 +9,7 @@ from apps.routes.landingPage_app import landingPage_app
 from apps.routes.trainer_app import trainer_app
 from apps.routes.porton_app import porton_app
 from apps.db.repositories.UserRepository import UserRepository
+from apps.db.models.User import User
 
 # --- Inicialización ---
 app = Flask(__name__)
@@ -47,15 +48,28 @@ def load_user(user_id):
         user_cache[user_id] = user
     return user
 
-# --- Identity Loader ---
 @principal.identity_loader
 def load_identity():
-    if current_user.is_authenticated:
-        identity = Identity(current_user.id)
-        identity.provides.add(RoleNeed(current_user.role))
-        print(f"Identidad cargada: {identity}")
-        identity_changed.send(current_app._get_current_object(), identity=identity)
-        return identity
+    try:
+        # No tocar current_user si no hay sesión activa
+        if not hasattr(current_user, 'is_authenticated') or not current_user.is_authenticated:
+            return None
+
+        # Si está autenticado, cargamos su identidad desde la base de datos (seguro)
+     
+        user = db.session.get(User, current_user.id)
+
+        if user:
+            identity = Identity(user.id)
+            identity.provides.add(RoleNeed(user.role))
+            identity_changed.send(current_app._get_current_object(), identity=identity)
+            print(f"Identidad cargada: {identity}")
+            return identity
+
+    except Exception as e:
+        print(f"Error en load_identity: {e}")
+        return None
+
 
 # --- Ejecutar ---
 if __name__ == '__main__':

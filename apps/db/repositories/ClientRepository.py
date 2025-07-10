@@ -9,6 +9,7 @@ from datetime import date
 
 from apps.db.repositories.RepositoryBase import RepositoryBase
 
+
 class ClientRepository(RepositoryBase):
 
     def __init__(self):
@@ -38,7 +39,8 @@ class ClientRepository(RepositoryBase):
             Limitation=request.form['limitation'],
             ExpirationMembership=None,
             State=True,
-            Membership_ID=None
+            Membership_ID=None,
+            EntranceDoor=None
         )
 
 
@@ -163,3 +165,8 @@ class ClientRepository(RepositoryBase):
 
     def able_Client(self, client_id):
         return self.update(client_id, State=1) 
+    
+    def able_Entry(self, client_id):
+        today = date.today()
+        return self.update(client_id, EntranceDoor=today) 
+

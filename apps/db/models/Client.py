@@ -23,6 +23,7 @@ class Client(db.Model):
     ExpirationMembership = db.Column(db.Date, nullable=True, key="ExpirationMembership", name="VencimientoMembresia")
     State = db.Column(db.Boolean, nullable=False, key="State", name="Estado")
     Membership_ID = db.Column(db.Integer, db.ForeignKey('membresia.id'), nullable=True, key="Membership_ID", name="ID_Membresia")
+    EntranceDoor = db.Column(db.Date, nullable=True, key="EntranceDoor", name="Fecha_Entrada")
 
     membresia = db.relationship('Membership', backref='membresia', lazy='joined')
 
