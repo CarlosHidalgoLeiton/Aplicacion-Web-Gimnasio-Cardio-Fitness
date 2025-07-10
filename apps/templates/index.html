@@ -30,6 +30,9 @@
   <link rel="stylesheet" type="text/css" href="../static/frontend/css/style-dark.css">
   <!-- Responsive -->
   <link rel="stylesheet" type="text/css" href="../static/frontend/css/responsive.css">
+  <!-- Pega esto dentro del <head> de tu HTML -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 
   <style type="text/css" id="operaUserStyle"></style>
   <style type="text/css"></style>
@@ -154,8 +157,11 @@
           <p class="adrs">Lunes a Viernes : 5 am a 1 pm</p>
           <p class="adrs">Sabados: 5 am a 01 pm</p>
           <ul class="social-media">
-            <li><a href="https://www.instagram.com/gymcardiofitness/"><i
-                  class="flaticon-instagram"></i></a></li>
+             <li>
+                  <a href="https://www.instagram.com/gymcardiofitness/" target="_blank" rel="noopener">
+                    <i class="fab fa-instagram fa-2x" style="color: white;"></i>
+                  </a>
+                </li>
           </ul>
         </div>
       </div>
@@ -182,7 +188,7 @@
                 </div>
                 <img src="../static/frontend/images/slide-image-2.png" alt="img" class="gym-girl">
                 <svg width="261" height="235" viewBox="0 0 261 235" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M261 0L190.483 144.088H128.135L162.104 102.062L188.333 45.885H89.8666L70.0873 87.4818H117.815L0 235L49.0181 125.219H0L61.9176 0H261Z"></path>
+                  <!-- <path d="M261 0L190.483 144.088H128.135L162.104 102.062L188.333 45.885H89.8666L70.0873 87.4818H117.815L0 235L49.0181 125.219H0L61.9176 0H261Z"></path> -->
                 </svg>
               </div>
             </div>
@@ -197,7 +203,7 @@
                 </div>
                 <img src="../static/frontend/images/slide-image-3.png" alt="img" class="gym-girl">
                 <svg width="261" height="235" viewBox="0 0 261 235" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M261 0L190.483 144.088H128.135L162.104 102.062L188.333 45.885H89.8666L70.0873 87.4818H117.815L0 235L49.0181 125.219H0L61.9176 0H261Z"></path>
+                  <!-- <path d="M261 0L190.483 144.088H128.135L162.104 102.062L188.333 45.885H89.8666L70.0873 87.4818H117.815L0 235L49.0181 125.219H0L61.9176 0H261Z"></path> -->
                 </svg>
               </div>
             </div>
@@ -211,7 +217,7 @@
                 </div>
                 <img src="../static/frontend/images/slide-image-1.png" alt="img" class="gym-girl">
                 <svg width="261" height="235" viewBox="0 0 261 235" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M261 0L190.483 144.088H128.135L162.104 102.062L188.333 45.885H89.8666L70.0873 87.4818H117.815L0 235L49.0181 125.219H0L61.9176 0H261Z"></path>
+                  <!-- <path d="M261 0L190.483 144.088H128.135L162.104 102.062L188.333 45.885H89.8666L70.0873 87.4818H117.815L0 235L49.0181 125.219H0L61.9176 0H261Z"></path> -->
                 </svg>
               </div>
             </div>
@@ -241,35 +247,56 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-4 col-md-6">
-          <div class="service-data">
-            <i class="flaticon-gym-equipment"></i>
-            <h3><a href="https://winsfolio.net/html/gymon/gym-on-drak/service-detail.html">Ciclo de Ejercicio</a></h3>
-            <p>Mejora tu resistencia, fuerza y salud cardiovascular con rutinas diseñadas para todos los niveles.
-               Nuestro programa incluye entrenamiento funcional, pesas, y sesiones de alta intensidad para ayudarte a alcanzar tus metas.</p>
+         <div class="service-data">
+            <i class="fa-solid fa-bolt"></i> <!-- Ícono reemplazado -->
+            <h3>
+              <a href="https://winsfolio.net/html/gymon/gym-on-drak/service-detail.html">
+                Ciclo de Ejercicio
+              </a>
+            </h3>
+            <p>
+              Mejora tu resistencia, fuerza y salud cardiovascular con rutinas diseñadas para todos los niveles.
+              Nuestro programa incluye entrenamiento funcional, pesas, y sesiones de alta intensidad para ayudarte a alcanzar tus metas.
+            </p>
             <a class="icon" href="https://winsfolio.net/html/gymon/gym-on-drak/service-detail.html">
               <i class="fa-solid fa-angles-right"></i>
             </a>
           </div>
+
         </div>
         <div class="col-lg-4 col-md-6">
           <div class="service-data">
-            <i class="flaticon-gym"></i>
-            <h3><a href="https://winsfolio.net/html/gymon/gym-on-drak/service-detail.html">Entrenador@s expertas</a></h3>
-            <p>Nuestro equipo de te guiarán con planes personalizados, corrección de técnica y motivación constante para que alcances tus objetivos de forma segura y efectiva.</p>
+            <i class="fa-solid fa-user-tie"></i> <!-- Ícono representando profesionalismo -->
+            <h3>
+              <a href="https://winsfolio.net/html/gymon/gym-on-drak/service-detail.html">
+                Entrenador@s expertas
+              </a>
+            </h3>
+            <p>
+              Nuestro equipo te guiará con planes personalizados, corrección de técnica y motivación constante para que alcances tus objetivos de forma segura y efectiva.
+            </p>
             <a class="icon" href="https://winsfolio.net/html/gymon/gym-on-drak/service-detail.html">
               <i class="fa-solid fa-angles-right"></i>
             </a>
           </div>
+
         </div>
         <div class="col-lg-4 col-md-6">
-          <div class="service-data mb-0">
-            <i class="flaticon-work-from-home"></i>
-            <h3><a href="https://winsfolio.net/html/gymon/gym-on-drak/service-detail.html">Horario de entrenamiento</a></h3>
-            <p>Contamos con horarios flexibles que se adaptan a tu rutina diaria. Entrena por la mañana, tarde o noche, con acceso a clases dirigidas, zonas de pesas y cardio durante todo el día.</p>
-            <a class="icon" href="https://winsfolio.net/html/gymon/gym-on-drak/service-detail.html">
-              <i class="fa-solid fa-angles-right"></i>
+        <div class="service-data mb-0">
+          <i class="fa-solid fa-clock"></i> <!-- Ícono representando horario -->
+          <h3>
+            <a href="https://winsfolio.net/html/gymon/gym-on-drak/service-detail.html">
+              Horario de entrenamiento
             </a>
-          </div>
+          </h3>
+          <p>
+            Contamos con horarios flexibles que se adaptan a tu rutina diaria. Entrena por la mañana, tarde o noche, con acceso a clases dirigidas, zonas de pesas y cardio durante todo el día.
+          </p>
+          <a class="icon" href="https://winsfolio.net/html/gymon/gym-on-drak/service-detail.html">
+            <i class="fa-solid fa-angles-right"></i>
+          </a>
+        </div>
+
         </div>
       </div>
     </div>
@@ -365,7 +392,7 @@
       <div class="col-lg-6">
         <div class="project-post">
           <figure>
-            <img src="../static/frontend/images/project-img-1.jpg" alt="Baile">
+            <img src="../static/frontend/images/spinning-bikes.jpg" alt="Baile">
           </figure>
           <div class="project-data">
             <h4>Lunes: 7:10 AM / 6:30 PM</h4>
@@ -376,7 +403,7 @@
       <div class="col-lg-6">
         <div class="project-post">
           <figure>
-            <img src="../static/frontend/images/project-img-2.jpg" alt="Cardio Dance">
+            <img src="../static/frontend/images/cardiodance.jpeg" alt="Cardio Dance">
           </figure>
           <div class="project-data">
             <h4>Martes: 7:10 AM / 6:30 PM</h4>
@@ -398,7 +425,7 @@
       <div class="col-lg-4">
         <div class="project-post">
           <figure>
-            <img src="../static/frontend/images/project-img-4.jpg" alt="Funcionales y Cardio Dance">
+            <img src="../static/frontend/images/project-img-5.jpg" alt="Funcionales y Cardio Dance">
           </figure>
           <div class="project-data">
             <h4>Jueves: 7:10 AM / 6:30 PM</h4>
@@ -409,7 +436,7 @@
       <div class="col-lg-4">
         <div class="project-post">
           <figure>
-            <img src="../static/frontend/images/project-img-5.jpg" alt="Fullbody y Spinning">
+            <img src="../static/frontend/images/project-img-4.jpg" alt="Fullbody y Spinning">
           </figure>
           <div class="project-data">
             <h4>Viernes: 7:10 AM / 6:30 PM</h4>
@@ -423,6 +450,7 @@
   <!-- Project Style One End -->
 
 <!-- Team Style One Start -->
+<!-- Team Style One Start -->
 <section class="gap team-style-one mb-3">
   <div class="heading-style-2">
     <div class="container">
@@ -433,74 +461,69 @@
             <h2>Coach Expertas</h2>
           </div>
         </div>
-        <div class="col-lg-6 col-md-4">
-          <div class="team-slider-nav disabled">
-            <button type="button" role="presentation" class="owl-prev"><i class="fa-solid fa-arrow-left-long"></i></button>
-            <button type="button" role="presentation" class="owl-next"><i class="fa-solid fa-arrow-right-long"></i></button>
-          </div>
-        </div>
       </div>
     </div>
   </div>
+
   <div class="container">
     <div class="row reveal1 it-reveal-animation active">
-      <div class="col-lg-12">
-        <div class="team-slider owl-carousel owl-loaded">
-          <div class="owl-stage-outer">
-            <div class="owl-stage" style="transform: translate3d(0px, 0px, 0px); transition: all; width: 100%;">
-              
-              <div class="owl-item active" style="width: 316.5px; margin-right: 10px;">
-                <div class="team-data item">
-                  <div class="team-info">
-                    <h3>Paula Rodríguez Ulate</h3>
-                    <p>Entrenadora Personal y Coach Funcional</p>
-                    <div class="team-social-media">
-                      <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-                      <a href="#"><i class="flaticon-twitter"></i></a>
-                      <a href="#"><i class="flaticon-instagram"></i></a>
-                    </div>
-                    <svg width="261" height="235" viewBox="0 0 261 235" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M261 0L190.483 144.088H128.135L162.104 102.062L188.333 45.885H89.8666L70.0873 87.4818H117.815L0 235L49.0181 125.219H0L61.9176 0H261Z"></path>
-                    </svg>
-                  </div>
-                  <div class="team-image">
-                    <figure>
-                      <img src="../static/frontend/images/team-1.png" alt="Paula Rodríguez Ulate">
-                    </figure>
-                  </div>
-                </div>
-              </div>
 
-              <div class="owl-item active" style="width: 316.5px; margin-right: 10px;">
-                <div class="team-data item">
-                  <div class="team-info">
-                    <h3>Eliuth Mairena Picado</h3>
-                    <p>Instructora de Baile y Cardio Dance</p>
-                    <div class="team-social-media">
-                      <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-                      <a href="#"><i class="flaticon-twitter"></i></a>
-                      <a href="#"><i class="flaticon-instagram"></i></a>
-                    </div>
-                    <svg width="261" height="235" viewBox="0 0 261 235" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M261 0L190.483 144.088H128.135L162.104 102.062L188.333 45.885H89.8666L70.0873 87.4818H117.815L0 235L49.0181 125.219H0L61.9176 0H261Z"></path>
-                    </svg>
-                  </div>
-                  <div class="team-image">
-                    <figure>
-                      <img src="../static/frontend/images/team-2.png" alt="Eliuth Mairena Picado">
-                    </figure>
-                  </div>
-                </div>
-              </div>
-
+      <!-- Entrenadora 1 -->
+      <div class="col-lg-6 col-md-6">
+        <div class="team-data item">
+          <div class="team-info position-relative" style="z-index: 1;">
+            <h3 class="position-relative" style="z-index: 2;">Paula Rodríguez Ulate</h3>
+            <p class="position-relative" style="z-index: 2;">Entrenadora Personal y Coach Funcional</p>
+            <div class="team-social-media position-relative" style="z-index: 2;">
+              <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+              <a href="#"><i class="fa-brands fa-twitter"></i></a>
+              <a href="#"><i class="fa-brands fa-instagram"></i></a>
             </div>
+            <!-- Logo decorativo al fondo -->
+            <img src="../static/frontend/images/logo-2.png"
+                 alt="logoo"
+                 class="position-absolute"
+                 style="top: 20px; left: 20px; width: 500px; opacity: 0.7; z-index: 0; pointer-events: none;">
           </div>
-          <div class="owl-dots disabled"></div>
+          <!-- Imagen de la entrenadora (por encima del logo) -->
+          <div class="team-image position-relative" style="z-index: 2;">
+            <figure>
+              <img src="../static/frontend/images/Entrenadora-Eli.png" alt="Paula Rodríguez Ulate">
+            </figure>
+          </div>
         </div>
       </div>
+
+      <!-- Entrenadora 2 -->
+      <div class="col-lg-6 col-md-6">
+        <div class="team-data item">
+          <div class="team-info position-relative" style="z-index: 1;">
+            <h3 class="position-relative" style="z-index: 2;">Eliuth Mairena Picado</h3>
+            <p class="position-relative" style="z-index: 2;">Entrenadora Personal y Cardio Dance</p>
+            <div class="team-social-media position-relative" style="z-index: 2;">
+              <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+              <a href="#"><i class="fa-brands fa-twitter"></i></a>
+              <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+            <!-- Logo decorativo al fondo -->
+            <img src="../static/frontend/images/logo-2.png"
+                 alt="logoo"
+                 class="position-absolute"
+                 style="top: 20px; left: 20px; width: 500px; opacity: 0.7; z-index: 0; pointer-events: none;">
+          </div>
+          <!-- Imagen de la entrenadora (por encima del logo) -->
+          <div class="team-image position-relative" style="z-index: 2;">
+            <figure>
+              <img src="../static/frontend/images/Entrenadora-Paula.png" alt="Eliuth Mairena Picado">
+            </figure>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
+
 
   <!-- Team Style One End -->
 
@@ -587,9 +610,9 @@
           <div class="shape">
             <div class="video">
               <figure>
-                <img src="../static/frontend/images/core-feature.jpg" alt="Core Feature Img">
+                <img src="../static/frontend/images/Video.jpg" alt="Core Feature Img">
               </figure>
-             <a class="video-play-btn" data-fancybox="" href="https://www.youtube.com/watch?v=uemObN8_dcw">
+             <a class="video-play-btn" data-fancybox="" href="">
               <!-- Reutilizando el ícono de reproducción -->
               <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="35"
                 height="56" viewBox="0 0 35 56">
@@ -653,18 +676,30 @@
   <!-- Client Style One End -->
 
 <!-- Renovation Start -->
-<section class="gap renovation">
-  <video poster="https://sb.vox1.net/video/poligonBG.jpg" playsinline="" autoplay="" muted="" loop="">
+<section class="gap renovation" style="position: relative; overflow: hidden; padding: 4rem 1rem; color: white; text-align: center; min-height: 100vh;">
+  <video 
+    poster="https://sb.vox1.net/video/poligonBG.jpg" 
+    playsinline 
+    autoplay 
+    muted 
+    loop 
+    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1;">
     <source src="https://sb.vox1.net/video/poligons.mp4" type="video/mp4">
   </video>
-  <div class="jumbotron">
-    <h1>Gym On</h1>
+
+  <div class="jumbotron" style="padding: 2rem;">
+    <h1 style="font-size: clamp(18rem, 30vw, 12rem); margin: 0; color: white; word-wrap: break-word;">
+      Cardio Fitness Gym
+    </h1>
   </div>
-  <div class="reno-data">
-    <h2>Fuerza, salud y energía para tu vida</h2>
-    <p>Tu momento es ahora. Cada gota de esfuerzo te acerca a la mejor versión de vos mism@. ¡No te detengas!</p>
+
+  <div class="reno-data" style="padding: 12rem 1rem;">
+    <h2 style="margin-bottom: 1rem;">Fuerza, salud y energía para tu vida</h2>
+    <p style="margin-bottom: 1rem;">Tu momento es ahora. Cada gota de esfuerzo te acerca a la mejor versión de vos mism@. ¡No te detengas!</p>
   </div>
 </section>
+
+
 <!-- Renovation End -->
 
 
@@ -676,86 +711,53 @@
         <div class="row">
           <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="footer-col">
-              <h3>Information</h3>
+              <h3>Información</h3>
               <p>Entrenar con constancia es clave, pero cada pequeño esfuerzo cuenta. Lo importante es avanzar, sin importar el ritmo.</p>
-              <ul class="social-media">
-                <li><a href="https://www.instagram.com/gymcardiofitness/"><i
-                      class="flaticon-instagram"></i></a></li>
+              <ul class="social-media" style="list-style: none; display: flex; gap: 1rem; padding: 0;">
+                <li>
+                  <a href="https://www.instagram.com/gymcardiofitness/" target="_blank" rel="noopener">
+                    <i class="fab fa-instagram fa-2x" style="color: white;"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://wa.me/50689275176" target="_blank" rel="noopener">
+                    <i class="fab fa-whatsapp fa-2x" style="color: white;"></i>
+                  </a>
+                </li>
+                
               </ul>
             </div>
           </div>
           <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="footer-col">
-              <h3>Contact</h3>
-              <ul>
-                <li>
-                  <i class="flaticon-maps"></i>
-                  <p>901 N Pitt Str., Suite 170, VA 22314, USA</p>
+              <h3>Contacto</h3>
+             <ul style="list-style: none; padding: 0;">
+                <li style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.8rem;">
+                  <i class="fas fa-map-marker-alt" style="color: #ffffff;"></i>
+                  <p style="margin: 0;">Grecia, a un costado del Parque de Grecia</p>
                 </li>
-                <li>
-                  <i class="flaticon-iphone"></i>
-                  <p><a href="callto:(+506)24445192">(+506) 2444 5192</a></p>
+                <li style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.8rem;">
+                  <i class="fas fa-phone" style="color: #ffffff;"></i>
+                  <p style="margin: 0;"><a href="tel:+50624445192" style="color: white; text-decoration: none;">(+506) 2444 5192</a></p>
                 </li>
-                <li>
-                  <i class="flaticon-mail"></i>
-                  <p><a href="mailto:username@domain.com">gymcardiofitness@gmail.com</a></p>
+                <li style="display: flex; align-items: center; gap: 0.5rem;">
+                  <i class="fas fa-envelope" style="color: #ffffff;"></i>
+                  <p style="margin: 0;"><a href="mailto:gymcardiofitness@gmail.com" style="color: white; text-decoration: none;">gymcardiofitness@gmail.com</a></p>
                 </li>
               </ul>
+
             </div>
           </div>
          
         </div>
       </div>
     </div>
-    <ul class="image-gallery">
-      <li>
-        <a href="../static/frontend/images/o-p-o-1.jpg" data-fancybox="gallery">
-          <i class="flaticon-instagram"></i>
-        </a>
-        <figure><img alt="girl" src="../static/frontend/images/o-p-o-1.jpg"></figure>
-      </li>
-      <li>
-        <a href="../static/frontend/images/o-p-o-2.jpg" data-fancybox="gallery">
-          <i class="flaticon-instagram"></i>
-        </a>
-        <figure><img alt="girl" src="../static/frontend/images/o-p-o-2.jpg"></figure>
-      </li>
-      <li>
-        <a href="../static/frontend/images/o-p-o-3.jpg" data-fancybox="gallery">
-          <i class="flaticon-instagram"></i>
-        </a>
-        <figure><img alt="girl" src="../static/frontend/images/o-p-o-3.jpg"></figure>
-      </li>
-      <li>
-        <a href="../static/frontend/images/blog-img-2.jpg" data-fancybox="gallery">
-          <i class="flaticon-instagram"></i>
-        </a>
-        <figure><img alt="girl" src="../static/frontend/images/blog-img-2.jpg"></figure>
-      </li>
-      <li>
-        <a href="../static/frontend/images/project-img-1.jpg" data-fancybox="gallery">
-          <i class="flaticon-instagram"></i>
-        </a>
-        <figure><img alt="girl" src="../static/frontend/images/project-img-1.jpg"></figure>
-      </li>
-      <li>
-        <a href="../static/frontend/images/project-img-5.jpg" data-fancybox="gallery">
-          <i class="flaticon-instagram"></i>
-        </a>
-        <figure><img alt="girl" src="../static/frontend/images/project-img-5.jpg"></figure>
-      </li>
-      <li>
-        <a href="../static/frontend/images/project-img-4.jpg" data-fancybox="gallery">
-          <i class="flaticon-instagram"></i>
-        </a>
-        <figure><img alt="girl" src="../static/frontend/images/project-img-4.jpg"></figure>
-      </li>
-    </ul>
+   
     <div class="footer-p-3 rights">
       <div class="container">
         <div class="row">
           <div class="footer-col">
-            <p>Cardio Fitness<i class="fa-solid fa-heart"></i> © 2025 <a href="">
+            <p>Cardio Fitness GYM<i class="fa-solid fa-heart"></i> © 2025 <a href="">
                </a>All rights reserved</p>
           </div>
         </div>
