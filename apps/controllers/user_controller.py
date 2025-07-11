@@ -28,7 +28,7 @@ class userController:
         if not password: 
             raise Exception('La contraseña es requerida')
 
-        user = cls.userRepository.findOne(filters={'DocumentId': id})
+        user = cls.userRepository.findOne(filters={'DocumentId': id,'State':1})
 
         if user:
             if User.verifyPassword(user.Password, password):
@@ -37,7 +37,7 @@ class userController:
                 raise Exception('Usuario o contraseña incorrectos')
 
         else:
-            raise Exception('Usuario o contraseña incorrectos')
+            raise Exception('Usuario no encontrado')
 
     @classmethod
     def sendEmail(cls, request):
