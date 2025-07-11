@@ -6,8 +6,8 @@ $(document).ready(function () {
 
     // Inicializa DataTable con configuración para ocultar botones y registros
     $('#example2').DataTable({
-        paging: false,          // Desactiva la paginación
-        info: false,            // Oculta el conteo de registros
+        paging: true,          // Desactiva la paginación
+        info: true,            // Oculta el conteo de registros
         language: {
             url: 'https://cdn.datatables.net/plug-ins/1.11.2/i18n/es_es.json'
         }
