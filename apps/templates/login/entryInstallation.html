@@ -138,8 +138,14 @@
             <form action="/entryInstallation" method="POST">
                 <div class="mb-3 text-start">
                     <label for="DocumentId" class="form-label">Cédula</label>
-                    <input type="text" class="form-control" id="DocumentId" name="DocumentId" placeholder="Ingrese su cédula" required>
-                </div>
+                    <input 
+                        type="tel" 
+                        inputmode="numeric" 
+                        class="form-control" 
+                        id="DocumentId" 
+                        name="DocumentId" 
+                        placeholder="Ingrese su cédula" 
+                        required>                </div>
                 <button type="submit" class="btn btn-primary w-100">Iniciar</button>
             </form>
         </div>
