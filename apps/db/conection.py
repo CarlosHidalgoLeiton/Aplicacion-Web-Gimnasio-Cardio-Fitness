@@ -9,25 +9,11 @@ class Conection:
             try:
                 cls._conexion = pymysql.connect(
                     host='168.231.68.243',
-                    user='admin',
+                    user='backup',
                     passwd='CardioFit2025#',
-                    db='gimnasio',
+                    db='gimnasiobackup',
                     port=3306
                 )
-                # cls._conexion = pymysql.connect(
-                #     host='localhost',
-                #     user='root',
-                #     passwd='',
-                #     db='gimnasio',
-                #     port=3306
-                # )
-                # cls._conexion = pymysql.connect(
-                #     host='168.231.68.243',
-                #     user='root',
-                #     passwd='CardioFit2025#',
-                #     db='cardioFit',
-                #     port=3306
-                # )
                 print("Conexión exitosa a la base de datos")
             except pymysql.MySQLError as e:
                 print(f"Error al conectar a la base de datos: {e}")
