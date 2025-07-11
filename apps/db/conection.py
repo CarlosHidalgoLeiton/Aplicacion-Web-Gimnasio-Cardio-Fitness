@@ -9,9 +9,9 @@ class Conection:
             try:
                 cls._conexion = pymysql.connect(
                     host='168.231.68.243',
-                    user='backup',
+                    user='admin',
                     passwd='CardioFit2025#',
-                    db='gimnasiobackup',
+                    db='gimnasio',
                     port=3306
                 )
                 print("Conexión exitosa a la base de datos")
