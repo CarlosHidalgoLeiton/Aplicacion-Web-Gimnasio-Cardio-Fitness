@@ -1451,6 +1451,7 @@ span.counter {
     position: relative;
     padding-top: 256px;
     padding-bottom: 180px;
+    z-index: 20;
 }
 .featured-slider-one {
     background-repeat: no-repeat;
