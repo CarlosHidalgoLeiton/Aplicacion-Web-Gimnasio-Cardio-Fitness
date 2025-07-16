@@ -26,6 +26,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     return;
                 }
 
+                // 1. Destruir el DataTable si ya existe
+                if ($.fn.DataTable.isDataTable('#reportTable')) {
+                    $('#reportTable').DataTable().clear().destroy();
+                }
+
+                // 2. Vaciar el tbody (ya lo haces arriba también, pero se puede asegurar aquí si se mueve el orden)
+                tableBody.innerHTML = '';
+
                 Object.keys(data).forEach(group => {
                     var groupReports = data[group];
                     console.log(groupReports)
@@ -67,6 +75,14 @@ document.addEventListener('DOMContentLoaded', function () {
                         </td>
                     `;
                     tableBody.appendChild(row);
+                });
+
+                $('#reportTable').DataTable({
+                    paging: true,          // Desactiva la paginación
+                    info: true,            // Oculta el conteo de registros
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/1.11.2/i18n/es_es.json'
+                    }
                 });
             })
             .catch(error => {
