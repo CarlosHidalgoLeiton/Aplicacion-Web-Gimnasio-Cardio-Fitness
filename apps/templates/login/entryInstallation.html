@@ -103,6 +103,51 @@
             font-size: 18px; /* Botón más visible */
         }
 
+     /* Loader oculto por defecto */
+        .hidden {
+            display: none !important;
+        }
+
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100vw;
+            background-color: rgba(0, 0, 0, 0.7); /* fondo oscuro */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loader {
+            height: 60px;
+            aspect-ratio: 2;
+            border-bottom: 3px solid transparent;
+            background:
+                linear-gradient(90deg, #fff 50%, transparent 0)
+                -25% 100% / 50% 3px repeat-x border-box;
+            position: relative;
+            animation: l3-0 0.75s linear infinite;
+        }
+        .loader:before {
+            content: "";
+            position: absolute;
+            inset: auto 42.5% 0;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: #FF5722;
+            animation: l3-1 0.75s cubic-bezier(0,900,1,900) infinite;
+        }
+
+        @keyframes l3-0 {
+            to {background-position: -125% 100%}
+        }
+        @keyframes l3-1 {
+            0%,2% {bottom: 0%}
+            98%,to {bottom:.1%}
+        }
     </style>
 
     <!-- Scripts -->
@@ -110,20 +155,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="../../static/js/toastrConfig.js"></script>
 </head>
-<script>
-    // Al presionar Enter en el input o enviar el formulario
-    document.querySelector("form").addEventListener("submit", function () {
-        // Espera a que el teclado se cierre
-        setTimeout(function () {
-            // Forzar scroll hacia arriba
-            window.scrollTo(0, 0);
-            // Forzar un "repaint"
-            document.body.style.height = window.innerHeight + "px";
-        }, 300);
-    });
-</script>
 
 <body> 
+
+ <!-- Loader oculto por defecto -->
+    <div id="loader-overlay" class="hidden">
+        <div class="loader"></div>
+    </div>
 
     <div class="bg-image"></div>
 
@@ -168,8 +206,25 @@
         {% endif %}
     {% endwith %}
 
-    <script>
+   <script>
         localStorage.clear();
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector("form");
+            const loaderOverlay = document.getElementById("loader-overlay");
+
+            form.addEventListener("submit", function () {
+                // Mostrar loader
+                loaderOverlay.classList.remove("hidden");
+
+                // Esperar un poco para hacer scroll y repaint
+                setTimeout(function () {
+                    window.scrollTo(0, 0);
+                    document.body.style.height = window.innerHeight + "px";
+                }, 300);
+            });
+        });
     </script>
+
 </body>
 </html>

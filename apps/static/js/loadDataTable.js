@@ -1,11 +1,11 @@
 $(document).ready(function () {
     // Verifica si DataTable ya está inicializado y, si es así, destrúyelo
-    if ($.fn.DataTable.isDataTable('#example2')) {
-        $('#example2').DataTable().destroy();
+    if ($.fn.DataTable.isDataTable('#example2,#reportTable')) {
+        $('#example2,#reportTable').DataTable().destroy();
     }
 
     // Inicializa DataTable con configuración para ocultar botones y registros
-    $('#example2').DataTable({
+    $('#example2,#reportTable').DataTable({
         paging: true,          // Desactiva la paginación
         info: true,            // Oculta el conteo de registros
         language: {

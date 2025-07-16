@@ -154,11 +154,19 @@ class BillRepository(RepositoryBase):
             for row in result:
                 group_key = row.group_key
 
-                if isinstance(group_key, (datetime, date)):
-                    group_key = (
-                        group_key.strftime('%Y-%m-%d') if group_by == 'diaria'
-                        else group_key.strftime('%Y-%m')
-                    )
+                # Normaliza el group_key a string según el tipo de agrupación
+                if group_by == 'diaria':
+                    if isinstance(group_key, (datetime, date)):
+                        group_key = group_key.strftime('%Y-%m-%d')
+                    else:
+                        group_key = str(group_key)
+                elif group_by == 'mensual':
+                    if isinstance(group_key, (datetime, date)):
+                        group_key = group_key.strftime('%Y-%m')
+                    else:
+                        group_key = str(group_key)
+                elif group_by == 'semanal':
+                    group_key = str(group_key)  # YEARWEEK ya devuelve un int o string
 
                 report = {
                     'ID_Factura': row.ID_Factura,

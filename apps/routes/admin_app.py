@@ -889,10 +889,15 @@ def generate_reportBills_pdf():
             # Armar la tabla
             if entity_type == 'Producto':
                 data = [["Producto", "Cantidad", "Monto", "Fecha"]]
+                total_monto = 0
                 for r in reports_in_entity:
-                    data.append([r.get('Producto', 'N/A'), str(r['Cantidad']),str(r['Monto']), str(r.get('Fecha', 'N/A'))])
+                    data.append([r.get('Producto', 'N/A'), str(r['Cantidad']), str(r['Monto']), str(r.get('Fecha', 'N/A'))])
+                    total_monto += float(r['Monto'])
+                # Agregar fila de total
+                data.append(["Total", "", f"{total_monto:.2f}", ""])
             elif entity_type in ['cliente', 'entrenador']:
                 data = [["Nombre", "Cédula", "Monto", "Fecha"]]
+                total_monto = 0
                 for r in reports_in_entity:
                     data.append([
                         r.get('Nombre', 'N/A'),
@@ -900,36 +905,63 @@ def generate_reportBills_pdf():
                         str(r['Monto']),
                         str(r.get('Fecha', 'N/A'))
                     ])
+                    total_monto += float(r['Monto'])
+                # Agregar fila de total
+                data.append(["Total", "", f"{total_monto:.2f}", ""])
             else:
                 data = [["Descripción", "Monto", "Fecha"]]
+                total_monto = 0
                 for r in reports_in_entity:
                     data.append([r.get('Descripcion', 'N/A'), str(r['Monto']), str(r.get('Fecha', 'N/A'))])
+                    total_monto += float(r['Monto'])
+                # Agregar fila de total
+                data.append(["Total", f"{total_monto:.2f}", ""])
 
             col_count = len(data[0])
             col_width = 500 / col_count
-            table = Table(data, colWidths=[col_width] * col_count)
-            table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), HexColor("#e74c3c")),
-                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, -1), 10),
-                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-                ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-                ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-            ]))
 
-            table_height = 20 * len(data)
-            if y_position - table_height < 100:  # Salto de página si no hay espacio
-                c.showPage()
-                y_position = 750
-                c.setFont("Helvetica-Bold", 12)
-                c.drawString(50, y_position, f"{entity_title}")
-                y_position -= 20
-
-            table.wrapOn(c, 50, y_position)
-            table.drawOn(c, 50, y_position - table_height)
-            y_position -= table_height + 30  # Espacio después de la tabla
+            max_rows_per_page = 25
+            start_row = 0
+            first_table = True
+            while start_row < len(data):
+                end_row = min(start_row + max_rows_per_page, len(data))
+                table_data = data[0:1] + data[start_row+1:end_row] if start_row > 0 else data[start_row:end_row]
+                table = Table(table_data, colWidths=[col_width] * col_count)
+                is_total_row = table_data[-1][0].strip().lower() == "total"
+                table_style = [
+                    ('BACKGROUND', (0, 0), (-1, 0), HexColor("#e74c3c")),
+                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                    ('FONTSIZE', (0, 0), (-1, -1), 10),
+                    ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                    ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+                    ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                    ('LINEABOVE', (0, 0), (-1, 0), 1, HexColor("#c0392b")),
+                    ('LINEBELOW', (0, -1), (-1, -1), 1, HexColor("#c0392b")),
+                    ('LINEBEFORE', (0, 0), (0, -1), 1, HexColor("#c0392b")),
+                    ('LINEAFTER', (-1, 0), (-1, -1), 1, HexColor("#c0392b")),
+                ]
+                if is_total_row:
+                    table_style += [
+                        ('BACKGROUND', (0, -1), (-1, -1), HexColor("#f9e79f")),
+                        ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
+                    ]
+                table.setStyle(TableStyle(table_style))
+                table_height = 20 * len(table_data)
+                if y_position - table_height < 100:
+                    c.showPage()
+                    y_position = 750
+                    # Solo dibuja el título de la entidad en la primera página
+                    if first_table:
+                        first_table = False
+                    else:
+                        # No volver a dibujar el título de la entidad
+                        pass
+                table.wrapOn(c, 50, y_position)
+                table.drawOn(c, 50, y_position - table_height)
+                y_position -= table_height + 30
+                start_row += max_rows_per_page - 1 if start_row > 0 else max_rows_per_page - 1
 
     c.showPage()
     c.save()
@@ -949,7 +981,6 @@ def generate_reportBills_pdf():
 def inventoryReports():
     try:
         reports = billController.get_product_bills()
-        print(reports)
         return render_template("admin/inventoryReports.html",
                            reports=reports)
     except Exception as ex:
@@ -992,6 +1023,7 @@ def generate_report_pdf():
     c.setFont("Helvetica", 10)
 
     data = [["Código", "Producto", "Precio", "Cantidad Vendida", "Total Vendido"]]
+    total_general = 0
     for report in reports:
         row = [
             str(report['ID_Producto']),
@@ -1001,29 +1033,57 @@ def generate_report_pdf():
             f"{report['Total_Vendido']:.2f}"
         ]
         data.append(row)
+        try:
+            total_general += float(report['Total_Vendido'])
+        except Exception:
+            pass
 
-    table = Table(data, colWidths=[70, 150, 90, 90, 90])
-    table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), HexColor("#e74c3c")),  
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 10),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.white),  
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey), 
-        ('LINEABOVE', (0, 0), (-1, 0), 1, HexColor("#c0392b")), 
-        ('LINEBELOW', (0, -1), (-1, -1), 1, HexColor("#c0392b")),  
-        ('LINEBEFORE', (0, 0), (0, -1), 1, HexColor("#c0392b")),  
-        ('LINEAFTER', (-1, 0), (-1, -1), 1, HexColor("#c0392b")),  
-    ]))
+    # Agregar fila de total general
+    data.append(["Total", "", "", "", f"{total_general:.2f}"])
 
-    table.wrapOn(c, 50, 600)
-    table.drawOn(c, 50, 500)  
+    # Paginación de la tabla
+    max_rows_per_page = 25
+    start_row = 0
+    y_position = 700
 
-    c.setStrokeColor(HexColor("#c0392b"))
-    c.setLineWidth(1)
-    c.line(50, 490, 550, 490)  
+    while start_row < len(data):
+        end_row = min(start_row + max_rows_per_page, len(data))
+        # Siempre incluir encabezado en cada página
+        table_data = [data[0]] + data[start_row+1:end_row] if start_row > 0 else data[start_row:end_row]
+        table = Table(table_data, colWidths=[70, 150, 90, 90, 90])
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), HexColor("#e74c3c")),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('LINEABOVE', (0, 0), (-1, 0), 1, HexColor("#c0392b")),
+            ('LINEBELOW', (0, -1), (-1, -1), 1, HexColor("#c0392b")),
+            ('LINEBEFORE', (0, 0), (0, -1), 1, HexColor("#c0392b")),
+            ('LINEAFTER', (-1, 0), (-1, -1), 1, HexColor("#c0392b")),
+            # Resalta la fila de total general
+            ('BACKGROUND', (0, -1), (-1, -1), HexColor("#f9e79f")),
+            ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
+        ]))
+        table_height = 20 * len(table_data)
+        if y_position - table_height < 100:
+            c.showPage()
+            y_position = 700
+            # Redibuja título y subtítulo en cada página
+            c.setFont("Helvetica-Bold", 18)
+            c.setFillColor(HexColor("#c0392b"))
+            c.drawString(50, 750, f"Reporte de Inventario - {month}")
+            c.setFont("Helvetica", 12)
+            c.setFillColor(HexColor("#7f8c8d"))
+            c.drawString(50, 730, f"Reporte de ventas de productos para el mes de {month}")
+            c.setFont("Helvetica", 10)
+        table.wrapOn(c, 50, y_position)
+        table.drawOn(c, 50, y_position - table_height)
+        y_position -= table_height + 30
+        start_row += max_rows_per_page - 1 if start_row > 0 else max_rows_per_page - 1
 
     c.showPage()
     c.save()
