@@ -54,28 +54,29 @@ class TrainerRepository(RepositoryBase):
                 return "El número de cédula no debe contener caracteres especiales."
         else:
             return "Debe ingresar el número de cédula."
-        
-        #Validation for name
-        if trainer.Name != None:
-            if not trainer.Name.isalpha():
+   
+
+        # Validación de nombre
+        if trainer.Name is not None:
+            if not re.match(r'^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$', trainer.Name.strip()):
                 return "El nombre no debe contener números o caracteres especiales."
         else:
             return "Debe ingresar el nombre."
-        
-        #Validation for firstLastName
-        if trainer.First_LastName != None:
-            if not trainer.First_LastName.isalpha():
+
+        # Validación de primer apellido
+        if trainer.First_LastName is not None:
+            if not re.match(r'^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$', trainer.First_LastName.strip()):
                 return "El apellido 1 no debe contener números o caracteres especiales."
         else:
             return "Debe ingresar el apellido 1."
-        
-        #Validation for secondLastName
-        if trainer.Second_LastName != None:
-            if not trainer.Second_LastName.isalpha():
+
+        # Validación de segundo apellido
+        if trainer.Second_LastName is not None:
+            if not re.match(r'^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$', trainer.Second_LastName.strip()):
                 return "El apellido 2 no debe contener números o caracteres especiales."
         else:
             return "Debe ingresar el apellido 2."
-        
+
         #Validation for Date_Birth
         if trainer.Date_Birth != None:
             if trainer.Date_Birth > datetime.now().date():

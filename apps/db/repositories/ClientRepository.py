@@ -6,7 +6,7 @@ from apps.db.models.Notification import Notification
 import re
 from pymysql import IntegrityError
 from datetime import date
-
+from zoneinfo import ZoneInfo
 from apps.db.repositories.RepositoryBase import RepositoryBase
 
 
@@ -167,6 +167,7 @@ class ClientRepository(RepositoryBase):
         return self.update(client_id, State=1) 
     
     def able_Entry(self, client_id):
-        today = date.today()
-        return self.update(client_id, EntranceDoor=today) 
+        cr_time = datetime.now(ZoneInfo("America/Costa_Rica"))
+        today = cr_time.date()
+        return self.update(client_id, EntranceDoor=today)
 
