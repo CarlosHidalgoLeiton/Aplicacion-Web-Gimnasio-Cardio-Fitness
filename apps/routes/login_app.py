@@ -5,8 +5,8 @@ from apps.db.conection import Conection
 from apps.db.repositories.ClientRepository import ClientRepository
 import serial
 import requests
-from datetime import date
-
+from datetime import date,datetime
+from zoneinfo import ZoneInfo
 
 from apps.controllers.user_controller import userController
 from apps.controllers.client_controller import clientController
@@ -64,7 +64,10 @@ def entryInstallation():
                 if client.is_member_active():
 
                     # Verificamos si ya ingresó hoy
-                    if client.EntranceDoor is not None and client.EntranceDoor == date.today():
+                    cr_time = datetime.now(ZoneInfo("America/Costa_Rica"))
+                    today_cr = cr_time.date()
+
+                    if client.EntranceDoor is not None and client.EntranceDoor == today_cr:
                         error_message = "Acceso Denegado. Usted ya registró una entrada al gimnasio hoy."
                         return render_template("login/entryInstallationStatus.html", error=error_message)
 
