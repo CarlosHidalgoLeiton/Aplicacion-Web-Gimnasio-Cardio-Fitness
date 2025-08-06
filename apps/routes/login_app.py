@@ -6,11 +6,9 @@ from apps.db.repositories.ClientRepository import ClientRepository
 import serial
 import requests
 from datetime import date,datetime
-from zoneinfo import ZoneInfo
-
 from apps.controllers.user_controller import userController
 from apps.controllers.client_controller import clientController
-
+import pytz
 
 login_app = Blueprint('login_app', __name__)
 
@@ -64,7 +62,7 @@ def entryInstallation():
                 if client.is_member_active():
 
                     # Verificamos si ya ingresó hoy
-                    cr_time = datetime.now(ZoneInfo("America/Costa_Rica"))
+                    cr_time = datetime.now(pytz.timezone("America/Costa_Rica"))
                     today_cr = cr_time.date()
 
                     if client.EntranceDoor is not None and client.EntranceDoor == today_cr:

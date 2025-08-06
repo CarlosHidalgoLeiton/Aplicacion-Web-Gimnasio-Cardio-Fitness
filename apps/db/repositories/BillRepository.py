@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, date, datetime
 from collections import defaultdict
 import re
 from apps.db.models.Bill import Bill
@@ -6,6 +6,7 @@ from apps.db.models.Client import Client
 from apps.db.repositories.RepositoryBase import RepositoryBase
 from apps.db.db import db
 from sqlalchemy import text
+import pytz
 
 class BillRepository(RepositoryBase):
     
@@ -337,20 +338,20 @@ class BillRepository(RepositoryBase):
             return "No se logro obtener la duracion"
         return True
 
-    @classmethod
-    def getDataMembershipClient(self, membership_id):
-        try:
-            result = self.findOneFiltered(
-                column_names=["Duracion_Dias"],
-                filters={"ID_Membresia": membership_id}
-            )
+    # @classmethod
+    # def getDataMembershipClient(self, membership_id):
+    #     try:
+    #         result = self.findOneFiltered(
+    #             column_names=["Duracion_Dias"],
+    #             filters={"ID_Membresia": membership_id}
+    #         )
 
-            if result:
-                return result["Duracion_Dias"]
-            return None
-        except Exception as ex:
-            print(f"Error al obtener duración de la membresía: {ex}")
-            return None
+    #         if result:
+    #             return result["Duracion_Dias"]
+    #         return None
+    #     except Exception as ex:
+    #         print(f"Error al obtener duración de la membresía: {ex}")
+    #         return None
 
 
     @classmethod
@@ -376,7 +377,8 @@ class BillRepository(RepositoryBase):
         if membership_days is None:
             return "Tipo de membresía no encontrado"
         # Obtener la fecha actual
-        fecha_ingreso = datetime.now()
+        zona = pytz.timezone("America/Costa_Rica")
+        fecha_ingreso = datetime.now(zona)
 
         # Calcular la fecha de vencimiento sumando los días de la membresía
         vencimiento_membresia = fecha_ingreso + timedelta(days=membership_days)
